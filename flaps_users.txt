@@ -50,3 +50,4 @@ cah--cars against dragons--https://media.discordapp.net/attachments/882743320554
 restman--adnvansed techmonamologise--https://images.freeimages.com/images/premium/small-comps/2603/26032932-colourful-pigeon.jpg
 scal--el supremo del calamitas--https://cdn.discordapp.com/emojis/974804860077764608.png
 censor--el censoro--x--(x)=>{var y = `${x}`; (x.match(/[aeiou]/gi).forEach(z=>{if(Math.random() < 0.5) {y = y.replace(z, "\\*")}})); return y; }
+mkswt--my beloved--x

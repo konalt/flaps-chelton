@@ -9,6 +9,7 @@ const moviereview = require("./moviereview");
 const videowrapper = require("./videowrapper");
 const watchparty = require("./watchparty-server");
 const { cah, cahWhiteCard } = require("./cardsagainsthumanity");
+const { makesweet } = require("./mkswt");
 
 module.exports = {
     yt: yt,
@@ -22,5 +23,6 @@ module.exports = {
     steam: steam,
     moviereview: moviereview,
     cah: cah,
-    cahWhiteCard: cahWhiteCard
+    cahWhiteCard: cahWhiteCard,
+    makesweet: makesweet
 }

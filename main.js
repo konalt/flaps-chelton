@@ -813,6 +813,16 @@ fbi files on ${msg.content.split(" ").slice(1).join(" ")}: ${descriptions[msg.me
                 flapslib.webhooks.sendWebhook("jamesphotoframe", "i cant put a speech bubble on nothing you dummy", false, msg.channel);
             }
         }
+        if (command.startsWith("!mybeloved ")) {
+            if (!msg.attachments.first() || !msg.attachments.first().width) {
+                sendWebhook("mkswt", "GIVE ME AN IMAGE YOU DWANKIE", false, msg.channel);
+            } else {
+                var filename = uuidv4() + ".png";
+                download(msg.attachments.first().url, "./images/cache/" + filename, () => {
+                    flapslib.makesweet(msg.content.split(" ").slice(1).join(" "), filename, msg.channel, client);
+                });
+            }
+        }
         if (command.startsWith("!flip")) {
             if (msg.attachments.size > 0) {
                 console.log(msg.attachments.first());
@@ -909,7 +919,6 @@ fbi files on ${msg.content.split(" ").slice(1).join(" ")}: ${descriptions[msg.me
             } else {
                 doThing("homophobicdog");
             }
-
         }
         if (command.startsWith("!laugh ")) {
             var image = msg.content.substring("!laugh ".length).length == 0 ? "farquaad" : msg.content.substring("!laugh ".length).split(" ")[0];
