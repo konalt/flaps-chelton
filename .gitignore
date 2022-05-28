@@ -5,3 +5,5 @@ audio/47.*
 node_modules/*
 **/Thumbs.db
 *.srt
+subs.srt
+subs_bottom.srt

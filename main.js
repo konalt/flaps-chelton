@@ -241,6 +241,16 @@ var descriptions = {
     "741701565907206267": "Loves to make [[DEALS]]"
 };
 
+var deathCauses = [
+    "so sad, dying of suicide. two shots to bak of hed",
+    "they will slipp in the shower while masturbating",
+    "they will slipp in the shower",
+    "hanging themselves",
+    "electrocution!!",
+    "those RUSSIANs will get him!!!",
+    "death by carrier pigeon"
+]
+
 client.on('messageCreate', async(msg) => {
     try {
         console.log(`${msg.author.username}#${msg.author.discriminator}: ${msg.content}`);
@@ -704,8 +714,9 @@ client.on('messageCreate', async(msg) => {
         }
         if (command.startsWith("!fbifiles ")) {
             var date = new Date(new Date().getTime() + Math.random() * (new Date(new Date().getFullYear() + 10, new Date().getMonth(), new Date().getDate()).getTime() - new Date().getTime()));
-            sendWebhook("flaps", `oh shit. ${msg.content.split(" ").slice(1).join(" ")} will die by suicide on ${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()} at ${date.getHours().toString().padStart(2, "0")}:${date.getMinutes().toString().padStart(2, "0")}:${date.getSeconds().toString().padStart(2, "0")}. two shots in the back of the head.
-fbi files on ${msg.content.split(" ").slice(1).join(" ")}: ${descriptions[msg.mentions.users.first().id] ? descriptions[msg.mentions.users.first().id] : "[[Blank]]"}`, false, msg.channel);
+            var dateStr = `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()} at ${date.getHours().toString().padStart(2, "0")}:${date.getMinutes().toString().padStart(2, "0")}:${date.getSeconds().toString().padStart(2, "0")}`;
+            sendWebhook("flaps", `oh shit. ${msg.content.split(" ").slice(1).join(" ")} will die on ${dateStr}. death by ${flapslib.cahWhiteCard()}
+fbi files on ${msg.content.split(" ").slice(1).join(" ")}: ${msg.mentions.users.first() ? (descriptions[msg.mentions.users.first().id] ? descriptions[msg.mentions.users.first().id] : "[[Blank]]") : "[[Blank]]"}`, false, msg.channel);
         }
         if (command.startsWith("!framephoto")) {
             if (msg.attachments.size > 0) {
