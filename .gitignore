@@ -3,3 +3,4 @@ images/cache/*
 audio/yt/*
 audio/47.*
 node_modules/*
+**/Thumbs.db
