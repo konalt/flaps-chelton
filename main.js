@@ -715,8 +715,12 @@ client.on('messageCreate', async(msg) => {
         if (command.startsWith("!fbifiles ")) {
             var date = new Date(new Date().getTime() + Math.random() * (new Date(new Date().getFullYear() + 10, new Date().getMonth(), new Date().getDate()).getTime() - new Date().getTime()));
             var dateStr = `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()} at ${date.getHours().toString().padStart(2, "0")}:${date.getMinutes().toString().padStart(2, "0")}:${date.getSeconds().toString().padStart(2, "0")}`;
-            sendWebhook("flaps", `oh shit. ${msg.content.split(" ").slice(1).join(" ")} will die on ${dateStr}. death by ${flapslib.cahWhiteCard()}
+            if (msg.content.split(" ").slice(1).join(" ") == "<:owl:964880176355897374>") {
+                sendWebhook("flaps", `that owl is FUCKING INVINCIBLE!!!! https://media.discordapp.net/attachments/838732607344214019/980236924994338846/unknown.png`, false, msg.channel);
+            } else {
+                sendWebhook("flaps", `oh shit. ${msg.content.split(" ").slice(1).join(" ")} will die on ${dateStr}. death by ${flapslib.cahWhiteCard()}
 fbi files on ${msg.content.split(" ").slice(1).join(" ")}: ${msg.mentions.users.first() ? (descriptions[msg.mentions.users.first().id] ? descriptions[msg.mentions.users.first().id] : "[[Blank]]") : "[[Blank]]"}`, false, msg.channel);
+            }
         }
         if (command.startsWith("!framephoto")) {
             if (msg.attachments.size > 0) {
