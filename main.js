@@ -623,7 +623,7 @@ client.on('messageCreate', async(msg) => {
         }
         if (command.startsWith("!carbs")) {
             console.log(msg.attachments.first());
-            var imgID2 = Math.floor(Math.random() * 100000).toString(16) + ".png";
+            var imgID2 = uuidv4().replace(/-/g, "_") + ".png";
             //sendWebhook("flaps", imageStream.toString("base64").substring(0, 1000), true, msg.channel);
             var c = canvas.createCanvas(1280, 720);
             var ctx = c.getContext('2d');
@@ -719,8 +719,8 @@ fbi files on ${msg.content.split(" ").slice(1).join(" ")}: ${descriptions[msg.me
                     if (!error && response.statusCode == 200) {
                         //data = "data:" + response.headers["content-type"] + ";base64," + Buffer.from(body).toString('base64');
                         var imageStream = Buffer.from(body, "base64");
-                        var imgID = Math.floor(Math.random() * 100000).toString(16) + ".jpg";
-                        var imgID2 = Math.floor(Math.random() * 100000).toString(16) + ".png";
+                        var imgID = uuidv4().replace(/-/g, "_") + ".jpg";
+                        var imgID2 = uuidv4().replace(/-/g, "_") + ".png";
                         fs.writeFileSync("./images/cache/" + imgID, imageStream);
                         //sendWebhook("flaps", imageStream.toString("base64").substring(0, 1000), true, msg.channel);
                         var c = canvas.createCanvas(1413, 1031);
@@ -767,8 +767,8 @@ fbi files on ${msg.content.split(" ").slice(1).join(" ")}: ${descriptions[msg.me
                     if (!error && response.statusCode == 200) {
                         //data = "data:" + response.headers["content-type"] + ";base64," + Buffer.from(body).toString('base64');
                         var imageStream = Buffer.from(body, "base64");
-                        var imgID = Math.floor(Math.random() * 100000).toString(16) + ".jpg";
-                        var imgID2 = Math.floor(Math.random() * 100000).toString(16) + ".png";
+                        var imgID = uuidv4().replace(/-/g, "_") + ".jpg";
+                        var imgID2 = uuidv4().replace(/-/g, "_") + ".png";
                         fs.writeFileSync("./images/cache/" + imgID, imageStream);
                         //sendWebhook("flaps", imageStream.toString("base64").substring(0, 1000), true, msg.channel);
                         var w = msg.attachments.first().width;
@@ -832,8 +832,8 @@ fbi files on ${msg.content.split(" ").slice(1).join(" ")}: ${descriptions[msg.me
                     if (!error && response.statusCode == 200) {
                         //data = "data:" + response.headers["content-type"] + ";base64," + Buffer.from(body).toString('base64');
                         var imageStream = Buffer.from(body, "base64");
-                        var imgID = Math.floor(Math.random() * 100000).toString(16) + ".jpg";
-                        var imgID2 = Math.floor(Math.random() * 100000).toString(16) + ".png";
+                        var imgID = uuidv4().replace(/-/g, "_") + ".jpg";
+                        var imgID2 = uuidv4().replace(/-/g, "_") + ".png";
                         fs.writeFileSync("./images/cache/" + imgID, imageStream);
                         var w = msg.attachments.first().width;
                         var h = msg.attachments.first().height;
@@ -873,7 +873,7 @@ fbi files on ${msg.content.split(" ").slice(1).join(" ")}: ${descriptions[msg.me
         }
         if (command.startsWith("!homodog ")) {
             //data = "data:" + response.headers["content-type"] + ";base64," + Buffer.from(body).toString('base64');
-            var imgID2 = Math.floor(Math.random() * 100000).toString(16) + ".png";
+            var imgID2 = uuidv4().replace(/-/g, "_") + ".png";
             var text = msg.content.split(" ").slice(1).join(" ");
             var id = flapslib.ai.uuidv4();
 
@@ -983,7 +983,7 @@ fbi files on ${msg.content.split(" ").slice(1).join(" ")}: ${descriptions[msg.me
 
                         //console.log(c.toDataURL("image/png").split(",")[1]);
 
-                        var imgID = Math.floor(Math.random() * 100000).toString(16) + ".png";
+                        var imgID = uuidv4().replace(/-/g, "_") + ".png";
 
                         var imageStream = Buffer.from(c.toDataURL("image/png").split(",")[1], "base64");
                         fs.writeFileSync("./images/cache/" + imgID, imageStream);
@@ -1063,7 +1063,7 @@ fbi files on ${msg.content.split(" ").slice(1).join(" ")}: ${descriptions[msg.me
 
                     //console.log(c.toDataURL("image/png").split(",")[1]);
 
-                    var imgID = Math.floor(Math.random() * 100000).toString(16) + ".png";
+                    var imgID = uuidv4().replace(/-/g, "_") + ".png";
 
                     var imageStream = Buffer.from(c.toDataURL("image/png").split(",")[1], "base64");
                     fs.writeFileSync("./images/cache/" + imgID, imageStream);
