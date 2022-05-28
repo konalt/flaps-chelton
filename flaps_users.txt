@@ -1,0 +1,52 @@
+flaps--𝙛𝙡𝙖𝙥𝙨 𝙘𝙝𝙚𝙡𝙩𝙤𝙣--913068086725341224
+kb--the killer boss--930495779141980270----(x) => {var apply = (map, text) => { let out = ""; for(let c of text.split("")) { if(map[c] !== undefined) { out += map[c]; } else if(map[c.toLowerCase()] !== undefined)  { out += map[c.toLowerCase()]; } else { out += c;}  } return out; }; var boldItalicCharMap = {"0":"0","1":"1","2":"2","3":"3","4":"4","5":"5","6":"6","7":"7","8":"8","9":"9","a":"𝙖","b":"𝙗","c":"𝙘","d":"𝙙","e":"𝙚","f":"𝙛","g":"𝙜","h":"𝙝","i":"𝙞","j":"𝙟","k":"𝙠","l":"𝙡","m":"𝙢","n":"𝙣","o":"𝙤","p":"𝙥","q":"𝙦","r":"𝙧","s":"𝙨","t":"𝙩","u":"𝙪","v":"𝙫","w":"𝙬","x":"𝙭","y":"𝙮","z":"𝙯","A":"𝘼","B":"𝘽","C":"𝘾","D":"𝘿","E":"𝙀","F":"𝙁","G":"𝙂","H":"𝙃","I":"𝙄","J":"𝙅","K":"𝙆","L":"𝙇","M":"𝙈","N":"𝙉","O":"𝙊","P":"𝙋","Q":"𝙌","R":"𝙍","S":"𝙎","T":"𝙏","U":"𝙐","V":"𝙑","W":"𝙒","X":"𝙓","Y":"𝙔","Z":"𝙕"}; return apply(boldItalicCharMap, x);}
+dziad--dziad ufolud--918148425680302110
+jeremiah--the racist jeremiah fink--913928050905845810
+sammy--sammy merk--918147000380313660
+micheal--Taoiseach Micheál Martin--917831859059163186
+norma--Norma Foley #OpenSchools--917840712786116608
+deepai--ROBOT FROM THE LOONEY BIN--918147143569666048
+briez--Briez Drohmer #illinoispride--917291555868516373
+joingle--🥰🥰 Joe Joingle 🥰🥰--918147413858983946--(x) => { return "🥰🥰 " + x + " 🥰🥰";}
+zephiel--Mr. Zephiel--917918947272163368
+lamazzu--MR LAMAZZU | NEW EP--917923037574205510
+jaz--DJ Jaz--918145130379235348
+cicero--UNCLEAN CICERO #CROWCAUSECANCER #CANCER--918159082165252157--(x) => {return x.toUpperCase()}
+spamton--Spamton G. Spamton--918196512536789002--(x) => {var swears=["fuck","shit","dick","cock"]; var a=false; var je=false; var jl=false; return x.toLowerCase().split(" ").map(w => {if (Math.random() <= (a ? 0.5 : 0.2)) { (a ? (w = w + "]]") : (w = "[[" + w)); a = !a; }; if (!a && !w.endsWith("]]")) { retval = w.toUpperCase(); } else { retval = (w.startsWith("[[") ? "[[" : "") + w.charAt((w.startsWith("[[") ? 2 : 0)).toUpperCase() + w.slice((w.startsWith("[[") ? 3 : 1)); } swears.forEach(swear => { if (retval.toLowerCase().includes(swear.toLowerCase())) { retval = retval.toLowerCase().replace(swear, "[$!?!]").toUpperCase(); } }); return retval;}).join(" ") + (a ? "]]" : "")}
+gabe--the angel "gabriel"--918260672821878884--(x) => {var z = ['\u0315', '\u031b', '\u0340', '\u0341', '\u0358', '\u0321', '\u0322', '\u0327', '\u0328', '\u0334', '\u0335', '\u0336', '\u034f', '\u035c', '\u035d', '\u035e', '\u035f', '\u0360', '\u0362', '\u0338', '\u0337', '\u0361', '\u0489']; var newtxt = ""; for (var i = 0; i < x.length; i++) { if (z.includes(x.substr(i, 1))) { continue; } newtxt += x.substr(i, 1); for (var j = 0; j < Math.floor(Math.random() * 16); j++) { newtxt += z[Math.floor(Math.random() * z.length)]; } } return newtxt; }
+tom--freaky tom--918261842432884766
+wake--joe biden wake up--918271062515515463
+shang--Shang Jiu-Li (Chinese Mole Man)--918272340280885288--(x)=>{ return x.replace(/mr/gi, "mistuh").replace(/mister/gi, "mistuh");}
+intruder--an intruder--918536333926993940
+lamioti--mr lamioti--918560106688442398
+shapiro--Ben Shapiro #OwnTheLibs--918903633171599440--(x)=>{ return x + ", libtard"; }
+based--The Based Department--.
+scringo--el scringo--920363266297970768
+elves--The Elves--923934449316544552
+xi--Xi Jinping - 习近平--924861994635509770--(x)=>{ var chinese = "现在是你成为大人物的机会用你的灵魂我有我是新的你不是"; var words = x.split(" "); var retval = words.map((word) => { return word + (Math.random() < 0.5 ? (" " + chinese.substring( Math.floor(Math.random() * chinese.length)) ) : "")}).join(" "); return retval; }
+william--william jenkins--926168225014743080
+ena--ENA--926169087627915275
+4chanroulette--4Chan Roulette--930536972496302130
+bonus--bonus nose jim--932735794760777758
+anita--Blonde Lady Anita (Anita Ire)--933064375105900574
+zimbabwe--CEO of Zimbabwe (Real)--934173325951926332
+bruno--BRUNO POWROZNIK--935578541930733618--(x) => { var y = [".", ",", "!", "?"], z = false; y.forEach(p => { if (x.endsWith(p)) { z = true; } }); return x.toUpperCase() + (z ? " FUCKING STRS" : ". FUCKING STRS")}
+dentist--gustavo fing--936718085363236924--(x) => {return "**" + x + "**";}
+firingsquad--The Firing Squad--938460969112313957--(x) => {if (Math.random() < 0.5) {return "FUCK  YOU FUCK YOU FUCKING BASTARTDS FUCK YOU **I HATE EVERYONE AROUND ME AND I AM A THREAT TO SOCIETY**"} else {return x.toUpperCase();}}
+salmon--Salmon of Knowledge--945807706034434048
+walter--walt whit--951203673873211392
+jesse--jese pine--951204188786917446
+dallas--dallas--951205677039247370
+locke--Locke (murkywanker insider)--951532680242167838
+jamesphotoframe--james the photo framer (now selling speech bubbles)--956565518683340800
+rals--Ralsei--963900513051639868--(x) => {return x;}
+flapserrors--Flaps Chelton® Error Handling™©--966053990427156650
+<:owl:964880176355897374>--owl--https://media.discordapp.net/attachments/882743320554643476/966101495823102032/owl2.png--(x) => {return "<:owl:964880176355897374>";}
+armstrong--OMELETTE LOVER--https://cdn.discordapp.com/attachments/882743320554643476/969722937361985536/unknown.png--(x) => {return x.toUpperCase()}
+ffmpeg--majik vido editor bot--https://media.discordapp.net/attachments/882743320554643476/970338503126818926/unknown.png
+balkan--hairy balkan man--https://media.discordapp.net/attachments/882743320554643476/970684762253566003/unknown.png
+morbius--msorbingus best movie--https://media.discordapp.net/attachments/882743320554643476/970702785630851192/unknown.png--(x) => {return x + "\nwatch morbius today. morbius is the best mvoie ever made."}
+cah--cars against dragons--https://media.discordapp.net/attachments/882743320554643476/971433068206387280/unknown.png
+restman--adnvansed techmonamologise--https://images.freeimages.com/images/premium/small-comps/2603/26032932-colourful-pigeon.jpg
+scal--el supremo del calamitas--https://cdn.discordapp.com/emojis/974804860077764608.png
+censor--el censoro--x--(x)=>{var y = `${x}`; (x.match(/[aeiou]/gi).forEach(z=>{if(Math.random() < 0.5) {y = y.replace(z, "\\*")}})); return y; }
