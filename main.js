@@ -259,13 +259,10 @@ client.on('messageCreate', async(msg) => {
         if (messageFlags.includes("literally")) msg.react(client.emojis.cache.find(emoji => emoji.name === "literally1984"));
         var command = msg.content.toLowerCase();
         if (command.startsWith(">")) {
+            console.log("FUSJSDNFSDF");
             var content = `${msg.content}`;
-            if (!msg.reference.messageId) {
-                sendWebhook("flaps", `${msg.member.toString()}, buddy, ya gotta reply to a message if you wanna edit it!!!! also, this only works with <[name] messages.`, false, msg.channel);
-            } else if (msg.channel.messages.cache.find(msg.reference.messageId).author.discriminator != "0000") {
-                sendWebhook("flaps", `${msg.member.toString()}, this only works with messages sent by a webhook`, false, msg.channel);
-            } else if (!msg) {
-                sendWebhook("flaps", `${msg.member.toString()}, what the actual fuck did you do? the message is invalid`, false, msg.channel);
+            if (!msg.reference) {
+                sendWebhook("flaps", `buddy, ya gotta reply to a message if you wanna edit it!!!! also, this only works with <[name] messages.`, false, msg.channel);
             } else {
                 editWebhookMsg(msg.reference.messageId, msg.channel, content.substring(1));
                 msg.delete();
@@ -1203,7 +1200,7 @@ fbi files on ${msg.content.split(" ").slice(1).join(" ")}: ${descriptions[msg.me
             flapslib.moviereview.morbiusReview(msg.channel);
         }
     } catch (err) {
-        flapslib.webhooks.sendWebhook("flapserrors", "Oooops! Looks like flaps broke.\n<@445968175381610496>, here's the scoop:\n" + err.toString(), false, msg.channel);
+        flapslib.webhooks.sendWebhook("flapserrors", "Oooops! Looks like flaps broke.\n<@445968175381610496>, here's the scoop:\n" + err.stack, false, msg.channel);
     }
 });
 

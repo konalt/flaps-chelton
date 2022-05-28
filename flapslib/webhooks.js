@@ -63,7 +63,9 @@ function editWebhookMsg(msgid, msgChannel, content) {
                         content: content
                     }),
                     headers: { 'Content-Type': 'application/json' }
-                }).then(() => { resolve() });
+                }).then(() => {;
+                    resolve();
+                });
             }).catch(console.error);
     });
 }
