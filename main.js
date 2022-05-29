@@ -508,13 +508,13 @@ client.on('messageCreate', async(msg) => {
                 var id = uuidv4().replace(/-/g, "");
                 var a = msg.attachments.first(2)[1];
                 var b = msg.attachments.first();
-                var largerW = (a.width > b.width) ? a.width : b.width;
-                var largerH = (a.height > b.height) ? a.height : b.height
-                download(msg.attachments.first().url, "./images/cache/" + id + ".png", () => {
-                    download(msg.attachments.first(2)[1].url, "./images/cache/" + id + ".mp4", () => {
+                //var largerW = (a.width > b.width) ? a.width : b.width;
+                //var largerH = (a.height > b.height) ? a.height : b.height
+                download(b.url, "./images/cache/" + id + ".png", () => {
+                    download(a.url, "./images/cache/" + id + ".mp4", () => {
                         flapslib.videowrapper.baitSwitch(id, msg, client, {
-                            w: largerW,
-                            h: largerH
+                            w: b.width,
+                            h: b.height
                         });
                     });
                 });
