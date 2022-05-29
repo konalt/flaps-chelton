@@ -1,5 +1,5 @@
 const { uuidv4 } = require("./ai");
-const { sendWebhook } = require("./webhooks");
+const { sendWebhook, sendWebhookFile } = require("./webhooks");
 const puppeteer = require("puppeteer");
 const fs = require('fs');
 const path = require('path');
@@ -147,18 +147,7 @@ function reverseMakesweet(text, filename, msgChannel, client) {
         complexFFmpeg(outputFilename, `./images/cache/` + newId, {
             args: "-vf reverse"
         }).then(async() => {
-            var message = await client.channels.cache.get("956316856422137856").send({
-                files: [{
-                    attachment: "images/cache/" + newId
-                }]
-            });
-
-            setTimeout(() => {
-                fs.unlinkSync("images/cache/" + newId);
-                fs.unlinkSync(outputFilename);
-            }, 10000);
-
-            sendWebhook("mkswt", message.attachments.first().url, false, msgChannel);
+            sendWebhookFile("mkswt", "images/cache/" + newId, false, msgChannel);
         });
     });
 }

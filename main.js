@@ -40,6 +40,8 @@ const download = require('./flapslib/download');
 const { uuidv4 } = require('./flapslib/ai');
 const { sendWebhook, editWebhookMsg } = require('./flapslib/webhooks');
 
+flapslib.webhooks.client = client;
+
 var players = [
     createAudioPlayer({
         behaviors: {

@@ -70,6 +70,25 @@ function editWebhookMsg(msgid, msgChannel, content) {
     });
 }
 
+var client;
+
+async function sendWebhookFile(id, filename, noDelete = false, msgChannel, customData = {}, msg) {
+    var message = await client.channels.cache.get("956316856422137856").send({
+        files: [{
+            attachment: filename
+        }]
+    });
+
+    if (!noDelete) {
+        setTimeout(() => {
+            fs.unlinkSync("images/cache/" + newId);
+            fs.unlinkSync(outputFilename);
+        }, 10000);
+    }
+
+    sendWebhook(id, message.attachments.first().url, false, msgChannel);
+}
+
 function sendWebhookEmbed(id, embed, disableCustom = false, msgChannel, customData = {}, msg) {
     return new Promise((resolve, _reject) => {
         try {
@@ -136,5 +155,7 @@ module.exports = {
     sendWebhookImage: sendWebhookImage,
     updateUsers: updateUsers,
     users: users,
-    editWebhookMsg: editWebhookMsg
+    editWebhookMsg: editWebhookMsg,
+    sendWebhookFile: sendWebhookFile,
+    client: client
 }
