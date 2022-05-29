@@ -135,7 +135,7 @@ async function stretch(name, msg) {
         }
     });
 }
-async function trim(name, times, msg) {
+async function trim(name, times, msg, client) {
     var id = uuidv4().replace(/-/gi, "");
     var ext = "." + msg.attachments.first().url.split('.').pop();
     video.trim("images/cache/" + name + ext, "images/cache/" + id + ext, {
