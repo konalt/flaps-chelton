@@ -572,9 +572,9 @@ client.on('messageCreate', async(msg) => {
             if (!msg.attachments.first()) {
                 flapslib.webhooks.sendWebhook("ffmpeg", "i cant caption nothing you dummy", false, msg.channel, {}, msg);
             } else {
-                flapslib.webhooks.sendWebhook("ffmpeg", "got it bro. this might take a while tho", false, msg.channel, {}, msg);
-                var id = flapslib.ai.uuidv4().replace(/-/gi, "");
                 var ext = "." + msg.attachments.first().url.split(".").pop()
+                if (ext != ".png" && ext != ".jpg") flapslib.webhooks.sendWebhook("ffmpeg", "got it bro. this might take a while tho", false, msg.channel, {}, msg);
+                var id = flapslib.ai.uuidv4().replace(/-/gi, "");
                 flapslib.download(msg.attachments.first().url, "images/cache/" + id + ext, () => {
                     console.log(id + ext);
                     flapslib.videowrapper.simpleMemeCaption(id, msg.content.split(" ").slice(1).join(" "), msg, client);

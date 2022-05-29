@@ -50,7 +50,7 @@ async function addText(name, text, msg) {
     });
 }
 async function simpleMemeCaption(name, text, msg, client) {
-    if (parseInt(msg.content.split(" ")[1]) != NaN) {
+    if (parseInt(msg.content.split(" ")[1])) {
         text = text.split(" ").slice(1).join(" ");
     }
     if (typeof text == "string") {
@@ -70,8 +70,7 @@ ${text[1]}`;
     fs.writeFileSync("./subs.srt", subtitleFileData);
     fs.writeFileSync("./subs_bottom.srt", subtitleFileData2);
     video.simpleMemeCaption("images/cache/" + name + ext, "images/cache/" + id + ext, {
-        barSize: msg.attachments.first().height / 9,
-        fontSize: (parseInt(msg.content.split(" ")[1]) == NaN ? msg.attachments.first().height / 10 : parseInt(msg.content.split(" ")[1]))
+        fontSize: (!parseInt(msg.content.split(" ")[1]) ? 30 : parseInt(msg.content.split(" ")[1]))
     }).then(async() => {
         try {
             var message = await client.channels.cache.get("956316856422137856").send({
