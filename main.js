@@ -1159,7 +1159,8 @@ fbi files on ${msg.content.split(" ").slice(1).join(" ")}: ${msg.mentions.users.
                     canvas.loadImage(__dirname + "\\images\\redditwatermark.png").then(async(reddit) => {
                         ctx.drawImage(photo, 0, 0, w, h);
 
-                        var amount = Math.floor(Math.random() * 100);
+                        //var amount = Math.floor(Math.random() * 100);
+                        var amount = 75;
                         var redditwidth = w / 4;
                         var redditheight = redditwidth;
                         for (let i = 0; i < amount; i++) {
