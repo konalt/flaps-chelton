@@ -141,11 +141,11 @@ async function makesweet(text, filename, msgChannel, client, send = true) {
     });
 }
 
-function reverseMakesweet(text, filename, msgChannel, client) {
-    makesweet(text, filename, msgChannel, client, false).then(outputFilename => {
+function reverseMakesweet(text, filename, msgChannel) {
+    makesweet(text, filename, msgChannel, null, false).then(outputFilename => {
         var newId = uuidv4() + ".gif";
         complexFFmpeg(outputFilename, `./images/cache/` + newId, {
-            args: "-vf reverse"
+            args: `-lavfi "[0:v]palettegen[p];[0:v]reverse[outx];[outx][p]paletteuse[outf]" -map "[outf]"`
         }).then(async() => {
             sendWebhookFile("mkswt", "images/cache/" + newId, false, msgChannel);
         });

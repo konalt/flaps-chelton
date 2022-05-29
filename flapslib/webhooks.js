@@ -72,7 +72,11 @@ function editWebhookMsg(msgid, msgChannel, content) {
 
 var client;
 
-async function sendWebhookFile(id, filename, noDelete = false, msgChannel, customData = {}, msg) {
+function setClient(c) {
+    client = c;
+}
+
+async function sendWebhookFile(id, filename, noDelete = false, msgChannel) {
     var message = await client.channels.cache.get("956316856422137856").send({
         files: [{
             attachment: filename
@@ -157,5 +161,5 @@ module.exports = {
     users: users,
     editWebhookMsg: editWebhookMsg,
     sendWebhookFile: sendWebhookFile,
-    client: client
+    setClient: setClient
 }
