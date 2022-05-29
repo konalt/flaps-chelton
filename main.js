@@ -235,12 +235,13 @@ var commands = {
 };
 
 var descriptions = {
-    "489894082500493349": "a cold blooded killer, ready to strike whenever newports are on the line",
-    "445968175381610496": "the creator of \"Flaps Chelton\", which is a discord bot designed to facilitate illegal activity.",
-    "794301103721414676": "SCP-1222 - Description: horny little runcling. really loves <:nice:980058300240515124>",
-    "976471678429311086": "<:fucking_nerd:980058470080479232>",
-    "775778497707769927": "el polozhenie",
-    "741701565907206267": "Loves to make [[DEALS]]"
+    "489894082500493349": "a cold blooded killer, ready to strike whenever newports are on the line\nhttps://media.discordapp.net/attachments/910525327585992737/980522490856095825/4.PNG",
+    "445968175381610496": "the creator of \"Flaps Chelton\", which is a discord bot designed to facilitate illegal activity.\nhttps://media.discordapp.net/attachments/910525327585992737/980524110952157254/unknown.png",
+    "794301103721414676": "SCP-1222 - Description: horny little runcling. really loves <:nice:980058300240515124>\nhttps://media.discordapp.net/attachments/910525327585992737/980522446572650617/unknown.png",
+    "976471678429311086": "'yeah i still would tho' 'agreed'\nhttps://media.discordapp.net/attachments/910525327585992737/980522944201629736/unknown.png",
+    "775778497707769927": "el polozhenie\nhttps://media.discordapp.net/attachments/910525327585992737/980523248120889344/unknown.png",
+    "741701565907206267": "Loves to make [[DEALS]]\nhttps://media.discordapp.net/attachments/910525327585992737/980524568416493668/unknown.png",
+    "547476998071517195": "we couldnt find a photo for this guy. we went to mcdonalds instead\nhttps://media.discordapp.net/attachments/910525327585992737/980523453042028574/mcdondil.PNG"
 };
 
 var deathCauses = [
@@ -720,7 +721,7 @@ client.on('messageCreate', async(msg) => {
                 sendWebhook("fbi", `that owl is FUCKING INVINCIBLE\nhttps://media.discordapp.net/attachments/838732607344214019/980236924994338846/unknown.png`, false, msg.channel);
             } else {
                 sendWebhook("fbi", `oh shit. ${msg.content.split(" ").slice(1).join(" ")} will die on ${dateStr}. death by ${flapslib.cahWhiteCard()}
-fbi files on ${msg.content.split(" ").slice(1).join(" ")}: ${msg.mentions.users.first() ? (descriptions[msg.mentions.users.first().id] ? descriptions[msg.mentions.users.first().id] : "[[Blank]]") : "[[Blank]]"}`, false, msg.channel);
+fbi files on ${msg.content.split(" ").slice(1).join(" ")}: ${(msg.mentions.users.first() ? (descriptions[msg.mentions.users.first().id] + "\nhere's a file photo" ? descriptions[msg.mentions.users.first().id] + "\nhere's a file photo" : "[[Blank]]") : "[[Blank]]")}`, false, msg.channel);
             }
         }
         if (command.startsWith("!framephoto")) {
