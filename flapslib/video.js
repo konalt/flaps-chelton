@@ -151,7 +151,7 @@ async function imageAudio(input, output) {
 }
 async function baitSwitch(input, output, options = {}) {
     return new Promise((resolve, reject) => {
-        var ffmpegInstance = cp.spawn("ffmpeg", `-y -t 1 -i ${path.join(__dirname, "..", input + ".png")} -i ${path.join(__dirname, "..", input + ".mp4")} -filter_complex "[0:v]pad=ceil(${options.w}/2)*2:ceil(${options.h}/2)*2[v0];[1:v]pad=ceil(${options.w}/2)*2:ceil(${options.h}/2)*2[v1];[v0][v1]concat[vout]" -map "[vout]" ${path.join(__dirname, "..", output + ".mp4")}`.split(" "), { shell: true });
+        var ffmpegInstance = cp.spawn("ffmpeg", `-y -t 1 -i ${path.join(__dirname, "..", input + ".png")} -i ${path.join(__dirname, "..", input + ".mp4")} -filter_complex "[0:v]pad=ceil(${options.w}/2)*2:ceil(${options.h}/2)*2[v0];[1:v]pad=ceil(${options.w}/2)*2:ceil(${options.h}/2)*2[v1];[v0][v1]concat[vout]" -map "[vout]" -vsync 2 ${path.join(__dirname, "..", output + ".mp4")}`.split(" "), { shell: true });
         ffmpegInstance.stdout.on("data", (c) => {
             stdout.write(c);
         });
