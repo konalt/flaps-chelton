@@ -941,7 +941,7 @@ fbi files on ${msg.content.split(" ").slice(1).join(" ")}: ${msg.mentions.users.
                     doThing(id, msg.attachments.first().width, msg.attachments.first().height);
                 });
             } else {
-                doThing("homophobicdog");
+                doThing("..\\homophobicdog.png", 680, 680);
             }
         }
         if (command.startsWith("!laugh ")) {
