@@ -432,6 +432,9 @@ client.on('messageCreate', async(msg) => {
             } else {
                 x = "hornet (hollow knight)".split(" ").join("_");
             }
+            if (x.includes("child")) {
+                return sendWebhook("runcling", "🚔🚔🚔🚔🚨🚨🚨🚨🚨🚓🚓🚓🚓👮‍♀️👮‍♂️👮‍♂️👮‍♂️👮‍♂️👮👮‍♂️👮‍♂️🚓🚨👮‍♀️👮‍♂️👮‍♀️🚓🚔🚨");
+            }
             x = x.replace("_--showname", "");
             fetch("https://rule34.xxx/public/autocomplete.php?q=" + x, {
                 "credentials": "omit",
