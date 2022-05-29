@@ -4,7 +4,7 @@ const { sendWebhook } = require("./webhooks");
 const fs = require("fs");
 const path = require("path");
 
-async function addText(name, text, msg, client) {
+async function addText(name, text, msg) {
     if (typeof text == "string") {
         text = text.split(":");
     }
@@ -49,7 +49,7 @@ async function addText(name, text, msg, client) {
         });
     });
 }
-async function simpleMemeCaption(name, text, msg, client) {
+async function simpleMemeCaption(name, text, msg) {
     if (parseInt(msg.content.split(" ")[1]) != NaN) {
         text = text.split(" ").slice(1).join(" ");
     }
@@ -91,7 +91,7 @@ ${text[1]}`;
         }
     });
 }
-async function squash(name, msg, client) {
+async function squash(name, msg) {
     var id = uuidv4().replace(/-/gi, "");
     var ext = "." + msg.attachments.first().url.split('.').pop();
     video.squash("images/cache/" + name + ext, "images/cache/" + id + ext).then(async() => {
@@ -113,7 +113,7 @@ async function squash(name, msg, client) {
         }
     });
 }
-async function stretch(name, msg, client) {
+async function stretch(name, msg) {
     var id = uuidv4().replace(/-/gi, "");
     var ext = "." + msg.attachments.first().url.split('.').pop();
     video.stretch("images/cache/" + name + ext, "images/cache/" + id + ext).then(async() => {
@@ -135,7 +135,7 @@ async function stretch(name, msg, client) {
         }
     });
 }
-async function trim(name, times, msg, client) {
+async function trim(name, times, msg) {
     var id = uuidv4().replace(/-/gi, "");
     var ext = "." + msg.attachments.first().url.split('.').pop();
     video.trim("images/cache/" + name + ext, "images/cache/" + id + ext, {
@@ -160,7 +160,7 @@ async function trim(name, times, msg, client) {
         }
     });
 }
-async function videoGif(name, msg, client) {
+async function videoGif(name, msg) {
     var id = uuidv4().replace(/-/gi, "");
     var ext = "." + msg.attachments.first().url.split('.').pop();
     video.videoGif("images/cache/" + name + ext, "images/cache/" + id + ".gif").then(async() => {
@@ -182,7 +182,7 @@ async function videoGif(name, msg, client) {
         }
     });
 }
-async function imageAudio(name, msg, client) {
+async function imageAudio(name, msg) {
     var id = uuidv4().replace(/-/gi, "");
     video.imageAudio("images/cache/" + name, "images/cache/" + id).then(async() => {
         try {
@@ -204,7 +204,7 @@ async function imageAudio(name, msg, client) {
         }
     });
 }
-async function videoAudio(name, msg, client) {
+async function videoAudio(name, msg) {
     var id = uuidv4().replace(/-/gi, "");
     video.videoAudio("images/cache/" + name, "images/cache/" + id).then(async() => {
         try {
@@ -226,7 +226,7 @@ async function videoAudio(name, msg, client) {
         }
     });
 }
-async function armstrongify(name, msg, client) {
+async function armstrongify(name, msg) {
     var id = uuidv4().replace(/-/gi, "");
     video.setArmstrongSize(name, "images/cache/" + id + ".png").then(async() => {
         video.armstrongify("images/cache/" + id, "images/cache/" + id).then(async() => {
@@ -248,11 +248,11 @@ async function armstrongify(name, msg, client) {
         });
     });
 }
-async function stitch(names, msg, client) {
+async function stitch(names, msg) {
     var id = uuidv4().replace(/-/gi, "");
     video.stitch(["images/cache/" + names[0], "images/cache/" + names[1]], "images/cache/" + id).then(async() => {
         try {
-            sendWebhookFile("ffmpeg", "images/cache/" + id + ".mp4", false, msgChannel, client);
+            sendWebhookFile("ffmpeg", "images/cache/" + id + ".mp4", false, msgChannel);
 
             setTimeout(() => {
                 fs.unlinkSync("images/cache/" + names[0]);
@@ -265,7 +265,7 @@ async function stitch(names, msg, client) {
         }
     });
 }
-async function geq(name, msg, client) {
+async function geq(name, msg) {
     var id = uuidv4().replace(/-/gi, "");
     var ext = ".mp4";
     if (msg.attachments.first()) {
@@ -277,14 +277,14 @@ async function geq(name, msg, client) {
         blue: msg.content.split(" ").slice(1).length > 1 ? msg.content.split(" ").slice(1)[2] : msg.content.split(" ").slice(1)[0]
     }).then(async() => {
         try {
-            sendWebhookFile("ffmpeg", "images/cache/" + id + ext, false, msgChannel, client);
+            sendWebhookFile("ffmpeg", "images/cache/" + id + ext, false, msgChannel);
         } catch {
             sendWebhook("ffmpeg", "oops, looks like the vido too bigge.", false, msg.channel);
         }
     });
 }
 
-async function complexFFmpeg(name, msg, client) {
+async function complexFFmpeg(name, msg) {
     var id = uuidv4().replace(/-/gi, "");
     var ext = ".mp4";
     if (msg.attachments.first()) {
@@ -294,7 +294,7 @@ async function complexFFmpeg(name, msg, client) {
         args: msg.content.split(" ").slice(1).join(" "),
     }).then(async() => {
         try {
-            sendWebhookFile("ffmpeg", "images/cache/" + id + ext, false, msgChannel, client);
+            sendWebhookFile("ffmpeg", "images/cache/" + id + ext, false, msgChannel);
         } catch {
             sendWebhook("ffmpeg", "oops, looks like the vido too bigge.", false, msg.channel);
         }
