@@ -75,7 +75,7 @@ async function setArmstrongSize(input, output, options) {
     return new Promise((resolve, reject) => {
         // -vf "geq=r=if(gt(Y\\,${options.barSize})\\,p(X\\,Y-${options.barSize})\\,255):g=if(gt(Y\\,${options.barSize})\\,p(X\\,Y-${options.barSize})\\,255):b=if(gt(Y\\,${options.barSize})\\,p(X\\,Y-${options.barSize})\\,255),drawtext=fontfile=arial.ttf:text='${options.text}':fontcolor=black:fontsize=${options.fontSize}:x=(w-text_w)/2:y=(${options.barSize / 2}-text_h/2)"
         //crop=in_w:in_h-${options.barSize*2}:0:${options.barSize}
-        var ffmpegInstance = cp.spawn("ffmpeg", `-y -i ${input} -vf "scale=800:450,setsar=1:1" ${path.join(__dirname, "..", output)}`.split(" "), { shell: true });
+        var ffmpegInstance = cp.spawn("ffmpeg", `-y -i ${input} -vf "scale=800:450,setsar=1:1,setpts=PTS-STARTPTS" ${path.join(__dirname, "..", output)}`.split(" "), { shell: true });
         ffmpegInstance.stdout.on("data", (c) => {
             stdout.write(c);
         });
@@ -149,9 +149,9 @@ async function imageAudio(input, output) {
         });
     });
 }
-async function armstrongify(input, output) {
+async function armstrongify(input, output, options) {
     return new Promise((resolve, reject) => {
-        var ffmpegInstance = cp.spawn("ffmpeg", `-y -i ${path.join(__dirname, "..", input + ".png")} -i ${path.join(__dirname, "..", "images", "armstrong_part1.mp4")} -i ${path.join(__dirname, "..", "images", "armstrong_part2.mp4")} -i ${path.join(__dirname, "..", "images", "armstrong_audio.mp3")} -filter_complex "[2:v]scale=800:450,setsar=1:1[nout];[1:v]scale=800:450,setsar=1:1,colorkey=0x0000ff:0.05:0.05[ckout];[0:v][ckout]overlay[hout];[hout][nout]concat=n=2:a=0:v=1[vout]" -map "[vout]" -map "3:a" -vsync 2 -c:v libx264 -t 28 ${path.join(__dirname, "..", output + ".mp4")}`.split(" "), { shell: true });
+        var ffmpegInstance = cp.spawn("ffmpeg", `-y ${options.isVideo?"":"-t 1 "}-i ${path.join(__dirname, "..", input)} -i ${path.join(__dirname, "..", "images", "armstrong_part1.mp4")} -i ${path.join(__dirname, "..", "images", "armstrong_part2.mp4")} -i ${path.join(__dirname, "..", "images", "armstrong_audio.mp3")} -filter_complex "[0:v]scale=800:450,setsar=1:1,setpts=PTS-STARTPTS[trimsidea];${options.isVideo?"[0:v]select='eq(n,1)',scale=800:450,setsar=1:1,setpts=PTS-STARTPTS[trimsideb]":"[0:v]scale=800:450,setsar=1:1[trimsideb]"};[2:v]scale=800:450,setsar=1:1,setpts=PTS-STARTPTS[nout];[1:v]scale=800:450,setsar=1:1,setpts=PTS-STARTPTS,colorkey=0x0000ff:0.05:0.05[ckout];[trimsideb][ckout]overlay[hout];[trimsidea][hout][nout]concat=n=3:a=0:v=1[vout];${options.isVideo ? "[0:a][3:a]concat=n=2:v=0:a=1[aout]" : "[3:a]anull[aout]"}" -map "[vout]" -map "[aout]" -vsync 2 -c:v libx264 -t ${28 + options.videoLength - 1} ${path.join(__dirname, "..", output + ".mp4")}`.split(" "), { shell: true });
         ffmpegInstance.stdout.on("data", (c) => {
             stdout.write(c);
         });

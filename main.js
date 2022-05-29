@@ -8,23 +8,9 @@ const client = new Discord.Client({
     intents: ["GUILDS", "GUILD_MESSAGES", "GUILD_VOICE_STATES"]
 });
 const flapslib = require("./flapslib/index");
-const WomboDreamApi = require("wombo-dream");
-var dream = WomboDreamApi.buildDefaultInstance();
-//#endregion
-//#region Meme shit
-var memeMaking = {
-    getImageData: async function(n) {
-        if (!this.imageExists(n)) {
-            n = "farquaad";
-        }
-        return fs.readFileSync("./images/sizes.txt").toString().split("\r\n").filter((l) => { return l.split(" ")[0] == n; })[0].split(" ");
-    },
-    imageExists: function(n) {
-        return !!fs.readFileSync("./images/sizes.txt").toString().split("\r\n").find((l) => { return l.split(" ")[0] == n; });
-    }
-};
-//#endregion
-//#region Voice shit
+//const WomboDreamApi = require("wombo-dream");
+//! FIX THIS!!!!!!
+const { getVideoDurationInSeconds } = require('get-video-duration')
 const prism = require('prism-media');
 const {
     NoSubscriberBehavior,
@@ -39,6 +25,20 @@ const {
 const download = require('./flapslib/download');
 const { uuidv4 } = require('./flapslib/ai');
 const { sendWebhook, editWebhookMsg } = require('./flapslib/webhooks');
+//var dream = WomboDreamApi.buildDefaultInstance();
+//TODO look at line 12
+
+var memeMaking = {
+    getImageData: async function(n) {
+        if (!this.imageExists(n)) {
+            n = "farquaad";
+        }
+        return fs.readFileSync("./images/sizes.txt").toString().split("\r\n").filter((l) => { return l.split(" ")[0] == n; })[0].split(" ");
+    },
+    imageExists: function(n) {
+        return !!fs.readFileSync("./images/sizes.txt").toString().split("\r\n").find((l) => { return l.split(" ")[0] == n; });
+    }
+};
 
 flapslib.webhooks.setClient(client);
 
@@ -710,9 +710,18 @@ client.on('messageCreate', async(msg) => {
         }
         if (command.startsWith("!nohorny")) {
             var id = uuidv4().replace(/-/g, "");
-            download(msg.attachments.first().url, "./images/cache/" + id + ".png", () => {
-                flapslib.videowrapper.armstrongify(__dirname + "/images/cache/" + id + ".png", msg, client);
-            });
+            if (msg.attachments.first().url.endsWith(".mp4")) {
+                download(msg.attachments.first().url, "./images/cache/" + id + ".mp4", () => {
+                    getVideoDurationInSeconds("./images/cache/" + id + ".mp4").then((duration) => {
+                        console.log(duration);
+                        flapslib.videowrapper.armstrongify(id + ".mp4", msg, duration, client);
+                    });
+                });
+            } else {
+                download(msg.attachments.first().url, "./images/cache/" + id + ".png", () => {
+                    flapslib.videowrapper.armstrongify(id + ".png", msg, 1, client);
+                });
+            }
         }
         if (command.startsWith("!fbifiles ")) {
             var date = new Date(new Date().getTime() + Math.random() * (new Date(new Date().getFullYear() + 10, new Date().getMonth(), new Date().getDate()).getTime() - new Date().getTime()));

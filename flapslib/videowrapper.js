@@ -226,26 +226,28 @@ async function videoAudio(name, msg) {
         }
     });
 }
-async function armstrongify(name, msg) {
+async function armstrongify(name, msg, duration, client) {
     var id = uuidv4().replace(/-/gi, "");
-    video.setArmstrongSize(name, "images/cache/" + id + ".png").then(async() => {
-        video.armstrongify("images/cache/" + id, "images/cache/" + id).then(async() => {
-            try {
-                var message = await client.channels.cache.get("956316856422137856").send({
-                    files: [{
-                        attachment: "images/cache/" + id + ".mp4"
-                    }]
-                });
+    var ext = name.endsWith(".mp4") ? ".mp4" : ".png";
+    video.armstrongify("images/cache/" + name, "images/cache/" + id, {
+        videoLength: duration,
+        isVideo: ext == ".mp4"
+    }).then(async() => {
+        try {
+            var message = await client.channels.cache.get("956316856422137856").send({
+                files: [{
+                    attachment: "images/cache/" + id + ".mp4"
+                }]
+            });
 
-                setTimeout(() => {
-                    fs.unlinkSync("images/cache/" + id + ".mp4");
-                }, 10000);
+            setTimeout(() => {
+                fs.unlinkSync("images/cache/" + id + ".mp4");
+            }, 10000);
 
-                sendWebhook("armstrong", message.attachments.first().url, true, msg.channel);
-            } catch {
-                sendWebhook("armstrong", "LISTEN, JACK. I FUCKING HATE ERRORS.", false, msg.channel);
-            }
-        });
+            sendWebhook("armstrong", message.attachments.first().url, true, msg.channel);
+        } catch {
+            sendWebhook("armstrong", "LISTEN, JACK. I FUCKING HATE ERRORS.", false, msg.channel);
+        }
     });
 }
 async function stitch(names, msg) {
