@@ -713,7 +713,7 @@ client.on('messageCreate', async(msg) => {
             var chosenFile = files[Math.floor(Math.random() * files.length)];
             var filesize = fs.statSync("E:/MBG/StuffAndThings/38/" + chosenFile).size / (1024 * 1024);
             if (Math.random() < 0.2) {
-                flapslib.videowrapper.armstrongify("E:/MBG/StuffAndThings/38/" + chosenFile, msg, client);
+                flapslib.videowrapper.armstrongify("E:/MBG/StuffAndThings/38/" + chosenFile, msg, 1, client);
                 return;
             }
             if (filesize > 8) {
