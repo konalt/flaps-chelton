@@ -250,6 +250,26 @@ async function armstrongify(name, msg, duration, client) {
         }
     });
 }
+async function baitSwitch(name, msg, client, opt = {}) {
+    var id = uuidv4().replace(/-/gi, "");
+    video.baitSwitch("images/cache/" + name, "images/cache/" + id, opt).then(async() => {
+        try {
+            var message = await client.channels.cache.get("956316856422137856").send({
+                files: [{
+                    attachment: "images/cache/" + id + ".mp4"
+                }]
+            });
+
+            setTimeout(() => {
+                fs.unlinkSync("images/cache/" + id + ".mp4");
+            }, 10000);
+
+            sendWebhook("ffmpeg", message.attachments.first().url, true, msg.channel);
+        } catch {
+            sendWebhook("ffmpeg", "LISTEN, JACK. I FUCKING HATE ERRORS.", false, msg.channel);
+        }
+    });
+}
 async function stitch(names, msg) {
     var id = uuidv4().replace(/-/gi, "");
     video.stitch(["images/cache/" + names[0], "images/cache/" + names[1]], "images/cache/" + id).then(async() => {
@@ -315,5 +335,6 @@ module.exports = {
     videoAudio: videoAudio,
     videoGif: videoGif,
     armstrongify: armstrongify,
-    complexFFmpeg: complexFFmpeg
+    complexFFmpeg: complexFFmpeg,
+    baitSwitch: baitSwitch
 }

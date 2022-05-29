@@ -149,6 +149,21 @@ async function imageAudio(input, output) {
         });
     });
 }
+async function baitSwitch(input, output, options = {}) {
+    return new Promise((resolve, reject) => {
+        var ffmpegInstance = cp.spawn("ffmpeg", `-y -t 1 -i ${path.join(__dirname, "..", input + ".png")} -i ${path.join(__dirname, "..", input + ".mp4")} -filter_complex "[0:v]pad=ceil(${options.w}/2)*2:ceil(${options.h}/2)*2[v0];[1:v]pad=ceil(${options.w}/2)*2:ceil(${options.h}/2)*2[v1];[v0][v1]concat[vout]" -map "[vout]" ${path.join(__dirname, "..", output + ".mp4")}`.split(" "), { shell: true });
+        ffmpegInstance.stdout.on("data", (c) => {
+            stdout.write(c);
+        });
+        ffmpegInstance.stderr.on("data", (c) => {
+            stdout.write(c);
+        });
+        ffmpegInstance.on("exit", (code) => {
+            console.log("EXIT " + code);
+            resolve();
+        });
+    });
+}
 async function armstrongify(input, output, options) {
     return new Promise((resolve, reject) => {
                 var ffmpegInstance = cp.spawn("ffmpeg", `-y ${options.isVideo?"":"-t 1 "}-i ${path.join(__dirname, "..", input)} -i ${path.join(__dirname, "..", "images", "armstrong_part1.mp4")} -i ${path.join(__dirname, "..", "images", "armstrong_part2.mp4")} -i ${path.join(__dirname, "..", "images", "armstrong_audio.mp3")} -filter_complex "[0:v]scale=800:450,setsar=1:1,setpts=PTS-STARTPTS,trim=duration=${options.videoLength - 1}[trimsidea];${options.isVideo?`[0:v]trim=${options.videoLength - 1}:${options.videoLength},scale=800:450,setsar=1:1,setpts=PTS-STARTPTS[trimsideb]`:`[0:v]scale=800:450,setsar=1:1[trimsideb]`};[2:v]scale=800:450,setsar=1:1,setpts=PTS-STARTPTS[nout];[1:v]scale=800:450,setsar=1:1,setpts=PTS-STARTPTS,colorkey=0x0000ff:0.05:0.05[ckout];[trimsideb][ckout]overlay[hout];[trimsidea][hout][nout]concat=n=3:a=0:v=1[vout];${options.isVideo ? `[0:a]atrim=0:${options.videoLength - 1}[atrima];[0:a]atrim=${options.videoLength - 1}:${options.videoLength}[atrimb];[3:a]atrim=0:1[atrimc];[3:a]atrim=1:28[atrimd];[atrimb][atrimc]amix=inputs=2:duration=1[atrime];[atrima][atrime][atrimd]concat=n=3:v=0:a=1[aout]` : "[3:a]anull[aout]"}" -map "[vout]" -map "[aout]" -vsync 2 -c:v libx264 -t ${28 + options.videoLength - 1} ${path.join(__dirname, "..", output + ".mp4")}`.split(" "), { shell: true });
@@ -229,5 +244,6 @@ module.exports = {
     videoGif: videoGif,
     armstrongify: armstrongify,
     setArmstrongSize: setArmstrongSize,
-    complexFFmpeg: complexFFmpeg
+    complexFFmpeg: complexFFmpeg,
+    baitSwitch
 }
