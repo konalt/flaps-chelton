@@ -1147,16 +1147,17 @@ fbi files on ${msg.content.split(" ").slice(1).join(" ")}: ${msg.mentions.users.
             sendWebhook("deepai", "beep boop am thinking......", false, msg.channel)
             flapslib.ai.autocompleteText(inputText, msg.channel, true);
         }
-        if (command.startsWith("!watermark")) {
+        if (command.startsWith("!watermark") || command.startsWith("!cheltonco")) {
             var id = uuidv4() + ".png";
             var imgID2 = uuidv4() + ".png";
+            if (!msg.attachments.first()) return;
             flapslib.download(msg.attachments.first().url, "images/cache/" + id, () => {
                 var w = msg.attachments.first().width,
                     h = msg.attachments.first().height;
                 var c = canvas.createCanvas(w, h);
                 var ctx = c.getContext('2d');
                 canvas.loadImage(__dirname + "\\images\\cache\\" + id).then(async(photo) => {
-                    canvas.loadImage(__dirname + "\\images\\redditwatermark.png").then(async(reddit) => {
+                    canvas.loadImage(__dirname + (command.startsWith("!cheltonco") ? "\\images\\cheltonco.png" : "\\images\\redditwatermark.png")).then(async(reddit) => {
                         ctx.drawImage(photo, 0, 0, w, h);
 
                         //var amount = Math.floor(Math.random() * 100);
@@ -1189,7 +1190,7 @@ fbi files on ${msg.content.split(" ").slice(1).join(" ")}: ${msg.mentions.users.
                             fs.unlinkSync("./images/cache/" + imgID2);
                         }, 10000);
 
-                        flapslib.webhooks.sendWebhook("jamesphotoframe", message.attachments.first().url, false, msg.channel);
+                        flapslib.webhooks.sendWebhook(command.startsWith("!watermark") ? "reddit" : "flaps", message.attachments.first().url, false, msg.channel);
                     });
                 });
             });
