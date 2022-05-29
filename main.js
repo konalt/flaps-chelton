@@ -835,6 +835,16 @@ fbi files on ${msg.content.split(" ").slice(1).join(" ")}: ${msg.mentions.users.
                 });
             }
         }
+        if (command.startsWith("!heartclose ")) {
+            if (!msg.attachments.first() || !msg.attachments.first().width) {
+                sendWebhook("mkswt", "GIVE ME AN IMAGE YOU DWANKIE", false, msg.channel);
+            } else {
+                var filename = uuidv4() + ".png";
+                download(msg.attachments.first().url, "./images/cache/" + filename, () => {
+                    flapslib.reverseMakesweet(msg.content.split(" ").slice(1).join(" "), filename, msg.channel, client);
+                });
+            }
+        }
         if (command.startsWith("!flip")) {
             if (msg.attachments.size > 0) {
                 console.log(msg.attachments.first());

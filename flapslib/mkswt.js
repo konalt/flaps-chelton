@@ -4,6 +4,7 @@ const puppeteer = require("puppeteer");
 const fs = require('fs');
 const path = require('path');
 const fetch = require('node-fetch');
+const { complexFFmpeg } = require("./video");
 
 var puppeteerInitialized = false;
 var aiPageData = {};
@@ -31,111 +32,138 @@ function sleep(ms) {
 
 init();
 
-async function makesweet(text, filename, msgChannel, client) {
-    try {
-        if (!puppeteerInitialized) {
-            return sendWebhook("mkswt", "Puppeteer not initialized. Wait a few seconds.", false, msgChannel);
-        }
-        (async() => {
-            sendWebhook("mkswt", "setting stuff up", false, msgChannel);
-            await aiPageData.page.goto("https://makesweet.com/my/heart-locket");
-            await aiPageData.page.evaluate(() => {
-                window.sleep = ms => new Promise(r => setTimeout(r, ms));
-            });
-            await aiPageData.page.evaluate(() => {
-                document.querySelector("#add_text").click();
-            });
-            await sleep(250);
-            await aiPageData.page.evaluate((t) => {
-                document.querySelector(".textbar_text").value = t;
-                const event = new Event('keyup');
-                document.querySelector(".textbar_text").dispatchEvent(event);
-            }, text);
-            await sleep(250);
-            await aiPageData.page.evaluate(() => {
-                document.querySelector(".ok_text").click();
-            });
-            await sleep(250);
-            await aiPageData.page.evaluate(() => {
-                document.querySelector("#wb-add > a:nth-child(1)").click();
-            });
-            await sleep(250);
-            const [fileChooser] = await Promise.all([
-                aiPageData.page.waitForFileChooser(),
-                aiPageData.page.evaluate(() => {
-                    document.querySelector('#files').click();
-                })
-            ]);
-            await sleep(250);
-            await fileChooser.accept([path.join(__dirname, "..", "images", "cache", filename)]);
-            await aiPageData.page.evaluate(async() => {
-                document.querySelector("#wb-animate > a:nth-child(1)").click();
+async function makesweet(text, filename, msgChannel, client, send = true) {
+    return new Promise((resolve, reject) => {
+        try {
+            if (!puppeteerInitialized) {
+                return sendWebhook("mkswt", "Puppeteer not initialized. Wait a few seconds.", false, msgChannel);
+            }
+            (async() => {
+                sendWebhook("mkswt", "setting stuff up", false, msgChannel);
+                await aiPageData.page.goto("https://makesweet.com/my/heart-locket");
+                await aiPageData.page.evaluate(() => {
+                    window.sleep = ms => new Promise(r => setTimeout(r, ms));
+                });
+                await aiPageData.page.evaluate(() => {
+                    document.querySelector("#add_text").click();
+                });
                 await sleep(250);
-                document.querySelector("#wb-make-gif > a:nth-child(1)").click();
-            });
-            sendWebhook("mkswt", "and we're off!", false, msgChannel);
+                await aiPageData.page.evaluate((t) => {
+                    document.querySelector(".textbar_text").value = t;
+                    const event = new Event('keyup');
+                    document.querySelector(".textbar_text").dispatchEvent(event);
+                }, text);
+                await sleep(250);
+                await aiPageData.page.evaluate(() => {
+                    document.querySelector(".ok_text").click();
+                });
+                await sleep(250);
+                await aiPageData.page.evaluate(() => {
+                    document.querySelector("#wb-add > a:nth-child(1)").click();
+                });
+                await sleep(250);
+                const [fileChooser] = await Promise.all([
+                    aiPageData.page.waitForFileChooser(),
+                    aiPageData.page.evaluate(() => {
+                        document.querySelector('#files').click();
+                    })
+                ]);
+                await sleep(250);
+                await fileChooser.accept([path.join(__dirname, "..", "images", "cache", filename)]);
+                await aiPageData.page.evaluate(async() => {
+                    document.querySelector("#wb-animate > a:nth-child(1)").click();
+                    await sleep(250);
+                    document.querySelector("#wb-make-gif > a:nth-child(1)").click();
+                });
+                sendWebhook("mkswt", "and we're off!", false, msgChannel);
 
-            var originalSrc = '';
-            waitInterval = setInterval(async() => {
-                waitCounts++;
-                var url = await aiPageData.page.evaluate((original) => {
-                    if (original == document.querySelector("#result_preview").src) {
-                        return false;
-                    } else return document.querySelector("#result_preview").src;
-                }, originalSrc);
-                console.log("Waiting...");
-                if (url !== false) {
-                    console.log("DONE!!!!");
-                    sendWebhook("mkswt", "i say, i say, we're done!", false, msgChannel);
-                    await aiPageData.page.evaluate((url) => {
-                        window.open(url);
-                    }, url);
-                    const newTarget = await aiPageData.page.browserContext().waitForTarget(
-                        target => target.url().startsWith('blob:')
-                    );
-                    const newPage = await newTarget.page();
-                    const blobUrl = newPage.url();
-                    var outputFilename = './images/cache/' + uuidv4() + ".gif";
-                    aiPageData.page.once('response', async(response) => {
-                        console.log(response.url());
-                        const img = await response.buffer();
-                        fs.writeFileSync(outputFilename, img);
+                var originalSrc = '';
+                waitInterval = setInterval(async() => {
+                    waitCounts++;
+                    var url = await aiPageData.page.evaluate((original) => {
+                        if (original == document.querySelector("#result_preview").src) {
+                            return false;
+                        } else return document.querySelector("#result_preview").src;
+                    }, originalSrc);
+                    console.log("Waiting...");
+                    if (url !== false) {
+                        console.log("DONE!!!!");
+                        sendWebhook("mkswt", "i say, i say, we're done!", false, msgChannel);
+                        await aiPageData.page.evaluate((url) => {
+                            window.open(url);
+                        }, url);
+                        const newTarget = await aiPageData.page.browserContext().waitForTarget(
+                            target => target.url().startsWith('blob:')
+                        );
+                        const newPage = await newTarget.page();
+                        const blobUrl = newPage.url();
+                        var outputFilename = './images/cache/' + uuidv4() + ".gif";
+                        aiPageData.page.once('response', async(response) => {
+                            console.log(response.url());
+                            const img = await response.buffer();
+                            fs.writeFileSync(outputFilename, img);
+                            if (send) {
+                                /**
+                                 * @type {Discord.Message}
+                                 */
+                                var message = await client.channels.cache.get("956316856422137856").send({
+                                    files: [{
+                                        attachment: outputFilename
+                                    }]
+                                });
 
-                        /**
-                         * @type {Discord.Message}
-                         */
-                        var message = await client.channels.cache.get("956316856422137856").send({
-                            files: [{
-                                attachment: outputFilename
-                            }]
+                                setTimeout(() => {
+                                    fs.unlinkSync(outputFilename);
+                                }, 10000);
+
+                                sendWebhook("mkswt", message.attachments.first().url, false, msgChannel);
+                            }
+                            await aiPageData.page.goto("https://makesweet.com/my/heart-locket");
+                            newPage.close();
+                            resolve(outputFilename);
                         });
+                        await aiPageData.page.evaluate((url) => { fetch(url); }, blobUrl);
+                        clearInterval(waitInterval);
+                        waitCounts = 0;
+                    }
+                    if (waitCounts == 40) {
+                        waitCounts = 0;
+                        clearInterval(waitInterval);
+                        return sendWebhook("mkswt", "Loop detected (took more than 40 seconds)", false, msgChannel);
+                    }
+                }, 1000);
+            })();
 
-                        setTimeout(() => {
-                            fs.unlinkSync(outputFilename);
-                        }, 10000);
+        } catch (e) {
+            console.log("aw");
+            console.log(e);
+        }
+    });
+}
 
-                        sendWebhook("mkswt", message.attachments.first().url, false, msgChannel);
-                        await aiPageData.page.goto("https://makesweet.com/my/heart-locket");
-                        newPage.close();
-                    });
-                    await aiPageData.page.evaluate((url) => { fetch(url); }, blobUrl);
-                    clearInterval(waitInterval);
-                    waitCounts = 0;
-                }
-                if (waitCounts == 40) {
-                    waitCounts = 0;
-                    clearInterval(waitInterval);
-                    return sendWebhook("mkswt", "Loop detected (took more than 40 seconds)", false, msgChannel);
-                }
-            }, 1000);
-        })();
+function reverseMakesweet(text, filename, msgChannel, client) {
+    makesweet(text, filename, msgChannel, client, false).then(outputFilename => {
+        var newId = uuidv4() + ".gif";
+        complexFFmpeg(outputFilename, `./images/cache/` + newId, {
+            args: "-vf reverse"
+        }).then(async() => {
+            var message = await client.channels.cache.get("956316856422137856").send({
+                files: [{
+                    attachment: "images/cache/" + newId
+                }]
+            });
 
-    } catch (e) {
-        console.log("aw");
-        console.log(e);
-    }
+            setTimeout(() => {
+                fs.unlinkSync("images/cache/" + newId);
+                fs.unlinkSync(outputFilename);
+            }, 10000);
+
+            sendWebhook("mkswt", message.attachments.first().url, false, msgChannel);
+        });
+    });
 }
 
 module.exports = {
-    makesweet: makesweet
+    makesweet: makesweet,
+    reverseMakesweet: reverseMakesweet
 };
