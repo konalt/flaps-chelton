@@ -51,3 +51,6 @@ restman--adnvansed techmonamologise--https://images.freeimages.com/images/premiu
 scal--el supremo del calamitas--https://cdn.discordapp.com/emojis/974804860077764608.png
 censor--el censoro--x--(x)=>{var y = `${x}`; (x.match(/[aeiou]/gi).forEach(z=>{if(Math.random() < 0.5) {y = y.replace(z, "\\*")}})); return y; }
 mkswt--my beloved--x
+fbi--mr fbi man--https://pbs.twimg.com/profile_images/956703857404506112/k2AM5_oL_400x400.jpg
+caption--video/image captioneer--https://media.discordapp.net/attachments/956316856422137856/980505151599153182/7f93de8613034a9e9a7e8d36039dc745.png
+runcling--little runcling of the dark web--https://i1.sndcdn.com/artworks-Ik9UvVzRe7imJcjq-ToPw5A-t500x500.jpg

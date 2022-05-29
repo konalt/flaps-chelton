@@ -49,7 +49,7 @@ async function addText(name, text, msg) {
         });
     });
 }
-async function simpleMemeCaption(name, text, msg) {
+async function simpleMemeCaption(name, text, msg, client) {
     if (parseInt(msg.content.split(" ")[1]) != NaN) {
         text = text.split(" ").slice(1).join(" ");
     }

@@ -42,7 +42,7 @@ function decodeEntities(encodedString) {
     return encodedString.replace(/&amp;/gi, "&").replace(/&nbsp;/gi, " ");
 }
 
-async function autocompleteText(text, msgChannel) {
+async function autocompleteText(text, msgChannel, removeOriginalText = false) {
     try {
         if (!puppeteerInitialized) {
             return sendWebhook("deepai", "Puppeteer not initialized. Wait a few seconds.", false, msgChannel);
@@ -69,6 +69,7 @@ async function autocompleteText(text, msgChannel) {
                     var a2 = a.substring('<div style="width: 100%; height: 100%; overflow: auto; display: flex; align-items: center; flex-direction: column;"><pre style="white-space: pre-wrap; margin: 0px;">'.length);
                     a2 = a2.substring(0, a2.length - '</pre></div>'.length);
                     a2 = decodeEntities(a2);
+                    if (removeOriginalText) a2 = a2.substring(text.length + 6);
                     //console.log(a2);
                     clearInterval(waitInterval);
                     waitCounts = 0;

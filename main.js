@@ -448,15 +448,15 @@ client.on('messageCreate', async(msg) => {
             }).then(r => { return r.json() }).then(r => {
                 var y = "";
                 if (!r[0]) {
-                    sendWebhook("flaps", "holy fuck. you searched for something that even the horniest corner of the internet could not draw. good job dude.", false, msg.channel);
+                    sendWebhook("runcling", "holy fuck. you searched for something that even the horniest corner of the internet could not draw. good job dude.", false, msg.channel);
                 } else {
-                    if (!x == "hornet_(hollow_knight)") {
+                    if (x != "hornet_(hollow_knight)") {
                         y = r[0].label;
                     } else {
                         y = r[0].label.substring(r[0].value.length + 2, r[0].label.length - 1).replace(/_/g, "\\_")
                     }
                 }
-                sendWebhook("flaps", y, false, msg.channel);
+                sendWebhook("runcling", y, false, msg.channel);
             });
         }
         if (command.startsWith("!countdown")) {
@@ -549,9 +549,9 @@ client.on('messageCreate', async(msg) => {
         }
         if (command.startsWith("!caption")) {
             if (!msg.attachments.first()) {
-                flapslib.webhooks.sendWebhook("flaps", "i cant caption nothing you dummy", false, msg.channel, {}, msg);
+                flapslib.webhooks.sendWebhook("ffmpeg", "i cant caption nothing you dummy", false, msg.channel, {}, msg);
             } else {
-                flapslib.webhooks.sendWebhook("deepai", "got it bro. this might take a while tho", false, msg.channel, {}, msg);
+                flapslib.webhooks.sendWebhook("ffmpeg", "got it bro. this might take a while tho", false, msg.channel, {}, msg);
                 var id = flapslib.ai.uuidv4().replace(/-/gi, "");
                 var ext = "." + msg.attachments.first().url.split(".").pop()
                 flapslib.download(msg.attachments.first().url, "images/cache/" + id + ext, () => {
@@ -633,7 +633,6 @@ client.on('messageCreate', async(msg) => {
         if (command.startsWith("!carbs")) {
             console.log(msg.attachments.first());
             var imgID2 = uuidv4().replace(/-/g, "_") + ".png";
-            //sendWebhook("flaps", imageStream.toString("base64").substring(0, 1000), true, msg.channel);
             var c = canvas.createCanvas(1280, 720);
             var ctx = c.getContext('2d');
             var images = ["yooo", "waow"];
@@ -718,9 +717,9 @@ client.on('messageCreate', async(msg) => {
             var date = new Date(new Date().getTime() + Math.random() * (new Date(new Date().getFullYear() + 10, new Date().getMonth(), new Date().getDate()).getTime() - new Date().getTime()));
             var dateStr = `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()} at ${date.getHours().toString().padStart(2, "0")}:${date.getMinutes().toString().padStart(2, "0")}:${date.getSeconds().toString().padStart(2, "0")}`;
             if (msg.content.split(" ").slice(1).join(" ") == "<:owl:964880176355897374>") {
-                sendWebhook("flaps", `that owl is FUCKING INVINCIBLE!!!! https://media.discordapp.net/attachments/838732607344214019/980236924994338846/unknown.png`, false, msg.channel);
+                sendWebhook("fbi", `that owl is FUCKING INVINCIBLE\nhttps://media.discordapp.net/attachments/838732607344214019/980236924994338846/unknown.png`, false, msg.channel);
             } else {
-                sendWebhook("flaps", `oh shit. ${msg.content.split(" ").slice(1).join(" ")} will die on ${dateStr}. death by ${flapslib.cahWhiteCard()}
+                sendWebhook("fbi", `oh shit. ${msg.content.split(" ").slice(1).join(" ")} will die on ${dateStr}. death by ${flapslib.cahWhiteCard()}
 fbi files on ${msg.content.split(" ").slice(1).join(" ")}: ${msg.mentions.users.first() ? (descriptions[msg.mentions.users.first().id] ? descriptions[msg.mentions.users.first().id] : "[[Blank]]") : "[[Blank]]"}`, false, msg.channel);
             }
         }
@@ -1132,6 +1131,67 @@ fbi files on ${msg.content.split(" ").slice(1).join(" ")}: ${msg.mentions.users.
             }
             lastRequests[msg.author.id] = text;
             flapslib.ai.autocompleteText(text, msg.channel);
+        }
+        if (command.startsWith("!statusideas")) {
+            var originalStatusIdeas = [
+                "they really played the shooting song in the woodwork room. two days later?",
+                "im gonna uhh smash a mug on the ground on june 3rd",
+                "MUG SMASHIG",
+                "me running away from the car i rigged to detonate",
+                "OMELETTES, JACK",
+                "38, hahaahah.e.. theeehee...",
+                "im gonna take 8 xannies",
+                "ima fucking murder my pain *swallows 50 nurofens*",
+            ];
+            var inputText = originalStatusIdeas.join("\n") + "\n";
+            sendWebhook("deepai", "beep boop am thinking......", false, msg.channel)
+            flapslib.ai.autocompleteText(inputText, msg.channel, true);
+        }
+        if (command.startsWith("!watermark")) {
+            var id = uuidv4() + ".png";
+            var imgID2 = uuidv4() + ".png";
+            flapslib.download(msg.attachments.first().url, "images/cache/" + id, () => {
+                var w = msg.attachments.first().width,
+                    h = msg.attachments.first().height;
+                var c = canvas.createCanvas(w, h);
+                var ctx = c.getContext('2d');
+                canvas.loadImage(__dirname + "\\images\\cache\\" + id).then(async(photo) => {
+                    canvas.loadImage(__dirname + "\\images\\redditwatermark.png").then(async(reddit) => {
+                        ctx.drawImage(photo, 0, 0, w, h);
+
+                        var amount = Math.floor(Math.random() * 100);
+                        var redditwidth = w / 4;
+                        var redditheight = redditwidth;
+                        for (let i = 0; i < amount; i++) {
+                            var x = Math.floor(Math.random() * w) - redditwidth / 2;
+                            var y = Math.floor(Math.random() * h) - redditheight / 2;
+                            var alpha = Math.random();
+                            ctx.globalAlpha = alpha;
+                            ctx.drawImage(reddit, x, y, redditwidth, redditheight);
+                            ctx.globalAlpha = 1;
+                        }
+
+                        var imageStream2 = Buffer.from(c.toDataURL("image/png").split(",")[1], "base64");
+                        fs.writeFileSync("./images/cache/" + imgID2, imageStream2);
+
+                        console.log(__dirname + "\\images\\cache\\" + imgID2);
+                        /**
+                         * @type {Discord.Message}
+                         */
+                        var message = await client.channels.cache.get("956316856422137856").send({
+                            files: [{
+                                attachment: __dirname + "\\images\\cache\\" + imgID2
+                            }]
+                        });
+
+                        setTimeout(() => {
+                            fs.unlinkSync("./images/cache/" + imgID2);
+                        }, 10000);
+
+                        flapslib.webhooks.sendWebhook("jamesphotoframe", message.attachments.first().url, false, msg.channel);
+                    });
+                });
+            });
         }
         if (command.startsWith("!img ")) {
             var text = msg.content.substring("!img ".length);
