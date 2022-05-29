@@ -1168,8 +1168,9 @@ fbi files on ${msg.content.split(" ").slice(1).join(" ")}: ${msg.mentions.users.
                             var x = Math.floor(Math.random() * w) - redditwidth / 2;
                             var y = Math.floor(Math.random() * h) - redditheight / 2;
                             var alpha = Math.random();
+                            var scaleRandomizer = Math.random() * 0.4 + 0.8;
                             ctx.globalAlpha = alpha;
-                            ctx.drawImage(reddit, x, y, redditwidth, redditheight);
+                            ctx.drawImage(reddit, x, y, redditwidth * scaleRandomizer, redditheight * scaleRandomizer);
                             ctx.globalAlpha = 1;
                         }
 
