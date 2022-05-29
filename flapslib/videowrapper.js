@@ -252,7 +252,7 @@ async function stitch(names, msg, client) {
     var id = uuidv4().replace(/-/gi, "");
     video.stitch(["images/cache/" + names[0], "images/cache/" + names[1]], "images/cache/" + id).then(async() => {
         try {
-            sendWebhookFile("ffmpeg", "images/cache/" + id + ".mp4", false, msgChannel);
+            sendWebhookFile("ffmpeg", "images/cache/" + id + ".mp4", false, msgChannel, client);
 
             setTimeout(() => {
                 fs.unlinkSync("images/cache/" + names[0]);
@@ -277,7 +277,7 @@ async function geq(name, msg, client) {
         blue: msg.content.split(" ").slice(1).length > 1 ? msg.content.split(" ").slice(1)[2] : msg.content.split(" ").slice(1)[0]
     }).then(async() => {
         try {
-            sendWebhookFile("ffmpeg", "images/cache/" + id + ext, false, msgChannel);
+            sendWebhookFile("ffmpeg", "images/cache/" + id + ext, false, msgChannel, client);
         } catch {
             sendWebhook("ffmpeg", "oops, looks like the vido too bigge.", false, msg.channel);
         }
@@ -294,7 +294,7 @@ async function complexFFmpeg(name, msg, client) {
         args: msg.content.split(" ").slice(1).join(" "),
     }).then(async() => {
         try {
-            sendWebhookFile("ffmpeg", "images/cache/" + id + ext, false, msgChannel);
+            sendWebhookFile("ffmpeg", "images/cache/" + id + ext, false, msgChannel, client);
         } catch {
             sendWebhook("ffmpeg", "oops, looks like the vido too bigge.", false, msg.channel);
         }
