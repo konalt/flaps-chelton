@@ -712,7 +712,6 @@ client.on('messageCreate', async(msg) => {
         }
         if (command.startsWith("!weezer")) {
             var w = 543;
-            image.png
             var h = w;
             var c = canvas.createCanvas(w, h);
             var ctx = c.getContext('2d');
