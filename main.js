@@ -711,6 +711,7 @@ client.on('messageCreate', async(msg) => {
         }
         if (command.startsWith("!weezer")) {
             var w = 543;
+            image.png
             var h = w;
             var c = canvas.createCanvas(w, h);
             var ctx = c.getContext('2d');
@@ -1213,6 +1214,21 @@ fbi files on ${msg.content.split(" ").slice(1).join(" ")}: ${(msg.mentions.users
                 "ima fucking murder my pain *swallows 50 nurofens*",
             ];
             var inputText = originalStatusIdeas.join("\n") + "\n";
+            sendWebhook("deepai", "beep boop am thinking......", false, msg.channel)
+            flapslib.ai.autocompleteText(inputText, msg.channel, true);
+        }
+        if (command.startsWith("!3amgonewrong")) {
+            var originalTitles = [
+                "DO NOT ORDER FNAF HAPPY MEALS AT 3AM!!!! (THEY CAME AFTER US)",
+                "DO NOT WATCH JASON VOORHEES MOVIE AT 3 AM!! *HE CAME AFTER US*",
+                "CUTTING OPEN HAUNTED ENCANTO DOLL AT 3 AM!! (WHAT'S INSIDE?)",
+                "DO NOT WATCH MICKEY MOUSE LOST EPISODE AT 3 AM!! *HAUNTED*",
+                "DRONE CATCHES SONIC.EXE AND SHADOW RACING AT A TRACK AND FIELD!!",
+                "DO NOT MAKE SONIC 2 VOODOO DOLL AT 3 AM CHALLENGE!! (ACTUALLY WORKED)",
+                "DO NOT WATCH VENOM MOVIE AT 3 AM",
+                "DO NOT ORDER SONIC 2 HAPPY MEAL FROM MCDONALDS AT 3 AM!! (HE CAME AFTER US)",
+            ];
+            var inputText = originalTitles.join("\n") + "\n";
             sendWebhook("deepai", "beep boop am thinking......", false, msg.channel)
             flapslib.ai.autocompleteText(inputText, msg.channel, true);
         }
