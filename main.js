@@ -782,40 +782,66 @@ client.on('messageCreate', async(msg) => {
                     break;
                 case "!weezer":
                     {
-                        var w = 543;
+                        var w = 552;
                         var h = w;
                         var c = canvas.createCanvas(w, h);
                         var ctx = c.getContext('2d');
                         var imgID2 = uuidv4() + ".png";
-                        canvas.loadImage(__dirname + "\\images\\weezer.png").then(async(weez) => {
-                            ctx.fillStyle = "#" + Math.floor(Math.random() * 16777215).toString(16);
-                            ctx.fillRect(0, 0, w, h);
-                            ctx.drawImage(weez, 0, h / 3, w, 461);
+                        canvas.loadImage(__dirname + "\\images\\weezer1.png").then(async(weez1) => {
+                            canvas.loadImage(__dirname + "\\images\\weezer2.png").then(async(weez2) => {
+                                canvas.loadImage(__dirname + "\\images\\weezer3.png").then(async(weez3) => {
+                                    canvas.loadImage(__dirname + "\\images\\weezer4.png").then(async(weez4) => {
+                                        ctx.fillStyle = "#" + Math.floor(Math.random() * 16777215).toString(16);
+                                        var xs = [
+                                            0,
+                                            138,
+                                            276,
+                                            414
+                                        ];
+                                        var currentIndex = xs.length,
+                                            randomIndex;
+                                        while (currentIndex != 0) {
+                                            randomIndex = Math.floor(Math.random() * currentIndex);
+                                            currentIndex--;
+                                            [xs[currentIndex], xs[randomIndex]] = [
+                                                xs[randomIndex], xs[currentIndex]
+                                            ];
+                                        }
 
-                            ctx.fillStyle = "black";
-                            ctx.font = "bold 48px Weezer";
-                            ctx.fillText("weezer", w - 147, 30);
-                            var imageStream2 = Buffer.from(c.toDataURL("image/png").split(",")[1], "base64");
-                            fs.writeFileSync("./images/cache/" + imgID2, imageStream2);
+                                        ctx.fillRect(0, 0, w, h);
+                                        ctx.drawImage(weez1, xs[0], h / 3, 138, 461);
+                                        ctx.drawImage(weez2, xs[1], h / 3, 138, 461);
+                                        ctx.drawImage(weez3, xs[2], h / 3, 138, 461);
+                                        ctx.drawImage(weez4, xs[3], h / 3, 138, 461);
 
-                            console.log(__dirname + "\\images\\cache\\" + imgID2);
-                            /**
-                             * @type {Discord.Message}
-                             */
-                            var message = await client.channels.cache.get("956316856422137856").send({
-                                files: [{
-                                    attachment: __dirname + "\\images\\cache\\" + imgID2
-                                }]
-                            });
 
-                            setTimeout(() => {
-                                fs.unlinkSync("./images/cache/" + imgID2);
-                            }, 10000);
+                                        ctx.fillStyle = "black";
+                                        ctx.font = "bold 48px Weezer";
+                                        ctx.fillText("weezer", w - 147, 30);
+                                        var imageStream2 = Buffer.from(c.toDataURL("image/png").split(",")[1], "base64");
+                                        fs.writeFileSync("./images/cache/" + imgID2, imageStream2);
 
-                            flapslib.webhooks.sendWebhook("custom", message.attachments.first().url, false, msg.channel, {
-                                username: "weezer",
-                                avatar: message.attachments.first().url,
-                                content: message.attachments.first().url
+                                        console.log(__dirname + "\\images\\cache\\" + imgID2);
+                                        /**
+                                         * @type {Discord.Message}
+                                         */
+                                        var message = await client.channels.cache.get("956316856422137856").send({
+                                            files: [{
+                                                attachment: __dirname + "\\images\\cache\\" + imgID2
+                                            }]
+                                        });
+
+                                        setTimeout(() => {
+                                            fs.unlinkSync("./images/cache/" + imgID2);
+                                        }, 10000);
+
+                                        flapslib.webhooks.sendWebhook("custom", message.attachments.first().url, false, msg.channel, {
+                                            username: "weezer",
+                                            avatar: message.attachments.first().url,
+                                            content: message.attachments.first().url
+                                        });
+                                    });
+                                });
                             });
                         });
                     }
@@ -1505,8 +1531,6 @@ fbi files on ${commandArgString}: ${(msg.mentions.users.first() ? (descriptions[
                         flapslib.moviereview.morbiusReview(msg.channel);
                     }
                     break;
-                default:
-                    console.log("hi");
             }
         }
     } catch (err) {
