@@ -192,12 +192,6 @@ client.on('ready', async() => {
     });
 });
 
-client.on('interactionCreate', interaction => {
-    if (!interaction.isButton()) return;
-    console.log(interaction);
-    interaction.reply({ content: "fonk shemtrol", fetchReply: true });
-});
-
 Error.stackTraceLimit = 50;
 
 var commands = {
@@ -255,7 +249,7 @@ var deathCauses = [
     "electrocution!!",
     "those RUSSIANs will get him!!!",
     "death by carrier pigeon"
-]
+];
 
 client.on('messageCreate', async(msg) => {
     try {
@@ -273,7 +267,9 @@ client.on('messageCreate', async(msg) => {
         if (messageFlags.includes("forgor")) msg.react("💀");
         if (messageFlags.includes("rember")) msg.react("😁");
         if (messageFlags.includes("literally")) msg.react(client.emojis.cache.find(emoji => emoji.name === "literally1984"));
-        var command = msg.content.split(" ")[0];
+        var commandArgs = msg.content.split(" ");
+        var commandArgString = commandArgs.slice(1).join(" ");
+        var command = commandArgs[0];
         if (msg.content.startsWith(">")) {
             var content = `${msg.content}`;
             if (!msg.reference) {
@@ -285,7 +281,7 @@ client.on('messageCreate', async(msg) => {
         } else if (msg.content.startsWith("<")) {
             var content = `${msg.content}`;
             flapslib.webhooks.updateUsers();
-            if (msg.content.split(" ")[0].substring(1) == "all") {
+            if (commandArgs[0].substring(1) == "all") {
                 Object.keys(flapslib.webhooks.users).forEach((user, index) => {
                     setTimeout(() => {
                         try {
@@ -300,7 +296,7 @@ client.on('messageCreate', async(msg) => {
                 });
                 msg.delete();
                 return;
-            } else if (msg.content.split(" ")[0].substring(1) == "custom") {
+            } else if (commandArgs[0].substring(1) == "custom") {
                 console.log(msg.content.includes("--u") && msg.content.includes("--c") && msg.content.includes("--a"));
                 if (!(msg.content.includes("--u") && msg.content.includes("--c") && msg.content.includes("--a"))) {
                     flapslib.webhooks.sendWebhook("flaps", "custom must have --u, --c and --a", false, msg.channel);
@@ -347,8 +343,8 @@ client.on('messageCreate', async(msg) => {
                 msg.delete();
                 return;
             }
-            if (!Object.keys(flapslib.webhooks.users).includes(msg.content.split(" ")[0].substring(1))) return;
-            flapslib.webhooks.sendWebhook(msg.content.split(" ")[0].substring(1), msg.content.substring(msg.content.split(" ")[0].length + 1), false, msg.channel).then(() => {
+            if (!Object.keys(flapslib.webhooks.users).includes(commandArgs[0].substring(1))) return;
+            flapslib.webhooks.sendWebhook(commandArgs[0].substring(1), msg.content.substring(commandArgs[0].length + 1), false, msg.channel).then(() => {
                 msg.delete();
             });
         } else {
@@ -366,7 +362,7 @@ client.on('messageCreate', async(msg) => {
                             flapslib.webhooks.sendWebhook("flaps", "no.", true, msg.channel);
                         } else {
                             try {
-                                eval(msg.content.split(" ").slice(1).join(" "));
+                                eval(commandArgString);
                             } catch (e) {
                                 flapslib.webhooks.sendWebhook("flapserrors", "fuck you. eval didnt work.\n" + e.toString(), true, msg.channel);
                             }
@@ -376,8 +372,8 @@ client.on('messageCreate', async(msg) => {
                 case "!audio":
                     {
                         var validAudio = fs.readFileSync("./audio/audiocommand.txt").toString().split("\r\n");
-                        if (validAudio.includes(msg.content.split(" ")[1].toLowerCase())) {
-                            attachRecorder(Object.keys(serverVCs).indexOf(msg.guild.id), msg.content.split(" ")[1].toLowerCase(), msg.guild.id);
+                        if (validAudio.includes(commandArgs[1].toLowerCase())) {
+                            attachRecorder(Object.keys(serverVCs).indexOf(msg.guild.id), commandArgs[1].toLowerCase(), msg.guild.id);
                         } else {
                             flapslib.webhooks.sendWebhook("flaps", "that audio not real <a:woeisgone:959946980954636399>\naudios are:\n```ansi\n" + validAudio.map(a => { return a.split("").map(b => { return "\x1b[" + Math.floor((Math.random() * 5) + 91).toString() + "m" + b; }).join(""); }).join("\n") + "```", true, msg.channel);
                         }
@@ -385,27 +381,27 @@ client.on('messageCreate', async(msg) => {
                     break;
                 case "!yturl":
                     {
-                        flapslib.yt.downloadYoutube(Object.keys(serverVCs).indexOf(msg.guild.id), msg.content.split(" ")[1], msg.channel, (msg.content.split(" ")[2] == "-v"), attachRecorder);
+                        flapslib.yt.downloadYoutube(Object.keys(serverVCs).indexOf(msg.guild.id), commandArgs[1], msg.channel, (commandArgs[2] == "-v"), attachRecorder);
                     }
                     break;
                 case "!watchparty":
                     {
-                        flapslib.yt.startWatchParty(msg.content.split(" ")[1], msg.channel);
+                        flapslib.yt.startWatchParty(commandArgs[1], msg.channel);
                     }
                     break;
                 case "!wpadd":
                     {
-                        flapslib.yt.wpAddToQueue(msg.content.split(" ")[2], msg.content.split(" ")[1], msg.channel);
+                        flapslib.yt.wpAddToQueue(commandArgs[2], commandArgs[1], msg.channel);
                     }
                     break;
                 case "!status":
                     {
                         var types = ["PLAYING", "STREAMING", "COMPETING", "LISTENING", "WATCHING"];
-                        if (types.includes(msg.content.split(" ")[1].toUpperCase())) {
+                        if (types.includes(commandArgs[1].toUpperCase())) {
                             client.user.setPresence({
                                 activities: [{
                                     name: msg.content.split(" ").map((v, i) => { return ((i == 0 || i == 1) ? "" : v) }).join(" "),
-                                    type: msg.content.split(" ")[1].toUpperCase(),
+                                    type: commandArgs[1].toUpperCase(),
                                     url: 'https://konalt.us.to',
                                     timestamps: {
                                         start: Date.now()
@@ -414,7 +410,7 @@ client.on('messageCreate', async(msg) => {
                                 afk: false,
                                 status: 'online',
                             });
-                            fs.writeFileSync("./saved_status.txt", msg.content.split(" ")[1].toUpperCase() + " " + msg.content.split(" ").slice(2).join(" "));
+                            fs.writeFileSync("./saved_status.txt", commandArgs[1].toUpperCase() + " " + msg.content.split(" ").slice(2).join(" "));
                             flapslib.webhooks.sendWebhook("flaps", "done", false, msg.channel);
                         } else {
                             flapslib.webhooks.sendWebhook("flaps", "first argument must be one of these:\n```\n" + types.join("\n") + "\n```", false, msg.channel);
@@ -423,12 +419,12 @@ client.on('messageCreate', async(msg) => {
                     break;
                 case "!ytsearch":
                     {
-                        flapslib.yt.downloadYoutube(Object.keys(serverVCs).indexOf(msg.guild.id), msg.content.split(" ").slice(1).join(" "), msg.channel, false, attachRecorder);
+                        flapslib.yt.downloadYoutube(Object.keys(serverVCs).indexOf(msg.guild.id), commandArgString, msg.channel, false, attachRecorder);
                     }
                     break;
                 case "!markov":
                     {
-                        flapslib.ai.markov2(msg.content.split(" ").slice(1).join(" "), 1, msg.channel);
+                        flapslib.ai.markov2(commandArgString, 1, msg.channel);
                     }
                     break;
                 case "!fornitesex":
@@ -440,7 +436,7 @@ client.on('messageCreate', async(msg) => {
                     break;
                 case "!randompost":
                     {
-                        fetch("https://www.reddit.com/" + msg.content.split(" ")[1] + "/.json").then(r => { return r.json() }).then(r => {
+                        fetch("https://www.reddit.com/" + commandArgs[1] + "/.json").then(r => { return r.json() }).then(r => {
                             var child = r.data.children[Math.floor(Math.random() * r.data.children.length)]
                             sendWebhook("flaps", `https://www.reddit.com` + child.data.permalink, false, msg.channel);
                         });
@@ -448,13 +444,13 @@ client.on('messageCreate', async(msg) => {
                     break;
                 case "!armstrong":
                     {
-                        flapslib.ai.armstrong(msg.content.split(" ")[1] ? msg.content.split(" ")[1] : 4, msg.channel);
+                        flapslib.ai.armstrong(commandArgs[1] ? commandArgs[1] : 4, msg.channel);
                     }
                     break;
                 case "!funnynumber":
                     {
                         var x = "";
-                        if (msg.content.split(" ")[1]) {
+                        if (commandArgs[1]) {
                             x = msg.content.split(" ").slice(1).join("_");
                         } else {
                             x = "hornet (hollow knight)".split(" ").join("_");
@@ -496,8 +492,8 @@ client.on('messageCreate', async(msg) => {
                         var endTime = new Date("2022-06-03T10:45:00Z").getTime();
                         var newTime = (endTime - Date.now());
                         var unit = "all";
-                        if (msg.content.split(" ")[1]) {
-                            unit = msg.content.split(" ")[1];
+                        if (commandArgs[1]) {
+                            unit = commandArgs[1];
                         }
                         var offset = {
                             millisecond: newTime,
@@ -521,17 +517,17 @@ client.on('messageCreate', async(msg) => {
                     break;
                 case "!oldmarkov":
                     {
-                        flapslib.ai.markov(msg.content.split(" ").slice(1).join(" "), msg.channel);
+                        flapslib.ai.markov(commandArgString, msg.channel);
                     }
                     break;
                 case "!ytmp3":
                     {
-                        flapslib.yt.downloadYoutubeToMP3(msg.content.split(" ").slice(1).join(" "), msg.channel, (msg.content.split(" ")[2] == "-v"), client);
+                        flapslib.yt.downloadYoutubeToMP3(commandArgString, msg.channel, (commandArgs[2] == "-v"), client);
                     }
                     break;
                 case "!gif":
                     {
-                        flapslib.videowrapper.addText("raiden", msg.content.split(" ").slice(1).join(" "), msg, client);
+                        flapslib.videowrapper.addText("raiden", commandArgString, msg, client);
                     }
                     break;
                 case "!imageaudio":
@@ -628,7 +624,7 @@ client.on('messageCreate', async(msg) => {
                             var id = flapslib.ai.uuidv4().replace(/-/gi, "");
                             flapslib.download(msg.attachments.first().url, "images/cache/" + id + ext, () => {
                                 console.log(id + ext);
-                                flapslib.videowrapper.simpleMemeCaption(id, msg.content.split(" ").slice(1).join(" "), msg, client);
+                                flapslib.videowrapper.simpleMemeCaption(id, commandArgString, msg, client);
                             });
                         }
                     }
@@ -656,7 +652,7 @@ client.on('messageCreate', async(msg) => {
                             var id = flapslib.ai.uuidv4().replace(/-/gi, "");
                             var ext = "." + msg.attachments.first().url.split(".").pop()
                             flapslib.download(msg.attachments.first().url, "images/cache/" + id + ext, () => {
-                                flapslib.videowrapper.trim(id, [msg.content.split(" ")[1], msg.content.split(" ")[2]], msg, client);
+                                flapslib.videowrapper.trim(id, [commandArgs[1], commandArgs[2]], msg, client);
                             });
                         }
                     }
@@ -691,14 +687,14 @@ client.on('messageCreate', async(msg) => {
                     break;
                 case "!aigen":
                     {
-                        //startGenerating(msg.content.split(" ").slice(1).join(" "), 3);
-                        flapslib.ai.generateImage(msg.content.split(" ").slice(1).join(" "), msg.channel, client);
+                        //startGenerating(commandArgString, 3);
+                        flapslib.ai.generateImage(commandArgString, msg.channel, client);
                     }
                     break;
                 case "!dream":
                     {
                         var lastState = "";
-                        dream.generatePicture(msg.content.split(" ")[1], 3, (task) => {
+                        dream.generatePicture(commandArgs[1], 3, (task) => {
                             console.log(task.state, 'stage', task.photo_url_list.length);
                             if (lastState != task.state + " " + task.photo_url_list.length) {
                                 lastState = task.state + " " + task.photo_url_list.length;
@@ -763,7 +759,7 @@ client.on('messageCreate', async(msg) => {
                     break;
                 case "!3dtext":
                     {
-                        flapslib.ai.threeDimensionalText(msg.content.split(" ").slice(1).join(" "), msg.channel, msg, client);
+                        flapslib.ai.threeDimensionalText(commandArgString, msg.channel, msg, client);
                     }
                     break;
                 case "!funnyvideo":
@@ -867,11 +863,11 @@ client.on('messageCreate', async(msg) => {
                     {
                         var date = new Date(new Date().getTime() + Math.random() * (new Date(new Date().getFullYear() + 10, new Date().getMonth(), new Date().getDate()).getTime() - new Date().getTime()));
                         var dateStr = `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()} at ${date.getHours().toString().padStart(2, "0")}:${date.getMinutes().toString().padStart(2, "0")}:${date.getSeconds().toString().padStart(2, "0")}`;
-                        if (msg.content.split(" ").slice(1).join(" ") == "<:owl:964880176355897374>") {
+                        if (commandArgString == "<:owl:964880176355897374>") {
                             sendWebhook("fbi", `that owl is FUCKING INVINCIBLE\nhttps://media.discordapp.net/attachments/838732607344214019/980236924994338846/unknown.png`, false, msg.channel);
                         } else {
-                            sendWebhook("fbi", `oh shit. ${msg.content.split(" ").slice(1).join(" ")} will die on ${dateStr}. death by ${flapslib.cahWhiteCard()}
-fbi files on ${msg.content.split(" ").slice(1).join(" ")}: ${(msg.mentions.users.first() ? (descriptions[msg.mentions.users.first().id] + "\nhere's a file photo" ? descriptions[msg.mentions.users.first().id] + "\nhere's a file photo" : "[[Blank]]") : "[[Blank]]")}`, false, msg.channel);
+                            sendWebhook("fbi", `oh shit. ${commandArgString} will die on ${dateStr}. death by ${flapslib.cahWhiteCard()}
+fbi files on ${commandArgString}: ${(msg.mentions.users.first() ? (descriptions[msg.mentions.users.first().id] + "\nhere's a file photo" ? descriptions[msg.mentions.users.first().id] + "\nhere's a file photo" : "[[Blank]]") : "[[Blank]]")}`, false, msg.channel);
                         }
                     }
                     break;
@@ -989,7 +985,7 @@ fbi files on ${msg.content.split(" ").slice(1).join(" ")}: ${(msg.mentions.users
                         } else {
                             var filename = uuidv4() + ".png";
                             download(msg.attachments.first().url, "./images/cache/" + filename, () => {
-                                flapslib.makesweet(msg.content.split(" ").slice(1).join(" "), filename, msg.channel, client);
+                                flapslib.makesweet(commandArgString, filename, msg.channel, client);
                             });
                         }
                     }
@@ -1001,7 +997,7 @@ fbi files on ${msg.content.split(" ").slice(1).join(" ")}: ${(msg.mentions.users
                         } else {
                             var filename = uuidv4() + ".png";
                             download(msg.attachments.first().url, "./images/cache/" + filename, () => {
-                                flapslib.reverseMakesweet(msg.content.split(" ").slice(1).join(" "), filename, msg.channel, client);
+                                flapslib.reverseMakesweet(commandArgString, filename, msg.channel, client);
                             });
                         }
                     }
@@ -1060,7 +1056,7 @@ fbi files on ${msg.content.split(" ").slice(1).join(" ")}: ${(msg.mentions.users
                     {
                         //data = "data:" + response.headers["content-type"] + ";base64," + Buffer.from(body).toString('base64');
                         var imgID2 = uuidv4().replace(/-/g, "_") + ".png";
-                        var text = msg.content.split(" ").slice(1).join(" ");
+                        var text = commandArgString;
                         var id = flapslib.ai.uuidv4();
 
                         function doThing(imgid, w, h) {
