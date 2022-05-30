@@ -791,115 +791,138 @@ client.on('messageCreate', async(msg) => {
                             canvas.loadImage(__dirname + "\\images\\weezer2.png").then(async(weez2) => {
                                 canvas.loadImage(__dirname + "\\images\\weezer3.png").then(async(weez3) => {
                                     canvas.loadImage(__dirname + "\\images\\weezer4.png").then(async(weez4) => {
-                                        ctx.fillStyle = "#" + Math.floor(Math.random() * 16777215).toString(16);
-                                        var xs = [
-                                            0,
-                                            138,
-                                            276,
-                                            414
-                                        ];
-                                        var weezes = [
-                                            weez1,
-                                            weez2,
-                                            weez3,
-                                            weez4
-                                        ];
-                                        var currentIndex = xs.length,
-                                            randomIndex;
-                                        while (currentIndex != 0) {
-                                            randomIndex = Math.floor(Math.random() * currentIndex);
-                                            currentIndex--;
-                                            [xs[currentIndex], xs[randomIndex]] = [
-                                                xs[randomIndex], xs[currentIndex]
-                                            ];
-                                        }
-                                        var randomImage = weezes[Math.floor(Math.random() * weezes.length)];
+                                        canvas.loadImage(__dirname + "\\images\\weezer5.png").then(async(weez5) => {
+                                            canvas.loadImage(__dirname + "\\images\\weezer6.png").then(async(weez6) => {
+                                                canvas.loadImage(__dirname + "\\images\\weezer7.png").then(async(weez7) => {
+                                                    canvas.loadImage(__dirname + "\\images\\weezer8.png").then(async(weez8) => {
+                                                        ctx.fillStyle = "#" + Math.floor(Math.random() * 16777215).toString(16);
+                                                        var xs = [
+                                                            0,
+                                                            138,
+                                                            276,
+                                                            414
+                                                        ];
+                                                        var weezes = [
+                                                            weez1,
+                                                            weez2,
+                                                            weez3,
+                                                            weez4,
+                                                            weez5,
+                                                            weez6,
+                                                            weez7,
+                                                            weez8
+                                                        ];
+                                                        var currentIndex = xs.length,
+                                                            randomIndex;
+                                                        while (currentIndex != 0) {
+                                                            randomIndex = Math.floor(Math.random() * currentIndex);
+                                                            currentIndex--;
+                                                            [xs[currentIndex], xs[randomIndex]] = [
+                                                                xs[randomIndex], xs[currentIndex]
+                                                            ];
+                                                        }
+                                                        var randomImage = weezes[Math.floor(Math.random() * weezes.length)];
 
-                                        ctx.fillRect(0, 0, w, h);
-                                        if (Math.random() < 0.5) {
-                                            ctx.globalAlpha = 0.4;
-                                            ctx.drawImage(randomImage, 0, 0, w, h);
-                                            ctx.globalAlpha = 1;
-                                        }
-                                        for (let i = 0; i < 4; i++) {
-                                            var randomizer = Math.random() + 0.5;
-                                            var willRotate = (Math.random < 0.5);
-                                            var angleInRadians = 90;
-                                            if (willRotate) {
-                                                ctx.translate(xs[i], h / 3 * randomizer);
-                                                ctx.rotate(angleInRadians);
-                                            }
-                                            ctx.drawImage(weezes[Math.floor(Math.random() * weezes.length)], xs[i], h / 3 * randomizer, 138, 461 * randomizer);
-                                            if (willRotate) {
-                                                ctx.translate(-xs[i], -(h / 3 * randomizer));
-                                                ctx.rotate(-angleInRadians);
-                                            }
-                                        }
-                                        ctx.transform(0, 0);
-                                        ctx.scale(1, 1);
+                                                        ctx.fillRect(0, 0, w, h);
+                                                        if (Math.random() < 0.5) {
+                                                            ctx.globalAlpha = 0.4;
+                                                            ctx.drawImage(randomImage, 0, 0, w, h);
+                                                            ctx.globalAlpha = 1;
+                                                        }
+                                                        for (let i = 0; i < 4; i++) {
+                                                            var randomizer = Math.random() + 0.5;
+                                                            var randomizer2 = Math.random() * 0.4 + 0.8;
+                                                            var willRotate = (Math.random < 0.5);
+                                                            var angleInRadians = 90;
+                                                            if (willRotate) {
+                                                                ctx.translate(xs[i], h / 3 * randomizer);
+                                                                ctx.rotate(angleInRadians);
+                                                            }
+                                                            ctx.drawImage(weezes[Math.floor(Math.random() * weezes.length)], xs[i] * randomizer2, h / 3 * randomizer, 138, 461 * randomizer);
 
-
-                                        ctx.fillStyle = "black";
-                                        ctx.font = "bold 48px Weezer";
-                                        var takenIndexes = [];
-                                        var y = (Math.floor(Math.random() * 4) + 4);
-                                        var texts = [
-                                            "weezer",
-                                            "weezur",
-                                            "winzur",
-                                            "weenis",
-                                            "winblo",
-                                            "amogus",
-                                            "wiener",
-                                            "boogus",
-                                            "spoons",
-                                            "doobus"
-                                        ];
-                                        for (let i = 0; i < y; i++) {
-                                            var chosenText = texts[Math.floor(Math.random() * texts.length)]
-                                            var tw = ctx.measureText(chosenText).width;
-                                            var possibleTextPlaces = [
-                                                [w - tw, 30],
-                                                [0, 30],
-                                                [0, h - 5],
-                                                [w - tw, h - 5],
-                                                [Math.floor(Math.random() * (w - tw)), Math.floor(Math.random() * (h - 5 + 30) - 30)],
-                                                [Math.floor(Math.random() * (w - tw)), Math.floor(Math.random() * (h - 5 + 30) - 30)],
-                                                [Math.floor(Math.random() * (w - tw)), Math.floor(Math.random() * (h - 5 + 30) - 30)],
-                                                [Math.floor(Math.random() * (w - tw)), Math.floor(Math.random() * (h - 5 + 30) - 30)],
-                                            ];
-                                            var chosenPlace = possibleTextPlaces[Math.floor(Math.random() * possibleTextPlaces.length)];
-                                            if (takenIndexes.includes(possibleTextPlaces.indexOf(chosenPlace))) {
-                                                y++;
-                                                continue;
-                                            }
-                                            ctx.fillText(chosenText, chosenPlace[0], chosenPlace[1]);
-                                            takenIndexes.push(possibleTextPlaces.indexOf(chosenPlace));
-                                            texts = texts.filter(t => { return t != chosenText });
-                                        }
+                                                            if (randomizer > 1) {
+                                                                randomizer = Math.random() + 0.5
+                                                                ctx.globalAlpha = 0.4;
+                                                                var y = (Math.floor(Math.random() * 3));
+                                                                for (let i = 0; i < y; i++) {
+                                                                    ctx.drawImage(weezes[Math.floor(Math.random() * weezes.length)], Math.floor(Math.random() * w), Math.floor(Math.random() * h), 138 * randomizer, 461 * randomizer);
+                                                                }
+                                                                ctx.globalAlpha = 1;
+                                                            }
+                                                            if (willRotate) {
+                                                                ctx.translate(-xs[i], -(h / 3 * randomizer));
+                                                                ctx.rotate(-angleInRadians);
+                                                            }
+                                                        }
+                                                        ctx.transform(0, 0);
+                                                        ctx.scale(1, 1);
 
 
-                                        var imageStream2 = Buffer.from(c.toDataURL("image/png").split(",")[1], "base64");
-                                        fs.writeFileSync("./images/cache/" + imgID2, imageStream2);
+                                                        ctx.fillStyle = "black";
+                                                        ctx.font = "bold 48px Weezer";
+                                                        var takenIndexes = [];
+                                                        var y = (Math.floor(Math.random() * 4) + 4);
+                                                        var texts = [
+                                                            "weezer",
+                                                            "weezur",
+                                                            "winzur",
+                                                            "weenis",
+                                                            "winblo",
+                                                            "amogus",
+                                                            "wiener",
+                                                            "boogus",
+                                                            "spoons",
+                                                            "doobus"
+                                                        ];
+                                                        for (let i = 0; i < y; i++) {
+                                                            var chosenText = texts[Math.floor(Math.random() * texts.length)]
+                                                            var tw = ctx.measureText(chosenText).width;
+                                                            var possibleTextPlaces = [
+                                                                [w - tw, 30],
+                                                                [0, 30],
+                                                                [0, h - 5],
+                                                                [w - tw, h - 5],
+                                                                [Math.floor(Math.random() * (w - tw)), Math.floor(Math.random() * (h - 5 + 30) - 30)],
+                                                                [Math.floor(Math.random() * (w - tw)), Math.floor(Math.random() * (h - 5 + 30) - 30)],
+                                                                [Math.floor(Math.random() * (w - tw)), Math.floor(Math.random() * (h - 5 + 30) - 30)],
+                                                                [Math.floor(Math.random() * (w - tw)), Math.floor(Math.random() * (h - 5 + 30) - 30)],
+                                                            ];
+                                                            var chosenPlace = possibleTextPlaces[Math.floor(Math.random() * possibleTextPlaces.length)];
+                                                            if (takenIndexes.includes(possibleTextPlaces.indexOf(chosenPlace))) {
+                                                                y++;
+                                                                continue;
+                                                            }
+                                                            ctx.fillText(chosenText, chosenPlace[0], chosenPlace[1]);
+                                                            takenIndexes.push(possibleTextPlaces.indexOf(chosenPlace));
+                                                            texts = texts.filter(t => { return t != chosenText });
+                                                        }
 
-                                        console.log(__dirname + "\\images\\cache\\" + imgID2);
-                                        /**
-                                         * @type {Discord.Message}
-                                         */
-                                        var message = await client.channels.cache.get("956316856422137856").send({
-                                            files: [{
-                                                attachment: __dirname + "\\images\\cache\\" + imgID2
-                                            }]
-                                        });
 
-                                        setTimeout(() => {
-                                            fs.unlinkSync("./images/cache/" + imgID2);
-                                        }, 10000);
+                                                        var imageStream2 = Buffer.from(c.toDataURL("image/png").split(",")[1], "base64");
+                                                        fs.writeFileSync("./images/cache/" + imgID2, imageStream2);
 
-                                        flapslib.webhooks.sendWebhook("custom", message.attachments.first().url, false, msg.channel, {
-                                            username: "weezer",
-                                            avatar: message.attachments.first().url,
-                                            content: message.attachments.first().url
+                                                        console.log(__dirname + "\\images\\cache\\" + imgID2);
+                                                        /**
+                                                         * @type {Discord.Message}
+                                                         */
+                                                        var message = await client.channels.cache.get("956316856422137856").send({
+                                                            files: [{
+                                                                attachment: __dirname + "\\images\\cache\\" + imgID2
+                                                            }]
+                                                        });
+
+                                                        setTimeout(() => {
+                                                            fs.unlinkSync("./images/cache/" + imgID2);
+                                                        }, 10000);
+
+                                                        flapslib.webhooks.sendWebhook("custom", message.attachments.first().url, false, msg.channel, {
+                                                            username: "weezer",
+                                                            avatar: message.attachments.first().url,
+                                                            content: message.attachments.first().url
+                                                        });
+                                                    });
+                                                });
+                                            });
                                         });
                                     });
                                 });
