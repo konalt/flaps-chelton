@@ -25,6 +25,7 @@ const {
 const download = require('./flapslib/download');
 const { uuidv4 } = require('./flapslib/ai');
 const { sendWebhook, editWebhookMsg } = require('./flapslib/webhooks');
+const { cahWhiteCard } = require('./flapslib/cardsagainsthumanity');
 //var dream = WomboDreamApi.buildDefaultInstance();
 //TODO look at line 12
 
@@ -1231,6 +1232,11 @@ fbi files on ${msg.content.split(" ").slice(1).join(" ")}: ${(msg.mentions.users
             var inputText = originalTitles.join("\n") + "\n";
             sendWebhook("deepai", "beep boop am thinking......", false, msg.channel)
             flapslib.ai.autocompleteText(inputText, msg.channel, true);
+        }
+        if (command.startsWith("!donotcall")) {
+            var white = cahWhiteCard().toUpperCase();
+            white = white.substring(2, white.length - 3);
+            sendWebhook("flaps", `DO NOT CALL ${white} AT 3AM!!`, false, msg.channel);
         }
         if (command.startsWith("!watermark") || command.startsWith("!cheltonco")) {
             var id = uuidv4() + ".png";
