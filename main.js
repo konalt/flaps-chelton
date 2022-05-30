@@ -176,9 +176,10 @@ client.on('ready', async() => {
 
     fs.readFile("./saved_status.txt", (_err, data) => {
         data = data.toString();
+        console.log(data);
         client.user.setPresence({
             activities: [{
-                name: data.split(" ").map((v, i) => { return ((i == 0 || i == 1) ? "" : v) }).join(" "),
+                name: data.split(" ").slice(1).join(" "),
                 type: data.split(" ")[1].toUpperCase(),
                 url: 'https://konalt.us.to',
                 timestamps: {
@@ -401,7 +402,7 @@ client.on('messageCreate', async(msg) => {
                     afk: false,
                     status: 'online',
                 });
-                fs.writeFileSync("./saved_status.txt", msg.content.split(" ")[1].toUpperCase() + " " + msg.content.split(" ").map((v, i) => { return ((i == 0 || i == 1) ? "" : v) }).join(" "));
+                fs.writeFileSync("./saved_status.txt", msg.content.split(" ")[1].toUpperCase() + " " + msg.content.split(" ").slice(2).join(" "));
                 flapslib.webhooks.sendWebhook("flaps", "done", false, msg.channel);
             } else {
                 flapslib.webhooks.sendWebhook("flaps", "first argument must be one of these:\n```\n" + types.join("\n") + "\n```", false, msg.channel);
