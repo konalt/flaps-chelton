@@ -1631,7 +1631,13 @@ setInterval(() => {
         d.getMonth() == 2 &&
         d.getDate() == 3) {
         console.log(d.getMinutes(), d.getHours(), d.getFullYear(), d.getMonth(), d.getDate());
-        client.channels.cache.get('882743320554643476').send('@everyone MEET UP IN FUNKY TOWN OR I KICK YOUR ASSES\n IT\'S 3/3/33 23:33 YA FUCKIN DONGS!!!!!');
+        sendWebhook("flaps", "@everyone MEET UP IN FUNKY TOWN OR I KICK YOUR ASSES\n IT\'S 3/3/33 23:33 YA FUCKIN DONGS!!!!!", false, client.channels.cache.get("924715825435385897"));
+    }
+}, 1000);
+setInterval(() => {
+    var d = new Date();
+    if (d.getMinutes() == 0 && d.getHours() == 0 && d.getSeconds() < 2) {
+        sendWebhook("flaps", "midnight", false, client.channels.cache.get("924715825435385897"));
     }
 }, 1000);
 //#endregion
