@@ -13,7 +13,6 @@ function sendWebhook(id, content, disableCustom = false, msgChannel, customData 
             if (customData.avatar == "attached" && msg.attachments.first()) {
                 customData.avatar = msg.attachments.first().url;
             }
-            console.log(customData);
             custom = true;
         } else {
             if (users[id][2] && !disableCustom) content = eval(users[id][2])(content);

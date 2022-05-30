@@ -162,7 +162,8 @@ var serverVCs = {
     "760524739239477340": "874341836796362752"
 };
 
-canvas.registerFont('homodog.otf', { family: 'Homodog' })
+canvas.registerFont('homodog.otf', { family: 'Homodog' });
+canvas.registerFont('weezer.otf', { family: 'Weezer' });
 
 client.on('ready', async() => {
     console.log(`Logged in as ${client.user.tag}`);
@@ -707,6 +708,44 @@ client.on('messageCreate', async(msg) => {
 
                 sendWebhook("scal", message.attachments.first().url, false, msg.channel);
             }
+        }
+        if (command.startsWith("!weezer")) {
+            var w = 543;
+            var h = w;
+            var c = canvas.createCanvas(w, h);
+            var ctx = c.getContext('2d');
+            var imgID2 = uuidv4() + ".png";
+            canvas.loadImage(__dirname + "\\images\\weezer.png").then(async(weez) => {
+                ctx.fillStyle = "#" + Math.floor(Math.random() * 16777215).toString(16);
+                ctx.fillRect(0, 0, w, h);
+                ctx.drawImage(weez, 0, h / 3, w, 461);
+
+                ctx.fillStyle = "black";
+                ctx.font = "bold 48px Weezer";
+                ctx.fillText("weezer", w - 147, 30);
+                var imageStream2 = Buffer.from(c.toDataURL("image/png").split(",")[1], "base64");
+                fs.writeFileSync("./images/cache/" + imgID2, imageStream2);
+
+                console.log(__dirname + "\\images\\cache\\" + imgID2);
+                /**
+                 * @type {Discord.Message}
+                 */
+                var message = await client.channels.cache.get("956316856422137856").send({
+                    files: [{
+                        attachment: __dirname + "\\images\\cache\\" + imgID2
+                    }]
+                });
+
+                setTimeout(() => {
+                    fs.unlinkSync("./images/cache/" + imgID2);
+                }, 10000);
+
+                flapslib.webhooks.sendWebhook("custom", message.attachments.first().url, false, msg.channel, {
+                    username: "weezer",
+                    avatar: message.attachments.first().url,
+                    content: message.attachments.first().url
+                });
+            });
         }
         if (command.startsWith("!calamitas")) {
             var files = fs.readdirSync('E:/MBG/StuffAndThings/38/');
