@@ -798,6 +798,12 @@ client.on('messageCreate', async(msg) => {
                                             276,
                                             414
                                         ];
+                                        var weezes = [
+                                            weez1,
+                                            weez2,
+                                            weez3,
+                                            weez4
+                                        ];
                                         var currentIndex = xs.length,
                                             randomIndex;
                                         while (currentIndex != 0) {
@@ -807,17 +813,72 @@ client.on('messageCreate', async(msg) => {
                                                 xs[randomIndex], xs[currentIndex]
                                             ];
                                         }
+                                        var randomImage = weezes[Math.floor(Math.random() * weezes.length)];
 
                                         ctx.fillRect(0, 0, w, h);
-                                        ctx.drawImage(weez1, xs[0], h / 3, 138, 461);
-                                        ctx.drawImage(weez2, xs[1], h / 3, 138, 461);
-                                        ctx.drawImage(weez3, xs[2], h / 3, 138, 461);
-                                        ctx.drawImage(weez4, xs[3], h / 3, 138, 461);
+                                        if (Math.random() < 0.5) {
+                                            ctx.globalAlpha = 0.4;
+                                            ctx.drawImage(randomImage, 0, 0, w, h);
+                                            ctx.globalAlpha = 1;
+                                        }
+                                        for (let i = 0; i < 4; i++) {
+                                            var randomizer = Math.random() + 0.5;
+                                            var willRotate = (Math.random < 0.5);
+                                            var angleInRadians = 90;
+                                            if (willRotate) {
+                                                ctx.translate(xs[i], h / 3 * randomizer);
+                                                ctx.rotate(angleInRadians);
+                                            }
+                                            ctx.drawImage(weezes[Math.floor(Math.random() * weezes.length)], xs[i], h / 3 * randomizer, 138, 461 * randomizer);
+                                            if (willRotate) {
+                                                ctx.translate(-xs[i], -(h / 3 * randomizer));
+                                                ctx.rotate(-angleInRadians);
+                                            }
+                                        }
+                                        ctx.transform(0, 0);
+                                        ctx.scale(1, 1);
 
 
                                         ctx.fillStyle = "black";
                                         ctx.font = "bold 48px Weezer";
-                                        ctx.fillText("weezer", w - 147, 30);
+                                        var takenIndexes = [];
+                                        var y = (Math.floor(Math.random() * 4) + 4);
+                                        var texts = [
+                                            "weezer",
+                                            "weezur",
+                                            "winzur",
+                                            "weenis",
+                                            "winblo",
+                                            "amogus",
+                                            "wiener",
+                                            "boogus",
+                                            "spoons",
+                                            "doobus"
+                                        ];
+                                        for (let i = 0; i < y; i++) {
+                                            var chosenText = texts[Math.floor(Math.random() * texts.length)]
+                                            var tw = ctx.measureText(chosenText).width;
+                                            var possibleTextPlaces = [
+                                                [w - tw, 30],
+                                                [0, 30],
+                                                [0, h - 5],
+                                                [w - tw, h - 5],
+                                                [Math.floor(Math.random() * (w - tw)), Math.floor(Math.random() * (h - 5 + 30) - 30)],
+                                                [Math.floor(Math.random() * (w - tw)), Math.floor(Math.random() * (h - 5 + 30) - 30)],
+                                                [Math.floor(Math.random() * (w - tw)), Math.floor(Math.random() * (h - 5 + 30) - 30)],
+                                                [Math.floor(Math.random() * (w - tw)), Math.floor(Math.random() * (h - 5 + 30) - 30)],
+                                            ];
+                                            var chosenPlace = possibleTextPlaces[Math.floor(Math.random() * possibleTextPlaces.length)];
+                                            if (takenIndexes.includes(possibleTextPlaces.indexOf(chosenPlace))) {
+                                                y++;
+                                                continue;
+                                            }
+                                            ctx.fillText(chosenText, chosenPlace[0], chosenPlace[1]);
+                                            takenIndexes.push(possibleTextPlaces.indexOf(chosenPlace));
+                                            texts = texts.filter(t => { return t != chosenText });
+                                        }
+
+
                                         var imageStream2 = Buffer.from(c.toDataURL("image/png").split(",")[1], "base64");
                                         fs.writeFileSync("./images/cache/" + imgID2, imageStream2);
 
