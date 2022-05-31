@@ -491,23 +491,22 @@ client.on('messageCreate', async(msg) => {
                     {
                         var endTime = new Date("2022-06-03T10:45:00Z").getTime();
                         var newTime = (endTime - Date.now());
-                        var unit = "all";
-                        if (commandArgs[1]) {
-                            unit = commandArgs[1];
-                        }
-                        var offset = {
-                            millisecond: newTime,
-                            second: newTime / 1000,
-                            minute: newTime / 1000 / 60,
-                            hour: newTime / 1000 / 60 / 60,
-                            day: newTime / 1000 / 60 / 60 / 24,
-                            all: ""
-                        };
-                        Object.keys(offset).forEach((entry) => {
-                            if (typeof offset[entry] == "number") offset[entry] = Math.round(offset[entry]);
-                        });
-                        offset.all = `${offset.day}d ${offset.hour - (offset.day * 24)}h ${offset.minute - (offset.hour * 60 - (offset.day * 24))}m ${offset.second - (offset.minute * 60 - (offset.hour * 60 - (offset.day * 24)))}s`;
-                        sendWebhook("flaps", offset[unit] + " " + unit + (offset[unit] == 1 ? "" : "s"), false, msg.channel);
+
+                        var delta = newTime / 1000;
+
+                        var days = Math.floor(delta / 86400);
+                        delta -= days * 86400;
+
+                        var hours = Math.floor(delta / 3600) % 24;
+                        delta -= hours * 3600;
+
+                        var minutes = Math.floor(delta / 60) % 60;
+                        delta -= minutes * 60;
+
+                        var seconds = Math.round(delta % 60);
+
+                        var str = `${days}d ${hours}h ${minutes}m ${seconds}s`
+                        sendWebhook("flaps", str, false, msg.channel);
                     }
                     break;
                 case "!armstrong2":
