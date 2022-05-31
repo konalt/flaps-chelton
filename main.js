@@ -510,7 +510,7 @@ client.on('messageCreate', async(msg) => {
                     }
                     break;
                 case "!coinflip":
-                    sendWebhook("flaps", (Math.random() < 0.5 ? "heads" : tails), false, msg.channel);
+                    sendWebhook("flaps", (Math.random() < 0.5 ? "heads" : "tails"), false, msg.channel);
                     break;
                 case "!armstrong2":
                     {
