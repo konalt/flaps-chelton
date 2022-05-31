@@ -509,6 +509,9 @@ client.on('messageCreate', async(msg) => {
                         sendWebhook("flaps", str, false, msg.channel);
                     }
                     break;
+                case "!coinflip":
+                    sendWebhook("flaps", (Math.random() < 0.5 ? "heads" : tails), false, msg.channel);
+                    break;
                 case "!armstrong2":
                     {
                         flapslib.ai.armstrong2(msg.channel);
