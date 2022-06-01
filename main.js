@@ -491,6 +491,9 @@ client.on('messageCreate', async(msg) => {
                     {
                         var endTime = new Date("2022-06-03T10:45:00Z").getTime();
                         var newTime = (endTime - Date.now());
+                        if (commandArgs[1] == "hour") {
+                            return sendWebhook("flaps", Math.floor(newTime / 1000 / 60 / 60) + " hours left.", false, msg.channel);
+                        }
 
                         var delta = newTime / 1000;
 
