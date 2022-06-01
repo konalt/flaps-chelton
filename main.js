@@ -981,7 +981,7 @@ client.on('messageCreate', async(msg) => {
                         if (commandArgString == "<:owl:964880176355897374>") {
                             sendWebhook("fbi", `that owl is FUCKING INVINCIBLE\nhttps://media.discordapp.net/attachments/838732607344214019/980236924994338846/unknown.png`, false, msg.channel);
                         } else if (commandArgString == "miller") {
-                            sendWebhook("fbi", `MILLER IS A DICK FUCK MILLER (dont actually fuck miller, fuck his daughter instead)`, false, msg.channel);
+                            sendWebhook("fbi", `MILLER IS A DICK FUCK MILLER (dont actually fuck miller, fuck his daughter instead)\nhttps://media.discordapp.net/attachments/882743320554643476/981644975815135362/miller1.PNG`, false, msg.channel);
                         } else {
                             sendWebhook("fbi", `oh shit. ${commandArgString} will die on ${dateStr}. death by ${flapslib.cahWhiteCard()}
 fbi files on ${commandArgString}: ${(msg.mentions.users.first() ? (descriptions[msg.mentions.users.first().id] + "\nhere's a file photo" ? descriptions[msg.mentions.users.first().id] + "\nhere's a file photo" : "[[Blank]]") : "[[Blank]]")}`, false, msg.channel);
