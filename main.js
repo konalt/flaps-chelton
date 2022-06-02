@@ -1000,14 +1000,16 @@ fbi files on ${commandArgString}: ${(msg.mentions.users.first() ? (descriptions[
                                     var imageStream = Buffer.from(body, "base64");
                                     var imgID = uuidv4().replace(/-/g, "_") + ".jpg";
                                     var imgID2 = uuidv4().replace(/-/g, "_") + ".png";
+                                    var w = msg.attachments.first().width;
+                                    var h = msg.attachments.first().height;
                                     fs.writeFileSync("./images/cache/" + imgID, imageStream);
                                     //sendWebhook("flaps", imageStream.toString("base64").substring(0, 1000), true, msg.channel);
-                                    var c = canvas.createCanvas(1413, 1031);
+                                    var c = canvas.createCanvas(1413 - 130, 1031 - 140);
                                     var ctx = c.getContext('2d');
                                     canvas.loadImage(__dirname + "\\images\\cache\\" + imgID).then(async(photo) => {
                                         canvas.loadImage(__dirname + "\\images\\frame.png").then(async(frame) => {
-                                            ctx.drawImage(frame, 0, 0, 1413, 1031);
-                                            ctx.drawImage(photo, 137, 143, 1125, 729);
+                                            ctx.drawImage(photo, 72, 73, 1125, 729);
+                                            ctx.drawImage(frame, -130 / 2, -140 / 2, 1413, 1031);
                                             var imageStream2 = Buffer.from(c.toDataURL("image/png").split(",")[1], "base64");
                                             fs.writeFileSync("./images/cache/" + imgID2, imageStream2);
 

@@ -181,7 +181,7 @@ async function videoGif(name, msg) {
         }
     });
 }
-async function imageAudio(name, msg) {
+async function imageAudio(name, msg, client) {
     var id = uuidv4().replace(/-/gi, "");
     video.imageAudio("images/cache/" + name, "images/cache/" + id).then(async() => {
         try {
