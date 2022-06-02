@@ -1647,7 +1647,7 @@ setInterval(() => {
 }, 1000);
 setInterval(() => {
     var d = new Date();
-    if (d.getMinutes() == 0 && d.getHours() == 0 && d.getSeconds() < 2) {
+    if (d.getMinutes() == 0 && d.getHours() == 0 && d.getSeconds() < 1) {
         sendWebhook("flaps", "midnight", false, client.channels.cache.get("924715825435385897"));
     }
 }, 1000);
