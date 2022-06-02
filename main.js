@@ -489,7 +489,9 @@ client.on('messageCreate', async(msg) => {
                     break;
                 case "!countdown":
                     {
-                        var endTime = new Date("2022-06-03T10:45:00Z").getTime();
+                        var endTime = new Date("2022-06-03T10:30:00Z");
+                        endTime.setHours(endTime.getHours() - 1);
+                        endTime = endTime.getTime();
                         var newTime = (endTime - Date.now());
                         if (commandArgs[1] == "hour") {
                             return sendWebhook("flaps", Math.floor(newTime / 1000 / 60 / 60) + " hours left.", false, msg.channel);
