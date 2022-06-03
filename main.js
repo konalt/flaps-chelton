@@ -959,6 +959,28 @@ client.on('messageCreate', async(msg) => {
                         }
                     }
                     break;
+                case "!millerswife":
+                    {
+                        var files = fs.readdirSync('E:/MBG/StuffAndThings/lormastur/');
+                        var chosenFile = files[Math.floor(Math.random() * files.length)];
+                        var filesize = fs.statSync("E:/MBG/StuffAndThings/lormastur/" + chosenFile).size / (1024 * 1024);
+                        if (Math.random() < 0.2) {
+                            flapslib.videowrapper.armstrongify("E:/MBG/StuffAndThings/lormastur/" + chosenFile, msg, 1, client);
+                            return;
+                        }
+                        if (filesize > 8) {
+                            sendWebhook("scal", "ohh my god thats such a fucking big file. i cant,,, upload.,,,, itt ohohohhnnggmggnhahdf. its " + Math.round(filesize) + " megabyte. fucking hell. thats what she said.", false, msg.channel);
+                        } else {
+                            var message = await client.channels.cache.get("956316856422137856").send({
+                                files: [{
+                                    attachment: "E:/MBG/StuffAndThings/lormastur/" + chosenFile
+                                }]
+                            });
+
+                            sendWebhook("scal", message.attachments.first().url, false, msg.channel);
+                        }
+                    }
+                    break;
                 case "!nohorny":
                     {
                         var id = uuidv4().replace(/-/g, "");
