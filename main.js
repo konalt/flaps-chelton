@@ -964,12 +964,12 @@ client.on('messageCreate', async(msg) => {
                         var files = fs.readdirSync('E:/MBG/StuffAndThings/lormastur/');
                         var chosenFile = files[Math.floor(Math.random() * files.length)];
                         var filesize = fs.statSync("E:/MBG/StuffAndThings/lormastur/" + chosenFile).size / (1024 * 1024);
-                        if (Math.random() < 0.2) {
+                        if (Math.random() < 0) {
                             flapslib.videowrapper.armstrongify("E:/MBG/StuffAndThings/lormastur/" + chosenFile, msg, 1, client);
                             return;
                         }
                         if (filesize > 8) {
-                            sendWebhook("scal", "ohh my god thats such a fucking big file. i cant,,, upload.,,,, itt ohohohhnnggmggnhahdf. its " + Math.round(filesize) + " megabyte. fucking hell. thats what she said.", false, msg.channel);
+                            sendWebhook("millerwife", "*ugngnh* " + Math.round(filesize) + " megabyte~~~~~. ah.. uhn......", false, msg.channel);
                         } else {
                             var message = await client.channels.cache.get("956316856422137856").send({
                                 files: [{
@@ -977,7 +977,7 @@ client.on('messageCreate', async(msg) => {
                                 }]
                             });
 
-                            sendWebhook("scal", message.attachments.first().url, false, msg.channel);
+                            sendWebhook("millerwife", message.attachments.first().url, false, msg.channel);
                         }
                     }
                     break;
