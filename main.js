@@ -1545,7 +1545,7 @@ fbi files on ${commandArgString}: ${(msg.mentions.users.first() ? (descriptions[
                     {
                         var text = lastRequests[msg.author.id];
                         if (!text) return sendWebhook("deepai", "request something first you dumbo");
-                        autocompleteText(text, 0);
+                        flapslib.ai.autocompleteText(text, 0);
                     }
                     break;
                 case "!basedmeter":
