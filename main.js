@@ -1581,6 +1581,9 @@ fbi files on ${commandArgString}: ${(msg.mentions.users.first() ? (descriptions[
                                 return sendWebhook("runcling", "go outside horny runcling\nhttps://media.discordapp.net/attachments/882743320554643476/982983490075254784/unknown.png", false, msg.channel);
                             }
                             fetch("https://rule34.xxx/index.php?page=post&s=list&tags=" + ra[0].value).then(r => { return r.text() }).then(r => {
+                                if (!r.split('<div class="image-list">')[1]) {
+                                    return sendWebhook("runcling", "go outside horny runcling\nhttps://media.discordapp.net/attachments/882743320554643476/982983490075254784/unknown.png", false, msg.channel);
+                                }
                                 var list = r.split('<div class="image-list">')[1].split('<div id="paginator">')[0].split(/<\/a>\n<\/span>\n<span id="s[0-9]*" class="thumb">\n<a id="p[0-9]*" href="[A-z\.\&\?\=0-9]*" style="">/gi);
                                 list = list.filter(item => {
                                     return item.startsWith("\n<img s");
@@ -1593,8 +1596,24 @@ fbi files on ${commandArgString}: ${(msg.mentions.users.first() ? (descriptions[
                                 });
                                 console.log(list);
                                 var item = randomFromArray(list);
+                                console.log(item);
                                 var id = uuidv4() + ".jpg";
-                                download(item, "images/cache/" + id, async() => {
+                                download(item, "images/cache/" + id, async(err) => {
+                                    if (err) {
+                                        return download(item.replace(/sample/g, "thumbnail"), "images/cache/" + id, async(err) => {
+                                            var message = await client.channels.cache.get("956316856422137856").send({
+                                                files: [{
+                                                    attachment: __dirname + "\\images\\cache\\" + id
+                                                }]
+                                            });
+
+                                            setTimeout(() => {
+                                                fs.unlinkSync("./images/cache/" + id);
+                                            }, 10000);
+
+                                            sendWebhook("runcling", message.attachments.first().url, false, msg.channel);
+                                        });
+                                    }
                                     var message = await client.channels.cache.get("956316856422137856").send({
                                         files: [{
                                             attachment: __dirname + "\\images\\cache\\" + id
