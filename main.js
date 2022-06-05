@@ -1550,29 +1550,57 @@ fbi files on ${commandArgString}: ${(msg.mentions.users.first() ? (descriptions[
                     break;
                 case "!r34":
                     {
-                        fetch("https://rule34.xxx/index.php?page=post&s=list&tags=loremaster_%28helltaker%29").then(r => { return r.text() }).then(r => {
-                            var list = r.split('<div class="image-list">')[1].split('<div id="paginator">')[0].split(/<\/a>\n<\/span>\n<span id="s[0-9]*" class="thumb">\n<a id="p[0-9]*" href="[A-z\.\&\?\=0-9]*" style="">/gi);
-                            list = list.filter(item => {
-                                return item.startsWith("\n<img s");
-                            });
-                            list = list.map(item => {
-                                return item.substring("<img src=\"".length + 1, "https://wimg.rule34.xxx/thumbnails/5074/thumbnail_d3b24d47c2ac59b0c0f2d04319ec240e.jpg?5784441".length + "<img src=\"".length + 1);
-                            });
-                            console.log(list);
-                            var item = randomFromArray(list);
-                            var id = uuidv4() + ".jpg";
-                            download(item, "images/cache/" + id, () => {
-                                var message = await client.channels.cache.get("956316856422137856").send({
-                                    files: [{
-                                        attachment: __dirname + "\\images\\cache\\" + imgID2
-                                    }]
+                        var x = "";
+                        if (commandArgs[1]) {
+                            x = msg.content.split(" ").slice(1).join("_");
+                        } else {
+                            x = "hornet (hollow knight)".split(" ").join("_");
+                        }
+                        if (x.includes("child")) {
+                            return sendWebhook("runcling", "🚔🚔🚔🚔🚨🚨🚨🚨🚨🚓🚓🚓🚓👮‍♀️👮‍♂️👮‍♂️👮‍♂️👮‍♂️👮👮‍♂️👮‍♂️🚓🚨👮‍♀️👮‍♂️👮‍♀️🚓🚔🚨", false, msg.channel);
+                        }
+                        x = x.replace("_--showname", "");
+                        fetch("https://rule34.xxx/public/autocomplete.php?q=" + x, {
+                            "credentials": "omit",
+                            "headers": {
+                                "User-Agent": "FlapsChelton",
+                                "Accept": "*/*",
+                                "Accept-Language": "en-US,en;q=0.5",
+                                "Sec-Fetch-Dest": "empty",
+                                "Sec-Fetch-Mode": "cors",
+                                "Sec-Fetch-Site": "same-origin"
+                            },
+                            "referrer": "https://rule34.xxx/",
+                            "method": "GET",
+                            "mode": "cors"
+                        }).then(ra => { return ra.json() }).then(ra => {
+                            fetch("https://rule34.xxx/index.php?page=post&s=list&tags=" + ra[0].value).then(r => { return r.text() }).then(r => {
+                                var list = r.split('<div class="image-list">')[1].split('<div id="paginator">')[0].split(/<\/a>\n<\/span>\n<span id="s[0-9]*" class="thumb">\n<a id="p[0-9]*" href="[A-z\.\&\?\=0-9]*" style="">/gi);
+                                list = list.filter(item => {
+                                    return item.startsWith("\n<img s");
                                 });
+                                list = list.map(item => {
+                                    return item.substring("<img src=\"".length + 1, "https://wimg.rule34.xxx/thumbnails/5074/thumbnail_d3b24d47c2ac59b0c0f2d04319ec240e.jpg?5784441".length + "<img src=\"".length + 1);
+                                });
+                                list = list.map(item => {
+                                    return item.replace(/thumbnail/g, "sample");
+                                });
+                                console.log(list);
+                                var item = randomFromArray(list);
+                                var id = uuidv4() + ".jpg";
+                                download(item, "images/cache/" + id, async() => {
+                                    var message = await client.channels.cache.get("956316856422137856").send({
+                                        files: [{
+                                            attachment: __dirname + "\\images\\cache\\" + id
+                                        }]
+                                    });
 
-                                setTimeout(() => {
-                                    fs.unlinkSync("./images/cache/" + imgID2);
-                                }, 10000);
+                                    setTimeout(() => {
+                                        fs.unlinkSync("./images/cache/" + id);
+                                    }, 10000);
 
-                                sendWebhook("runcling", message.attachments.first().url, false, msg.channel);
+                                    sendWebhook("runcling", message.attachments.first().url, false, msg.channel);
+                                });
                             });
                         });
                     }
