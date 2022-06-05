@@ -1598,6 +1598,9 @@ fbi files on ${commandArgString}: ${(msg.mentions.users.first() ? (descriptions[
                                 var item = randomFromArray(list);
                                 console.log(item);
                                 var id = uuidv4() + ".jpg";
+                                if (!item) {
+                                    return sendWebhook("runcling", "go outside horny runcling\nhttps://media.discordapp.net/attachments/882743320554643476/982983490075254784/unknown.png", false, msg.channel);
+                                }
                                 download(item, "images/cache/" + id, async(err) => {
                                     if (err) {
                                         return download(item.replace(/sample/g, "thumbnail"), "images/cache/" + id, async(err) => {
