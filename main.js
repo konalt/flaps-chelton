@@ -269,7 +269,7 @@ client.on('messageCreate', async(msg) => {
         if (messageFlags.includes("literally")) msg.react(client.emojis.cache.find(emoji => emoji.name === "literally1984"));
         var commandArgs = msg.content.split(" ");
         var commandArgString = commandArgs.slice(1).join(" ");
-        var command = commandArgs[0];
+        var command = commandArgs[0].toLowerCase();
         if (msg.content.startsWith(">")) {
             var content = `${msg.content}`;
             if (!msg.reference) {
