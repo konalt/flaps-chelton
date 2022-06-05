@@ -5,7 +5,7 @@ var download = function(url, dest, cb) {
     var file = fs.createWriteStream(dest);
     var request = https.get(url, function(response) {
         if (!response.statusCode == 200) {
-            cb(true);
+            return cb(true);
         }
         response.pipe(file);
         file.on('finish', function() {
@@ -13,7 +13,7 @@ var download = function(url, dest, cb) {
         });
     }).on('error', function(err) { // Handle errors
         fs.unlink(dest, () => {}); // Delete the file async. (But we don't check the result)
-        if (cb) cb(err.message);
+        if (cb) cb(true);
     });
 };
 

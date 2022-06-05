@@ -1603,6 +1603,7 @@ fbi files on ${commandArgString}: ${(msg.mentions.users.first() ? (descriptions[
                                 }
                                 download(item, "images/cache/" + id, async(err) => {
                                     if (err) {
+                                        console.log("ERROR WEEWOOWOOEOEOWEO");
                                         return download(item.replace(/sample/g, "thumbnail"), "images/cache/" + id, async(err) => {
                                             var message = await client.channels.cache.get("956316856422137856").send({
                                                 files: [{

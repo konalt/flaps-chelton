@@ -13,5 +13,8 @@
     "request": "^2.88.2",
     "steamapi": "^2.2.0",
     "txtgen": "^3.0.1"
+  },
+  "devDependencies": {
+    "webpack-cli": "^4.9.2"
   }
 }
