@@ -1550,6 +1550,9 @@ fbi files on ${commandArgString}: ${(msg.mentions.users.first() ? (descriptions[
                     break;
                 case "!r34":
                     {
+                        if (Math.random() < 0.25) {
+                            return sendWebhook("welldressed", "https://media.discordapp.net/attachments/956316856422137856/982985131151228928/88324f31a1fe4aa3a4568285e8771de6.png", false, msg.channel);
+                        }
                         var x = "";
                         if (commandArgs[1]) {
                             x = msg.content.split(" ").slice(1).join("_");
@@ -1574,6 +1577,9 @@ fbi files on ${commandArgString}: ${(msg.mentions.users.first() ? (descriptions[
                             "method": "GET",
                             "mode": "cors"
                         }).then(ra => { return ra.json() }).then(ra => {
+                            if (!ra[0]) {
+                                return sendWebhook("runcling", "go outside horny runcling\nhttps://media.discordapp.net/attachments/882743320554643476/982983490075254784/unknown.png", false, msg.channel);
+                            }
                             fetch("https://rule34.xxx/index.php?page=post&s=list&tags=" + ra[0].value).then(r => { return r.text() }).then(r => {
                                 var list = r.split('<div class="image-list">')[1].split('<div id="paginator">')[0].split(/<\/a>\n<\/span>\n<span id="s[0-9]*" class="thumb">\n<a id="p[0-9]*" href="[A-z\.\&\?\=0-9]*" style="">/gi);
                                 list = list.filter(item => {
