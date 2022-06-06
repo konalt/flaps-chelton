@@ -1462,6 +1462,65 @@ fbi files on ${commandArgString}: ${(msg.mentions.users.first() ? (descriptions[
                         flapslib.ai.autocompleteText(inputText, msg.channel, true);
                     }
                     break;
+                case "!rps":
+                    {
+                        var input = commandArgs[1].toLowerCase();
+                        var dicks = [
+                            "nutsack",
+                            "balls",
+                            "testicles",
+                            "dick",
+                            "cock"
+                        ];
+                        var opts = [
+                            "rock", "paper", "scissors"
+                        ];
+                        var output = "error";
+                        var winner = "error";
+                        if (dicks.includes(input)) {
+                            output = "scissors";
+                            winner = "pain";
+                        } else if (!opts.includes(input)) {
+                            output = "semen";
+                            winner = "bukakke";
+                        } else {
+                            output = randomFromArray(opts);
+                            switch (output) {
+                                case "scissors":
+                                    if (input == "rock") {
+                                        winner = input;
+                                    } else if (input == "paper") {
+                                        winner = output;
+                                    } else {
+                                        winner = "tie";
+                                    }
+                                    break;
+                                case "rock":
+                                    if (input == "paper") {
+                                        winner = input;
+                                    } else if (input == "scissors") {
+                                        winner = output;
+                                    } else {
+                                        winner = "tie";
+                                    }
+                                    break;
+                                case "paper":
+                                    if (input == "scissors") {
+                                        winner = input;
+                                    } else if (input == "rock") {
+                                        winner = output;
+                                    } else {
+                                        winner = "tie";
+                                    }
+                                    break;
+                            }
+                        }
+                        input = input[0].toUpperCase() + input.substring(1);
+                        output = output[0].toUpperCase() + output.substring(1);
+                        winner = winner[0].toUpperCase() + winner.substring(1);
+                        sendWebhook("rps", `You chose **${input}**. I chose **${output}**. Winner: **${winner}**!`, false, msg.channel);
+                        break;
+                    }
                 case "!dalle":
                     {
                         var x = "pigeons flying in city";
