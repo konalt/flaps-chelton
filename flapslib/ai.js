@@ -458,7 +458,9 @@ function dalle(prompt) {
             "body": "{\"prompt\":\"" + prompt + "\"}",
             "method": "POST",
             "mode": "cors"
-        }).then(r => r.json()).then(r => {
+        }).then(r => r.text()).then(r => {
+            console.log(r);
+            r = JSON.parse(r);
             r.prompt = prompt;
             resolve(r);
         });
