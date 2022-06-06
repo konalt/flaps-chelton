@@ -459,7 +459,7 @@ function dalle(prompt) {
             "method": "POST",
             "mode": "cors"
         }).then(r => r.json()).then(r => {
-            console.log(r.images.length);
+            r.prompt = prompt;
             resolve(r);
         });
     });
