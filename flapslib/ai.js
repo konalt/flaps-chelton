@@ -14,6 +14,7 @@ var puppeteerInitialized = false;
 var aiPageData = {};
 
 const getRandomValues = require("get-random-values");
+const { resolve } = require("path");
 
 function uuidv4() {
     return ([1e7] + -1e3 + -4e3 + -8e3 + -1e11).replace(/[018]/g, c =>
@@ -440,6 +441,30 @@ async function upscaleImage(msg, msgChannel, client) {
     }
 }
 
+function dalle(prompt) {
+    return new Promise((resolve, reject) => {
+        fetch("https://bf.dallemini.ai/generate", {
+            "credentials": "omit",
+            "headers": {
+                "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:101.0) Gecko/20100101 Firefox/101.0",
+                "Accept": "application/json",
+                "Accept-Language": "en-US,en;q=0.5",
+                "Content-Type": "application/json",
+                "Sec-Fetch-Dest": "empty",
+                "Sec-Fetch-Mode": "cors",
+                "Sec-Fetch-Site": "cross-site"
+            },
+            "referrer": "https://hf.space/",
+            "body": "{\"prompt\":\"" + prompt + "\"}",
+            "method": "POST",
+            "mode": "cors"
+        }).then(r => r.json()).then(r => {
+            console.log(r.images.length);
+            resolve(r);
+        });
+    });
+}
+
 module.exports = {
     generateImage: generateImage,
     autocompleteText: autocompleteText,
@@ -451,7 +476,8 @@ module.exports = {
     armstrong: armstrong2,
     armstrong2: armstrong,
     txtgen: textgen,
-    upscaleImage: upscaleImage
+    upscaleImage: upscaleImage,
+    dalle: dalle
 };
 
 init();

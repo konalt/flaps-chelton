@@ -1460,6 +1460,31 @@ fbi files on ${commandArgString}: ${(msg.mentions.users.first() ? (descriptions[
                         flapslib.ai.autocompleteText(inputText, msg.channel, true);
                     }
                     break;
+                case "!dalle":
+                    {
+                        var x = "pigeons flying in city";
+                        if (commandArgs[1]) x = commandArgString;
+                        sendWebhook("deepai", "im thinking.... beep blorp...", false, msg.channel);
+                        flapslib.ai.dalle(x).then(data => {
+                            var buffer = Buffer.from(data.images[0], 'base64');
+                            var imgid = uuidv4() + ".jpg";
+                            fs.writeFile("./images/cache/" + imgid, buffer, async(err) => {
+                                if (err) return sendWebhook("flapserrors", err.stack, false, msg.channel);
+                                var message = await client.channels.cache.get("956316856422137856").send({
+                                    files: [{
+                                        attachment: __dirname + "\\images\\cache\\" + imgid
+                                    }]
+                                });
+
+                                setTimeout(() => {
+                                    fs.unlinkSync("./images/cache/" + imgid);
+                                }, 10000);
+
+                                flapslib.webhooks.sendWebhook("deepai", message.attachments.first().url, false, msg.channel);
+                            });
+                        });
+                        break;
+                    }
                 case "!3amgonewrong":
                     {
                         var originalTitles = [
