@@ -26,6 +26,8 @@ const download = require('./flapslib/download');
 const { uuidv4 } = require('./flapslib/ai');
 const { sendWebhook, editWebhookMsg } = require('./flapslib/webhooks');
 const { cahWhiteCard } = require('./flapslib/cardsagainsthumanity');
+const { loadImage } = require('canvas');
+const { Image } = require('canvas');
 //var dream = WomboDreamApi.buildDefaultInstance();
 //TODO look at line 12
 
@@ -1464,110 +1466,35 @@ fbi files on ${commandArgString}: ${(msg.mentions.users.first() ? (descriptions[
                     {
                         var x = "pigeons flying in city";
                         if (commandArgs[1]) x = commandArgString;
-                        sendWebhook("deepai", "im thinking.... beep blorp...", false, msg.channel);
+                        sendWebhook("dalle", "im thinking.... beep blorp...", false, msg.channel);
                         flapslib.ai.dalle(x).then(data => {
-                            var buffer = [
-                                Buffer.from(data.images[0], 'base64'),
-                                Buffer.from(data.images[1], 'base64'),
-                                Buffer.from(data.images[2], 'base64'),
-                                Buffer.from(data.images[3], 'base64'),
-                                Buffer.from(data.images[4], 'base64'),
-                                Buffer.from(data.images[5], 'base64'),
-                                Buffer.from(data.images[6], 'base64'),
-                                Buffer.from(data.images[7], 'base64'),
-                                Buffer.from(data.images[8], 'base64'),
-                            ];
-                            var imgid = [
-                                uuidv4() + ".jpg",
-                                uuidv4() + ".jpg",
-                                uuidv4() + ".jpg",
-                                uuidv4() + ".jpg",
-                                uuidv4() + ".jpg",
-                                uuidv4() + ".jpg",
-                                uuidv4() + ".jpg",
-                                uuidv4() + ".jpg",
-                                uuidv4() + ".jpg",
-                            ];
-                            fs.writeFile("./images/cache/" + imgid[0], buffer[0], async(err) => {
-                                fs.writeFile("./images/cache/" + imgid[1], buffer[1], async(err) => {
-                                    fs.writeFile("./images/cache/" + imgid[2], buffer[2], async(err) => {
-                                        fs.writeFile("./images/cache/" + imgid[3], buffer[3], async(err) => {
-                                            fs.writeFile("./images/cache/" + imgid[4], buffer[4], async(err) => {
-                                                fs.writeFile("./images/cache/" + imgid[5], buffer[5], async(err) => {
-                                                    fs.writeFile("./images/cache/" + imgid[6], buffer[6], async(err) => {
-                                                        fs.writeFile("./images/cache/" + imgid[7], buffer[7], async(err) => {
-                                                            fs.writeFile("./images/cache/" + imgid[8], buffer[8], async(err) => {
-                                                                var c = canvas.createCanvas(768, 768);
-                                                                var ctx = c.getContext('2d');
-                                                                canvas.loadImage(__dirname + "\\images\\cache\\" + imgid[0]).then(async(photo0) => {
-                                                                    canvas.loadImage(__dirname + "\\images\\cache\\" + imgid[1]).then(async(photo1) => {
-                                                                        canvas.loadImage(__dirname + "\\images\\cache\\" + imgid[2]).then(async(photo2) => {
-                                                                            canvas.loadImage(__dirname + "\\images\\cache\\" + imgid[3]).then(async(photo3) => {
-                                                                                canvas.loadImage(__dirname + "\\images\\cache\\" + imgid[4]).then(async(photo4) => {
-                                                                                    canvas.loadImage(__dirname + "\\images\\cache\\" + imgid[5]).then(async(photo5) => {
-                                                                                        canvas.loadImage(__dirname + "\\images\\cache\\" + imgid[6]).then(async(photo6) => {
-                                                                                            canvas.loadImage(__dirname + "\\images\\cache\\" + imgid[7]).then(async(photo7) => {
-                                                                                                canvas.loadImage(__dirname + "\\images\\cache\\" + imgid[8]).then(async(photo8) => {
-                                                                                                    var imgs = [
-                                                                                                        photo0,
-                                                                                                        photo1,
-                                                                                                        photo2,
-                                                                                                        photo3,
-                                                                                                        photo4,
-                                                                                                        photo5,
-                                                                                                        photo6,
-                                                                                                        photo7,
-                                                                                                        photo8,
-                                                                                                    ];
-                                                                                                    var x = 0;
-                                                                                                    var y = 0;
-                                                                                                    imgs.forEach((img) => {
-                                                                                                        console.log(x * 256, y * 256);
-                                                                                                        ctx.drawImage(img, x * 256, y * 256, 256, 256);
-                                                                                                        x += 1;
-                                                                                                        if (x == 3) {
-                                                                                                            y++;
-                                                                                                            x = 0;
-                                                                                                        }
-                                                                                                    });
-                                                                                                    var outID = uuidv4() + ".png";
-                                                                                                    fs.writeFileSync("./images/cache/" + outID, Buffer.from(c.toDataURL("image/png").split(",")[1], "base64"));
-
-                                                                                                    /**
-                                                                                                     * @type {Discord.Message}
-                                                                                                     */
-                                                                                                    var message = await client.channels.cache.get("956316856422137856").send({
-                                                                                                        files: [{
-                                                                                                            attachment: __dirname + "\\images\\cache\\" + outID
-                                                                                                        }]
-                                                                                                    });
-
-                                                                                                    setTimeout(() => {
-                                                                                                        fs.unlinkSync("./images/cache/" + outID);
-                                                                                                        imgid.forEach(id => {
-                                                                                                            fs.unlinkSync("./images/cache/" + id);
-                                                                                                        });
-                                                                                                    }, 10000);
-
-                                                                                                    flapslib.webhooks.sendWebhook("dalle", data.prompt + "\n" + message.attachments.first().url, false, msg.channel);
-                                                                                                });
-                                                                                            });
-
-                                                                                        });
-                                                                                    });
-                                                                                });
-                                                                            });
-                                                                        });
-                                                                    });
-                                                                });
-                                                            });
-                                                        });
-                                                    });
-                                                });
-                                            });
-                                        });
-                                    });
+                            if (!data.image) return flapslib.webhooks.sendWebhook("dalle", data.prompt, false, msg.channel);
+                            var c = canvas.createCanvas(768, 768);
+                            var ctx = c.getContext('2d');
+                            var x = 0;
+                            var y = 0;
+                            data.images.forEach((imgurl) => {
+                                var img = new Image();
+                                img.onload = () => ctx.drawImage(img, x * 256, y * 256, 256, 256)
+                                img.onerror = err => { throw err }
+                                img.src = "data:image/jpeg;base64," + imgurl;
+                                x += 1;
+                                if (x == 3) {
+                                    y++;
+                                    x = 0;
+                                }
+                            });
+                            var outID = uuidv4() + ".png";
+                            fs.writeFile("./images/cache/" + outID, Buffer.from(c.toDataURL("image/png").split(",")[1], "base64"), async() => {
+                                var message = await client.channels.cache.get("956316856422137856").send({
+                                    files: [{
+                                        attachment: __dirname + "\\images\\cache\\" + outID
+                                    }]
                                 });
+                                setTimeout(() => {
+                                    fs.unlinkSync("./images/cache/" + outID);
+                                }, 10000);
+                                flapslib.webhooks.sendWebhook("dalle", data.prompt + "\n" + message.attachments.first().url, false, msg.channel);
                             });
                         });
                         break;
