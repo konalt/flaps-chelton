@@ -32,7 +32,7 @@ anita--Blonde Lady Anita (Anita Ire)--933064375105900574
 zimbabwe--CEO of Zimbabwe (Real)--934173325951926332
 bruno--BRUNO POWROZNIK--935578541930733618--(x) => { var y = [".", ",", "!", "?"], z = false; y.forEach(p => { if (x.endsWith(p)) { z = true; } }); return x.toUpperCase() + (z ? " FUCKING STRS" : ". FUCKING STRS")}
 dentist--gustavo fing--936718085363236924--(x) => {return "**" + x + "**";}
-firingsquad--The Firing Squad--938460969112313957--(x) => {if (Math.random() < 0.5) {return "FUCK  YOU FUCK YOU FUCKING BASTARTDS FUCK YOU **I HATE EVERYONE AROUND ME AND I AM A THREAT TO SOCIETY**"} else {return x.toUpperCase();}}
+firingsquad--The Firing Squad--938460969112313957--(x) => {return x /* if (Math.random() < 0) {return "FUCK  YOU FUCK YOU FUCKING BASTARTDS FUCK YOU **I HATE EVERYONE AROUND ME AND I AM A THREAT TO SOCIETY**"} else {return x.toUpperCase();} */}
 salmon--Salmon of Knowledge--945807706034434048
 walter--walt whit--951203673873211392
 jesse--jese pine--951204188786917446

@@ -251,6 +251,8 @@ var deathCauses = [
     "death by carrier pigeon"
 ];
 
+var userStickies = {};
+
 client.on('messageCreate', async(msg) => {
     try {
         console.log(`${msg.author.username}#${msg.author.discriminator}: ${msg.content}`);
@@ -270,7 +272,22 @@ client.on('messageCreate', async(msg) => {
         var commandArgs = msg.content.split(" ");
         var commandArgString = commandArgs.slice(1).join(" ");
         var command = commandArgs[0].toLowerCase();
-        if (msg.content.startsWith(">")) {
+        if (userStickies[msg.author.id]) {
+            if (msg.content.startsWith("!..unsticky")) {
+                return userStickies[msg.author.id] = false;
+            }
+            msg.delete();
+            return sendWebhook(userStickies[msg.author.id], msg.content, false, msg.channel);
+        }
+        if (msg.content.startsWith("!..sticky")) {
+            var stickyBot = commandArgs[1];
+            if (flapslib.webhooks.users[stickyBot]) {
+                userStickies[msg.author.id] = stickyBot;
+                sendWebhook("flaps", stickyBot + " is now your sticky. use !..unsticky to go back to normal", false, msg.channel);
+            } else {
+                sendWebhook("flaps", "FLAPS CHELTON VIOLATION OF PRIVACY IN WOMAN BATHROOMS!!!!!", false, msg.channel);
+            }
+        } else if (msg.content.startsWith(">")) {
             var content = `${msg.content}`;
             if (!msg.reference) {
                 sendWebhook("flaps", `buddy, ya gotta reply to a message if you wanna edit it!!!! also, this only works with <[name] messages.`, false, msg.channel);
