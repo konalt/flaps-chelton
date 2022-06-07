@@ -473,7 +473,7 @@ function dalle(prompt) {
                 out.images = r.images;
             } catch (e) {
                 console.log("some internal server error shit");
-                out.prompt = r;
+                out.prompt = r.replace(/<[/A-z0-9 =!]+>/g, "");
                 out.image = false;
             } finally {
                 resolve(out);
