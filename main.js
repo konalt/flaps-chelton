@@ -175,10 +175,12 @@ client.on('ready', async() => {
     fs.readFile("./saved_status.txt", (_err, data) => {
         data = data.toString();
         console.log(data);
+        var type = data.split(" ")[0].toUpperCase();
+        var name = data.split(" ").slice(1).join(" ");
         client.user.setPresence({
             activities: [{
-                name: data.split(" ").slice(1).join(" "),
-                type: data.split(" ")[1].toUpperCase(),
+                name: name,
+                type: type,
                 url: 'https://konalt.us.to',
                 timestamps: {
                     start: Date.now()
