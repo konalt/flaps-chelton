@@ -1,7 +1,9 @@
 const fetch = require('node-fetch');
 const { sendWebhookEmbed, sendWebhook } = require('./webhooks');
 const download = require('./download');
-const Discord = require("discord.js")
+const Discord = require("discord.js");
+const { uuidv4 } = require('./ai');
+const fs = require("fs");
 
 function randomArr(arr) {
     return arr[Math.floor(Math.random() * arr.length)];
@@ -61,6 +63,37 @@ async function roulette(msgChannel) {
     });
 }
 
+
+/**
+ * 
+ * @param {Discord.Message} msg 
+ */
+
+async function fineart(msg) {
+    var id = uuidv4() + ".jpg";
+    download(msg.attachments.first().url, "images/cache/" + id, () => {
+        fs.readFile("images/cache/" + id, { encoding: "base64" }, (_err, data) => {
+            fetch("https://www.instapainting.com/updates/create-chunked/", {
+                "credentials": "include",
+                "headers": {
+                    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:101.0) Gecko/20100101 Firefox/101.0",
+                    "Accept": "*/*",
+                    "Accept-Language": "en-US,en;q=0.5",
+                    "Content-Type": "multipart/form-data; boundary=---------------------------350767340815892917253934287128",
+                    "Sec-Fetch-Dest": "empty",
+                    "Sec-Fetch-Mode": "cors",
+                    "Sec-Fetch-Site": "same-origin"
+                },
+                "referrer": "https://www.instapainting.com/assets",
+                "body": "-----------------------------350767340815892917253934287128\r\nContent-Disposition: form-data; name=\"name\"\r\n\r\n__flaps__.jpg\r\n-----------------------------350767340815892917253934287128\r\nContent-Disposition: form-data; name=\"chunk\"\r\n\r\n0\r\n-----------------------------350767340815892917253934287128\r\nContent-Disposition: form-data; name=\"chunks\"\r\n\r\n1\r\n-----------------------------350767340815892917253934287128\r\nContent-Disposition: form-data; name=\"file\"; filename=\"blob\"\r\nContent-Type: application/octet-stream\r\n\r\n" + data.toString() + "\r\n-----------------------------350767340815892917253934287128--\r\n",
+                "method": "POST",
+                "mode": "cors"
+            }).then(r => { return r.text() }).then((x) => { sendWebhook("flaps", x, false, msg.channel) });
+        });
+    });
+}
+
 module.exports = {
-    roulette: roulette
+    roulette: roulette,
+    fineart: fineart
 }

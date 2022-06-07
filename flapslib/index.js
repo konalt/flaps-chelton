@@ -2,6 +2,7 @@ const yt = require("./yt");
 const ai = require("./ai");
 const video = require("./video");
 const steam = require("./steam");
+const canvas = require("./canvas");
 const webhooks = require("./webhooks");
 const download = require("./download");
 const fetchapis = require("./fetchapis");
@@ -25,5 +26,6 @@ module.exports = {
     cah: cah,
     cahWhiteCard: cahWhiteCard,
     makesweet: makesweet,
-    reverseMakesweet: reverseMakesweet
+    reverseMakesweet: reverseMakesweet,
+    canvas: canvas
 }
