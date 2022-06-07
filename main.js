@@ -29,6 +29,8 @@ const { cahWhiteCard } = require('./flapslib/cardsagainsthumanity');
 const { loadImage } = require('canvas');
 const { Image } = require('canvas');
 const { laugh, homodog, flip, sb, frame, weezer, carbs, watermark } = require('./flapslib/canvas');
+const { createCanvas } = require('canvas');
+const { Canvas } = require('canvas');
 //var dream = WomboDreamApi.buildDefaultInstance();
 //TODO look at line 12
 
@@ -88,6 +90,11 @@ function attachRecorder(player, file, loop = false) {
         ),
     );
 }
+
+/**
+ * @type {Canvas[]}
+ */
+var canvases = [];
 
 async function connectToChannel(channels) {
     var connections = [];
@@ -1248,6 +1255,58 @@ fbi files on ${commandArgString}: ${(msg.mentions.users.first() ? (descriptions[
                         flapslib.moviereview.morbiusReview(msg.channel);
                     }
                     break;
+                case "!cnv":
+                    {
+                        if (canvases[msg.author.id]) {
+                            var mc_c = canvases[msg.author.id];
+                            var mc = mc_c.getContext('2d');
+                            var a = parseInt(commandArgs[2]) ? parseInt(commandArgs[2]) : commandArgs[2];
+                            var b = parseInt(commandArgs[3]) ? parseInt(commandArgs[3]) : commandArgs[3];
+                            var c = parseInt(commandArgs[4]) ? parseInt(commandArgs[4]) : commandArgs[4];
+                            var d = parseInt(commandArgs[5]) ? parseInt(commandArgs[5]) : commandArgs[5];
+                            var send = true;
+                            switch (commandArgs[1]) {
+                                case "rect":
+                                    mc.fillRect(a, b, c, d);
+                                    break;
+                                case "clear":
+                                    mc.clearRect(0, 0, 1000, 1000);
+                                    break;
+                                case "setcol":
+                                    mc.fillStyle = a;
+                                    send = false;
+                                    break;
+                                default:
+                                    send = true;
+                                    break;
+                            }
+                            if (send) {
+                                console.log("the best pigon");
+                                var imgID = uuidv4().replace(/-/g, "_") + ".png";
+                                var imageStream = Buffer.from(mc_c.toDataURL("image/png").split(",")[1], "base64");
+                                fs.writeFileSync("./images/cache/" + imgID, imageStream);
+
+                                console.log(__dirname + "\\images\\cache\\" + imgID);
+                                /**
+                                 * @type {Discord.Message}
+                                 */
+                                client.channels.cache.get("956316856422137856").send({
+                                    files: [{
+                                        attachment: __dirname + "\\images\\cache\\" + imgID
+                                    }]
+                                }).then(message => {
+                                    setTimeout(() => {
+                                        fs.unlinkSync("./images/cache/" + imgID);
+                                    }, 10000);
+
+                                    flapslib.webhooks.sendWebhook("flaps", message.attachments.first().url, false, msg.channel);
+                                });
+                            }
+                        } else {
+                            canvases[msg.author.id] = createCanvas(1000, 1000);
+                            sendWebhook("flaps", "yer canvas has been created!!!", false, msg.channel);
+                        }
+                    }
             }
         }
     } catch (err) {
