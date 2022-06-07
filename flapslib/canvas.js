@@ -404,12 +404,12 @@ function animethink(msg, client) {
                 var h = msg.attachments.first().height;
                 fs.writeFileSync("../images/cache/" + imgID, imageStream);
                 //sendWebhook("flaps", imageStream.toString("base64").substring(0, 1000), true, msg.channel);
-                var c = canvas.createCanvas(1413 - 130, 1031 - 140);
+                var c = canvas.createCanvas(499, 442);
                 var ctx = c.getContext('2d');
                 canvas.loadImage("./../images/cache/" + imgID).then(async(photo) => {
-                    canvas.loadImage(path.join(__dirname, "..", "images", "frame.png")).then(async(frame) => {
-                        ctx.drawImage(photo, 72, 73, 1125, 729);
-                        ctx.drawImage(frame, -130 / 2, -140 / 2, 1413, 1031);
+                    canvas.loadImage(path.join(__dirname, "..", "images", "animethink.png")).then(async(think) => {
+                        ctx.drawImage(photo, 0, 0, 499, 241);
+                        ctx.drawImage(think, 0, 0, 499, 442);
                         var imageStream2 = Buffer.from(c.toDataURL("image/png").split(",")[1], "base64");
                         fs.writeFileSync("../images/cache/" + imgID2, imageStream2);
                         console.log("../images/cache/" + imgID2);
@@ -680,5 +680,6 @@ module.exports = {
     frame: frame,
     weezer: weezer,
     carbs: carbs,
-    watermark: watermark
+    watermark: watermark,
+    animethink: animethink
 };

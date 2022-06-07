@@ -28,7 +28,7 @@ const { sendWebhook, editWebhookMsg } = require('./flapslib/webhooks');
 const { cahWhiteCard } = require('./flapslib/cardsagainsthumanity');
 const { loadImage } = require('canvas');
 const { Image } = require('canvas');
-const { laugh, homodog, flip, sb, frame, weezer, carbs, watermark } = require('./flapslib/canvas');
+const { laugh, homodog, flip, sb, frame, weezer, carbs, watermark, animethink } = require('./flapslib/canvas');
 const { createCanvas } = require('canvas');
 const { Canvas } = require('canvas');
 //var dream = WomboDreamApi.buildDefaultInstance();
@@ -992,6 +992,9 @@ fbi files on ${commandArgString}: ${(msg.mentions.users.first() ? (descriptions[
                         sendWebhook("rps", `You chose **${input}**. I chose **${output}**. Winner: **${winner}**!`, false, msg.channel);
                         break;
                     }
+                case "!animethink":
+                    animethink(msg, client);
+                    break;
                 case "!dalle":
                     {
                         var x = "pigeons flying in city";
