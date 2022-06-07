@@ -234,7 +234,7 @@ var commands = {
 var descriptions = {
     "489894082500493349": "a cold blooded killer, ready to strike whenever newports are on the line\nhttps://media.discordapp.net/attachments/910525327585992737/980522490856095825/4.PNG",
     "445968175381610496": "the creator of \"Flaps Chelton\", which is a discord bot designed to facilitate illegal activity.\nhttps://media.discordapp.net/attachments/910525327585992737/980524110952157254/unknown.png",
-    "794301103721414676": "SCP-1222 - Description: horny little runcling. really loves <:nice:980058300240515124>\nhttps://media.discordapp.net/attachments/910525327585992737/980522446572650617/unknown.png",
+    "794301103721414676": "SCP-1222 - Description: horny little runcling. really loves <:nice:979045005345849375>\nhttps://media.discordapp.net/attachments/910525327585992737/980522446572650617/unknown.png",
     "976471678429311086": "'yeah i still would tho' 'agreed'\nhttps://media.discordapp.net/attachments/910525327585992737/980522944201629736/unknown.png",
     "775778497707769927": "el polozhenie\nhttps://media.discordapp.net/attachments/910525327585992737/980523248120889344/unknown.png",
     "741701565907206267": "Loves to make [[DEALS]]\nhttps://media.discordapp.net/attachments/910525327585992737/980524568416493668/unknown.png",
@@ -1311,6 +1311,10 @@ fbi files on ${commandArgString}: ${(msg.mentions.users.first() ? (descriptions[
                             canvases[msg.author.id] = createCanvas(1000, 1000);
                             sendWebhook("flaps", "yer canvas has been created!!!", false, msg.channel);
                         }
+                    }
+                case "!tca":
+                    {
+                        sendWebhook("flaps", "<:flaps_chelton_himself:933772583185305721>", false, msg.channel);
                     }
             }
         }
