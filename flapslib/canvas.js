@@ -186,13 +186,13 @@ function laugh(msg, client) {
 function homodog(msg, client) {
     //data = "data:" + response.headers["content-type"] + ";base64," + Buffer.from(body).toString('base64');
     var imgID2 = uuidv4().replace(/-/g, "_") + ".png";
-    var text = commandArgString;
-    var id = flapslib.ai.uuidv4();
+    var text = msg.content.split(" ").slice(1).join(" ");
+    var id = uuidv4();
 
     function doThing(imgid, w, h) {
         var c = canvas.createCanvas(w, h);
         var ctx = c.getContext('2d');
-        canvas.loadImage(__dirname + "./../images\\cache\\" + imgid).then(async(photo) => {
+        canvas.loadImage(path.join(__dirname, "..", "images", imgid)).then(async(photo) => {
             ctx.drawImage(photo, 0, 0, w, h);
 
             ctx.fillStyle = "white";
@@ -206,19 +206,19 @@ function homodog(msg, client) {
 
             var imageStream2 = Buffer.from(c.toDataURL("image/png").split(",")[1], "base64");
             fs.writeFileSync("../images/cache/" + imgID2, imageStream2);
+            console.log("../images/cache/" + imgID2);
 
-            console.log(__dirname + "./../images\\cache\\" + imgID2);
             /**
              * @type {Discord.Message}
              */
             var message = await client.channels.cache.get("956316856422137856").send({
                 files: [{
-                    attachment: __dirname + "./../images\\cache\\" + imgID2
+                    attachment: "../images\\cache\\" + imgID2
                 }]
             });
 
             setTimeout(() => {
-                fs.unlinkSync("../images/cache/" + imgID2);
+                fs.unlinkSync("./../images/cache/" + imgID2);
             }, 10000);
 
             sendWebhook("jamesphotoframe", message.attachments.first().url, false, msg.channel);
@@ -226,10 +226,10 @@ function homodog(msg, client) {
     }
     if (msg.attachments.first()) {
         flapslib.download(msg.attachments.first().url, "images/cache/" + id, () => {
-            doThing(id, msg.attachments.first().width, msg.attachments.first().height);
+            doThing("cache/" + id, msg.attachments.first().width, msg.attachments.first().height);
         });
     } else {
-        doThing("..\\homophobicdog.png", 680, 680);
+        doThing("homophobicdog.png", 680, 680);
     }
 }
 
