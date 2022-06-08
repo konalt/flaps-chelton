@@ -1328,11 +1328,25 @@ fbi files on ${commandArgString}: ${(msg.mentions.users.first() ? (descriptions[
                             canvases[msg.author.id] = createCanvas(1000, 1000);
                             sendWebhook("flaps", "yer canvas has been created!!!", false, msg.channel);
                         }
+                        break;
                     }
                 case "!tca":
                     {
                         sendWebhook("flaps", "<:swagger4:983694508392857600>", false, msg.channel);
+                        break;
                     }
+                case "!southerner":
+                    var str = `the best part
+                        about meatballs
+                        is that poor people cannot make them
+                        poor people only get
+                        malt liqour
+                        cool aid
+                        and shitty fried chicken
+                        that looks like a nice meatball
+                        not that a poor man would know
+                        ha ha`;
+                    sendWebhook("southerner", str, false, msg.channel);
             }
         }
     } catch (err) {
