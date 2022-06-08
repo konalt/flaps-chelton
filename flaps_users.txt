@@ -65,3 +65,4 @@ smallcock--small cock department--https://media.discordapp.net/attachments/88274
 ben--Talking Ben--https://media.discordapp.net/attachments/910525327585992737/983748757118124102/unknown.png
 southerner--Poor Person Hater--https://media.discordapp.net/attachments/882743320554643476/983815005101240340/unknown.png?width=404&height=663
 cockdep--Cock Department--https://media.discordapp.net/attachments/910525327585992737/984172286141673543/unknown.png--(x)=>{ return x.replace(/mr/gi, "mistuh").replace(/mister/gi, "mistuh").replace(/[rl]/gi, "w");}
+ghost--Ghost (separate from machine)--https://media.discordapp.net/attachments/910525327585992737/984175596831653968/unknown.png
