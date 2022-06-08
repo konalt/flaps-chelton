@@ -1189,7 +1189,7 @@ fbi files on ${commandArgString}: ${(msg.mentions.users.first() ? (descriptions[
                     }
                     break;
                 case "!owo":
-                    sendWebhook("flaps", owoify(commandArgString, "uwu"), false, msg.channel);
+                    sendWebhook("joingle", owoify(commandArgString, "uwu"), false, msg.channel);
                     break;
                 case "!flapslength":
                     {
