@@ -31,6 +31,7 @@ const { Image } = require('canvas');
 const { laugh, homodog, flip, sb, frame, weezer, carbs, watermark, animethink } = require('./flapslib/canvas');
 const { createCanvas } = require('canvas');
 const { Canvas } = require('canvas');
+const owoify = require('owoify-js').default;
 //var dream = WomboDreamApi.buildDefaultInstance();
 //TODO look at line 12
 
@@ -1186,6 +1187,9 @@ fbi files on ${commandArgString}: ${(msg.mentions.users.first() ? (descriptions[
                     {
                         flapslib.fetchapis.roulette(msg.channel);
                     }
+                    break;
+                case "!owo":
+                    sendWebhook("flaps", owoify(commandArgString, "uwu"), false, msg.channel);
                     break;
                 case "!flapslength":
                     {
