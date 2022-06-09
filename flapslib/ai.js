@@ -537,7 +537,7 @@ async function gpt3complete(question, channel) {
     sendWebhook("monsoon", question + response.data.choices[0].text, false, channel);
 }
 
-async function elcomplete(content, channel) {
+async function elcomplete(content, channel, temp) {
     fetch("https://api.eleuther.ai/completion", {
         "credentials": "omit",
         "headers": {
@@ -550,7 +550,7 @@ async function elcomplete(content, channel) {
             "Sec-Fetch-Site": "same-site"
         },
         "referrer": "https://6b.eleuther.ai/",
-        "body": "{\"context\":\"" + content + "\",\"top_p\":0.9,\"temp\":0.8,\"response_length\":128,\"remove_input\":true}",
+        "body": "{\"context\":\"" + content + "\",\"top_p\":0.9,\"temp\":" + temp + ",\"response_length\":128,\"remove_input\":true}",
         "method": "POST",
         "mode": "cors"
     }).then(r => r.json()).then(data => {
