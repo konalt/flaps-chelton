@@ -1,5 +1,6 @@
 const fetch = require('node-fetch');
 const fs = require('fs');
+const owoify = require("owoify-js").default;
 
 var users = {};
 
