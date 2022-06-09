@@ -159,6 +159,12 @@ async function trim(name, times, msg, client) {
         }
     });
 }
+
+var client;
+
+function setClient(c) {
+    client = c;
+}
 async function videoGif(name, msg) {
     var id = uuidv4().replace(/-/gi, "");
     var ext = "." + msg.attachments.first().url.split('.').pop();
@@ -335,5 +341,6 @@ module.exports = {
     videoGif: videoGif,
     armstrongify: armstrongify,
     complexFFmpeg: complexFFmpeg,
-    baitSwitch: baitSwitch
+    baitSwitch: baitSwitch,
+    setClient: setClient
 }

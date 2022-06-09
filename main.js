@@ -1386,3 +1386,4 @@ fs.readFile("./token.txt", (err, data) => {
 });
 
 flapslib.watchparty_init(client);
+flapslib.videowrapper.setClient(client);
