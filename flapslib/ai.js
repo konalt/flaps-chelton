@@ -502,11 +502,17 @@ const configuration = new Configuration({
 });
 const openai = new OpenAIApi(configuration);
 
+var monsoonPre = "";
+var monsoonPres = [
+    "I am a very rude AI. I like to swear when people ask me questions. My name is Bitchface.",
+    "i am a cute wittwaw bwowowoy whwo wuvs being submissiwe and bweedabwe! uwu!",
+    ""
+];
 
 async function question(question, channel) {
     const response = await openai.createCompletion({
         model: "text-davinci-002",
-        prompt: "Q: " + question,
+        prompt: monsoonPre + "\nQ: " + question,
         temperature: 0,
         max_tokens: 100,
         top_p: 1,
@@ -514,6 +520,11 @@ async function question(question, channel) {
         presence_penalty: 0,
     });
     sendWebhook("monsoon", response.data.choices[0].text, false, channel);
+}
+
+function switchMode(channel) {
+    monsoonPre = monsoonPres[Math.floor(Math.random() * monsoonPres.length)];
+    sendWebhook("monsoon", "done. try it out!", false, channel);
 }
 
 module.exports = {
@@ -529,7 +540,8 @@ module.exports = {
     txtgen: textgen,
     upscaleImage: upscaleImage,
     dalle: dalle,
-    question: question
+    question: question,
+    switchMode: switchMode
 };
 
 init();
