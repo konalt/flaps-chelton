@@ -482,6 +482,7 @@ function dalle(prompt, isSecondReq = false) {
                 } else {
                     setTimeout(() => {
                         dalle(prompt, true).then(data => {
+                            console.log(data);
                             resolve(data);
                         });
                     }, 1500);
