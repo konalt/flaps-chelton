@@ -474,6 +474,9 @@ function dalle(prompt) {
             } catch (e) {
                 console.log("some internal server error shit");
                 out.prompt = r.replace(/<[/A-z0-9 =!]+>/g, "");
+                if (Math.random() < 0.4) {
+                    out.prompt = "418 I'm a Teapot\n\nThe server refused to handle this due to a long queue.\nnginx/1.18.0 (Ubuntu)"
+                }
                 out.image = false;
             } finally {
                 resolve(out);
