@@ -512,7 +512,7 @@ var monsoonPres = [
 async function question(question, channel) {
     const response = await openai.createCompletion({
         model: "text-davinci-002",
-        prompt: monsoonPre + "\nQ: " + question,
+        prompt: monsoonPre + "\nQ: " + question + "\nA:",
         temperature: 0,
         max_tokens: 100,
         top_p: 1,
@@ -522,9 +522,22 @@ async function question(question, channel) {
     sendWebhook("monsoon", response.data.choices[0].text, false, channel);
 }
 
+async function gpt3complete(question, channel) {
+    const response = await openai.createCompletion({
+        model: "text-davinci-002",
+        prompt: question,
+        temperature: 0,
+        max_tokens: 100,
+        top_p: 1,
+        frequency_penalty: 0,
+        presence_penalty: 0,
+    });
+    sendWebhook("monsoon", question + response.data.choices[0].text, false, channel);
+}
+
 function switchMode(channel) {
     monsoonPre = monsoonPres[Math.floor(Math.random() * monsoonPres.length)];
-    sendWebhook("monsoon", "done. try it out!", false, channel);
+    sendWebhook("monsoon", "done. try it out!\n" + monsoonPre, false, channel);
 }
 
 module.exports = {
@@ -541,7 +554,8 @@ module.exports = {
     upscaleImage: upscaleImage,
     dalle: dalle,
     question: question,
-    switchMode: switchMode
+    switchMode: switchMode,
+    gpt3complete: gpt3complete
 };
 
 init();
