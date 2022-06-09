@@ -441,7 +441,7 @@ async function upscaleImage(msg, msgChannel, client) {
     }
 }
 
-function dalle(prompt) {
+function dalle(prompt, isSecondReq = false) {
     return new Promise((resolve, reject) => {
         fetch("https://bf.dallemini.ai/generate", {
             "credentials": "omit",
@@ -473,11 +473,19 @@ function dalle(prompt) {
                 out.images = r.images;
             } catch (e) {
                 console.log("some internal server error shit");
-                out.prompt = r.replace(/<[/A-z0-9 =!]+>/g, "");
-                if (Math.random() < 0.4) {
-                    out.prompt = "418 I'm a Teapot\n\nThe server refused to handle this due to a long queue.\nnginx/1.18.0 (Ubuntu)"
+                if (isSecondReq) {
+                    out.prompt = r.replace(/<[/A-z0-9 =!]+>/g, "");
+                    if (Math.random() < 0.4) {
+                        out.prompt = "418 I'm a Teapot\n\nThe server refused to handle this due to a long queue.\nnginx/1.18.0 (Ubuntu)"
+                    }
+                    out.image = false;
+                } else {
+                    setTimeout(() => {
+                        dalle(prompt, true).then(data => {
+                            resolve(data);
+                        });
+                    }, 1500);
                 }
-                out.image = false;
             } finally {
                 resolve(out);
             }
