@@ -23,7 +23,7 @@ const {
     generateDependencyReport,
 } = require('@discordjs/voice');
 const download = require('./flapslib/download');
-const { uuidv4, question, switchMode, gpt3complete } = require('./flapslib/ai');
+const { uuidv4, question, switchMode, gpt3complete, elcomplete } = require('./flapslib/ai');
 const { sendWebhook, editWebhookMsg } = require('./flapslib/webhooks');
 const { cahWhiteCard } = require('./flapslib/cardsagainsthumanity');
 const { loadImage } = require('canvas');
@@ -1360,6 +1360,9 @@ fbi files on ${commandArgString}: ${(msg.mentions.users.first() ? (descriptions[
                     break;
                 case "!monsoonswitch":
                     switchMode(msg.channel);
+                    break;
+                case "!elcomplete":
+                    elcomplete(commandArgString, msg.channel);
                     break;
             }
         }

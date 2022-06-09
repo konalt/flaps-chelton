@@ -509,9 +509,11 @@ var monsoonPres = [
     ""
 ];
 
+var model = "text-curie-001";
+
 async function question(question, channel) {
     const response = await openai.createCompletion({
-        model: "text-davinci-002",
+        model: model,
         prompt: monsoonPre + "\nQ: " + question + "\nA:",
         temperature: 0,
         max_tokens: 100,
@@ -524,7 +526,7 @@ async function question(question, channel) {
 
 async function gpt3complete(question, channel) {
     const response = await openai.createCompletion({
-        model: "text-davinci-002",
+        model: model,
         prompt: question,
         temperature: 0,
         max_tokens: 100,
@@ -533,6 +535,27 @@ async function gpt3complete(question, channel) {
         presence_penalty: 0,
     });
     sendWebhook("monsoon", question + response.data.choices[0].text, false, channel);
+}
+
+async function elcomplete(content, channel) {
+    fetch("https://api.eleuther.ai/completion", {
+        "credentials": "omit",
+        "headers": {
+            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:101.0) Gecko/20100101 Firefox/101.0",
+            "Accept": "application/json",
+            "Accept-Language": "en-US,en;q=0.5",
+            "Content-Type": "application/json",
+            "Sec-Fetch-Dest": "empty",
+            "Sec-Fetch-Mode": "cors",
+            "Sec-Fetch-Site": "same-site"
+        },
+        "referrer": "https://6b.eleuther.ai/",
+        "body": "{\"context\":\"" + content + "\",\"top_p\":0.9,\"temp\":0.8,\"response_length\":128,\"remove_input\":true}",
+        "method": "POST",
+        "mode": "cors"
+    }).then(r => r.json()).then(data => {
+        sendWebhook("deepai", "**" + content + "**" + data[0].generated_text, false, channel);
+    });
 }
 
 function switchMode(channel) {
@@ -555,7 +578,8 @@ module.exports = {
     dalle: dalle,
     question: question,
     switchMode: switchMode,
-    gpt3complete: gpt3complete
+    gpt3complete: gpt3complete,
+    elcomplete: elcomplete
 };
 
 init();
