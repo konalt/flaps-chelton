@@ -23,7 +23,7 @@ const {
     generateDependencyReport,
 } = require('@discordjs/voice');
 const download = require('./flapslib/download');
-const { uuidv4 } = require('./flapslib/ai');
+const { uuidv4, question } = require('./flapslib/ai');
 const { sendWebhook, editWebhookMsg } = require('./flapslib/webhooks');
 const { cahWhiteCard } = require('./flapslib/cardsagainsthumanity');
 const { loadImage } = require('canvas');
@@ -1351,6 +1351,10 @@ fbi files on ${commandArgString}: ${(msg.mentions.users.first() ? (descriptions[
                         not that a poor man would know
                         ha ha`;
                     sendWebhook("southerner", str, false, msg.channel);
+                    break;
+                case "!question":
+                    question(commandArgString, msg.channel);
+                    break;
             }
         }
     } catch (err) {

@@ -495,6 +495,27 @@ function dalle(prompt, isSecondReq = false) {
     });
 }
 
+const { Configuration, OpenAIApi } = require("openai");
+
+const configuration = new Configuration({
+    apiKey: fs.readFileSync("./openai.txt"),
+});
+const openai = new OpenAIApi(configuration);
+
+
+async function question(question, channel) {
+    const response = await openai.createCompletion({
+        model: "text-davinci-002",
+        prompt: "Q: " + question,
+        temperature: 0,
+        max_tokens: 100,
+        top_p: 1,
+        frequency_penalty: 0,
+        presence_penalty: 0,
+    });
+    sendWebhook("monsoon", response.data.choices[0].text, false, channel);
+}
+
 module.exports = {
     generateImage: generateImage,
     autocompleteText: autocompleteText,
@@ -507,7 +528,8 @@ module.exports = {
     armstrong2: armstrong,
     txtgen: textgen,
     upscaleImage: upscaleImage,
-    dalle: dalle
+    dalle: dalle,
+    question: question
 };
 
 init();

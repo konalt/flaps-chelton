@@ -8,6 +8,7 @@
     "get-random-values": "^1.2.2",
     "get-video-duration": "^4.1.0",
     "markov-text-generator": "^1.0.2",
+    "openai": "^3.0.0",
     "owoify-js": "^1.0.7",
     "prism-media": "^1.3.2",
     "puppeteer": "^13.7.0",
