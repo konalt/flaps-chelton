@@ -27,7 +27,7 @@ function textgen(channel) {
 }
 
 async function init() {
-    aiPageData.browser = await puppeteer.launch();
+    aiPageData.browser = await puppeteer.launch({ headless: false });
     aiPageData.page = await aiPageData.browser.newPage();
     await aiPageData.page.goto("https://deepai.org/machine-learning-model/text-generator");
     aiPageData.page.on('console', async(msg) => {
@@ -35,6 +35,9 @@ async function init() {
         for (let i = 0; i < msgArgs.length; ++i) {
             console.log(await msgArgs[i].jsonValue());
         }
+    });
+    await aiPageData.page.setExtraHTTPHeaders({
+        'Accept-Language': 'en-US,en;q=0.9'
     });
     puppeteerInitialized = true;
 }
@@ -256,6 +259,29 @@ async function threeDimensionalTextLayer2(text, msgChannel, msg, imageName, clie
             waitCounts = 0;
             clearInterval(waitInterval);
             return sendWebhook("deepai", "Loop detected (took more than 20 seconds)", false, msgChannel);
+        }
+    }, 1000);
+}
+
+async function googleTrends(queries, msgChannel, client) {
+    await aiPageData.page.goto("https://trends.google.com/trends/explore?date=all&geo=US&q=" + queries.map(q => { return encodeURIComponent(q) }).join(","));
+    var imgID2 = uuidv4().replace(/-/gi, "");
+    var imagePath = path.join(__dirname, '../images/cache/', imgID2 + '.jpg');
+    var waitInterval = setInterval(async() => {
+        const element = await aiPageData.page.$('.multi-heat-map-and-legends-without-explanation-container');
+        console.log(element);
+        if (element) {
+            clearInterval(waitInterval);
+            await element.screenshot({ path: imagePath });
+            var message = await client.channels.cache.get("956316856422137856").send({
+                files: [{
+                    attachment: imagePath
+                }]
+            });
+            setTimeout(() => {
+                fs.unlinkSync(imagePath);
+            }, 10000);
+            sendWebhook("flaps", message.attachments.first().url, false, msgChannel);
         }
     }, 1000);
 }
@@ -502,14 +528,16 @@ const configuration = new Configuration({
 });
 const openai = new OpenAIApi(configuration);
 
-var monsoonPre = "";
 var monsoonPres = [
-    "I am a very rude AI. I like to swear when people ask me questions. My name is Bitchface.",
-    "i am a cute wittwaw bwowowoy whwo wuvs being submissiwe and bweedabwe! uwu!",
-    ""
+    "ME TALK IN CAPITAL LETTERS. BAD GRAMMAR. HATES CROWS. SWEARS A LOT. TALKS ABOUT CROWS IN EVERY ANSWER.",
+    //"I'M ...C-CUUUUUMMING! CUUUUM I'M-- CU I'M CUMMING! CUM I'M CUMMING.. CUM I'M.. CUM .. CUMMING.. CUMMING I'M CUMMING!"
+    /* "i am a cute wittwaw bwowowoy whwo wuvs being submissiwe and bweedabwe! uwu!",
+    "I am Monsoon from Metal Gear Rising." */
 ];
 
-var model = "text-curie-001";
+var monsoonPre = monsoonPres[0];
+
+var model = "text-davinci-002";
 
 async function question(question, channel) {
     const response = await openai.createCompletion({
@@ -579,7 +607,8 @@ module.exports = {
     question: question,
     switchMode: switchMode,
     gpt3complete: gpt3complete,
-    elcomplete: elcomplete
+    elcomplete: elcomplete,
+    googleTrends: googleTrends
 };
 
 init();

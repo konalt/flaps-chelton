@@ -1352,12 +1352,12 @@ fbi files on ${commandArgString}: ${(msg.mentions.users.first() ? (descriptions[
                         ha ha`;
                     sendWebhook("southerner", str, false, msg.channel);
                     break;
-                    /* case "!question":
-                        question(commandArgString, msg.channel);
-                        break;
-                    case "!gpt3complete":
-                        gpt3complete(commandArgString, msg.channel);
-                        break; */
+                case "!question":
+                    question(commandArgString, msg.channel);
+                    break;
+                case "!gpt3complete":
+                    gpt3complete(commandArgString, msg.channel);
+                    break;
                 case "!monsoonswitch":
                     switchMode(msg.channel);
                     break;
