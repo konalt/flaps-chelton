@@ -84,10 +84,10 @@ async function sendWebhookFile(id, filename, noDelete = false, msgChannel) {
     });
 
     if (!noDelete) {
-        setTimeout(() => {
+        /* setTimeout(() => {
             fs.unlinkSync("images/cache/" + newId);
             fs.unlinkSync(outputFilename);
-        }, 10000);
+        }, 10000); */
     }
 
     sendWebhook(id, message.attachments.first().url, false, msgChannel);
