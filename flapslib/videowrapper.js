@@ -209,6 +209,28 @@ async function imageAudio(name, msg, client) {
         }
     });
 }
+async function gifAudio(name, msg, client) {
+    var id = uuidv4().replace(/-/gi, "");
+    video.gifAudio("images/cache/" + name, "images/cache/" + id).then(async() => {
+        try {
+            var message = await client.channels.cache.get("956316856422137856").send({
+                files: [{
+                    attachment: "images/cache/" + id + ".mp4"
+                }]
+            });
+
+            setTimeout(() => {
+                fs.unlinkSync("images/cache/" + id + ".mp4");
+                fs.unlinkSync("images/cache/" + name + ".gif");
+                fs.unlinkSync("images/cache/" + name + ".mp3");
+            }, 10000);
+
+            sendWebhook("ffmpeg", message.attachments.first().url, false, msg.channel);
+        } catch {
+            sendWebhook("ffmpeg", "oops, looks like the vido too bigge.", false, msg.channel);
+        }
+    });
+}
 async function videoAudio(name, msg) {
     var id = uuidv4().replace(/-/gi, "");
     video.videoAudio("images/cache/" + name, "images/cache/" + id).then(async() => {
@@ -355,5 +377,6 @@ module.exports = {
     complexFFmpeg: complexFFmpeg,
     baitSwitch: baitSwitch,
     setClient: setClient,
-    mimeNod: mimeNod
+    mimeNod: mimeNod,
+    gifAudio: gifAudio
 }

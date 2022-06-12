@@ -149,6 +149,21 @@ async function imageAudio(input, output) {
         });
     });
 }
+async function gifAudio(input, output) {
+    return new Promise((resolve, reject) => {
+        var ffmpegInstance = cp.spawn("ffmpeg", `-y -loop 1 -i ${path.join(__dirname, "..", input + ".gif")} -i ${path.join(__dirname, "..", input + ".mp3")} -vf "pad=ceil(iw/2)*2:ceil(ih/2)*2" -c:v libx264 -tune stillimage -c:a aac -b:a 192k -pix_fmt yuv420p -shortest ${path.join(__dirname, "..", output + ".mp4")}`.split(" "), { shell: true });
+        ffmpegInstance.stdout.on("data", (c) => {
+            stdout.write(c);
+        });
+        ffmpegInstance.stderr.on("data", (c) => {
+            stdout.write(c);
+        });
+        ffmpegInstance.on("exit", (code) => {
+            console.log("EXIT " + code);
+            resolve();
+        });
+    });
+}
 async function baitSwitch(input, output, options = {}) {
     return new Promise((resolve, reject) => {
         var ffmpegInstance = cp.spawn("ffmpeg", `-y -t 1 -i ${path.join(__dirname, "..", input + ".png")} -i ${path.join(__dirname, "..", input + ".mp4")} -filter_complex "[0:v]scale=ceil(${options.w}/2)*2:ceil(${options.h}/2)*2,setsar=1:1[v0];[1:v]scale=ceil(${options.w}/2)*2:ceil(${options.h}/2)*2,setsar=1:1[v1];[v0][v1]concat[vout]" -map "[vout]" -map "1:a" -vsync 2 ${path.join(__dirname, "..", output + ".mp4")}`.split(" "), { shell: true });
@@ -261,5 +276,6 @@ module.exports = {
     setArmstrongSize: setArmstrongSize,
     complexFFmpeg: complexFFmpeg,
     baitSwitch: baitSwitch,
-    mimeNod: mimeNod
+    mimeNod: mimeNod,
+    gifAudio: gifAudio
 }

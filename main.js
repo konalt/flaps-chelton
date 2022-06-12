@@ -1368,6 +1368,16 @@ fbi files on ${commandArgString}: ${(msg.mentions.users.first() ? (descriptions[
                     if (!parseInt(commandArgs[1])) return sendWebhook("ffmpeg", "argument must be a number (bpm)", false, msg.channel);
                     flapslib.videowrapper.mimeNod(parseInt(commandArgs[1]), msg);
                     break;
+                case "!gifaudio":
+                    if (msg.attachments.first(2)[1]) {
+                        var id = uuidv4().replace(/-/g, "");
+                        download(msg.attachments.first().url, "./images/cache/" + id + ".gif", () => {
+                            download(msg.attachments.first(2)[1].url, "./images/cache/" + id + ".mp3", () => {
+                                flapslib.videowrapper.gifAudio(id, msg, client);
+                            });
+                        });
+                    }
+                    break;
             }
         }
     } catch (err) {
