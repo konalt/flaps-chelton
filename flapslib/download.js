@@ -4,7 +4,7 @@ const fs = require('fs');
 var download = function(url, dest, cb) {
     var file = fs.createWriteStream(dest);
     var request = https.get(url, function(response) {
-        if (!response.statusCode == 200) {
+        if (response.statusCode != 200) {
             return cb(true);
         }
         response.pipe(file);

@@ -151,7 +151,7 @@ async function imageAudio(input, output) {
 }
 async function gifAudio(input, output) {
     return new Promise((resolve, reject) => {
-        var ffmpegInstance = cp.spawn("ffmpeg", `-y -loop 1 -i ${path.join(__dirname, "..", input + ".gif")} -i ${path.join(__dirname, "..", input + ".mp3")} -vf "pad=ceil(iw/2)*2:ceil(ih/2)*2" -c:v libx264 -tune stillimage -c:a aac -b:a 192k -pix_fmt yuv420p -shortest ${path.join(__dirname, "..", output + ".mp4")}`.split(" "), { shell: true });
+        var ffmpegInstance = cp.spawn("ffmpeg", `-y -ignore_loop 0 -i ${path.join(__dirname, "..", input + ".gif")} -i ${path.join(__dirname, "..", input + ".mp3")} -vf "pad=ceil(iw/2)*2:ceil(ih/2)*2" -c:v libx264 -shortest ${path.join(__dirname, "..", output + ".mp4")}`.split(" "), { shell: true });
         ffmpegInstance.stdout.on("data", (c) => {
             stdout.write(c);
         });
