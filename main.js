@@ -1364,6 +1364,10 @@ fbi files on ${commandArgString}: ${(msg.mentions.users.first() ? (descriptions[
                 case "!elcomplete":
                     elcomplete(commandArgString, msg.channel, 1);
                     break;
+                case "!mimenod":
+                    if (!parseInt(commandArgs[1])) return sendWebhook("ffmpeg", "argument must be a number (bpm)", false, msg.channel);
+                    flapslib.videowrapper.mimeNod(parseInt(commandArgs[1]), msg);
+                    break;
             }
         }
     } catch (err) {

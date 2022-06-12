@@ -1,6 +1,6 @@
 const video = require("./video");
 const { uuidv4 } = require("./ai");
-const { sendWebhook } = require("./webhooks");
+const { sendWebhook, sendWebhookFile } = require("./webhooks");
 const fs = require("fs");
 const path = require("path");
 
@@ -328,6 +328,18 @@ async function complexFFmpeg(name, msg) {
     });
 }
 
+async function mimeNod(bpm, msg) {
+    var id = uuidv4().replace(/-/gi, "");
+    var ext = ".gif";
+    video.mimeNod("images/cache/" + id + ext, bpm).then(async() => {
+        try {
+            sendWebhookFile("ffmpeg", "images/cache/" + id + ext, false, msg.channel);
+        } catch {
+            sendWebhook("ffmpeg", "oops, looks like the vido too bigge.", false, msg.channel);
+        }
+    });
+}
+
 module.exports = {
     addText: addText,
     simpleMemeCaption: simpleMemeCaption,
@@ -342,5 +354,6 @@ module.exports = {
     armstrongify: armstrongify,
     complexFFmpeg: complexFFmpeg,
     baitSwitch: baitSwitch,
-    setClient: setClient
+    setClient: setClient,
+    mimeNod: mimeNod
 }
