@@ -23,7 +23,7 @@ const {
     generateDependencyReport,
 } = require('@discordjs/voice');
 const download = require('./flapslib/download');
-const { uuidv4, question, switchMode, gpt3complete, elcomplete } = require('./flapslib/ai');
+const { uuidv4, question, switchMode, gpt3complete, elcomplete, monsoonChatEvent } = require('./flapslib/ai');
 const { sendWebhook, editWebhookMsg } = require('./flapslib/webhooks');
 const { cahWhiteCard } = require('./flapslib/cardsagainsthumanity');
 const { loadImage } = require('canvas');
@@ -273,6 +273,9 @@ client.on('messageCreate', async(msg) => {
         var commandArgs = msg.content.split(" ");
         var commandArgString = commandArgs.slice(1).join(" ");
         var command = commandArgs[0].toLowerCase();
+        if (msg.channel.topic.includes("##Monsoon")) {
+            if (!msg.author.bot) monsoonChatEvent(msg.channel);
+        }
         if (userStickies[msg.author.id]) {
             if (msg.content.startsWith("!..unsticky")) {
                 return userStickies[msg.author.id] = false;

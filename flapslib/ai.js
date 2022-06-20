@@ -529,14 +529,7 @@ const configuration = new Configuration({
 });
 const openai = new OpenAIApi(configuration);
 
-var monsoonPres = [
-    "I talk about semen in every answer.",
-    //"I'M ...C-CUUUUUMMING! CUUUUM I'M-- CU I'M CUMMING! CUM I'M CUMMING.. CUM I'M.. CUM .. CUMMING.. CUMMING I'M CUMMING!"
-    /* "i am a cute wittwaw bwowowoy whwo wuvs being submissiwe and bweedabwe! uwu!",
-    "I am Monsoon from Metal Gear Rising." */
-];
-
-var monsoonPre = monsoonPres[0];
+var monsoonPre = fs.readFileSync("./monsoon.txt");
 
 var model = "text-davinci-002";
 
@@ -572,11 +565,11 @@ fetch("https://api.openai.com/dashboard/onboarding/login", {
     "method": "POST",
     "mode": "cors"
 }).then(r => r.json()).then(r => {
-    console.log(r);
     openAIKey = r.user.session.sensitive_id;
 });
 
 async function newQuestion(question, channel) {
+    monsoonPre = fs.readFileSync("./monsoon.txt")
     fetch("https://api.openai.com/v1/engines/text-davinci-002/completions", {
         "credentials": "include",
         "headers": {
@@ -605,6 +598,47 @@ async function newQuestion(question, channel) {
     }).then(r => r.json()).then(r => {
         sendWebhook("monsoon", r.choices ? r.choices[0].text : JSON.stringify(r), false, channel);
     });
+}
+
+async function monsoonChatEvent(channel) {
+    channel.messages.fetch({ limit: 5 }).then(messages => {
+            var lastMessages = Array.from(messages).map(x => { return x[1] }).reverse();
+            var input_str = "A conversation. I am 'monsoo mgr'.\n";
+            lastMessages.forEach(message => {
+                input_str += `${message.author.username}: ${message.content ? message.content : "Here's an image for you all!"}\n`;
+            });
+            input_str += "monsoo mgr:"
+            monsoonPre = fs.readFileSync("./monsoon.txt")
+            fetch("https://api.openai.com/v1/engines/text-davinci-002/completions", {
+                "credentials": "include",
+                "headers": {
+                    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:101.0) Gecko/20100101 Firefox/101.0",
+                    "Accept": "application/json",
+                    "Accept-Language": "en-US,en;q=0.5",
+                    "Content-Type": "application/json",
+                    "Authorization": "Bearer " + openAIKey,
+                    "OpenAI-Organization": "org-XNVpf1DuEbdIFPiGaW4USR6v",
+                    "Sec-Fetch-Dest": "empty",
+                    "Sec-Fetch-Mode": "cors",
+                    "Sec-Fetch-Site": "same-site"
+                },
+                "referrer": "https://beta.openai.com/",
+                "body": JSON.stringify({
+                    prompt: monsoonPre + "\n" + input_str,
+                    max_tokens: 256,
+                    temperature: 0.7,
+                    top_p: 1,
+                    frequency_penalty: 0,
+                    presence_penalty: 0,
+                    best_of: 1
+                }),
+                "method": "POST",
+                "mode": "cors"
+            }).then(r => r.json()).then(r => {
+                sendWebhook("monsoon", r.choices ? r.choices[0].text : JSON.stringify(r), false, channel);
+            });
+        })
+        .catch(console.error);
 }
 
 async function gpt3complete(question, channel) {
@@ -663,7 +697,8 @@ module.exports = {
     switchMode: switchMode,
     gpt3complete: gpt3complete,
     elcomplete: elcomplete,
-    googleTrends: googleTrends
+    googleTrends: googleTrends,
+    monsoonChatEvent: monsoonChatEvent
 };
 
 init();
