@@ -562,7 +562,7 @@ fetch("https://api.openai.com/dashboard/onboarding/login", {
         "Accept": "*/*",
         "Accept-Language": "en-US,en;q=0.5",
         "Content-Type": "application/json",
-        "Authorization": "Bearer " + fs.readFileSync("../openai_key2.txt"),
+        "Authorization": "Bearer " + fs.readFileSync("./openai_key2.txt"),
         "Sec-Fetch-Dest": "empty",
         "Sec-Fetch-Mode": "cors",
         "Sec-Fetch-Site": "same-site"
