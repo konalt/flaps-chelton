@@ -1390,7 +1390,7 @@ setInterval(() => {
         d.getMonth() == 2 &&
         d.getDate() == 3) {
         console.log(d.getMinutes(), d.getHours(), d.getFullYear(), d.getMonth(), d.getDate());
-        sendWebhook("flaps", "@everyone MEET UP IN FUNKY TOWN OR I KICK YOUR ASSES\n IT\'S 3/3/33 23:33 YA FUCKIN DONGS!!!!!", false, client.channels.cache.get("924715825435385897"));
+        sendWebhook("flaps", "@everyone R.I.P. FUNKY TOWN\n IT\'S 3/3/33 23:33 THO YA FUCKIN DONGS!!!!!", false, client.channels.cache.get("882743320554643476"));
     }
 }, 1000);
 setInterval(() => {
