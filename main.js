@@ -55,13 +55,7 @@ var players = [
             noSubscriber: NoSubscriberBehavior.Play,
             maxMissedFrames: Math.round(5000 / 20),
         },
-    }),
-    createAudioPlayer({
-        behaviors: {
-            noSubscriber: NoSubscriberBehavior.Play,
-            maxMissedFrames: Math.round(5000 / 20),
-        },
-    }),
+    })
 ];
 
 function attachRecorder(player, file, loop = false) {
@@ -157,7 +151,6 @@ var swears = [
 var lastRequests = {};
 //#endregion
 var serverVCs = {
-    "924715479988330556": "930554613415956530",
     "910525327585992734": "910525328055762994",
     "760524739239477340": "874341836796362752"
 };
@@ -171,7 +164,6 @@ client.on('ready', async() => {
     const connections = await connectToChannel(Object.values(serverVCs).map((x) => { return client.channels.cache.get(x) }));
     connections[0].subscribe(players[0]);
     connections[1].subscribe(players[1]);
-    connections[2].subscribe(players[2]);
 
     fs.readFile("./saved_status.txt", (_err, data) => {
         data = data.toString();
@@ -273,9 +265,9 @@ client.on('messageCreate', async(msg) => {
         var commandArgs = msg.content.split(" ");
         var commandArgString = commandArgs.slice(1).join(" ");
         var command = commandArgs[0].toLowerCase();
-        if (msg.channel.topic.includes("##Monsoon")) {
+        /* if (msg.channel.topic.includes("##Monsoon")) {
             if (!msg.author.bot) monsoonChatEvent(msg.channel);
-        }
+        } */
         if (userStickies[msg.author.id]) {
             if (msg.content.startsWith("!..unsticky")) {
                 return userStickies[msg.author.id] = false;
@@ -1404,7 +1396,7 @@ setInterval(() => {
 setInterval(() => {
     var d = new Date();
     if (d.getMinutes() == 0 && d.getHours() == 0 && d.getSeconds() < 1) {
-        sendWebhook("flaps", "midnight", false, client.channels.cache.get("924715825435385897"));
+        sendWebhook("flaps", "midnight", false, client.channels.cache.get("882743320554643476"));
     }
 }, 1000);
 //#endregion

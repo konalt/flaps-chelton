@@ -93,6 +93,61 @@ async function autocompleteText(text, msgChannel, removeOriginalText = false) {
     }
 }
 
+var isFirstNav = true;
+
+async function gpt3complete_new(text, msgChannel, removeOriginalText = false) {
+    try {
+        if (!puppeteerInitialized) {
+            return sendWebhook("deepai", "Puppeteer not initialized. Wait a few seconds.", false, msgChannel);
+        }
+        (async() => {
+            await aiPageData.page.goto("https://beta.openai.com/playground");
+            var wi = setInterval(async() => {
+                var x = await aiPageData.page.evaluate(() => {
+                    return document.querySelector("#root > div.route-container > div > div.pg-root.page-body.full-width.flush > div > div.pg-body > div.pg-left > div.pg-content-body > div > div > div > div > div > div.DraftEditor-editorContainer > div > div > div > div > span");
+                });
+                if (!x || isFirstNav) {
+                    if (isFirstNav) clearInterval(wi);
+                    isFirstNav = false;
+                    return;
+                } else {
+                    clearInterval(wi);
+                    await aiPageData.page.evaluate((t) => {
+                        document.querySelector("#root > div.route-container > div > div.pg-root.page-body.full-width.flush > div > div.pg-body > div.pg-left > div.pg-content-body > div > div > div > div > div > div.DraftEditor-editorContainer > div > div > div > div > span").innerHTML = '<span data-text="true">' + t + '</span>';
+                    }, text);
+                    await aiPageData.page.click("#root > div.route-container > div > div.pg-root.page-body.full-width.flush > div > div.pg-body > div.pg-left > div.pg-content-footer > div.pg-footer-left > button.btn.btn-sm.btn-filled.btn-primary.pg-submit-btn");
+
+                    var originalHTMLContent = await aiPageData.page.evaluate(() => {
+                        return document.querySelector("#root > div.route-container > div > div.pg-root.page-body.full-width.flush > div > div.pg-body > div.pg-left > div.pg-content-body > div > div > div > div > div > div.DraftEditor-editorContainer > div > div > div > div > span").innerHTML;
+                    });
+                    waitInterval = setInterval(async() => {
+                        waitCounts++;
+                        var a = await aiPageData.page.evaluate((original) => {
+                            if (original == document.querySelector("#root > div.route-container > div > div.pg-root.page-body.full-width.flush > div > div.pg-body > div.pg-left > div.pg-content-body > div > div > div > div > div > div.DraftEditor-editorContainer > div > div > div > div > span").innerHTML) {
+                                return false;
+                            } else return document.querySelector("#root > div.route-container > div > div.pg-root.page-body.full-width.flush > div > div.pg-body > div.pg-left > div.pg-content-body > div > div > div > div > div > div.DraftEditor-editorContainer > div > div > div > div > span").innerHTML;
+                        }, originalHTMLContent);
+                        console.log("Waiting...");
+                        if (a !== false) {
+                            waitCounts = 0;
+                            sendWebhook("deepai", a, false, msgChannel);
+                        }
+                        if (waitCounts == 20) {
+                            waitCounts = 0;
+                            clearInterval(waitInterval);
+                            return sendWebhook("deepai", "Loop detected (took more than 20 seconds)", false, msgChannel);
+                        }
+                    }, 1000);
+                }
+            }, 1000);
+        })();
+
+    } catch (e) {
+        console.log("aw");
+        console.log(e);
+    }
+}
+
 function shuffle(array) {
     let currentIndex = array.length,
         randomIndex;
@@ -548,25 +603,50 @@ async function question(question, channel) {
 
 var openAIKey = "err";
 
-fetch("https://api.openai.com/dashboard/onboarding/login", {
-    "credentials": "include",
+fetch("https://auth0.openai.com/oauth/token", {
+    "credentials": "omit",
     "headers": {
         "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:101.0) Gecko/20100101 Firefox/101.0",
         "Accept": "*/*",
         "Accept-Language": "en-US,en;q=0.5",
         "Content-Type": "application/json",
-        "Authorization": "Bearer " + fs.readFileSync("./openai_key2.txt"),
+        "Auth0-Client": "eyJuYW1lIjoiYXV0aDAtc3BhLWpzIiwidmVyc2lvbiI6IjEuMjEuMCJ9",
         "Sec-Fetch-Dest": "empty",
         "Sec-Fetch-Mode": "cors",
         "Sec-Fetch-Site": "same-site"
     },
     "referrer": "https://beta.openai.com/",
-    "body": "{}",
+    "body": "{\"client_id\":\"DRivsnm2Mu42T3KOpqdtwB3NYviHYzwD\",\"code_verifier\":\"Eh2LJN4kjU5iBFdVp7kkye~Y0k8btGF8r_f-m8mDtJB\"}",
     "method": "POST",
     "mode": "cors"
 }).then(r => r.json()).then(r => {
-    openAIKey = r.user.session.sensitive_id;
+    console.log(r);
+    fetch("https://api.openai.com/dashboard/onboarding/login", {
+        "credentials": "include",
+        "headers": {
+            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:101.0) Gecko/20100101 Firefox/101.0",
+            "Accept": "*/*",
+            "Accept-Language": "en-US,en;q=0.5",
+            "Content-Type": "application/json",
+            "Authorization": "Bearer " + r.access_token,
+            "Sec-Fetch-Dest": "empty",
+            "Sec-Fetch-Mode": "cors",
+            "Sec-Fetch-Site": "same-site"
+        },
+        "referrer": "https://beta.openai.com/",
+        "body": "{}",
+        "method": "POST",
+        "mode": "cors"
+    }).then(r => r.json()).then(r2 => {
+        if (!r2.user) {
+            console.log(r2);
+        } else {
+            openAIKey = r2.user.session.sensitive_id;
+        }
+    });
 });
+
+
 
 async function newQuestion(question, channel) {
     monsoonPre = fs.readFileSync("./monsoon.txt")
@@ -624,7 +704,7 @@ async function monsoonChatEvent(channel) {
                 },
                 "referrer": "https://beta.openai.com/",
                 "body": JSON.stringify({
-                    prompt: monsoonPre + "\n" + input_str,
+                    prompt: input_str,
                     max_tokens: 256,
                     temperature: 0.7,
                     top_p: 1,
@@ -675,6 +755,31 @@ async function elcomplete(content, channel, temp) {
     });
 }
 
+function elQuestion(question, channel) {
+    var content = monsoonPre + "\\nQ:" + question + "\\nA:"
+    fetch("https://api.eleuther.ai/completion", {
+        "credentials": "omit",
+        "headers": {
+            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:101.0) Gecko/20100101 Firefox/101.0",
+            "Accept": "application/json",
+            "Accept-Language": "en-US,en;q=0.5",
+            "Content-Type": "application/json",
+            "Sec-Fetch-Dest": "empty",
+            "Sec-Fetch-Mode": "cors",
+            "Sec-Fetch-Site": "same-site"
+        },
+        "referrer": "https://6b.eleuther.ai/",
+        "body": "{\"context\":\"" + content + "\",\"top_p\":0,\"temp\":1,\"response_length\":32,\"remove_input\":true}",
+        "method": "POST",
+        "mode": "cors"
+    }).then(r => r.json()).then(data => {
+        console.log("done");
+        console.log(r);
+        if (!data[0].generated_text) return sendWebhook("monsoon", JSON.stringify(data[0]), false, channel);
+        sendWebhook("monsoon", data[0].generated_text.split("\n")[0], false, channel);
+    });
+}
+
 function switchMode(channel) {
     monsoonPre = monsoonPres[Math.floor(Math.random() * monsoonPres.length)];
     sendWebhook("monsoon", "done. try it out!\n" + monsoonPre, false, channel);
@@ -693,12 +798,13 @@ module.exports = {
     txtgen: textgen,
     upscaleImage: upscaleImage,
     dalle: dalle,
-    question: newQuestion,
+    question: elQuestion,
     switchMode: switchMode,
     gpt3complete: gpt3complete,
     elcomplete: elcomplete,
     googleTrends: googleTrends,
-    monsoonChatEvent: monsoonChatEvent
+    monsoonChatEvent: monsoonChatEvent,
+    gpt3complete_new: gpt3complete_new
 };
 
 init();
