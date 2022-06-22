@@ -366,15 +366,16 @@ client.on('messageCreate', async(msg) => {
                     {
                         setTimeout(() => {
                             msg.delete();
-                        }, 300);
+                        }, 1000);
+                        break;
                     }
                 case "!restart":
                     {
                         flapslib.webhooks.sendWebhook("flaps", "goodbye cruel world <a:woeisgone:797896105488678922>", true, msg.channel).then(() => {
                             process.exit(0);
                         });
+                        break;
                     }
-                    break;
                 case "!eval":
                     {
                         if (msg.author.id != "445968175381610496") {
