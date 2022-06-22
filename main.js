@@ -362,6 +362,12 @@ client.on('messageCreate', async(msg) => {
             });
         } else {
             switch (command) {
+                case "!ad":
+                    {
+                        setTimeout(() => {
+                            msg.delete();
+                        }, 300);
+                    }
                 case "!restart":
                     {
                         flapslib.webhooks.sendWebhook("flaps", "goodbye cruel world <a:woeisgone:797896105488678922>", true, msg.channel).then(() => {
