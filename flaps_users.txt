@@ -67,3 +67,4 @@ southerner--Poor Person Hater--https://media.discordapp.net/attachments/88274332
 cockdep--Cock Department--https://media.discordapp.net/attachments/910525327585992737/984172286141673543/unknown.png--(x)=>{ return x.replace(/mr/gi, "mistuh").replace(/mister/gi, "mistuh").replace(/[rl]/gi, "w");}
 ghost--Ghost (separate from machine)--https://media.discordapp.net/attachments/910525327585992737/984175596831653968/unknown.png--(x) => {return owoify(x, "uvu");}
 monsoon--monsoo mgr--https://media.discordapp.net/attachments/882743320554643476/984424719937843221/unknown.png
+haircut--bad haircut bot--https://media.discordapp.net/attachments/910525327585992737/988975164807057433/unknown.png

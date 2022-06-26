@@ -2,7 +2,9 @@ const { uuidv4 } = require('./ai');
 const { sendWebhook } = require('./webhooks');
 const fs = require("fs");
 const canvas = require("canvas");
-const path = require("path")
+const path = require("path");
+const download = require('./download');
+const { cahWhiteCard } = require('./cardsagainsthumanity');
 
 var memeMaking = {
     getImageData: async function(n) {
@@ -225,7 +227,7 @@ function homodog(msg, client) {
         });
     }
     if (msg.attachments.first()) {
-        flapslib.download(msg.attachments.first().url, "images/cache/" + id, () => {
+        download(msg.attachments.first().url, "images/cache/" + id, () => {
             doThing("cache/" + id, msg.attachments.first().width, msg.attachments.first().height);
         });
     } else {
@@ -594,7 +596,7 @@ function carbs(msg, client) {
     var images = ["yooo", "waow"];
     canvas.loadImage(__dirname + "./../images\\" + images[Math.floor(Math.random() * images.length)] + ".png").then(async(frame) => {
         ctx.drawImage(frame, 0, 0, 1280, 720);
-        var card = flapslib.cahWhiteCard().replace(/__/g, "");
+        var card = cahWhiteCard().replace(/__/g, "");
         ctx.fillStyle = "white";
         ctx.lineWidth = 56 / 25;
         ctx.strokeStyle = "black";
@@ -605,12 +607,14 @@ function carbs(msg, client) {
         var imageStream2 = Buffer.from(c.toDataURL("image/png").split(",")[1], "base64");
         fs.writeFileSync("../images/cache/" + imgID2, imageStream2);
 
+        var imageStream2 = Buffer.from(c.toDataURL("image/png").split(",")[1], "base64");
+        fs.writeFileSync("../images/cache/" + imgID2, imageStream2);
         /**
          * @type {Discord.Message}
          */
         var message = await client.channels.cache.get("956316856422137856").send({
             files: [{
-                attachment: __dirname + "./../images\\cache\\" + imgID2
+                attachment: "../images\\cache\\" + imgID2
             }]
         });
 
