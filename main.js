@@ -31,6 +31,7 @@ const { Image } = require('canvas');
 const { laugh, homodog, flip, sb, frame, weezer, carbs, watermark, animethink } = require('./flapslib/canvas');
 const { createCanvas } = require('canvas');
 const { Canvas } = require('canvas');
+const { AudioPlayerStatus } = require('@discordjs/voice');
 const owoify = require('owoify-js').default;
 //var dream = WomboDreamApi.buildDefaultInstance();
 //TODO look at line 12
@@ -58,6 +59,21 @@ var players = [
     })
 ];
 
+players.forEach((ply, i) => {
+    var index = parseInt(i.toString()); // dooplication
+    ply.on("stateChange", (oldState, newState) => {
+        if (loopingPlayers.includes(index)) {
+            if (oldState.status == "playing" && newState.status == "idle") {
+                console.log("LOOPIG HAHAH");
+                attachRecorder(index, curPlayerTracks[index]);
+            }
+        }
+    })
+});
+
+var loopingPlayers = [];
+var curPlayerTracks = [];
+
 function attachRecorder(player, file, loop = false) {
     if (!file) return;
     players[player].play(
@@ -84,6 +100,7 @@ function attachRecorder(player, file, loop = false) {
             },
         ),
     );
+    curPlayerTracks[player] = file;
 }
 
 /**
@@ -425,6 +442,18 @@ client.on('messageCreate', async(msg) => {
                 case "!yturl":
                     {
                         flapslib.yt.downloadYoutube(Object.keys(serverVCs).indexOf(msg.guild.id), commandArgs[1], msg.channel, (commandArgs[2] == "-v"), attachRecorder);
+                    }
+                    break;
+                case "!loop":
+                    {
+                        var vc = Object.keys(serverVCs).indexOf(msg.guild.id);
+                        if (loopingPlayers.includes(vc)) {
+                            loopingPlayers = loopingPlayers.filter(p => p != vc);
+                            sendWebhook("flaps", "stopped looping current track", false, msg.channel);
+                        } else {
+                            loopingPlayers.push(vc);
+                            sendWebhook("flaps", "looping current track", false, msg.channel);
+                        }
                     }
                     break;
                 case "!watchparty":
