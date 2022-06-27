@@ -120,7 +120,7 @@ async function videoGif(input, output, options) {
 }
 async function stitch(inputs, output) {
     return new Promise((resolve, reject) => {
-        var ffmpegInstance = cp.spawn("ffmpeg", `-y  -i ${path.join(__dirname, "..", inputs[0])} -i ${path.join(__dirname, "..", inputs[1])} -filter_complex "[0]setdar=16/9[a];[1]setdar=16/9[b]; [a][b]concat=n=2:v=1:a=1" ${path.join(__dirname, "..", output + ".mp4")}`.split(" "), { shell: true });
+        var ffmpegInstance = cp.spawn("ffmpeg", `-y  -i ${path.join(__dirname, "..", inputs[0])} -i ${path.join(__dirname, "..", inputs[1])} -filter_complex "[0][1]scale2ref=iw:ih[intro][main];[intro]drawbox=t=fill[intro-bg];[0][intro-bg]scale2ref=iw:ih:force_original_aspect_ratio=decrease:flags=spline[intro][intro-bg];[intro-bg][intro]overlay=x='(W-w)/2':y='(H-h)/2'[intro-resized]; [intro-resized][0:a][main][1:a]concat=n=2:v=1:a=1:unsafe=1[v][a]" -map "[v]" -map "[a]" -c:v libx264 ${path.join(__dirname, "..", output + ".mp4")}`.split(" "), { shell: true });
         ffmpegInstance.stdout.on("data", (c) => {
             stdout.write(c);
         });

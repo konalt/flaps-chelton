@@ -301,11 +301,14 @@ async function stitch(names, msg) {
     var id = uuidv4().replace(/-/gi, "");
     video.stitch(["images/cache/" + names[0], "images/cache/" + names[1]], "images/cache/" + id).then(async() => {
         try {
-            sendWebhookFile("ffmpeg", "images/cache/" + id + ".mp4", false, msgChannel);
+            var message = await client.channels.cache.get("956316856422137856").send({
+                files: [{
+                    attachment: "images/cache/" + id + ".mp4"
+                }]
+            });
 
             setTimeout(() => {
-                fs.unlinkSync("images/cache/" + names[0]);
-                fs.unlinkSync("images/cache/" + names[1]);
+                fs.unlinkSync("images/cache/" + id + ".mp4");
             }, 10000);
 
             sendWebhook("ffmpeg", message.attachments.first().url, false, msg.channel);

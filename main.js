@@ -1451,12 +1451,12 @@ setInterval(() => {
         console.log(d.getMinutes(), d.getHours(), d.getFullYear(), d.getMonth(), d.getDate());
         sendWebhook("flaps", "@everyone R.I.P. FUNKY TOWN\n IT\'S 3/3/33 23:33 THO YA FUCKIN DONGS!!!!!", false, client.channels.cache.get("882743320554643476"));
     }
-    var bsc = client.guilds.cache.get("760524739239477340");
-    var memberPlaying = Array.from(bsc.members.cache).map(u => { return u[1].user.currentStatus.playing });
-    if (memberPlaying == "Genshin Impact" ||
-        memberPlaying == "League of Legends") {
-        member.ban();
-    }
+    /*     var bsc = client.guilds.cache.get("760524739239477340");
+        var memberPlaying = Array.from(bsc.members.cache).map(u => { return u[1].user.currentStatus });
+        if (memberPlaying == "Genshin Impact" ||
+            memberPlaying == "League of Legends") {
+            member.ban();
+        } */
 }, 1000);
 setInterval(() => {
     var d = new Date();
