@@ -667,6 +667,11 @@ client.on('messageCreate', async(msg) => {
                         }
                     }
                     break;
+                case "!riggedcoinflip":
+                    {
+                        sendWebhook("flaps", "heads", false, msg.channel);
+                    }
+                    break;
                 case "!geq":
                     {
                         if (msg.attachments.first()) {
