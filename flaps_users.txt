@@ -68,3 +68,5 @@ cockdep--Cock Department--https://media.discordapp.net/attachments/9105253275859
 ghost--Ghost (separate from machine)--https://media.discordapp.net/attachments/910525327585992737/984175596831653968/unknown.png--(x) => {return owoify(x, "uvu");}
 monsoon--monsoo mgr--https://media.discordapp.net/attachments/882743320554643476/984424719937843221/unknown.png
 haircut--bad haircut bot--https://media.discordapp.net/attachments/910525327585992737/988975164807057433/unknown.png
+raiden--raiden mgr--https://cdn.discordapp.com/emojis/983303857629200405.png
+doktor--dok tor--https://media.discordapp.net/attachments/949678711295328256/991413852698849420/unknown.png
