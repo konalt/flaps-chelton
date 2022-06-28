@@ -409,6 +409,29 @@ client.on('messageCreate', async(msg) => {
                         });
                         break;
                     }
+                case "!walmart":
+                    {
+                        fetch("https://www.reddit.com/r/peopleofwalmart/.json?limit=100").then(r => r.json()).then((r) => {
+                            var images = r.data.children.filter(p => { return p.data.post_hint == "image" && p.data.url_overridden_by_dest; }).map(p => { return p.data.url_overridden_by_dest; });
+                            var item = randomFromArray(images);
+                            console.log(item);
+                            var id = uuidv4() + ".jpg";
+                            download(item, "images/cache/" + id, async() => {
+                                var message = await client.channels.cache.get("956316856422137856").send({
+                                    files: [{
+                                        attachment: __dirname + "\\images\\cache\\" + id
+                                    }]
+                                });
+
+                                setTimeout(() => {
+                                    fs.unlinkSync("./images/cache/" + id);
+                                }, 10000);
+
+                                sendWebhook("flaps", message.attachments.first().url, false, msg.channel);
+                            });
+                        });
+                        break;
+                    }
                 case "!restart":
                     {
                         flapslib.webhooks.sendWebhook("flaps", "goodbye cruel world <a:woeisgone:797896105488678922>", true, msg.channel).then(() => {
