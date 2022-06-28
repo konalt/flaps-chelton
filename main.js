@@ -294,6 +294,7 @@ client.on('messageCreate', async(msg) => {
         }
         if (msg.content.startsWith("!..sticky")) {
             var stickyBot = commandArgs[1];
+            flapslib.webhooks.updateUsers();
             if (flapslib.webhooks.users[stickyBot]) {
                 userStickies[msg.author.id] = stickyBot;
                 sendWebhook("flaps", stickyBot + " is now your sticky. use !..unsticky to go back to normal", false, msg.channel);
