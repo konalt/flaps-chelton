@@ -24,7 +24,7 @@ const {
 } = require('@discordjs/voice');
 const download = require('./flapslib/download');
 const { uuidv4, question, switchMode, gpt3complete, elcomplete, monsoonChatEvent } = require('./flapslib/ai');
-const { sendWebhook, editWebhookMsg } = require('./flapslib/webhooks');
+const { sendWebhook, editWebhookMsg, sendWebhookFile } = require('./flapslib/webhooks');
 const { cahWhiteCard } = require('./flapslib/cardsagainsthumanity');
 const { loadImage } = require('canvas');
 const { Image } = require('canvas');
@@ -152,12 +152,26 @@ var serverVCs = {
 canvas.registerFont('homodog.otf', { family: 'Homodog' });
 canvas.registerFont('weezer.otf', { family: 'Weezer' });
 
+var errChannel;
+
 client.on('ready', async() => {
     console.log(`Logged in as ${client.user.tag}`);
 
     const connections = await connectToChannel(Object.values(serverVCs).map((x) => { return client.channels.cache.get(x) }));
     connections[0].subscribe(players[0]);
     connections[1].subscribe(players[1]);
+
+    errChannel = await client.channels.fetch("882743320554643476");
+
+    players.forEach(player => {
+        player.on("error", (err) => {
+            try {
+                sendWebhook("flapserrors", err, false, errChannel);
+            } catch {
+                console.log("ERAR ! !", err);
+            }
+        });
+    });
 
     fs.readFile("./saved_status.txt", (_err, data) => {
         data = data.toString();
@@ -891,6 +905,31 @@ client.on('messageCreate', async(msg) => {
 
                             sendWebhook("millerwife", message.attachments.first().url, false, msg.channel);
                         }
+                    }
+                    break;
+                case "!inspire":
+                    {
+                        fetch("https://inspirobot.me/api?generate=true", {
+                            "credentials": "omit",
+                            "headers": {
+                                "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101 Firefox/102.0",
+                                "Accept": "*/*",
+                                "Accept-Language": "en-US,en;q=0.5",
+                                "X-Requested-With": "XMLHttpRequest",
+                                "Alt-Used": "inspirobot.me",
+                                "Sec-Fetch-Dest": "empty",
+                                "Sec-Fetch-Mode": "cors",
+                                "Sec-Fetch-Site": "same-origin"
+                            },
+                            "referrer": "https://inspirobot.me/",
+                            "method": "GET",
+                            "mode": "cors"
+                        }).then(r => r.text()).then(r => {
+                            var id = uuidv4();
+                            download(r, "./images/cache/" + id + ".png", () => {
+                                sendWebhookFile("deepai", "./images/cache/" + id + ".png", false, msg.channel);
+                            });
+                        });
                     }
                     break;
                 case "!nohorny":
