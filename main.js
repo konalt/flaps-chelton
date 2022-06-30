@@ -368,6 +368,17 @@ client.on('messageCreate', async(msg) => {
                         }, 1000);
                         break;
                     }
+                case "!react":
+                    {
+                        if (!msg.reference) {
+                            sendWebhook("flaps", `reply to a message bub`, false, msg.channel);
+                        } else {
+                            msg.fetchReference().then(m => {
+                                m.react(commandArgs[1]);
+                            });
+                        }
+                        break;
+                    }
                 case "!badhaircut":
                     {
                         fetch("https://www.reddit.com/r/justfuckmyshitup/.json?limit=100").then(r => r.json()).then((r) => {
