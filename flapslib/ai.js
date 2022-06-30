@@ -589,6 +589,7 @@ var monsoonPre = fs.readFileSync("./monsoon.txt");
 var model = "text-davinci-002";
 
 async function question(question, channel) {
+    monsoonPre = fs.readFileSync("./monsoon.txt");
     const response = await openai.createCompletion({
         model: model,
         prompt: monsoonPre + "\nQ: " + question + "\nA:",
@@ -688,7 +689,7 @@ async function monsoonChatEvent(channel) {
                 input_str += `${message.author.username}: ${message.content ? message.content : "Here's an image for you all!"}\n`;
             });
             input_str += "monsoo mgr:"
-            monsoonPre = fs.readFileSync("./monsoon.txt")
+            monsoonPre = fs.readFileSync("./monsoon.txt");
             fetch("https://api.openai.com/v1/engines/text-davinci-002/completions", {
                 "credentials": "include",
                 "headers": {
@@ -722,12 +723,13 @@ async function monsoonChatEvent(channel) {
 }
 
 async function gpt3complete(question, channel) {
+    monsoonPre = fs.readFileSync("./monsoon.txt");
     const response = await openai.createCompletion({
         model: model,
-        prompt: question,
-        temperature: 0,
+        prompt: monsoonPre + "\nQ:" + question + "\nA:",
+        temperature: 2,
         max_tokens: 100,
-        top_p: 1,
+        top_p: 0.5,
         frequency_penalty: 0,
         presence_penalty: 0,
     });
@@ -798,7 +800,7 @@ module.exports = {
     txtgen: textgen,
     upscaleImage: upscaleImage,
     dalle: dalle,
-    question: elQuestion,
+    question: question,
     switchMode: switchMode,
     gpt3complete: gpt3complete,
     elcomplete: elcomplete,
