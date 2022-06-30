@@ -858,10 +858,6 @@ client.on('messageCreate', async(msg) => {
                         var files = fs.readdirSync('E:/MBG/StuffAndThings/38/');
                         var chosenFile = files[Math.floor(Math.random() * files.length)];
                         var filesize = fs.statSync("E:/MBG/StuffAndThings/38/" + chosenFile).size / (1024 * 1024);
-                        if (Math.random() < 0.2) {
-                            flapslib.videowrapper.armstrongify("E:/MBG/StuffAndThings/38/" + chosenFile, msg, 1, client);
-                            return;
-                        }
                         if (filesize > 8) {
                             sendWebhook("scal", "ohh my god thats such a fucking big file. i cant,,, upload.,,,, itt ohohohhnnggmggnhahdf. its " + Math.round(filesize) + " megabyte. fucking hell. thats what she said.", false, msg.channel);
                         } else {
