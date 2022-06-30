@@ -129,30 +129,7 @@ async function connectToChannel(channels) {
     });
     return ret;
 }
-var words = [
-    ["political", "politic"],
-    ["political", "trump"],
-    ["political", "libtard"],
-    ["political", "blue"],
-    ["political", "biden"],
-    ["political", "libby"],
-    ["political", "texas"],
-    ["political", "vote"],
-    ["political", "elect"],
-    ["political", "president"],
-    ["political", "1947"],
-    ["political", "1989"],
-    ["political", "cold war"],
-    ["political", "wake up"],
-    ["political", "nine eleven"],
-    ["political", "9/11"],
-    ["forgor", "forgot"],
-    ["forgor", "forgor"],
-    ["forgor", "forget"],
-    ["rember", "rember"],
-    ["rember", "remebeer"],
-    ["literally", "you cannot"]
-];
+var words = fs.readFileSync("./flags.txt").toString().split("\r\n").map(x => { return [x.split(" ")[0], x.split(" ").slice(1).join(" ")] });
 
 function randomFromArray(arr) {
     return arr[Math.floor(Math.random() * arr.length)];
@@ -269,12 +246,16 @@ client.on('messageCreate', async(msg) => {
         if (msg.content.includes('copper') && !msg.author.bot) {
             msg.channel.send("copper you say?");
         }
+        words = fs.readFileSync("./flags.txt").toString().split("\r\n").map(x => { return [x.split(" ")[0], x.split(" ").slice(1).join(" ")] });
         var messageFlags = [];
         words.forEach(word => {
             if (msg.content.toLowerCase().includes(word[1]) && !messageFlags.includes(word[0])) {
                 messageFlags.push(word[0]);
             }
         });
+        if (messageFlags.includes("rember")) {
+            messageFlags = messageFlags.filter(x => x != "forgor");
+        }
         if (messageFlags.includes("political")) msg.react(client.emojis.cache.find(emoji => emoji.name === 'political'));
         if (messageFlags.includes("forgor")) msg.react("💀");
         if (messageFlags.includes("rember")) msg.react("😁");
