@@ -580,11 +580,9 @@ client.on('messageCreate', async(msg) => {
                             if (!r[0]) {
                                 sendWebhook("runcling", "holy fuck. you searched for something that even the horniest corner of the internet could not draw. good job dude.", false, msg.channel);
                             } else {
-                                if (x != "hornet_(hollow_knight)") {
-                                    y = r[0].label;
-                                } else {
-                                    y = r[0].label.substring(r[0].value.length + 2, r[0].label.length - 1).replace(/_/g, "\\_")
-                                }
+                                y = r.map(z => {
+                                    return "**" + x + "**" + z.label.substring(x.length).replace(/_/g, "\\_")
+                                }).join("\n");
                             }
                             sendWebhook("runcling", y, false, msg.channel);
                         });
