@@ -8,8 +8,8 @@ function init(client) {
     var app_rest = express();
 
     const options = {
-        key: fs.readFileSync("C:/Certbot/live/konalt.us.to/privkey.pem"),
-        cert: fs.readFileSync("C:/Certbot/live/konalt.us.to/fullchain.pem")
+        key: fs.readFileSync("C:/Certbot/live/konalt.us.to-0002/privkey.pem"),
+        cert: fs.readFileSync("C:/Certbot/live/konalt.us.to-0002/fullchain.pem")
     };
 
     app_rest.use(express.urlencoded({ extended: true }));
