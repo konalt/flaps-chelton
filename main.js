@@ -174,6 +174,16 @@ client.on('ready', async() => {
         });
     });
 
+    connections.forEach(con => {
+        con.on("error", (err) => {
+            try {
+                sendWebhook("flapserrors", err, false, errChannel);
+            } catch {
+                console.log("ERAR ! !", err);
+            }
+        });
+    });
+
     fs.readFile("./saved_status.txt", (_err, data) => {
         data = data.toString();
         console.log(data);
