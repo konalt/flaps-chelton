@@ -1387,13 +1387,7 @@ fbi files on ${commandArgString}: ${(msg.mentions.users.first() ? (descriptions[
                     break;
                 case "!methrecipe":
                     {
-                        var message = await client.channels.cache.get("956316856422137856").send({
-                            files: [{
-                                attachment: "images/meth.mp4"
-                            }]
-                        });
-
-                        flapslib.webhooks.sendWebhook("flaps", message.attachments.first().url, false, msg.channel);
+                        flapslib.webhooks.sendWebhook("flaps", "https://cdn.discordapp.com/attachments/956316856422137856/993527069185151047/meth.mp4", false, msg.channel);
                     }
                     break;
                 case "!funnycat":
