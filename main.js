@@ -1385,6 +1385,17 @@ fbi files on ${commandArgString}: ${(msg.mentions.users.first() ? (descriptions[
                         flapslib.webhooks.sendWebhook("balkan", message.attachments.first().url, false, msg.channel);
                     }
                     break;
+                case "!methrecipe":
+                    {
+                        var message = await client.channels.cache.get("956316856422137856").send({
+                            files: [{
+                                attachment: "images/meth.mp4"
+                            }]
+                        });
+
+                        flapslib.webhooks.sendWebhook("flaps", message.attachments.first().url, false, msg.channel);
+                    }
+                    break;
                 case "!funnycat":
                     {
                         var message = await client.channels.cache.get("956316856422137856").send({
