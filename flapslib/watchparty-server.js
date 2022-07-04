@@ -1,4 +1,5 @@
 const { sendWebhook } = require("./webhooks");
+const fetch = require("node-fetch")
 
 function init(client) {
     const fs = require("fs");
@@ -97,6 +98,26 @@ function init(client) {
         if (!req.body.content) return res.status(400).send(false);
         chat.push([req.socket.remoteAddress, req.body.content]);
         res.send(true);
+    });
+
+    app_rest.get("/flaps_api/funnynumber/:x", (req, res) => {
+        var x = req.params.x.split(" ").join("_");
+        fetch("https://rule34.xxx/public/autocomplete.php?q=" + x, {
+            "credentials": "omit",
+            "headers": {
+                "User-Agent": "FlapsChelton",
+                "Accept": "*/*",
+                "Accept-Language": "en-US,en;q=0.5",
+                "Sec-Fetch-Dest": "empty",
+                "Sec-Fetch-Mode": "cors",
+                "Sec-Fetch-Site": "same-origin"
+            },
+            "referrer": "https://rule34.xxx/",
+            "method": "GET",
+            "mode": "cors"
+        }).then(r => { return r.json() }).then(r => {
+            res.send(r[0] ? r[0].label : "wowie!! no porn!!!");
+        });
     });
 
     setInterval(() => {
