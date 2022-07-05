@@ -142,15 +142,7 @@ function updateUsers() {
 }
 
 function sendWebhookImage(id, data) {
-    return fetch('https://discordapp.com/api/webhooks/913913950356258859/x6DwVkrOjJM8xssw8NMjKhe2Xdim8OLyPQmH_CHOlaliCinKAjLC-HgFHjHitH7wV84U', {
-        method: 'POST',
-        body: JSON.stringify({
-            attachments: [data],
-            username: users[id][0],
-            avatar_url: users[id][1]
-        }),
-        headers: { 'Content-Type': 'application/json' }
-    });
+    return false;
 }
 
 module.exports = {
