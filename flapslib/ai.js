@@ -602,13 +602,13 @@ async function question(question, channel) {
     sendWebhook("monsoon", response.data.choices[0].text, false, channel);
 }
 
-var openAIKey = "err";
+/* var openAIKey = "err";
 
 fetch("https://auth0.openai.com/oauth/token", {
     "credentials": "omit",
     "headers": {
         "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:101.0) Gecko/20100101 Firefox/101.0",
-        "Accept": "*/*",
+        "Accept": "*\//",
         "Accept-Language": "en-US,en;q=0.5",
         "Content-Type": "application/json",
         "Auth0-Client": "eyJuYW1lIjoiYXV0aDAtc3BhLWpzIiwidmVyc2lvbiI6IjEuMjEuMCJ9",
@@ -626,7 +626,7 @@ fetch("https://auth0.openai.com/oauth/token", {
         "credentials": "include",
         "headers": {
             "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:101.0) Gecko/20100101 Firefox/101.0",
-            "Accept": "*/*",
+            "Accept": "*\/*",
             "Accept-Language": "en-US,en;q=0.5",
             "Content-Type": "application/json",
             "Authorization": "Bearer " + r.access_token,
@@ -645,7 +645,7 @@ fetch("https://auth0.openai.com/oauth/token", {
             openAIKey = r2.user.session.sensitive_id;
         }
     });
-});
+}); */
 
 
 

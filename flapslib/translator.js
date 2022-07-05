@@ -1,6 +1,6 @@
 const translate = require('translate-google');
 
-const langs = Object.keys({
+const langObj = {
     auto: 'Automatic',
     af: 'Afrikaans',
     sq: 'Albanian',
@@ -105,7 +105,8 @@ const langs = Object.keys({
     yi: 'Yiddish',
     yo: 'Yoruba',
     zu: 'Zulu'
-});
+};
+const langs = Object.keys(langObj);
 
 function doSingleTranslate(input) {
     return new Promise((resolve, reject) => {
@@ -116,22 +117,27 @@ function doSingleTranslate(input) {
     })
 }
 
+function doSingleTranslateToEnglish(input) {
+    return new Promise((resolve, reject) => {
+        var lang = "en";
+        translate(input, { to: lang }).then(res => {
+            resolve(res);
+        });
+    })
+}
+
 async function doTranslate(input, depth) {
     var cur = input;
-    var langList = [];
+    var langList = ["English"];
     for (let i = 0; i < depth; i++) {
         var out = await doSingleTranslate(cur);
         cur = out[0];
         langList.push(out[1]);
     }
-    return cur;
+    cur = await doSingleTranslateToEnglish(cur);
+    langList.push("English");
+    return langList.map(x => { return langObj[x]; }).join(" -> ") + "\n" + cur;
 }
-
-translate('I speak Chinese!', { from: 'en', to: 'zh-cn' }).then(res => {
-    console.log(res)
-}).catch(err => {
-    console.error(err)
-});
 
 module.exports = {
     doTranslate: doTranslate
