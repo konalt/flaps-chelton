@@ -128,14 +128,14 @@ function doSingleTranslateToEnglish(input) {
 
 async function doTranslate(input, depth) {
     var cur = input;
-    var langList = ["English"];
+    var langList = ["en"];
     for (let i = 0; i < depth; i++) {
         var out = await doSingleTranslate(cur);
         cur = out[0];
         langList.push(out[1]);
     }
     cur = await doSingleTranslateToEnglish(cur);
-    langList.push("English");
+    langList.push("en");
     return langList.map(x => { return langObj[x]; }).join(" -> ") + "\n" + cur;
 }
 
