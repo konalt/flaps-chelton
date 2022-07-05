@@ -14,6 +14,7 @@
     "puppeteer": "^13.7.0",
     "request": "^2.88.2",
     "steamapi": "^2.2.0",
+    "translate-google": "^1.5.0",
     "txtgen": "^3.0.1"
   },
   "devDependencies": {

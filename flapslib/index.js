@@ -6,6 +6,7 @@ const canvas = require("./canvas");
 const webhooks = require("./webhooks");
 const download = require("./download");
 const fetchapis = require("./fetchapis");
+const translator = require("./translator");
 const moviereview = require("./moviereview");
 const videowrapper = require("./videowrapper");
 const watchparty = require("./watchparty-server");
@@ -27,5 +28,6 @@ module.exports = {
     cahWhiteCard: cahWhiteCard,
     makesweet: makesweet,
     reverseMakesweet: reverseMakesweet,
-    canvas: canvas
+    canvas: canvas,
+    translator: translator
 }
