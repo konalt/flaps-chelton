@@ -1,4 +1,5 @@
 const translate = require('translate-google');
+const { sendWebhook } = require('./webhooks');
 
 const langObj = {
     auto: 'Automatic',
@@ -139,6 +140,19 @@ async function doTranslate(input, depth) {
     return langList.map(x => { return langObj[x]; }).join(" -> ") + "\n" + cur;
 }
 
+async function doTranslateSending(input, depth) {
+    var cur = input;
+    var out = "";
+    for (let i = 0; i < depth; i++) {
+        var o = await doSingleTranslate(cur);
+        cur = o[0];
+        var iter = await doSingleTranslateToEnglish(cur);
+        out += iter + "\n";
+    }
+    return out;
+}
+
 module.exports = {
-    doTranslate: doTranslate
+    doTranslate: doTranslate,
+    doTranslateSending: doTranslateSending
 };

@@ -32,7 +32,7 @@ const { laugh, homodog, flip, sb, frame, weezer, carbs, watermark, animethink } 
 const { createCanvas } = require('canvas');
 const { Canvas } = require('canvas');
 const { AudioPlayerStatus } = require('@discordjs/voice');
-const { doTranslate } = require('./flapslib/translator');
+const { doTranslate, doTranslateSending } = require('./flapslib/translator');
 const owoify = require('owoify-js').default;
 //var dream = WomboDreamApi.buildDefaultInstance();
 //TODO look at line 12
@@ -1393,9 +1393,20 @@ fbi files on ${commandArgString}: ${(msg.mentions.users.first() ? (descriptions[
                     break;
                 case "!translate":
                     {
+                        var n = parseInt(commandArgs[1]) ? parseInt(commandArgs[1]) : 10;
+                        var t = parseInt(commandArgs[1]) ? commandArgs.slice(2).join(" ") : commandArgString;
                         sendWebhook("flaps", "woo we translatin baby", false, msg.channel);
-                        var translated = await doTranslate(commandArgString, 10);
+                        var translated = await doTranslate(t, n);
                         sendWebhook("flaps", translated, false, msg.channel);
+                        break;
+                    }
+                case "!translate2":
+                    {
+                        var n = 5;
+                        var t = commandArgString;
+                        sendWebhook("flaps", "woo we translatin baby", false, msg.channel);
+                        var o = await doTranslateSending(t, n);
+                        sendWebhook("flaps", o, false, msg.channel);
                         break;
                     }
                 case "!funnycat":
