@@ -593,7 +593,7 @@ function carbs(msg, client) {
     var imgID2 = uuidv4().replace(/-/g, "_") + ".png";
     var c = canvas.createCanvas(1280, 720);
     var ctx = c.getContext('2d');
-    var images = ["yooo", "waow", "unbanned", "skeleton", "wh", "iron"];
+    var images = ["yooo", "waow", "unbanned", "skeleton", "wh", "iron", "millerdaughter", "tired", "mime"];
     canvas.loadImage(__dirname + "./../images\\" + images[Math.floor(Math.random() * images.length)] + ".png").then(async(frame) => {
         ctx.drawImage(frame, 0, 0, 1280, 720);
         var card = cahWhiteCard().replace(/__/g, "");
