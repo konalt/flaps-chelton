@@ -611,9 +611,6 @@ function carbs(msg, client) {
         ctx.strokeText(card, w / 2, (h * fontScaleFactor) + 10, w);
         var imageStream2 = Buffer.from(c.toDataURL("image/png").split(",")[1], "base64");
         fs.writeFileSync("../images/cache/" + imgID2, imageStream2);
-
-        var imageStream2 = Buffer.from(c.toDataURL("image/png").split(",")[1], "base64");
-        fs.writeFileSync("../images/cache/" + imgID2, imageStream2);
         /**
          * @type {Discord.Message}
          */
@@ -660,14 +657,12 @@ function watermark(msg, client) {
 
                 var imageStream2 = Buffer.from(c.toDataURL("image/png").split(",")[1], "base64");
                 fs.writeFileSync("../images/cache/" + imgID2, imageStream2);
-
-                console.log(__dirname + "./../images\\cache\\" + imgID2);
                 /**
                  * @type {Discord.Message}
                  */
                 var message = await client.channels.cache.get("956316856422137856").send({
                     files: [{
-                        attachment: __dirname + "./../images\\cache\\" + imgID2
+                        attachment: "../images\\cache\\" + imgID2
                     }]
                 });
 
