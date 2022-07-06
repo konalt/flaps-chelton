@@ -603,7 +603,7 @@ function carbs(msg, client) {
         ctx.strokeStyle = "black";
         ctx.textAlign = "center";
         ctx.font = 'normal normal bolder' + 56 + 'px Impact';
-        if (test) card = "TEST AIFISDHFAJEAFHAIJDFHNSEIFOUHADJIFNBASIEFUHSI";
+        if (test) card = "TEST AIFISDHFAJEAFHAIJDFHNSEIFOUHADJIFNBASIEFUHSI CUM CUM CUM CUM CUM CUM CUM CUM CUM CUM";
         ctx.fillText(card, 1280 / 2, 66, 1280);
         ctx.strokeText(card, 1280 / 2, 66, 1280);
         var imageStream2 = Buffer.from(c.toDataURL("image/png").split(",")[1], "base64");
