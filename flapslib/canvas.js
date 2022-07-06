@@ -591,21 +591,24 @@ function weezer(msg, client) {
 
 function carbs(msg, client) {
     var imgID2 = uuidv4().replace(/-/g, "_") + ".png";
-    var c = canvas.createCanvas(1280, 720);
+    var w = 960,
+        h = 540,
+        fontScaleFactor = 0.09;
+    var c = canvas.createCanvas(w, h);
     var ctx = c.getContext('2d');
     var images = ["yooo", "waow", "unbanned", "skeleton", "wh", "iron", "millerdaughter", "tired", "mime"];
     var test = false;
     canvas.loadImage(__dirname + "./../images\\" + images[Math.floor(Math.random() * images.length)] + ".png").then(async(frame) => {
-        ctx.drawImage(frame, 0, 0, 1280, 720);
+        ctx.drawImage(frame, 0, 0, w, h);
         var card = cahWhiteCard().replace(/__/g, "");
         ctx.fillStyle = "white";
-        ctx.lineWidth = 56 / 25;
+        ctx.lineWidth = (h * fontScaleFactor) / 25;
         ctx.strokeStyle = "black";
         ctx.textAlign = "center";
-        ctx.font = 'normal normal bolder' + 56 + 'px Impact';
+        ctx.font = 'normal normal bolder' + (h * fontScaleFactor) + 'px Impact';
         if (test) card = "TEST AIFISDHFAJEAFHAIJDFHNSEIFOUHADJIFNBASIEFUHSI CUM CUM CUM CUM CUM CUM CUM CUM CUM CUM";
-        ctx.fillText(card, 1280 / 2, 66, 1280);
-        ctx.strokeText(card, 1280 / 2, 66, 1280);
+        ctx.fillText(card, w / 2, (h * fontScaleFactor) + 10, w);
+        ctx.strokeText(card, w / 2, (h * fontScaleFactor) + 10, w);
         var imageStream2 = Buffer.from(c.toDataURL("image/png").split(",")[1], "base64");
         fs.writeFileSync("../images/cache/" + imgID2, imageStream2);
 
