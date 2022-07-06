@@ -594,6 +594,7 @@ function carbs(msg, client) {
     var c = canvas.createCanvas(1280, 720);
     var ctx = c.getContext('2d');
     var images = ["yooo", "waow", "unbanned", "skeleton", "wh", "iron", "millerdaughter", "tired", "mime"];
+    var test = true;
     canvas.loadImage(__dirname + "./../images\\" + images[Math.floor(Math.random() * images.length)] + ".png").then(async(frame) => {
         ctx.drawImage(frame, 0, 0, 1280, 720);
         var card = cahWhiteCard().replace(/__/g, "");
@@ -602,8 +603,9 @@ function carbs(msg, client) {
         ctx.strokeStyle = "black";
         ctx.textAlign = "center";
         ctx.font = 'normal normal bolder' + 56 + 'px Impact';
-        ctx.fillText(card, 1280 / 2, 66);
-        ctx.strokeText(card, 1280 / 2, 66);
+        if (test) card = "TEST AIFISDHFAJEAFHAIJDFHNSEIFOUHADJIFNBASIEFUHSI";
+        ctx.fillText(card, 1280 / 2, 66, 1280);
+        ctx.strokeText(card, 1280 / 2, 66, 1280);
         var imageStream2 = Buffer.from(c.toDataURL("image/png").split(",")[1], "base64");
         fs.writeFileSync("../images/cache/" + imgID2, imageStream2);
 
