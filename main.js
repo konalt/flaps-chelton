@@ -841,7 +841,12 @@ client.on('messageCreate', async(msg) => {
                     break;
                 case "!carbs":
                     {
-                        carbs(msg, client)
+                        carbs(msg, client, false)
+                    }
+                    break;
+                case "!carbsfunny":
+                    {
+                        carbs(msg, client, true)
                     }
                     break;
                 case "!<:owl:964880176355897374>":

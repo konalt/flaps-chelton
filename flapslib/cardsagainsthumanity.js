@@ -24,5 +24,5 @@ function cah(channel) {
 
 module.exports = {
     cah: cah,
-    cahWhiteCard: () => { return whiteCards[Math.floor(Math.random() * whiteCards.length)]; }
+    cahWhiteCard: (custom) => { return custom ? whiteCards[Math.floor(Math.random() * whiteCards.length - 2042) + 2042] : whiteCards[Math.floor(Math.random() * whiteCards.length)]; }
 }

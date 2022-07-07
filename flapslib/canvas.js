@@ -589,7 +589,7 @@ function weezer(msg, client) {
     });
 }
 
-function carbs(msg, client) {
+function carbs(msg, client, custom = false) {
     var imgID2 = uuidv4().replace(/-/g, "_") + ".png";
     var w = 960,
         h = 540,
@@ -600,7 +600,7 @@ function carbs(msg, client) {
     var test = false;
     canvas.loadImage(__dirname + "./../images\\" + images[Math.floor(Math.random() * images.length)] + ".png").then(async(frame) => {
         ctx.drawImage(frame, 0, 0, w, h);
-        var card = cahWhiteCard().replace(/__/g, "");
+        var card = cahWhiteCard(custom).replace(/__/g, "");
         ctx.fillStyle = "white";
         ctx.lineWidth = (h * fontScaleFactor) / 25;
         ctx.strokeStyle = "black";
