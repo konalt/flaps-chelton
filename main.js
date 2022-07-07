@@ -1194,6 +1194,13 @@ fbi files on ${commandArgString}: ${(msg.mentions.users.first() ? (descriptions[
                         sendWebhook("flaps", `DO NOT CALL ${white} AT 3AM!!`, false, msg.channel);
                     }
                     break;
+                case "!whitecard":
+                    {
+                        var white = cahWhiteCard();
+                        white = white.substring(2, white.length - 2);
+                        sendWebhook("flaps", white, false, msg.channel);
+                    }
+                    break;
                 case "!watermark":
                     {
                         watermark(msg, client);
