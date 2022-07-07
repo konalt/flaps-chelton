@@ -18,7 +18,7 @@ function sendWebhook(id, content, disableCustom = false, msgChannel, customData 
         } else {
             if (users[id][2] && !disableCustom) content = eval(users[id][2])(content);
         }
-        var dave = true;
+        var dave = false;
         msgChannel.fetchWebhooks()
             .then(hooks => {
                 var hook = hooks.find(h => h.name == "FlapsCheltonWebhook_" + msgChannel.id);
@@ -43,7 +43,7 @@ function sendWebhook(id, content, disableCustom = false, msgChannel, customData 
                         method: 'POST',
                         body: JSON.stringify({
                             content: content,
-                            username: custom ? customData.username : (dave ? "dave" : users[id][0]),
+                            username: custom ? customData.username : (dave ? "dave " + Math.floor(Math.random() * 200).toString() : users[id][0]),
                             avatar_url: custom ? customData.avatar : users[id][1]
                         }),
                         headers: { 'Content-Type': 'application/json' }
