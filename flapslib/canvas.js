@@ -596,7 +596,7 @@ function carbs(msg, client, custom = false) {
         fontScaleFactor = 0.09;
     var c = canvas.createCanvas(w, h);
     var ctx = c.getContext('2d');
-    var images = ["yooo", "waow", "unbanned", "skeleton", "wh", "iron", "millerdaughter", "tired", "mime", "killnow", "gman", "baseball"];
+    var images = ["yooo", "waow", "unbanned", "skeleton", "wh", "iron", "millerdaughter", "tired", "mime", "killnow", "gman", "baseball", "whnat"];
     var test = false;
     canvas.loadImage(__dirname + "./../images\\" + images[Math.floor(Math.random() * images.length)] + ".png").then(async(frame) => {
         ctx.drawImage(frame, 0, 0, w, h);
