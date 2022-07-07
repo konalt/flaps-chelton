@@ -64,7 +64,7 @@ rps--rock paper scissors 1--https://media.discordapp.net/attachments/88274332055
 smallcock--small cock department--https://media.discordapp.net/attachments/882743320554643476/983384610828341319/unknown.png
 ben--Talking Ben--https://media.discordapp.net/attachments/910525327585992737/983748757118124102/unknown.png
 southerner--Poor Person Hater--https://media.discordapp.net/attachments/882743320554643476/983815005101240340/unknown.png?width=404&height=663
-cockdep--Cock Department--https://media.discordapp.net/attachments/910525327585992737/984172286141673543/unknown.png--(x)=>{ return x.replace(/mr/gi, "mistuh").replace(/mister/gi, "mistuh").replace(/[rl]/gi, "w");}
+cockdep--Cock Department--https://media.discordapp.net/attachments/910525327585992737/984172286141673543/unknown.png--(x)=>{ return x.replace(/mr/gi, "mistuh").replace(/mister/gi, "mistuh");}
 ghost--Ghost (separate from machine)--https://media.discordapp.net/attachments/910525327585992737/984175596831653968/unknown.png--(x) => {return owoify(x, "uvu");}
 monsoon--monsoo mgr--https://media.discordapp.net/attachments/882743320554643476/984424719937843221/unknown.png
 haircut--bad haircut bot--https://media.discordapp.net/attachments/910525327585992737/988975164807057433/unknown.png
