@@ -18,7 +18,7 @@ function sendWebhook(id, content, disableCustom = false, msgChannel, customData 
         } else {
             if (users[id][2] && !disableCustom) content = eval(users[id][2])(content);
         }
-        var dave = false;
+        var dave = fs.readFileSync("./dave.txt").toString() == "yes";
         msgChannel.fetchWebhooks()
             .then(hooks => {
                 var hook = hooks.find(h => h.name == "FlapsCheltonWebhook_" + msgChannel.id);
