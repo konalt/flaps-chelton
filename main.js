@@ -1072,6 +1072,17 @@ fbi files on ${commandArgString}: ${(msg.mentions.users.first() ? (descriptions[
                         }
                         break;
                     }
+                case "!define":
+                    {
+                        if (commandArgs[1]) {
+                            fetch("https://api.dictionaryapi.dev/api/v2/entries/en/" + commandArgs[1]).then(r => { return r.json() }).then(r => {
+                                var word = r[0];
+                                if (!word) return sendWebhook("flaps", "thats not a word dummy", false, msg.channel);
+                                sendWebhook("flaps", word.word + "\n**" + word.phonetic + "**\n" + word.meanings.map(m => m.definitions[0].definition).join("\n"), false, msg.channel);
+                            });
+                        }
+                    }
+                    break;
                 case "!rps":
                     {
                         var input = commandArgString.toLowerCase();
