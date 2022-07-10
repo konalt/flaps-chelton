@@ -1083,6 +1083,22 @@ fbi files on ${commandArgString}: ${(msg.mentions.users.first() ? (descriptions[
                         }
                     }
                     break;
+                case "!bruno":
+                    var files = fs.readdirSync('./images/bruno/');
+                    var chosenFile = files[Math.floor(Math.random() * files.length)];
+                    var filesize = fs.statSync("./images/bruno/" + chosenFile).size / (1024 * 1024);
+                    if (filesize > 8) {
+                        sendWebhook("bruno", "FUCKING STRS MAKING MY FILES " + Math.round(filesize) + " MEGABYTES", false, msg.channel);
+                    } else {
+                        var message = await client.channels.cache.get("956316856422137856").send({
+                            files: [{
+                                attachment: "./images/bruno/" + chosenFile
+                            }]
+                        });
+
+                        sendWebhook("bruno", message.attachments.first().url, true, msg.channel);
+                    }
+                    break;
                 case "!rps":
                     {
                         var input = commandArgString.toLowerCase();
