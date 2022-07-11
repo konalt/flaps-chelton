@@ -508,6 +508,13 @@ client.on('messageCreate', async(msg) => {
                         flapslib.yt.wpAddToQueue(commandArgs[2], commandArgs[1], msg.channel);
                     }
                     break;
+                case "!wptogglepause":
+                    {
+                        fetch("https://konalt.us.to:4930/pause/" + commandArgs[1]).then(r => r.json()).then(response => {
+                            sendWebhook("flaps", (response.wp.paused ? "paused da wath pary" : "unpaused tha wathc parcht"), true, msg.channel);
+                        });
+                    }
+                    break;
                 case "!status":
                     {
                         var types = ["PLAYING", "STREAMING", "COMPETING", "LISTENING", "WATCHING"];

@@ -32,7 +32,8 @@ function init(client) {
             videoId: req.body.videoId,
             currentTime: 0,
             startTime: Date.now(),
-            queue: []
+            queue: [],
+            paused: false
         };
         res.send({
             id: id
@@ -79,6 +80,14 @@ function init(client) {
             res.send({ wentToNext: true, wp: currentWps[req.params.id] });
         }
     });
+    app_rest.get("/pause/:id", (req, res) => {
+        if (!currentWps[req.params.id]) {
+            res.status(404).send({ wp: null });
+        } else {
+            currentWps[req.params.id].paused = !currentWps[req.params.id].paused;
+            res.send({ wp: currentWps[req.params.id] });
+        }
+    });
     app_rest.get("/end/:id", (req, res) => {
         if (!currentWps[req.params.id]) {
             res.status(404).send(false);
@@ -122,7 +131,7 @@ function init(client) {
 
     setInterval(() => {
         Object.entries(currentWps).forEach(wp => {
-            wp[1].currentTime = Date.now() - wp[1].startTime;
+            if (!wp[1].paused) wp[1].currentTime += 1000;
         });
     }, 1000);
 
