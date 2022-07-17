@@ -1,10 +1,22 @@
 const fetch = require('node-fetch');
 const fs = require('fs');
 const owoify = require("owoify-js").default;
+const Discord = require("discord.js");
 
 var users = {};
 
 updateUsers();
+
+/**
+ * 
+ * @param {string} id 
+ * @param {Discord.MessageEmbed} embed 
+ * @param {boolean} disableCustom 
+ * @param {Discord.TextChannel} msgChannel 
+ * @param {Object} customData 
+ * @param {Discord.Message} msg 
+ * @returns {Promise}
+ */
 
 function sendWebhook(id, content, disableCustom = false, msgChannel, customData = {}, msg) {
     return new Promise((resolve, _reject) => {
@@ -22,6 +34,11 @@ function sendWebhook(id, content, disableCustom = false, msgChannel, customData 
         msgChannel.fetchWebhooks()
             .then(hooks => {
                 var hook = hooks.find(h => h.name == "FlapsCheltonWebhook_" + msgChannel.id);
+                var data = {
+                    content: content,
+                    username: custom ? customData.username : (dave ? "dave " + Math.floor(Math.random() * 200).toString() : (users[id][0] == "__FlapsNick__" ? (msgChannel.guild.me.nickname || client.user.username) : users[id][0])),
+                    avatar_url: custom ? customData.avatar : (users[id][1])
+                };
                 if (!hook) {
                     msgChannel.createWebhook("FlapsCheltonWebhook_" + msgChannel.id, {
                             avatar: "https://media.discordapp.net/attachments/882743320554643476/966013228641566760/numb.PNG",
@@ -29,11 +46,7 @@ function sendWebhook(id, content, disableCustom = false, msgChannel, customData 
                         }).then((hook2) => {
                             fetch(hook2.url, {
                                 method: 'POST',
-                                body: JSON.stringify({
-                                    content: content,
-                                    username: custom ? customData.username : users[id][0],
-                                    avatar_url: custom ? customData.avatar : users[id][1]
-                                }),
+                                body: JSON.stringify(data),
                                 headers: { 'Content-Type': 'application/json' }
                             }).then(() => { resolve() });
                         })
@@ -41,11 +54,7 @@ function sendWebhook(id, content, disableCustom = false, msgChannel, customData 
                 } else {
                     fetch(hook.url, {
                         method: 'POST',
-                        body: JSON.stringify({
-                            content: content,
-                            username: custom ? customData.username : (dave ? "dave " + Math.floor(Math.random() * 200).toString() : users[id][0]),
-                            avatar_url: custom ? customData.avatar : users[id][1]
-                        }),
+                        body: JSON.stringify(data),
                         headers: { 'Content-Type': 'application/json' }
                     }).then(() => { resolve() });
                 }
@@ -70,7 +79,9 @@ function editWebhookMsg(msgid, msgChannel, content) {
             }).catch(console.error);
     });
 }
-
+/**
+ * @type {Discord.Client}
+ */
 var client;
 
 function setClient(c) {
@@ -94,6 +105,17 @@ async function sendWebhookFile(id, filename, noDelete = false, msgChannel) {
     sendWebhook(id, message.attachments.first().url, false, msgChannel);
 }
 
+/**
+ * 
+ * @param {string} id 
+ * @param {Discord.MessageEmbed} embed 
+ * @param {boolean} disableCustom 
+ * @param {Discord.TextBasedChannel} msgChannel 
+ * @param {Object} customData 
+ * @param {Discord.Message} msg 
+ * @returns {Promise}
+ */
+
 function sendWebhookEmbed(id, embed, disableCustom = false, msgChannel, customData = {}, msg) {
     return new Promise((resolve, _reject) => {
         try {
@@ -109,7 +131,7 @@ function sendWebhookEmbed(id, embed, disableCustom = false, msgChannel, customDa
                                     method: 'POST',
                                     body: JSON.stringify({
                                         embeds: [embed],
-                                        username: users[id][0],
+                                        username: users[id][0] != "__FlapsNick" ? users[id][0] : msgChannel.toString(),
                                         avatar_url: users[id][1]
                                     }),
                                     headers: { 'Content-Type': 'application/json' }
