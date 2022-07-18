@@ -775,8 +775,8 @@ function dalle(prompt, isSecondReq = false) {
                         console.log("SR: Error");
                         out.prompt = r.replace(/<[/A-z0-9 =!]+>/g, "");
                         /* if (Math.random() < 0.4) {
-                                    out.prompt = "418 I'm a Teapot\n\nThe server refused to handle this due to a long queue.\nnginx/1.18.0 (Ubuntu)"
-                                } */
+                                                            out.prompt = "418 I'm a Teapot\n\nThe server refused to handle this due to a long queue.\nnginx/1.18.0 (Ubuntu)"
+                                                        } */
                         out.image = false;
                     } else {
                         setTimeout(() => {
@@ -802,14 +802,17 @@ const openai = new OpenAIApi(configuration);
 
 var monsoonPre = fs.readFileSync("./monsoon.txt");
 
-var model = "text-davinci-002";
+var model = "text-ada-001";
 
 async function question(question, channel) {
-    monsoonPre = fs.readFileSync("./monsoon.txt");
+    monsoonPre = [
+        parseFloat(fs.readFileSync("./monsoon.txt").toString().split(" ")[0]),
+        fs.readFileSync("./monsoon.txt").toString().split(" ").slice(1).join(" "),
+    ];
     const response = await openai.createCompletion({
         model: model,
-        prompt: monsoonPre + "\nQ: " + question + "\nA:",
-        temperature: 2,
+        prompt: monsoonPre[1] + "\nQ: " + question + "\nA:",
+        temperature: monsoonPre[0],
         max_tokens: 100,
         top_p: 1,
         frequency_penalty: 0,
