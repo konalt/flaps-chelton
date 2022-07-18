@@ -10,7 +10,20 @@ function randomArr(arr) {
 }
 
 async function roulette(msgChannel) {
-    var boards = ["b", "r9k", "s4s", "vip", "bant", "v", "a", "k"];
+    var boards = [
+        "b",
+        "r9k",
+        "s4s",
+        "vip",
+        "bant",
+        "v",
+        "a",
+        "k",
+        "gif",
+        "aco",
+        "r",
+        "pol",
+    ];
     var board = randomArr(boards);
     fetch("https://a.4cdn.org/" + board + "/threads.json")
         .then((r) => r.json())
