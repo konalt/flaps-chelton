@@ -10,7 +10,7 @@ function randomArr(arr) {
 }
 
 async function roulette(msgChannel) {
-    var boards = ["b", "r9k", "s4s", "vip", "bant"];
+    var boards = ["b", "r9k", "s4s", "vip", "bant", "v", "a", "k"];
     var board = randomArr(boards);
     fetch("https://a.4cdn.org/" + board + "/threads.json").then(r => r.json()).catch((err) => {
         sendWebhook("4chanroulette", "Error:\n" + err, false, msgChannel);
