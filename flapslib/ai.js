@@ -726,7 +726,7 @@ async function gpt3complete(question, channel) {
     monsoonPre = fs.readFileSync("./monsoon.txt");
     const response = await openai.createCompletion({
         model: model,
-        prompt: monsoonPre + "\nQ:" + question + "\nA:",
+        prompt: question,
         temperature: 2,
         max_tokens: 100,
         top_p: 0.5,
