@@ -1,5 +1,5 @@
-const fetch = require('node-fetch');
-const fs = require('fs');
+const fetch = require("node-fetch");
+const fs = require("fs");
 const owoify = require("owoify-js").default;
 const Discord = require("discord.js");
 
@@ -8,17 +8,24 @@ var users = {};
 updateUsers();
 
 /**
- * 
- * @param {string} id 
- * @param {Discord.MessageEmbed} embed 
- * @param {boolean} disableCustom 
- * @param {Discord.TextChannel} msgChannel 
- * @param {Object} customData 
- * @param {Discord.Message} msg 
+ *
+ * @param {string} id
+ * @param {Discord.MessageEmbed} embed
+ * @param {boolean} disableCustom
+ * @param {Discord.TextChannel} msgChannel
+ * @param {Object} customData
+ * @param {Discord.Message} msg
  * @returns {Promise}
  */
 
-function sendWebhook(id, content, disableCustom = false, msgChannel, customData = {}, msg) {
+function sendWebhook(
+    id,
+    content,
+    disableCustom = false,
+    msgChannel,
+    customData = {},
+    msg
+) {
     return new Promise((resolve, _reject) => {
         var custom = false;
         if (id == "custom") {
@@ -31,52 +38,72 @@ function sendWebhook(id, content, disableCustom = false, msgChannel, customData 
             if (users[id][2] && !disableCustom) content = eval(users[id][2])(content);
         }
         var dave = fs.readFileSync("./dave.txt").toString() == "yes";
-        msgChannel.fetchWebhooks()
-            .then(hooks => {
-                var hook = hooks.find(h => h.name == "FlapsCheltonWebhook_" + msgChannel.id);
+        msgChannel
+            .fetchWebhooks()
+            .then((hooks) => {
+                var hook = hooks.find(
+                    (h) => h.name == "FlapsCheltonWebhook_" + msgChannel.id
+                );
                 var data = {
                     content: content,
-                    username: custom ? customData.username : (dave ? "dave " + Math.floor(Math.random() * 200).toString() : (users[id][0] == "__FlapsNick__" ? (msgChannel.guild.me.nickname || client.user.username) : users[id][0])),
-                    avatar_url: custom ? customData.avatar : (users[id][1])
+                    username: custom ?
+                        customData.username :
+                        dave ?
+                        "dave " + Math.floor(Math.random() * 200).toString() :
+                        users[id][0] == "__FlapsNick__" ?
+                        msgChannel.guild.me.nickname || client.user.username :
+                        users[id][0],
+                    avatar_url: custom ? customData.avatar : users[id][1],
                 };
                 if (!hook) {
-                    msgChannel.createWebhook("FlapsCheltonWebhook_" + msgChannel.id, {
+                    msgChannel
+                        .createWebhook("FlapsCheltonWebhook_" + msgChannel.id, {
                             avatar: "https://media.discordapp.net/attachments/882743320554643476/966013228641566760/numb.PNG",
-                            reason: "flap chelton needed a webhook for the channel."
-                        }).then((hook2) => {
+                            reason: "flap chelton needed a webhook for the channel.",
+                        })
+                        .then((hook2) => {
                             fetch(hook2.url, {
-                                method: 'POST',
+                                method: "POST",
                                 body: JSON.stringify(data),
-                                headers: { 'Content-Type': 'application/json' }
-                            }).then(() => { resolve() });
+                                headers: { "Content-Type": "application/json" },
+                            }).then(() => {
+                                resolve();
+                            });
                         })
                         .catch(console.error);
                 } else {
                     fetch(hook.url, {
-                        method: 'POST',
+                        method: "POST",
                         body: JSON.stringify(data),
-                        headers: { 'Content-Type': 'application/json' }
-                    }).then(() => { resolve() });
+                        headers: { "Content-Type": "application/json" },
+                    }).then(() => {
+                        resolve();
+                    });
                 }
-            }).catch(console.error);
+            })
+            .catch(console.error);
     });
 }
 
 function editWebhookMsg(msgid, msgChannel, content) {
     return new Promise((resolve, _reject) => {
-        msgChannel.fetchWebhooks()
-            .then(hooks => {
-                var hook = hooks.find(h => h.name == "FlapsCheltonWebhook_" + msgChannel.id);
+        msgChannel
+            .fetchWebhooks()
+            .then((hooks) => {
+                var hook = hooks.find(
+                    (h) => h.name == "FlapsCheltonWebhook_" + msgChannel.id
+                );
                 fetch(hook.url + "/messages/" + msgid, {
-                    method: 'PATCH',
+                    method: "PATCH",
                     body: JSON.stringify({
-                        content: content
+                        content: content,
                     }),
-                    headers: { 'Content-Type': 'application/json' }
-                }).then(() => {;
+                    headers: { "Content-Type": "application/json" },
+                }).then(() => {
                     resolve();
                 });
-            }).catch(console.error);
+            })
+            .catch(console.error);
     });
 }
 /**
@@ -91,65 +118,78 @@ function setClient(c) {
 async function sendWebhookFile(id, filename, noDelete = false, msgChannel) {
     var message = await client.channels.cache.get("956316856422137856").send({
         files: [{
-            attachment: filename
-        }]
+            attachment: filename,
+        }, ],
     });
 
     if (!noDelete) {
         /* setTimeout(() => {
-            fs.unlinkSync("images/cache/" + newId);
-            fs.unlinkSync(outputFilename);
-        }, 10000); */
+                                fs.unlinkSync("images/cache/" + newId);
+                                fs.unlinkSync(outputFilename);
+                            }, 10000); */
     }
 
     sendWebhook(id, message.attachments.first().url, false, msgChannel);
 }
 
-/**
- * 
- * @param {string} id 
- * @param {Discord.MessageEmbed} embed 
- * @param {boolean} disableCustom 
- * @param {Discord.TextBasedChannel} msgChannel 
- * @param {Object} customData 
- * @param {Discord.Message} msg 
- * @returns {Promise}
- */
-
-function sendWebhookEmbed(id, embed, disableCustom = false, msgChannel, customData = {}, msg) {
+function sendWebhookEmbed(
+    id,
+    embed,
+    disableCustom = false,
+    msgChannel,
+    customData = {},
+    msg
+) {
     return new Promise((resolve, _reject) => {
         try {
-            msgChannel.fetchWebhooks()
-                .then(hooks => {
-                    var hook = hooks.find(h => h.name == "FlapsCheltonWebhook_" + msgChannel.id);
+            msgChannel
+                .fetchWebhooks()
+                .then((hooks) => {
+                    var hook = hooks.find(
+                        (h) => h.name == "FlapsCheltonWebhook_" + msgChannel.id
+                    );
                     if (!hook) {
-                        msgChannel.createWebhook("FlapsCheltonWebhook_" + msgChannel.id, {
+                        msgChannel
+                            .createWebhook("FlapsCheltonWebhook_" + msgChannel.id, {
                                 avatar: "https://media.discordapp.net/attachments/882743320554643476/966013228641566760/numb.PNG",
-                                reason: "flap chelton needed a webhook for the channel."
-                            }).then((hook2) => {
+                                reason: "flap chelton needed a webhook for the channel.",
+                            })
+                            .then((hook2) => {
                                 fetch(hook2.url, {
-                                    method: 'POST',
+                                    method: "POST",
                                     body: JSON.stringify({
                                         embeds: [embed],
-                                        username: users[id][0] != "__FlapsNick" ? users[id][0] : msgChannel.toString(),
-                                        avatar_url: users[id][1]
+                                        username: users[id][0],
+                                        avatar_url: users[id][1],
                                     }),
-                                    headers: { 'Content-Type': 'application/json' }
-                                }).then(() => { resolve() });
+                                    headers: { "Content-Type": "application/json" },
+                                }).then(() => {
+                                    resolve();
+                                });
                             })
                             .catch(console.error);
                     } else {
+                        console.log(`{
+    "embeds": [${JSON.stringify(embed.toJSON())}],
+    "username": ${users[id[0]]},
+    "avatar_url": ${users[id[1]]}
+}`);
                         fetch(hook.url, {
-                            method: 'POST',
-                            body: JSON.stringify({
-                                embeds: [embed],
-                                username: users[id][0],
-                                avatar_url: users[id][1]
-                            }),
-                            headers: { 'Content-Type': 'application/json' }
-                        }).then(() => { resolve() });
+                                method: "POST",
+                                body: `{
+                                "embeds": [${JSON.stringify(embed.toJSON())}],
+                                "username": "${users[id][0]}",
+                                "avatar_url": "${users[id][1]}"
+                            }`,
+                                headers: { "Content-Type": "application/json" },
+                            })
+                            .then((r) => r.text())
+                            .then((r) => {
+                                console.log(r);
+                            });
                     }
-                }).catch(console.error);
+                })
+                .catch(console.error);
         } catch (e) {
             console.log("aaahahahahaha");
             console.log(e);
@@ -158,9 +198,23 @@ function sendWebhookEmbed(id, embed, disableCustom = false, msgChannel, customDa
 }
 
 function updateUsers() {
-    var usersArray = fs.readFileSync("./flaps_users.txt", "utf8").toString().split("\r\n").map(u => { return u.split("--"); });
-    usersArray.forEach(user => {
-        users[user[0]] = [user[1], (user[2].startsWith("http") ? user[2] : "https://media.discordapp.net/attachments/882743320554643476/" + user[2] + "/unknown.png"), user[3]];
+    var usersArray = fs
+        .readFileSync("./flaps_users.txt", "utf8")
+        .toString()
+        .split("\r\n")
+        .map((u) => {
+            return u.split("--");
+        });
+    usersArray.forEach((user) => {
+        users[user[0]] = [
+            user[1],
+            user[2].startsWith("http") ?
+            user[2] :
+            "https://media.discordapp.net/attachments/882743320554643476/" +
+            user[2] +
+            "/unknown.png",
+            user[3],
+        ];
     });
 }
 
@@ -176,5 +230,5 @@ module.exports = {
     users: users,
     editWebhookMsg: editWebhookMsg,
     sendWebhookFile: sendWebhookFile,
-    setClient: setClient
-}
+    setClient: setClient,
+};
