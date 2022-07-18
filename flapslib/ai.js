@@ -599,7 +599,7 @@ async function question(question, channel) {
         frequency_penalty: 0,
         presence_penalty: 0,
     });
-    sendWebhook("neco", response.data.choices[0].text, false, channel);
+    sendWebhook("monsoon", response.data.choices[0].text, false, channel);
 }
 
 /* var openAIKey = "err";
