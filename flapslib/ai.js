@@ -1,9 +1,9 @@
 const puppeteer = require("puppeteer");
 const download = require("./download");
 const { sendWebhook } = require("./webhooks");
-const fs = require('fs');
-const path = require('path');
-const fetch = require('node-fetch');
+const fs = require("fs");
+const path = require("path");
+const fetch = require("node-fetch");
 const { sentence } = require("txtgen/dist/cjs/txtgen");
 const MarkovTextGenerator = require("markov-text-generator").default;
 
@@ -17,8 +17,8 @@ const getRandomValues = require("get-random-values");
 const { resolve } = require("path");
 
 function uuidv4() {
-    return ([1e7] + -1e3 + -4e3 + -8e3 + -1e11).replace(/[018]/g, c =>
-        (c ^ getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16)
+    return ([1e7] + -1e3 + -4e3 + -8e3 + -1e11).replace(/[018]/g, (c) =>
+        (c ^ (getRandomValues(new Uint8Array(1))[0] & (15 >> (c / 4)))).toString(16)
     );
 }
 
@@ -29,15 +29,17 @@ function textgen(channel) {
 async function init() {
     aiPageData.browser = await puppeteer.launch({ headless: true });
     aiPageData.page = await aiPageData.browser.newPage();
-    await aiPageData.page.goto("https://deepai.org/machine-learning-model/text-generator");
-    aiPageData.page.on('console', async(msg) => {
+    await aiPageData.page.goto(
+        "https://deepai.org/machine-learning-model/text-generator"
+    );
+    aiPageData.page.on("console", async(msg) => {
         const msgArgs = msg.args();
         for (let i = 0; i < msgArgs.length; ++i) {
             console.log(await msgArgs[i].jsonValue());
         }
     });
     await aiPageData.page.setExtraHTTPHeaders({
-        'Accept-Language': 'en-US,en;q=0.9'
+        "Accept-Language": "en-US,en;q=0.9",
     });
     puppeteerInitialized = true;
 }
@@ -49,10 +51,17 @@ function decodeEntities(encodedString) {
 async function autocompleteText(text, msgChannel, removeOriginalText = false) {
     try {
         if (!puppeteerInitialized) {
-            return sendWebhook("deepai", "Puppeteer not initialized. Wait a few seconds.", false, msgChannel);
+            return sendWebhook(
+                "deepai",
+                "Puppeteer not initialized. Wait a few seconds.",
+                false,
+                msgChannel
+            );
         }
         (async() => {
-            await aiPageData.page.goto("https://deepai.org/machine-learning-model/text-generator");
+            await aiPageData.page.goto(
+                "https://deepai.org/machine-learning-model/text-generator"
+            );
             await aiPageData.page.evaluate((t) => {
                 document.querySelector(".model-input-text-input").value = t;
             }, text);
@@ -64,14 +73,19 @@ async function autocompleteText(text, msgChannel, removeOriginalText = false) {
             waitInterval = setInterval(async() => {
                 waitCounts++;
                 var a = await aiPageData.page.evaluate((original) => {
-                    if (original == document.querySelector(".try-it-result-area").innerHTML) {
+                    if (
+                        original == document.querySelector(".try-it-result-area").innerHTML
+                    ) {
                         return false;
                     } else return document.querySelector(".try-it-result-area").innerHTML;
                 }, originalHTMLContent);
                 console.log("Waiting...");
                 if (a !== false) {
-                    var a2 = a.substring('<div style="width: 100%; height: 100%; overflow: auto; display: flex; align-items: center; flex-direction: column;"><pre style="white-space: pre-wrap; margin: 0px;">'.length);
-                    a2 = a2.substring(0, a2.length - '</pre></div>'.length);
+                    var a2 = a.substring(
+                        '<div style="width: 100%; height: 100%; overflow: auto; display: flex; align-items: center; flex-direction: column;"><pre style="white-space: pre-wrap; margin: 0px;">'
+                        .length
+                    );
+                    a2 = a2.substring(0, a2.length - "</pre></div>".length);
                     a2 = decodeEntities(a2);
                     if (removeOriginalText) a2 = a2.substring(text.length + 6);
                     //console.log(a2);
@@ -82,11 +96,15 @@ async function autocompleteText(text, msgChannel, removeOriginalText = false) {
                 if (waitCounts == 20) {
                     waitCounts = 0;
                     clearInterval(waitInterval);
-                    return sendWebhook("deepai", "Loop detected (took more than 20 seconds)", false, msgChannel);
+                    return sendWebhook(
+                        "deepai",
+                        "Loop detected (took more than 20 seconds)",
+                        false,
+                        msgChannel
+                    );
                 }
             }, 1000);
         })();
-
     } catch (e) {
         console.log("aw");
         console.log(e);
@@ -98,13 +116,20 @@ var isFirstNav = true;
 async function gpt3complete_new(text, msgChannel, removeOriginalText = false) {
     try {
         if (!puppeteerInitialized) {
-            return sendWebhook("deepai", "Puppeteer not initialized. Wait a few seconds.", false, msgChannel);
+            return sendWebhook(
+                "deepai",
+                "Puppeteer not initialized. Wait a few seconds.",
+                false,
+                msgChannel
+            );
         }
         (async() => {
             await aiPageData.page.goto("https://beta.openai.com/playground");
             var wi = setInterval(async() => {
                 var x = await aiPageData.page.evaluate(() => {
-                    return document.querySelector("#root > div.route-container > div > div.pg-root.page-body.full-width.flush > div > div.pg-body > div.pg-left > div.pg-content-body > div > div > div > div > div > div.DraftEditor-editorContainer > div > div > div > div > span");
+                    return document.querySelector(
+                        "#root > div.route-container > div > div.pg-root.page-body.full-width.flush > div > div.pg-body > div.pg-left > div.pg-content-body > div > div > div > div > div > div.DraftEditor-editorContainer > div > div > div > div > span"
+                    );
                 });
                 if (!x || isFirstNav) {
                     if (isFirstNav) clearInterval(wi);
@@ -113,19 +138,33 @@ async function gpt3complete_new(text, msgChannel, removeOriginalText = false) {
                 } else {
                     clearInterval(wi);
                     await aiPageData.page.evaluate((t) => {
-                        document.querySelector("#root > div.route-container > div > div.pg-root.page-body.full-width.flush > div > div.pg-body > div.pg-left > div.pg-content-body > div > div > div > div > div > div.DraftEditor-editorContainer > div > div > div > div > span").innerHTML = '<span data-text="true">' + t + '</span>';
+                        document.querySelector(
+                            "#root > div.route-container > div > div.pg-root.page-body.full-width.flush > div > div.pg-body > div.pg-left > div.pg-content-body > div > div > div > div > div > div.DraftEditor-editorContainer > div > div > div > div > span"
+                        ).innerHTML = '<span data-text="true">' + t + "</span>";
                     }, text);
-                    await aiPageData.page.click("#root > div.route-container > div > div.pg-root.page-body.full-width.flush > div > div.pg-body > div.pg-left > div.pg-content-footer > div.pg-footer-left > button.btn.btn-sm.btn-filled.btn-primary.pg-submit-btn");
+                    await aiPageData.page.click(
+                        "#root > div.route-container > div > div.pg-root.page-body.full-width.flush > div > div.pg-body > div.pg-left > div.pg-content-footer > div.pg-footer-left > button.btn.btn-sm.btn-filled.btn-primary.pg-submit-btn"
+                    );
 
                     var originalHTMLContent = await aiPageData.page.evaluate(() => {
-                        return document.querySelector("#root > div.route-container > div > div.pg-root.page-body.full-width.flush > div > div.pg-body > div.pg-left > div.pg-content-body > div > div > div > div > div > div.DraftEditor-editorContainer > div > div > div > div > span").innerHTML;
+                        return document.querySelector(
+                            "#root > div.route-container > div > div.pg-root.page-body.full-width.flush > div > div.pg-body > div.pg-left > div.pg-content-body > div > div > div > div > div > div.DraftEditor-editorContainer > div > div > div > div > span"
+                        ).innerHTML;
                     });
                     waitInterval = setInterval(async() => {
                         waitCounts++;
                         var a = await aiPageData.page.evaluate((original) => {
-                            if (original == document.querySelector("#root > div.route-container > div > div.pg-root.page-body.full-width.flush > div > div.pg-body > div.pg-left > div.pg-content-body > div > div > div > div > div > div.DraftEditor-editorContainer > div > div > div > div > span").innerHTML) {
+                            if (
+                                original ==
+                                document.querySelector(
+                                    "#root > div.route-container > div > div.pg-root.page-body.full-width.flush > div > div.pg-body > div.pg-left > div.pg-content-body > div > div > div > div > div > div.DraftEditor-editorContainer > div > div > div > div > span"
+                                ).innerHTML
+                            ) {
                                 return false;
-                            } else return document.querySelector("#root > div.route-container > div > div.pg-root.page-body.full-width.flush > div > div.pg-body > div.pg-left > div.pg-content-body > div > div > div > div > div > div.DraftEditor-editorContainer > div > div > div > div > span").innerHTML;
+                            } else
+                                return document.querySelector(
+                                    "#root > div.route-container > div > div.pg-root.page-body.full-width.flush > div > div.pg-body > div.pg-left > div.pg-content-body > div > div > div > div > div > div.DraftEditor-editorContainer > div > div > div > div > span"
+                                ).innerHTML;
                         }, originalHTMLContent);
                         console.log("Waiting...");
                         if (a !== false) {
@@ -135,13 +174,17 @@ async function gpt3complete_new(text, msgChannel, removeOriginalText = false) {
                         if (waitCounts == 20) {
                             waitCounts = 0;
                             clearInterval(waitInterval);
-                            return sendWebhook("deepai", "Loop detected (took more than 20 seconds)", false, msgChannel);
+                            return sendWebhook(
+                                "deepai",
+                                "Loop detected (took more than 20 seconds)",
+                                false,
+                                msgChannel
+                            );
                         }
                     }, 1000);
                 }
             }, 1000);
         })();
-
     } catch (e) {
         console.log("aw");
         console.log(e);
@@ -155,7 +198,10 @@ function shuffle(array) {
         randomIndex = Math.floor(Math.random() * currentIndex);
         currentIndex--;
 
-        [array[currentIndex], array[randomIndex]] = [array[randomIndex], array[currentIndex]];
+        [array[currentIndex], array[randomIndex]] = [
+            array[randomIndex],
+            array[currentIndex],
+        ];
     }
     return array;
 }
@@ -164,39 +210,52 @@ async function markov(text, msgChannel) {
     var m = new MarkovTextGenerator(1, {
         startAsSentence: false,
         endAsSentence: false,
-        filterFunction: word => word.indexOf("http") === -1
+        filterFunction: (word) => word.indexOf("http") === -1,
     });
-    m.setTrainingText((text.split(" ").length < 10) ? shuffle(text.repeat(5).split(" ")).join(" ") : text);
+    m.setTrainingText(
+        text.split(" ").length < 10 ?
+        shuffle(text.repeat(5).split(" ")).join(" ") :
+        text
+    );
     var a = m.generateText(1000);
     sendWebhook("deepai", a, false, msgChannel);
 }
 async function markov2(text, acc, msgChannel) {
     try {
         fetch("https://projects.haykranen.nl/markov/demo/", {
-            "credentials": "omit",
-            "headers": {
-                "User-Agent": "FlapsChelton",
-                "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8",
-                "Accept-Language": "en-US,en;q=0.5",
-                "Content-Type": "application/x-www-form-urlencoded",
-                "Upgrade-Insecure-Requests": "1",
-                "Sec-Fetch-Dest": "document",
-                "Sec-Fetch-Mode": "navigate",
-                "Sec-Fetch-Site": "same-origin",
-                "Sec-Fetch-User": "?1"
-            },
-            "referrer": "https://projects.haykranen.nl/markov/demo/",
-            "body": "input=" + encodeURIComponent(text) + "&text=&order=4&length=2500&submit=GO",
-            "method": "POST",
-            "mode": "cors"
-        }).then(r => r.text()).then((resp) => {
-            var content = resp.replace(/[\t] +/gi, "").substring(12293, 12293 + (resp.replace(/[\t] +/gi, "").length - 18500));
-            if (content.length > 1500) {
-                content = content.substring(0, 1500);
-            }
-            console.log(content);
-            sendWebhook("deepai", content, false, msgChannel);
-        });
+                credentials: "omit",
+                headers: {
+                    "User-Agent": "FlapsChelton",
+                    Accept: "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8",
+                    "Accept-Language": "en-US,en;q=0.5",
+                    "Content-Type": "application/x-www-form-urlencoded",
+                    "Upgrade-Insecure-Requests": "1",
+                    "Sec-Fetch-Dest": "document",
+                    "Sec-Fetch-Mode": "navigate",
+                    "Sec-Fetch-Site": "same-origin",
+                    "Sec-Fetch-User": "?1",
+                },
+                referrer: "https://projects.haykranen.nl/markov/demo/",
+                body: "input=" +
+                    encodeURIComponent(text) +
+                    "&text=&order=4&length=2500&submit=GO",
+                method: "POST",
+                mode: "cors",
+            })
+            .then((r) => r.text())
+            .then((resp) => {
+                var content = resp
+                    .replace(/[\t] +/gi, "")
+                    .substring(
+                        12293,
+                        12293 + (resp.replace(/[\t] +/gi, "").length - 18500)
+                    );
+                if (content.length > 1500) {
+                    content = content.substring(0, 1500);
+                }
+                console.log(content);
+                sendWebhook("deepai", content, false, msgChannel);
+            });
     } catch (e) {
         console.log("aw");
         console.log(e);
@@ -206,10 +265,17 @@ async function armstrong(msgChannel) {
     var text = fs.readFileSync("./armstrong.txt").toString();
     try {
         if (!puppeteerInitialized) {
-            return sendWebhook("deepai", "Puppeteer not initialized. Wait a few seconds.", false, msgChannel);
+            return sendWebhook(
+                "deepai",
+                "Puppeteer not initialized. Wait a few seconds.",
+                false,
+                msgChannel
+            );
         }
         (async() => {
-            await aiPageData.page.goto("https://deepai.org/machine-learning-model/text-generator");
+            await aiPageData.page.goto(
+                "https://deepai.org/machine-learning-model/text-generator"
+            );
             await aiPageData.page.evaluate((t) => {
                 document.querySelector(".model-input-text-input").value = t;
             }, text);
@@ -221,14 +287,19 @@ async function armstrong(msgChannel) {
             waitInterval = setInterval(async() => {
                 waitCounts++;
                 var a = await aiPageData.page.evaluate((original) => {
-                    if (original == document.querySelector(".try-it-result-area").innerHTML) {
+                    if (
+                        original == document.querySelector(".try-it-result-area").innerHTML
+                    ) {
                         return false;
                     } else return document.querySelector(".try-it-result-area").innerHTML;
                 }, originalHTMLContent);
                 console.log("Waiting...");
                 if (a !== false) {
-                    var a2 = a.substring('<div style="width: 100%; height: 100%; overflow: auto; display: flex; align-items: center; flex-direction: column;"><pre style="white-space: pre-wrap; margin: 0px;">'.length);
-                    a2 = a2.substring(0, a2.length - '</pre></div>'.length);
+                    var a2 = a.substring(
+                        '<div style="width: 100%; height: 100%; overflow: auto; display: flex; align-items: center; flex-direction: column;"><pre style="white-space: pre-wrap; margin: 0px;">'
+                        .length
+                    );
+                    a2 = a2.substring(0, a2.length - "</pre></div>".length);
                     a2 = decodeEntities(a2);
                     //console.log(a2);
                     clearInterval(waitInterval);
@@ -238,11 +309,15 @@ async function armstrong(msgChannel) {
                 if (waitCounts == 20) {
                     waitCounts = 0;
                     clearInterval(waitInterval);
-                    return sendWebhook("deepai", "Loop detected (took more than 20 seconds)", false, msgChannel);
+                    return sendWebhook(
+                        "deepai",
+                        "Loop detected (took more than 20 seconds)",
+                        false,
+                        msgChannel
+                    );
                 }
             }, 1000);
         })();
-
     } catch (e) {
         console.log("aw");
         console.log(e);
@@ -251,59 +326,85 @@ async function armstrong(msgChannel) {
 async function armstrong2(accuracy, msgChannel) {
     try {
         fetch("https://projects.haykranen.nl/markov/demo/", {
-            "credentials": "omit",
-            "headers": {
-                "User-Agent": "FlapsChelton",
-                "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8",
-                "Accept-Language": "en-US,en;q=0.5",
-                "Content-Type": "application/x-www-form-urlencoded",
-                "Upgrade-Insecure-Requests": "1",
-                "Sec-Fetch-Dest": "document",
-                "Sec-Fetch-Mode": "navigate",
-                "Sec-Fetch-Site": "same-origin",
-                "Sec-Fetch-User": "?1"
-            },
-            "referrer": "https://projects.haykranen.nl/markov/demo/",
-            "body": "input=" + fs.readFileSync(
-                "./armstrong.txt"
-            ).toString() + "&text=&order=" + accuracy + "&length=1000&submit=GO",
-            "method": "POST",
-            "mode": "cors"
-        }).then(r => r.text()).then((resp) => {
-            var content = resp.replace(/[\t] +/gi, "").replace(/&hellip;/gi, "...").replace(/&rsquo;/gi, "'").substring(12293, 12293 + (resp.replace(/[\t] +/gi, "").length - 18500));
-            if (content.length > 1500) {
-                content = content.substring(0, 1500);
-            }
-            console.log(content);
-            sendWebhook("armstrong", content, false, msgChannel);
-        });
+                credentials: "omit",
+                headers: {
+                    "User-Agent": "FlapsChelton",
+                    Accept: "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8",
+                    "Accept-Language": "en-US,en;q=0.5",
+                    "Content-Type": "application/x-www-form-urlencoded",
+                    "Upgrade-Insecure-Requests": "1",
+                    "Sec-Fetch-Dest": "document",
+                    "Sec-Fetch-Mode": "navigate",
+                    "Sec-Fetch-Site": "same-origin",
+                    "Sec-Fetch-User": "?1",
+                },
+                referrer: "https://projects.haykranen.nl/markov/demo/",
+                body: "input=" +
+                    fs.readFileSync("./armstrong.txt").toString() +
+                    "&text=&order=" +
+                    accuracy +
+                    "&length=1000&submit=GO",
+                method: "POST",
+                mode: "cors",
+            })
+            .then((r) => r.text())
+            .then((resp) => {
+                var content = resp
+                    .replace(/[\t] +/gi, "")
+                    .replace(/&hellip;/gi, "...")
+                    .replace(/&rsquo;/gi, "'")
+                    .substring(
+                        12293,
+                        12293 + (resp.replace(/[\t] +/gi, "").length - 18500)
+                    );
+                if (content.length > 1500) {
+                    content = content.substring(0, 1500);
+                }
+                console.log(content);
+                sendWebhook("armstrong", content, false, msgChannel);
+            });
     } catch (e) {
         console.log("aw");
         console.log(e);
     }
 }
 
-async function threeDimensionalTextLayer2(text, msgChannel, msg, imageName, client) {
-    await aiPageData.page.goto("https://konalt.us.to/flaps/3dtext/?text=" + encodeURIComponent(text) + (msg.attachments.first() ? "&imageurl=" + encodeURIComponent("https://konalt.us.to/flaps/image_urls/" + imageName) : ""));
+async function threeDimensionalTextLayer2(
+    text,
+    msgChannel,
+    msg,
+    imageName,
+    client
+) {
+    await aiPageData.page.goto(
+        "https://konalt.us.to/flaps/3dtext/?text=" +
+        encodeURIComponent(text) +
+        (msg.attachments.first() ?
+            "&imageurl=" +
+            encodeURIComponent(
+                "https://konalt.us.to/flaps/image_urls/" + imageName
+            ) :
+            "")
+    );
     waitInterval = setInterval(async() => {
         waitCounts++;
         var a = await aiPageData.page.evaluate((c) => {
             console.log(document.querySelector("html").innerHTML);
             var element = document.querySelector("canvas");
             console.log(element);
-            return (typeof(element) != 'undefined' && element != null);
+            return typeof element != "undefined" && element != null;
         });
         console.log("Waiting...");
         if (a) {
             clearInterval(waitInterval);
             waitCounts = 0;
             var imgID2 = uuidv4().replace(/-/gi, "");
-            var imagePath = path.join(__dirname, '../images/cache/', imgID2 + '.jpg');
+            var imagePath = path.join(__dirname, "../images/cache/", imgID2 + ".jpg");
             await aiPageData.page.screenshot({ path: imagePath });
             var message = await client.channels.cache.get("956316856422137856").send({
                 files: [{
-                    attachment: imagePath
-                }]
+                    attachment: imagePath,
+                }, ],
             });
             setTimeout(() => {
                 fs.unlinkSync(imagePath);
@@ -313,25 +414,39 @@ async function threeDimensionalTextLayer2(text, msgChannel, msg, imageName, clie
         if (waitCounts == 20) {
             waitCounts = 0;
             clearInterval(waitInterval);
-            return sendWebhook("deepai", "Loop detected (took more than 20 seconds)", false, msgChannel);
+            return sendWebhook(
+                "deepai",
+                "Loop detected (took more than 20 seconds)",
+                false,
+                msgChannel
+            );
         }
     }, 1000);
 }
 
 async function googleTrends(queries, msgChannel, client) {
-    await aiPageData.page.goto("https://trends.google.com/trends/explore?date=all&geo=US&q=" + queries.map(q => { return encodeURIComponent(q) }).join(","));
+    await aiPageData.page.goto(
+        "https://trends.google.com/trends/explore?date=all&geo=US&q=" +
+        queries
+        .map((q) => {
+            return encodeURIComponent(q);
+        })
+        .join(",")
+    );
     var imgID2 = uuidv4().replace(/-/gi, "");
-    var imagePath = path.join(__dirname, '../images/cache/', imgID2 + '.jpg');
+    var imagePath = path.join(__dirname, "../images/cache/", imgID2 + ".jpg");
     var waitInterval = setInterval(async() => {
-        const element = await aiPageData.page.$('.multi-heat-map-and-legends-without-explanation-container');
+        const element = await aiPageData.page.$(
+            ".multi-heat-map-and-legends-without-explanation-container"
+        );
         console.log(element);
         if (element) {
             clearInterval(waitInterval);
             await element.screenshot({ path: imagePath });
             var message = await client.channels.cache.get("956316856422137856").send({
                 files: [{
-                    attachment: imagePath
-                }]
+                    attachment: imagePath,
+                }, ],
             });
             setTimeout(() => {
                 fs.unlinkSync(imagePath);
@@ -344,24 +459,40 @@ async function googleTrends(queries, msgChannel, client) {
 async function person(msgChannel, client) {
     try {
         if (!puppeteerInitialized) {
-            return sendWebhook("deepai", "Puppeteer not initialized. Wait a few seconds.", false, msgChannel);
+            return sendWebhook(
+                "deepai",
+                "Puppeteer not initialized. Wait a few seconds.",
+                false,
+                msgChannel
+            );
         }
         var imgID2 = uuidv4().replace(/-/gi, "");
-        var imagePath = path.join(__dirname, '../images/cache/', imgID2 + '.jpg');
+        var imagePath = path.join(__dirname, "../images/cache/", imgID2 + ".jpg");
         fs.writeFileSync(imagePath, "");
-        download("https://thispersondoesnotexist.com/image", imagePath, async(err) => {
-            var message = await client.channels.cache.get("956316856422137856").send({
-                files: [{
-                    attachment: imagePath
-                }]
-            });
+        download(
+            "https://thispersondoesnotexist.com/image",
+            imagePath,
+            async(err) => {
+                var message = await client.channels.cache
+                    .get("956316856422137856")
+                    .send({
+                        files: [{
+                            attachment: imagePath,
+                        }, ],
+                    });
 
-            setTimeout(() => {
-                fs.unlinkSync(imagePath);
-            }, 10000);
+                setTimeout(() => {
+                    fs.unlinkSync(imagePath);
+                }, 10000);
 
-            sendWebhook("deepai", message.attachments.first().url, false, msgChannel);
-        });
+                sendWebhook(
+                    "deepai",
+                    message.attachments.first().url,
+                    false,
+                    msgChannel
+                );
+            }
+        );
     } catch (e) {
         console.log("aw");
         console.log(e);
@@ -371,19 +502,42 @@ async function person(msgChannel, client) {
 async function threeDimensionalText(text, msgChannel, msg, client) {
     try {
         if (!puppeteerInitialized) {
-            return sendWebhook("deepai", "Puppeteer not initialized. Wait a few seconds.", false, msgChannel);
+            return sendWebhook(
+                "deepai",
+                "Puppeteer not initialized. Wait a few seconds.",
+                false,
+                msgChannel
+            );
         }
         (async() => {
             var imgID2 = uuidv4().replace(/-/gi, "");
             if (msg.attachments.first()) {
-                download(msg.attachments.first().url, "../2site/sites/konalt/flaps/image_urls/" + imgID2 + msg.attachments.first().url.split(".")[msg.attachments.first().url.split(".").length - 1], () => {
-                    threeDimensionalTextLayer2(text, msgChannel, msg, (msg.attachments.first() ? imgID2 + msg.attachments.first().url.split(".")[msg.attachments.first().url.split(".").length - 1] : null), client);
-                });
+                download(
+                    msg.attachments.first().url,
+                    "../2site/sites/konalt/flaps/image_urls/" +
+                    imgID2 +
+                    msg.attachments.first().url.split(".")[
+                        msg.attachments.first().url.split(".").length - 1
+                    ],
+                    () => {
+                        threeDimensionalTextLayer2(
+                            text,
+                            msgChannel,
+                            msg,
+                            msg.attachments.first() ?
+                            imgID2 +
+                            msg.attachments.first().url.split(".")[
+                                msg.attachments.first().url.split(".").length - 1
+                            ] :
+                            null,
+                            client
+                        );
+                    }
+                );
             } else {
                 threeDimensionalTextLayer2(text, msgChannel, msg, null, client);
             }
         })();
-
     } catch (e) {
         console.log("aw");
         console.log(e);
@@ -393,10 +547,17 @@ async function threeDimensionalText(text, msgChannel, msg, client) {
 async function generateImage(text, msgChannel, client) {
     try {
         if (!puppeteerInitialized) {
-            return sendWebhook("deepai", "Puppeteer not initialized. Wait a few seconds.", false, msgChannel);
+            return sendWebhook(
+                "deepai",
+                "Puppeteer not initialized. Wait a few seconds.",
+                false,
+                msgChannel
+            );
         }
         (async() => {
-            await aiPageData.page.goto("https://deepai.org/machine-learning-model/text2img");
+            await aiPageData.page.goto(
+                "https://deepai.org/machine-learning-model/text2img"
+            );
             await aiPageData.page.evaluate((t) => {
                 document.querySelector(".model-input-text-input").value = t;
             }, text);
@@ -408,46 +569,68 @@ async function generateImage(text, msgChannel, client) {
             waitInterval = setInterval(async() => {
                 waitCounts++;
                 var a = await aiPageData.page.evaluate((original) => {
-                    if (original == document.querySelector(".try-it-result-area").innerHTML) {
+                    if (
+                        original == document.querySelector(".try-it-result-area").innerHTML
+                    ) {
                         return false;
                     } else return document.querySelector(".try-it-result-area").innerHTML;
                 }, originalHTMLContent);
                 console.log("Waiting...");
                 if (a !== false) {
                     var a2 = a.substring('<img src="'.length);
-                    a2 = a2.substring(0, a2.length - '" style="position: relative; width: 100%; height: 100%; object-fit: contain;">'.length);
+                    a2 = a2.substring(
+                        0,
+                        a2.length -
+                        '" style="position: relative; width: 100%; height: 100%; object-fit: contain;">'
+                        .length
+                    );
                     console.log(a2);
                     clearInterval(waitInterval);
                     waitCounts = 0;
                     var imgID2 = uuidv4().replace(/-/gi, "");
-                    var imagePath = path.join(__dirname, '../images/cache/', imgID2 + '.jpg');
+                    var imagePath = path.join(
+                        __dirname,
+                        "../images/cache/",
+                        imgID2 + ".jpg"
+                    );
                     fs.writeFileSync(imagePath, "");
                     download(a2, imagePath, async(err) => {
                         if (err) return sendWebhook("deepai", err, false, msgChannel);
                         /**
                          * @type {Discord.Message}
                          */
-                        var message = await client.channels.cache.get("956316856422137856").send({
-                            files: [{
-                                attachment: imagePath
-                            }]
-                        });
+                        var message = await client.channels.cache
+                            .get("956316856422137856")
+                            .send({
+                                files: [{
+                                    attachment: imagePath,
+                                }, ],
+                            });
 
                         setTimeout(() => {
                             fs.unlinkSync(imagePath);
                         }, 10000);
 
-                        sendWebhook("deepai", message.attachments.first().url, false, msgChannel);
+                        sendWebhook(
+                            "deepai",
+                            message.attachments.first().url,
+                            false,
+                            msgChannel
+                        );
                     });
                 }
                 if (waitCounts == 20) {
                     waitCounts = 0;
                     clearInterval(waitInterval);
-                    return sendWebhook("deepai", "Loop detected (took more than 20 seconds)", false, msgChannel);
+                    return sendWebhook(
+                        "deepai",
+                        "Loop detected (took more than 20 seconds)",
+                        false,
+                        msgChannel
+                    );
                 }
             }, 1000);
         })();
-
     } catch (e) {
         console.log("aw");
         console.log(e);
@@ -457,10 +640,17 @@ async function generateImage(text, msgChannel, client) {
 async function upscaleImage(msg, msgChannel, client) {
     try {
         if (!puppeteerInitialized) {
-            return sendWebhook("deepai", "Puppeteer not initialized. Wait a few seconds.", false, msgChannel);
+            return sendWebhook(
+                "deepai",
+                "Puppeteer not initialized. Wait a few seconds.",
+                false,
+                msgChannel
+            );
         }
         (async() => {
-            await aiPageData.page.goto("https://deepai.org/machine-learning-model/waifu2x");
+            await aiPageData.page.goto(
+                "https://deepai.org/machine-learning-model/waifu2x"
+            );
             await aiPageData.page.evaluate((t) => {
                 window.switchToUrlUpload();
                 document.querySelector("#url-input-image").value = t;
@@ -468,7 +658,11 @@ async function upscaleImage(msg, msgChannel, client) {
             }, msg.attachments.first().url);
 
             var originalHTMLContent = await aiPageData.page.evaluate(() => {
-                if (document.querySelector(".try-it-result-area > img:nth-child(1)").src.includes("waifu2x")) {
+                if (
+                    document
+                    .querySelector(".try-it-result-area > img:nth-child(1)")
+                    .src.includes("waifu2x")
+                ) {
                     return '<img src="https://api.deepai.org/job-view-file/aea88859-1ed9-4fa9-9a1d-b571b1dc22ed/outputs/output.png" style="position: relative; width: 100%; height: 100%; object-fit: contain;">';
                 }
                 return document.querySelector(".try-it-result-area").innerHTML;
@@ -476,46 +670,68 @@ async function upscaleImage(msg, msgChannel, client) {
             waitInterval = setInterval(async() => {
                 waitCounts++;
                 var a = await aiPageData.page.evaluate((original) => {
-                    if (original == document.querySelector(".try-it-result-area").innerHTML) {
+                    if (
+                        original == document.querySelector(".try-it-result-area").innerHTML
+                    ) {
                         return false;
                     } else return document.querySelector(".try-it-result-area").innerHTML;
                 }, originalHTMLContent);
                 console.log("Waiting...");
                 if (a !== false) {
                     var a2 = a.substring('<img src="'.length);
-                    a2 = a2.substring(0, a2.length - '" style="position: relative; width: 100%; height: 100%; object-fit: contain;">'.length);
+                    a2 = a2.substring(
+                        0,
+                        a2.length -
+                        '" style="position: relative; width: 100%; height: 100%; object-fit: contain;">'
+                        .length
+                    );
                     console.log(a2);
                     clearInterval(waitInterval);
                     waitCounts = 0;
                     var imgID2 = uuidv4().replace(/-/gi, "");
-                    var imagePath = path.join(__dirname, '../images/cache/', imgID2 + '.jpg');
+                    var imagePath = path.join(
+                        __dirname,
+                        "../images/cache/",
+                        imgID2 + ".jpg"
+                    );
                     fs.writeFileSync(imagePath, "");
                     download(a2, imagePath, async(err) => {
                         if (err) return sendWebhook("deepai", err, false, msgChannel);
                         /**
                          * @type {Discord.Message}
                          */
-                        var message = await client.channels.cache.get("956316856422137856").send({
-                            files: [{
-                                attachment: imagePath
-                            }]
-                        });
+                        var message = await client.channels.cache
+                            .get("956316856422137856")
+                            .send({
+                                files: [{
+                                    attachment: imagePath,
+                                }, ],
+                            });
 
                         setTimeout(() => {
                             fs.unlinkSync(imagePath);
                         }, 10000);
 
-                        sendWebhook("deepai", message.attachments.first().url, false, msgChannel);
+                        sendWebhook(
+                            "deepai",
+                            message.attachments.first().url,
+                            false,
+                            msgChannel
+                        );
                     });
                 }
                 if (waitCounts == 20) {
                     waitCounts = 0;
                     clearInterval(waitInterval);
-                    return sendWebhook("deepai", "Loop detected (took more than 20 seconds)", false, msgChannel);
+                    return sendWebhook(
+                        "deepai",
+                        "Loop detected (took more than 20 seconds)",
+                        false,
+                        msgChannel
+                    );
                 }
             }, 1000);
         })();
-
     } catch (e) {
         console.log("aw");
         console.log(e);
@@ -525,55 +741,55 @@ async function upscaleImage(msg, msgChannel, client) {
 function dalle(prompt, isSecondReq = false) {
     return new Promise((resolve, reject) => {
         fetch("https://bf.dallemini.ai/generate", {
-            "credentials": "omit",
-            "headers": {
-                "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:101.0) Gecko/20100101 Firefox/101.0",
-                "Accept": "application/json",
-                "Accept-Language": "en-US,en;q=0.5",
-                "Content-Type": "application/json",
-                "Sec-Fetch-Dest": "empty",
-                "Sec-Fetch-Mode": "cors",
-                "Sec-Fetch-Site": "cross-site"
-            },
-            "referrer": "https://hf.space/",
-            "body": "{\"prompt\":\"" + prompt + "\"}",
-            "method": "POST",
-            "mode": "cors"
-        }).then(r => r.text()).then(r => {
-            var out = {
-                images: [null, null, null,
-                    null, null, null,
-                    null, null, null
-                ],
-                prompt: prompt,
-                image: true
-            };
-            out.images.fill("/9j/4AAQSkZJRgABAQEAYABgAAD/2wBDAAIBAQIBAQICAgICAgICAwUDAwMDAwYEBAMFBwYHBwcGBwcICQsJCAgKCAcHCg0KCgsMDAwMBwkODw0MDgsMDAz/2wBDAQICAgMDAwYDAwYMCAcIDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAz/wAARCAABAAEDASIAAhEBAxEB/8QAHwAAAQUBAQEBAQEAAAAAAAAAAAECAwQFBgcICQoL/8QAtRAAAgEDAwIEAwUFBAQAAAF9AQIDAAQRBRIhMUEGE1FhByJxFDKBkaEII0KxwRVS0fAkM2JyggkKFhcYGRolJicoKSo0NTY3ODk6Q0RFRkdISUpTVFVWV1hZWmNkZWZnaGlqc3R1dnd4eXqDhIWGh4iJipKTlJWWl5iZmqKjpKWmp6ipqrKztLW2t7i5usLDxMXGx8jJytLT1NXW19jZ2uHi4+Tl5ufo6erx8vP09fb3+Pn6/8QAHwEAAwEBAQEBAQEBAQAAAAAAAAECAwQFBgcICQoL/8QAtREAAgECBAQDBAcFBAQAAQJ3AAECAxEEBSExBhJBUQdhcRMiMoEIFEKRobHBCSMzUvAVYnLRChYkNOEl8RcYGRomJygpKjU2Nzg5OkNERUZHSElKU1RVVldYWVpjZGVmZ2hpanN0dXZ3eHl6goOEhYaHiImKkpOUlZaXmJmaoqOkpaanqKmqsrO0tba3uLm6wsPExcbHyMnK0tPU1dbX2Nna4uPk5ebn6Onq8vP09fb3+Pn6/9oADAMBAAIRAxEAPwD9/KKKKAP/2Q==");
-            try {
-                r = JSON.parse(r);
-                out.images = r.images;
-            } catch (e) {
-                console.log("some internal server error shit");
-                if (isSecondReq) {
-                    console.log("SR: Error");
-                    out.prompt = r.replace(/<[/A-z0-9 =!]+>/g, "");
-                    /* if (Math.random() < 0.4) {
-                        out.prompt = "418 I'm a Teapot\n\nThe server refused to handle this due to a long queue.\nnginx/1.18.0 (Ubuntu)"
-                    } */
-                    out.image = false;
-                } else {
-                    setTimeout(() => {
-                        dalle(prompt, true).then(data => {
-                            console.log(data);
-                            resolve(data);
-                        });
-                    }, 3000);
+                credentials: "omit",
+                headers: {
+                    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:101.0) Gecko/20100101 Firefox/101.0",
+                    Accept: "application/json",
+                    "Accept-Language": "en-US,en;q=0.5",
+                    "Content-Type": "application/json",
+                    "Sec-Fetch-Dest": "empty",
+                    "Sec-Fetch-Mode": "cors",
+                    "Sec-Fetch-Site": "cross-site",
+                },
+                referrer: "https://hf.space/",
+                body: '{"prompt":"' + prompt + '"}',
+                method: "POST",
+                mode: "cors",
+            })
+            .then((r) => r.text())
+            .then((r) => {
+                var out = {
+                    images: [null, null, null, null, null, null, null, null, null],
+                    prompt: prompt,
+                    image: true,
+                };
+                out.images.fill(
+                    "/9j/4AAQSkZJRgABAQEAYABgAAD/2wBDAAIBAQIBAQICAgICAgICAwUDAwMDAwYEBAMFBwYHBwcGBwcICQsJCAgKCAcHCg0KCgsMDAwMBwkODw0MDgsMDAz/2wBDAQICAgMDAwYDAwYMCAcIDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAz/wAARCAABAAEDASIAAhEBAxEB/8QAHwAAAQUBAQEBAQEAAAAAAAAAAAECAwQFBgcICQoL/8QAtRAAAgEDAwIEAwUFBAQAAAF9AQIDAAQRBRIhMUEGE1FhByJxFDKBkaEII0KxwRVS0fAkM2JyggkKFhcYGRolJicoKSo0NTY3ODk6Q0RFRkdISUpTVFVWV1hZWmNkZWZnaGlqc3R1dnd4eXqDhIWGh4iJipKTlJWWl5iZmqKjpKWmp6ipqrKztLW2t7i5usLDxMXGx8jJytLT1NXW19jZ2uHi4+Tl5ufo6erx8vP09fb3+Pn6/8QAHwEAAwEBAQEBAQEBAQAAAAAAAAECAwQFBgcICQoL/8QAtREAAgECBAQDBAcFBAQAAQJ3AAECAxEEBSExBhJBUQdhcRMiMoEIFEKRobHBCSMzUvAVYnLRChYkNOEl8RcYGRomJygpKjU2Nzg5OkNERUZHSElKU1RVVldYWVpjZGVmZ2hpanN0dXZ3eHl6goOEhYaHiImKkpOUlZaXmJmaoqOkpaanqKmqsrO0tba3uLm6wsPExcbHyMnK0tPU1dbX2Nna4uPk5ebn6Onq8vP09fb3+Pn6/9oADAMBAAIRAxEAPwD9/KKKKAP/2Q=="
+                );
+                try {
+                    r = JSON.parse(r);
+                    out.images = r.images;
+                } catch (e) {
+                    console.log("some internal server error shit");
+                    if (isSecondReq) {
+                        console.log("SR: Error");
+                        out.prompt = r.replace(/<[/A-z0-9 =!]+>/g, "");
+                        /* if (Math.random() < 0.4) {
+                                    out.prompt = "418 I'm a Teapot\n\nThe server refused to handle this due to a long queue.\nnginx/1.18.0 (Ubuntu)"
+                                } */
+                        out.image = false;
+                    } else {
+                        setTimeout(() => {
+                            dalle(prompt, true).then((data) => {
+                                console.log(data);
+                                resolve(data);
+                            });
+                        }, 3000);
+                    }
+                } finally {
+                    resolve(out);
                 }
-            } finally {
-                resolve(out);
-            }
-
-        });
+            });
     });
 }
 
@@ -593,7 +809,7 @@ async function question(question, channel) {
     const response = await openai.createCompletion({
         model: model,
         prompt: monsoonPre + "\nQ: " + question + "\nA:",
-        temperature: 0,
+        temperature: 2,
         max_tokens: 100,
         top_p: 1,
         frequency_penalty: 0,
@@ -647,77 +863,97 @@ fetch("https://auth0.openai.com/oauth/token", {
     });
 }); */
 
-
-
 async function newQuestion(question, channel) {
-    monsoonPre = fs.readFileSync("./monsoon.txt")
+    monsoonPre = fs.readFileSync("./monsoon.txt");
     fetch("https://api.openai.com/v1/engines/text-davinci-002/completions", {
-        "credentials": "include",
-        "headers": {
-            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:101.0) Gecko/20100101 Firefox/101.0",
-            "Accept": "application/json",
-            "Accept-Language": "en-US,en;q=0.5",
-            "Content-Type": "application/json",
-            "Authorization": "Bearer " + openAIKey,
-            "OpenAI-Organization": "org-XNVpf1DuEbdIFPiGaW4USR6v",
-            "Sec-Fetch-Dest": "empty",
-            "Sec-Fetch-Mode": "cors",
-            "Sec-Fetch-Site": "same-site"
-        },
-        "referrer": "https://beta.openai.com/",
-        "body": JSON.stringify({
-            prompt: monsoonPre + "\nQ: " + question + "\nA:",
-            max_tokens: 256,
-            temperature: 0.7,
-            top_p: 1,
-            frequency_penalty: 0,
-            presence_penalty: 0,
-            best_of: 1
-        }),
-        "method": "POST",
-        "mode": "cors"
-    }).then(r => r.json()).then(r => {
-        sendWebhook("monsoon", r.choices ? r.choices[0].text : JSON.stringify(r), false, channel);
-    });
+            credentials: "include",
+            headers: {
+                "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:101.0) Gecko/20100101 Firefox/101.0",
+                Accept: "application/json",
+                "Accept-Language": "en-US,en;q=0.5",
+                "Content-Type": "application/json",
+                Authorization: "Bearer " + openAIKey,
+                "OpenAI-Organization": "org-XNVpf1DuEbdIFPiGaW4USR6v",
+                "Sec-Fetch-Dest": "empty",
+                "Sec-Fetch-Mode": "cors",
+                "Sec-Fetch-Site": "same-site",
+            },
+            referrer: "https://beta.openai.com/",
+            body: JSON.stringify({
+                prompt: monsoonPre + "\nQ: " + question + "\nA:",
+                max_tokens: 256,
+                temperature: 0.7,
+                top_p: 1,
+                frequency_penalty: 0,
+                presence_penalty: 0,
+                best_of: 1,
+            }),
+            method: "POST",
+            mode: "cors",
+        })
+        .then((r) => r.json())
+        .then((r) => {
+            sendWebhook(
+                "monsoon",
+                r.choices ? r.choices[0].text : JSON.stringify(r),
+                false,
+                channel
+            );
+        });
 }
 
 async function monsoonChatEvent(channel) {
-    channel.messages.fetch({ limit: 5 }).then(messages => {
-            var lastMessages = Array.from(messages).map(x => { return x[1] }).reverse();
+    channel.messages
+        .fetch({ limit: 5 })
+        .then((messages) => {
+            var lastMessages = Array.from(messages)
+                .map((x) => {
+                    return x[1];
+                })
+                .reverse();
             var input_str = "A conversation. I am 'monsoo mgr'.\n";
-            lastMessages.forEach(message => {
-                input_str += `${message.author.username}: ${message.content ? message.content : "Here's an image for you all!"}\n`;
+            lastMessages.forEach((message) => {
+                input_str += `${message.author.username}: ${
+          message.content ? message.content : "Here's an image for you all!"
+        }\n`;
             });
-            input_str += "monsoo mgr:"
+            input_str += "monsoo mgr:";
             monsoonPre = fs.readFileSync("./monsoon.txt");
             fetch("https://api.openai.com/v1/engines/text-davinci-002/completions", {
-                "credentials": "include",
-                "headers": {
-                    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:101.0) Gecko/20100101 Firefox/101.0",
-                    "Accept": "application/json",
-                    "Accept-Language": "en-US,en;q=0.5",
-                    "Content-Type": "application/json",
-                    "Authorization": "Bearer " + openAIKey,
-                    "OpenAI-Organization": "org-XNVpf1DuEbdIFPiGaW4USR6v",
-                    "Sec-Fetch-Dest": "empty",
-                    "Sec-Fetch-Mode": "cors",
-                    "Sec-Fetch-Site": "same-site"
-                },
-                "referrer": "https://beta.openai.com/",
-                "body": JSON.stringify({
-                    prompt: input_str,
-                    max_tokens: 256,
-                    temperature: 0.7,
-                    top_p: 1,
-                    frequency_penalty: 0,
-                    presence_penalty: 0,
-                    best_of: 1
-                }),
-                "method": "POST",
-                "mode": "cors"
-            }).then(r => r.json()).then(r => {
-                sendWebhook("monsoon", r.choices ? r.choices[0].text : JSON.stringify(r), false, channel);
-            });
+                    credentials: "include",
+                    headers: {
+                        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:101.0) Gecko/20100101 Firefox/101.0",
+                        Accept: "application/json",
+                        "Accept-Language": "en-US,en;q=0.5",
+                        "Content-Type": "application/json",
+                        Authorization: "Bearer " + openAIKey,
+                        "OpenAI-Organization": "org-XNVpf1DuEbdIFPiGaW4USR6v",
+                        "Sec-Fetch-Dest": "empty",
+                        "Sec-Fetch-Mode": "cors",
+                        "Sec-Fetch-Site": "same-site",
+                    },
+                    referrer: "https://beta.openai.com/",
+                    body: JSON.stringify({
+                        prompt: input_str,
+                        max_tokens: 256,
+                        temperature: 0.7,
+                        top_p: 1,
+                        frequency_penalty: 0,
+                        presence_penalty: 0,
+                        best_of: 1,
+                    }),
+                    method: "POST",
+                    mode: "cors",
+                })
+                .then((r) => r.json())
+                .then((r) => {
+                    sendWebhook(
+                        "monsoon",
+                        r.choices ? r.choices[0].text : JSON.stringify(r),
+                        false,
+                        channel
+                    );
+                });
         })
         .catch(console.error);
 }
@@ -733,53 +969,79 @@ async function gpt3complete(question, channel) {
         frequency_penalty: 0,
         presence_penalty: 0,
     });
-    sendWebhook("monsoon", question + response.data.choices[0].text, false, channel);
+    sendWebhook(
+        "monsoon",
+        question + response.data.choices[0].text,
+        false,
+        channel
+    );
 }
 
 async function elcomplete(content, channel, temp) {
     fetch("https://api.eleuther.ai/completion", {
-        "credentials": "omit",
-        "headers": {
-            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:101.0) Gecko/20100101 Firefox/101.0",
-            "Accept": "application/json",
-            "Accept-Language": "en-US,en;q=0.5",
-            "Content-Type": "application/json",
-            "Sec-Fetch-Dest": "empty",
-            "Sec-Fetch-Mode": "cors",
-            "Sec-Fetch-Site": "same-site"
-        },
-        "referrer": "https://6b.eleuther.ai/",
-        "body": "{\"context\":\"" + content + "\",\"top_p\":0.9,\"temp\":" + temp + ",\"response_length\":128,\"remove_input\":true}",
-        "method": "POST",
-        "mode": "cors"
-    }).then(r => r.json()).then(data => {
-        sendWebhook("deepai", "**" + content + "**" + data[0].generated_text, false, channel);
-    });
+            credentials: "omit",
+            headers: {
+                "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:101.0) Gecko/20100101 Firefox/101.0",
+                Accept: "application/json",
+                "Accept-Language": "en-US,en;q=0.5",
+                "Content-Type": "application/json",
+                "Sec-Fetch-Dest": "empty",
+                "Sec-Fetch-Mode": "cors",
+                "Sec-Fetch-Site": "same-site",
+            },
+            referrer: "https://6b.eleuther.ai/",
+            body: '{"context":"' +
+                content +
+                '","top_p":0.9,"temp":' +
+                temp +
+                ',"response_length":128,"remove_input":true}',
+            method: "POST",
+            mode: "cors",
+        })
+        .then((r) => r.json())
+        .then((data) => {
+            sendWebhook(
+                "deepai",
+                "**" + content + "**" + data[0].generated_text,
+                false,
+                channel
+            );
+        });
 }
 
 function elQuestion(question, channel) {
-    var content = monsoonPre + "\\nQ:" + question + "\\nA:"
+    var content = monsoonPre + "\\nQ:" + question + "\\nA:";
     fetch("https://api.eleuther.ai/completion", {
-        "credentials": "omit",
-        "headers": {
-            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:101.0) Gecko/20100101 Firefox/101.0",
-            "Accept": "application/json",
-            "Accept-Language": "en-US,en;q=0.5",
-            "Content-Type": "application/json",
-            "Sec-Fetch-Dest": "empty",
-            "Sec-Fetch-Mode": "cors",
-            "Sec-Fetch-Site": "same-site"
-        },
-        "referrer": "https://6b.eleuther.ai/",
-        "body": "{\"context\":\"" + content + "\",\"top_p\":0,\"temp\":1,\"response_length\":32,\"remove_input\":true}",
-        "method": "POST",
-        "mode": "cors"
-    }).then(r => r.json()).then(data => {
-        console.log("done");
-        console.log(r);
-        if (!data[0].generated_text) return sendWebhook("monsoon", JSON.stringify(data[0]), false, channel);
-        sendWebhook("monsoon", data[0].generated_text.split("\n")[0], false, channel);
-    });
+            credentials: "omit",
+            headers: {
+                "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:101.0) Gecko/20100101 Firefox/101.0",
+                Accept: "application/json",
+                "Accept-Language": "en-US,en;q=0.5",
+                "Content-Type": "application/json",
+                "Sec-Fetch-Dest": "empty",
+                "Sec-Fetch-Mode": "cors",
+                "Sec-Fetch-Site": "same-site",
+            },
+            referrer: "https://6b.eleuther.ai/",
+            body: '{"context":"' +
+                content +
+                '","top_p":0,"temp":1,"response_length":32,"remove_input":true}',
+            method: "POST",
+            mode: "cors",
+        })
+        .then((r) => r.json())
+        .then((data) => {
+            console.log("done");
+            console.log(r);
+            if (!data[0].generated_text)
+                return sendWebhook("monsoon", JSON.stringify(data[0]), false, channel);
+            sendWebhook(
+                "monsoon",
+                data[0].generated_text.split("\n")[0],
+                false,
+                channel
+            );
+        });
 }
 
 function switchMode(channel) {
@@ -806,7 +1068,7 @@ module.exports = {
     elcomplete: elcomplete,
     googleTrends: googleTrends,
     monsoonChatEvent: monsoonChatEvent,
-    gpt3complete_new: gpt3complete_new
+    gpt3complete_new: gpt3complete_new,
 };
 
 init();
