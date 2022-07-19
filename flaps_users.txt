@@ -73,3 +73,4 @@ doktor--dok tor--https://media.discordapp.net/attachments/949678711295328256/991
 wendys--Wendy's--https://www.the-sun.com/wp-content/uploads/sites/6/2022/02/ba33b3a7-4990-484b-b406-01fb2b7658f9.jpg
 sanfran--SAFN FRANZISCO REDISENT--https://podcastaddict.com/cache/artwork/thumb/2242048--(x)=>{return x.toLowerCase().split('').map(function(c){ return (Math.random() < .5? c : c.toUpperCase()) + (Math.random() < .5? "" : (Math.random() < .5 ? " HRNNRANGE " : " hoohhgngngh ")); }).join('')}
 neco--racist cat--https://media.discordapp.net/attachments/882743320554643476/998544779019309137/unknown.png
+tasquem--dommy mommy catgirl--https://cdn.discordapp.com/attachments/838732607344214019/999090252281040896/unknown.png
