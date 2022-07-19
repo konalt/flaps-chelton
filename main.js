@@ -336,8 +336,8 @@ client.on("messageCreate", async(msg) => {
         var commandArgString = commandArgs.slice(1).join(" ");
         var command = commandArgs[0].toLowerCase();
         /* if (msg.channel.topic.includes("##Monsoon")) {
-                                    if (!msg.author.bot) monsoonChatEvent(msg.channel);
-                                } */
+                                        if (!msg.author.bot) monsoonChatEvent(msg.channel);
+                                    } */
         if (userStickies[msg.author.id]) {
             if (msg.content.startsWith("!..unsticky")) {
                 return (userStickies[msg.author.id] = false);
@@ -539,7 +539,7 @@ client.on("messageCreate", async(msg) => {
                     }
                 case "!insanity":
                     {
-                        setSanity(parseInt(commandArgs[1]));
+                        setSanity(parseFloat(commandArgs[1]));
                         sendWebhook("monsoon", "yep donezo fonezo", false, msg.channel);
                         break;
                     }
@@ -2513,11 +2513,11 @@ setInterval(() => {
         );
     }
     /*     var bsc = client.guilds.cache.get("760524739239477340");
-                    var memberPlaying = Array.from(bsc.members.cache).map(u => { return u[1].user.currentStatus });
-                    if (memberPlaying == "Genshin Impact" ||
-                        memberPlaying == "League of Legends") {
-                        member.ban();
-                    } */
+                      var memberPlaying = Array.from(bsc.members.cache).map(u => { return u[1].user.currentStatus });
+                      if (memberPlaying == "Genshin Impact" ||
+                          memberPlaying == "League of Legends") {
+                          member.ban();
+                      } */
 }, 1000);
 setInterval(() => {
     var d = new Date();
