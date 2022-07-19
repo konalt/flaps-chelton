@@ -775,8 +775,8 @@ function dalle(prompt, isSecondReq = false) {
                         console.log("SR: Error");
                         out.prompt = r.replace(/<[/A-z0-9 =!]+>/g, "");
                         /* if (Math.random() < 0.4) {
-                                                                                                                        out.prompt = "418 I'm a Teapot\n\nThe server refused to handle this due to a long queue.\nnginx/1.18.0 (Ubuntu)"
-                                                                                                                    } */
+                                                                                                                                                            out.prompt = "418 I'm a Teapot\n\nThe server refused to handle this due to a long queue.\nnginx/1.18.0 (Ubuntu)"
+                                                                                                                                                        } */
                         out.image = false;
                     } else {
                         setTimeout(() => {
@@ -811,13 +811,15 @@ async function question(question, channel) {
     ) {
         return sendWebhook("monsoon", "No, probably not", false, channel);
     }
+    var monsoonData = fs.readFileSync("./monsoon.txt").toString();
     monsoonPre = [
-        parseFloat(fs.readFileSync("./monsoon.txt").toString().split(" ")[0]),
-        fs.readFileSync("./monsoon.txt").toString().split(" ").slice(1).join(" "),
+        parseFloat(monsoonData.split(" ")[0]),
+        monsoonData.split(" ")[1],
+        monsoonData.split(" ").slice(2).join(" "),
     ];
     const response = await openai.createCompletion({
         model: model,
-        prompt: monsoonPre[1] + "\nQ: " + question + "\nA:",
+        prompt: monsoonPre[2] + "\nQ: " + question + "\nA:",
         temperature: monsoonPre[0],
         max_tokens: 100,
         top_p: 1,
@@ -825,7 +827,7 @@ async function question(question, channel) {
         presence_penalty: 0,
     });
     sendWebhook(
-        "monsoon",
+        monsoonPre[1],
         response.data.choices[0].text.split("Q:")[0].trim(),
         false,
         channel
