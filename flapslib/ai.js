@@ -775,8 +775,8 @@ function dalle(prompt, isSecondReq = false) {
                         console.log("SR: Error");
                         out.prompt = r.replace(/<[/A-z0-9 =!]+>/g, "");
                         /* if (Math.random() < 0.4) {
-                                                                        out.prompt = "418 I'm a Teapot\n\nThe server refused to handle this due to a long queue.\nnginx/1.18.0 (Ubuntu)"
-                                                                    } */
+                                                                                                            out.prompt = "418 I'm a Teapot\n\nThe server refused to handle this due to a long queue.\nnginx/1.18.0 (Ubuntu)"
+                                                                                                        } */
                         out.image = false;
                     } else {
                         setTimeout(() => {
@@ -805,6 +805,9 @@ var monsoonPre = fs.readFileSync("./monsoon.txt");
 var model = "text-davinci-002";
 
 async function question(question, channel) {
+    if (question.includes("fr") && question.includes("on god")) {
+        return sendWebhook("monsoon", "No, probably not", false, channel);
+    }
     monsoonPre = [
         parseFloat(fs.readFileSync("./monsoon.txt").toString().split(" ")[0]),
         fs.readFileSync("./monsoon.txt").toString().split(" ").slice(1).join(" "),
