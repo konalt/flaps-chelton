@@ -1,17 +1,17 @@
 //#region Require shit
-const Discord = require('discord.js');
-const fs = require('fs');
-const fetch = require('node-fetch');
+const Discord = require("discord.js");
+const fs = require("fs");
+const fetch = require("node-fetch");
 const canvas = require("canvas");
 const client = new Discord.Client({
-    partials: ['MESSAGE', 'CHANNEL', 'REACTION', 'GUILD_MEMBER', 'USER'],
-    intents: ["GUILDS", "GUILD_MESSAGES", "GUILD_VOICE_STATES"]
+    partials: ["MESSAGE", "CHANNEL", "REACTION", "GUILD_MEMBER", "USER"],
+    intents: ["GUILDS", "GUILD_MESSAGES", "GUILD_VOICE_STATES"],
 });
 const flapslib = require("./flapslib/index");
 //const WomboDreamApi = require("wombo-dream");
 //! FIX THIS!!!!!!
-const { getVideoDurationInSeconds } = require('get-video-duration')
-const prism = require('prism-media');
+const { getVideoDurationInSeconds } = require("get-video-duration");
+const prism = require("prism-media");
 const {
     NoSubscriberBehavior,
     StreamType,
@@ -21,19 +21,41 @@ const {
     VoiceConnectionStatus,
     joinVoiceChannel,
     generateDependencyReport,
-} = require('@discordjs/voice');
-const download = require('./flapslib/download');
-const { uuidv4, question, switchMode, gpt3complete, elcomplete, monsoonChatEvent } = require('./flapslib/ai');
-const { sendWebhook, editWebhookMsg, sendWebhookFile } = require('./flapslib/webhooks');
-const { cahWhiteCard } = require('./flapslib/cardsagainsthumanity');
-const { loadImage } = require('canvas');
-const { Image } = require('canvas');
-const { laugh, homodog, flip, sb, frame, weezer, carbs, watermark, animethink } = require('./flapslib/canvas');
-const { createCanvas } = require('canvas');
-const { Canvas } = require('canvas');
-const { AudioPlayerStatus } = require('@discordjs/voice');
-const { doTranslate, doTranslateSending } = require('./flapslib/translator');
-const owoify = require('owoify-js').default;
+} = require("@discordjs/voice");
+const download = require("./flapslib/download");
+const {
+    uuidv4,
+    question,
+    switchMode,
+    gpt3complete,
+    elcomplete,
+    monsoonChatEvent,
+    setSanity,
+} = require("./flapslib/ai");
+const {
+    sendWebhook,
+    editWebhookMsg,
+    sendWebhookFile,
+} = require("./flapslib/webhooks");
+const { cahWhiteCard } = require("./flapslib/cardsagainsthumanity");
+const { loadImage } = require("canvas");
+const { Image } = require("canvas");
+const {
+    laugh,
+    homodog,
+    flip,
+    sb,
+    frame,
+    weezer,
+    carbs,
+    watermark,
+    animethink,
+} = require("./flapslib/canvas");
+const { createCanvas } = require("canvas");
+const { Canvas } = require("canvas");
+const { AudioPlayerStatus } = require("@discordjs/voice");
+const { doTranslate, doTranslateSending } = require("./flapslib/translator");
+const owoify = require("owoify-js").default;
 //var dream = WomboDreamApi.buildDefaultInstance();
 //TODO look at line 12
 
@@ -57,7 +79,7 @@ var players = [
             noSubscriber: NoSubscriberBehavior.Play,
             maxMissedFrames: Math.round(5000 / 20),
         },
-    })
+    }),
 ];
 
 players.forEach((ply, i) => {
@@ -69,7 +91,7 @@ players.forEach((ply, i) => {
                 attachRecorder(index, curPlayerTracks[index]);
             }
         }
-    })
+    });
 });
 
 var loopingPlayers = [];
@@ -81,25 +103,25 @@ function attachRecorder(player, file, loop = false) {
         createAudioResource(
             new prism.FFmpeg({
                 args: [
-                    '-analyzeduration',
-                    '0',
-                    '-loglevel',
-                    '0',
-                    '-i',
+                    "-analyzeduration",
+                    "0",
+                    "-loglevel",
+                    "0",
+                    "-i",
                     "./audio/" + file + (file.endsWith(".mp4") ? ".mp4" : ".mp3"),
-                    '-acodec',
-                    'libopus',
-                    '-f',
-                    'opus',
-                    '-ar',
-                    '48000',
-                    '-ac',
-                    '2',
+                    "-acodec",
+                    "libopus",
+                    "-f",
+                    "opus",
+                    "-ar",
+                    "48000",
+                    "-ac",
+                    "2",
                 ],
             }), {
                 inputType: StreamType.OggOpus,
-            },
-        ),
+            }
+        )
     );
     curPlayerTracks[player] = file;
 }
@@ -112,14 +134,16 @@ var canvases = [];
 async function connectToChannel(channels) {
     var connections = [];
     var ret = [];
-    channels.forEach(c => {
-        connections.push(joinVoiceChannel({
-            channelId: c.id,
-            guildId: c.guild.id,
-            adapterCreator: c.guild.voiceAdapterCreator,
-        }));
+    channels.forEach((c) => {
+        connections.push(
+            joinVoiceChannel({
+                channelId: c.id,
+                guildId: c.guild.id,
+                adapterCreator: c.guild.voiceAdapterCreator,
+            })
+        );
     });
-    connections.forEach(c => {
+    connections.forEach((c) => {
         try {
             entersState(c, VoiceConnectionStatus.Ready, 30000);
             ret.push(c);
@@ -130,42 +154,46 @@ async function connectToChannel(channels) {
     });
     return ret;
 }
-var words = fs.readFileSync("./flags.txt").toString().split("\r\n").map(x => { return [x.split(" ")[0], x.split(" ").slice(1).join(" ")] });
+var words = fs
+    .readFileSync("./flags.txt")
+    .toString()
+    .split("\r\n")
+    .map((x) => {
+        return [x.split(" ")[0], x.split(" ").slice(1).join(" ")];
+    });
 
 function randomFromArray(arr) {
     return arr[Math.floor(Math.random() * arr.length)];
 }
-var swears = [
-    "fucking",
-    "shit",
-    "motherfucking",
-    "shitty",
-    "fuck"
-];
+var swears = ["fucking", "shit", "motherfucking", "shitty", "fuck"];
 
 var lastRequests = {};
 //#endregion
 
 var serverVCs = {
     "910525327585992734": "910525328055762994",
-    "760524739239477340": "874341836796362752"
+    "760524739239477340": "874341836796362752",
 };
 
-canvas.registerFont('homodog.otf', { family: 'Homodog' });
-canvas.registerFont('weezer.otf', { family: 'Weezer' });
+canvas.registerFont("homodog.otf", { family: "Homodog" });
+canvas.registerFont("weezer.otf", { family: "Weezer" });
 
 var errChannel;
 
-client.on('ready', async() => {
+client.on("ready", async() => {
     console.log(`Logged in as ${client.user.tag}`);
 
-    const connections = await connectToChannel(Object.values(serverVCs).map((x) => { return client.channels.cache.get(x) }));
+    const connections = await connectToChannel(
+        Object.values(serverVCs).map((x) => {
+            return client.channels.cache.get(x);
+        })
+    );
     connections[0].subscribe(players[0]);
     connections[1].subscribe(players[1]);
 
     errChannel = await client.channels.fetch("882743320554643476");
 
-    players.forEach(player => {
+    players.forEach((player) => {
         player.on("error", (err) => {
             try {
                 sendWebhook("flapserrors", err, false, errChannel);
@@ -175,7 +203,7 @@ client.on('ready', async() => {
         });
     });
 
-    connections.forEach(con => {
+    connections.forEach((con) => {
         con.on("error", (err) => {
             try {
                 sendWebhook("flapserrors", err, false, errChannel);
@@ -194,13 +222,13 @@ client.on('ready', async() => {
             activities: [{
                 name: name,
                 type: type,
-                url: 'https://konalt.us.to',
+                url: "https://konalt.us.to",
                 timestamps: {
-                    start: Date.now()
+                    start: Date.now(),
                 },
-            }],
+            }, ],
             afk: false,
-            status: 'online',
+            status: "online",
         });
     });
 });
@@ -241,17 +269,17 @@ var commands = {
     "!<:armstrong:962346935795208217>": "does nothing",
     "!help": "shows this",
     "!balkancuisine": "sends an image of balkan cuisine",
-    "!morbius": "morbius review from metacritic"
+    "!morbius": "morbius review from metacritic",
 };
 
 var descriptions = {
     "489894082500493349": "a cold blooded killer, ready to strike whenever newports are on the line\nhttps://media.discordapp.net/attachments/910525327585992737/980522490856095825/4.PNG",
-    "445968175381610496": "the creator of \"Flaps Chelton\", which is a discord bot designed to facilitate illegal activity.\nhttps://media.discordapp.net/attachments/910525327585992737/980524110952157254/unknown.png",
+    "445968175381610496": 'the creator of "Flaps Chelton", which is a discord bot designed to facilitate illegal activity.\nhttps://media.discordapp.net/attachments/910525327585992737/980524110952157254/unknown.png',
     "794301103721414676": "SCP-1222 - Description: horny little runcling. really loves <:nice:979045005345849375>\nhttps://media.discordapp.net/attachments/910525327585992737/980522446572650617/unknown.png",
     "976471678429311086": "'yeah i still would tho' 'agreed'\nhttps://media.discordapp.net/attachments/910525327585992737/980522944201629736/unknown.png",
     "775778497707769927": "el polozhenie\nhttps://media.discordapp.net/attachments/910525327585992737/980523248120889344/unknown.png",
     "741701565907206267": "Loves to make [[DEALS]]\nhttps://media.discordapp.net/attachments/910525327585992737/980524568416493668/unknown.png",
-    "547476998071517195": "we couldnt find a photo for this guy. we went to mcdonalds instead\nhttps://media.discordapp.net/attachments/910525327585992737/980523453042028574/mcdondil.PNG"
+    "547476998071517195": "we couldnt find a photo for this guy. we went to mcdonalds instead\nhttps://media.discordapp.net/attachments/910525327585992737/980523453042028574/mcdondil.PNG",
 };
 
 var deathCauses = [
@@ -261,59 +289,102 @@ var deathCauses = [
     "hanging themselves",
     "electrocution!!",
     "those RUSSIANs will get him!!!",
-    "death by carrier pigeon"
+    "death by carrier pigeon",
 ];
 
 var userStickies = {};
 
-client.on('messageCreate', async(msg) => {
+client.on("messageCreate", async(msg) => {
     try {
-        console.log(`${msg.author.username}#${msg.author.discriminator}: ${msg.content}`);
-        if (msg.content.includes('copper') && !msg.author.bot) {
+        console.log(
+            `${msg.author.username}#${msg.author.discriminator}: ${msg.content}`
+        );
+        if (msg.content.includes("copper") && !msg.author.bot) {
             msg.channel.send("copper you say?");
         }
-        words = fs.readFileSync("./flags.txt").toString().split("\r\n").map(x => { return [x.split(" ")[0], x.split(" ").slice(1).join(" ")] });
+        words = fs
+            .readFileSync("./flags.txt")
+            .toString()
+            .split("\r\n")
+            .map((x) => {
+                return [x.split(" ")[0], x.split(" ").slice(1).join(" ")];
+            });
         var messageFlags = [];
-        words.forEach(word => {
-            if (msg.content.toLowerCase().includes(word[1]) && !messageFlags.includes(word[0])) {
+        words.forEach((word) => {
+            if (
+                msg.content.toLowerCase().includes(word[1]) &&
+                !messageFlags.includes(word[0])
+            ) {
                 messageFlags.push(word[0]);
             }
         });
         if (messageFlags.includes("rember")) {
-            messageFlags = messageFlags.filter(x => x != "forgor");
+            messageFlags = messageFlags.filter((x) => x != "forgor");
         }
-        if (messageFlags.includes("political")) msg.react(client.emojis.cache.find(emoji => emoji.name === 'political'));
+        if (messageFlags.includes("political"))
+            msg.react(
+                client.emojis.cache.find((emoji) => emoji.name === "political")
+            );
         if (messageFlags.includes("forgor")) msg.react("💀");
         if (messageFlags.includes("rember")) msg.react("😁");
-        if (messageFlags.includes("literally")) msg.react(client.emojis.cache.find(emoji => emoji.name === "literally1984"));
+        if (messageFlags.includes("trans")) msg.react("🏳️‍⚧️");
+        if (messageFlags.includes("literally"))
+            msg.react(
+                client.emojis.cache.find((emoji) => emoji.name === "literally1984")
+            );
         var commandArgs = msg.content.split(" ");
         var commandArgString = commandArgs.slice(1).join(" ");
         var command = commandArgs[0].toLowerCase();
         /* if (msg.channel.topic.includes("##Monsoon")) {
-            if (!msg.author.bot) monsoonChatEvent(msg.channel);
-        } */
+                                    if (!msg.author.bot) monsoonChatEvent(msg.channel);
+                                } */
         if (userStickies[msg.author.id]) {
             if (msg.content.startsWith("!..unsticky")) {
-                return userStickies[msg.author.id] = false;
+                return (userStickies[msg.author.id] = false);
             }
             msg.delete();
-            return sendWebhook(userStickies[msg.author.id], msg.content, false, msg.channel);
+            return sendWebhook(
+                userStickies[msg.author.id],
+                msg.content,
+                false,
+                msg.channel
+            );
         }
         if (msg.content.startsWith("!..sticky")) {
             var stickyBot = commandArgs[1];
             flapslib.webhooks.updateUsers();
             if (flapslib.webhooks.users[stickyBot]) {
                 userStickies[msg.author.id] = stickyBot;
-                sendWebhook("flaps", stickyBot + " is now your sticky. use !..unsticky to go back to normal", false, msg.channel);
+                sendWebhook(
+                    "flaps",
+                    stickyBot +
+                    " is now your sticky. use !..unsticky to go back to normal",
+                    false,
+                    msg.channel
+                );
             } else {
-                sendWebhook("flaps", "FLAPS CHELTON VIOLATION OF PRIVACY IN WOMAN BATHROOMS!!!!!", false, msg.channel);
+                sendWebhook(
+                    "flaps",
+                    "FLAPS CHELTON VIOLATION OF PRIVACY IN WOMAN BATHROOMS!!!!!",
+                    false,
+                    msg.channel
+                );
             }
         } else if (msg.content.startsWith(">")) {
             var content = `${msg.content}`;
             if (!msg.reference) {
-                sendWebhook("flaps", `buddy, ya gotta reply to a message if you wanna edit it!!!! also, this only works with <[name] messages.`, false, msg.channel);
+                sendWebhook(
+                    "flaps",
+                    `buddy, ya gotta reply to a message if you wanna edit it!!!! also, this only works with <[name] messages.`,
+                    false,
+                    msg.channel
+                );
             } else {
-                editWebhookMsg(msg.reference.messageId, msg.channel, content.substring(1));
+                editWebhookMsg(
+                    msg.reference.messageId,
+                    msg.channel,
+                    content.substring(1)
+                );
                 msg.delete();
             }
         } else if (msg.content.startsWith("<")) {
@@ -323,11 +394,25 @@ client.on('messageCreate', async(msg) => {
                 Object.keys(flapslib.webhooks.users).forEach((user, index) => {
                     setTimeout(() => {
                         try {
-                            flapslib.webhooks.sendWebhook(user, content.substring(content.split(" ")[0].length + 1), false, msg.channel).then();
+                            flapslib.webhooks
+                                .sendWebhook(
+                                    user,
+                                    content.substring(content.split(" ")[0].length + 1),
+                                    false,
+                                    msg.channel
+                                )
+                                .then();
                         } catch (e) {
                             console.log("Error 2: Rate-limit. Trying again in 1000 ms");
                             setTimeout(() => {
-                                flapslib.webhooks.sendWebhook(user, content.substring(content.split(" ")[0].length + 1), false, msg.channel).then();
+                                flapslib.webhooks
+                                    .sendWebhook(
+                                        user,
+                                        content.substring(content.split(" ")[0].length + 1),
+                                        false,
+                                        msg.channel
+                                    )
+                                    .then();
                             }, 1000);
                         }
                     }, index * 800);
@@ -335,56 +420,114 @@ client.on('messageCreate', async(msg) => {
                 msg.delete();
                 return;
             } else if (commandArgs[0].substring(1) == "custom") {
-                console.log(msg.content.includes("--u") && msg.content.includes("--c") && msg.content.includes("--a"));
-                if (!(msg.content.includes("--u") && msg.content.includes("--c") && msg.content.includes("--a"))) {
-                    flapslib.webhooks.sendWebhook("flaps", "custom must have --u, --c and --a", false, msg.channel);
+                console.log(
+                    msg.content.includes("--u") &&
+                    msg.content.includes("--c") &&
+                    msg.content.includes("--a")
+                );
+                if (!(
+                        msg.content.includes("--u") &&
+                        msg.content.includes("--c") &&
+                        msg.content.includes("--a")
+                    )) {
+                    flapslib.webhooks.sendWebhook(
+                        "flaps",
+                        "custom must have --u, --c and --a",
+                        false,
+                        msg.channel
+                    );
                     return;
                 }
-                flapslib.webhooks.sendWebhook("custom", content.substring(content.split(" ")[0].length + 1), false, msg.channel, {
-                    content: content.split(" ").slice(content.split(" ").indexOf("--c") + 1, (function() {
-                        var r = 0;
-                        content.split(" ").forEach((el, index) => {
-                            if (index > content.split(" ").indexOf("--c") && el.startsWith("--")) {
-                                r = index - 2;
-                            }
-                        });
-                        if (r == 0) {
-                            r = content.split(" ").length;
-                        }
-                        return r;
-                    })()).join(" "),
-                    avatar: content.split(" ").slice(content.split(" ").indexOf("--a") + 1, (function() {
-                        var r = 0;
-                        content.split(" ").forEach((el, index) => {
-                            if (index > content.split(" ").indexOf("--a") && el.startsWith("--")) {
-                                r = index;
-                            }
-                        });
-                        if (r == 0) {
-                            r = content.split(" ").length;
-                        }
-                        return r;
-                    })()).join(" "),
-                    username: content.split(" ").slice(content.split(" ").indexOf("--u") + 1, (function() {
-                        var r = 0;
-                        content.split(" ").forEach((el, index) => {
-                            if (index > content.split(" ").indexOf("--u") && el.startsWith("--")) {
-                                r = index;
-                            }
-                        });
-                        if (r == 0) {
-                            r = content.split(" ").length;
-                        }
-                        return r;
-                    })()).join(" ")
-                }, msg).then();
+                flapslib.webhooks
+                    .sendWebhook(
+                        "custom",
+                        content.substring(content.split(" ")[0].length + 1),
+                        false,
+                        msg.channel, {
+                            content: content
+                                .split(" ")
+                                .slice(
+                                    content.split(" ").indexOf("--c") + 1,
+                                    (function() {
+                                        var r = 0;
+                                        content.split(" ").forEach((el, index) => {
+                                            if (
+                                                index > content.split(" ").indexOf("--c") &&
+                                                el.startsWith("--")
+                                            ) {
+                                                r = index - 2;
+                                            }
+                                        });
+                                        if (r == 0) {
+                                            r = content.split(" ").length;
+                                        }
+                                        return r;
+                                    })()
+                                )
+                                .join(" "),
+                            avatar: content
+                                .split(" ")
+                                .slice(
+                                    content.split(" ").indexOf("--a") + 1,
+                                    (function() {
+                                        var r = 0;
+                                        content.split(" ").forEach((el, index) => {
+                                            if (
+                                                index > content.split(" ").indexOf("--a") &&
+                                                el.startsWith("--")
+                                            ) {
+                                                r = index;
+                                            }
+                                        });
+                                        if (r == 0) {
+                                            r = content.split(" ").length;
+                                        }
+                                        return r;
+                                    })()
+                                )
+                                .join(" "),
+                            username: content
+                                .split(" ")
+                                .slice(
+                                    content.split(" ").indexOf("--u") + 1,
+                                    (function() {
+                                        var r = 0;
+                                        content.split(" ").forEach((el, index) => {
+                                            if (
+                                                index > content.split(" ").indexOf("--u") &&
+                                                el.startsWith("--")
+                                            ) {
+                                                r = index;
+                                            }
+                                        });
+                                        if (r == 0) {
+                                            r = content.split(" ").length;
+                                        }
+                                        return r;
+                                    })()
+                                )
+                                .join(" "),
+                        },
+                        msg
+                    )
+                    .then();
                 msg.delete();
                 return;
             }
-            if (!Object.keys(flapslib.webhooks.users).includes(commandArgs[0].substring(1))) return;
-            flapslib.webhooks.sendWebhook(commandArgs[0].substring(1), msg.content.substring(commandArgs[0].length + 1), false, msg.channel).then(() => {
-                msg.delete();
-            });
+            if (!Object.keys(flapslib.webhooks.users).includes(
+                    commandArgs[0].substring(1)
+                ))
+                return;
+            flapslib.webhooks
+                .sendWebhook(
+                    commandArgs[0].substring(1),
+                    msg.content.substring(commandArgs[0].length + 1),
+                    false,
+                    msg.channel
+                )
+                .then(() => {
+                    msg.delete();
+                });
         } else {
             switch (command) {
                 case "!ad":
@@ -394,12 +537,18 @@ client.on('messageCreate', async(msg) => {
                         }, 1000);
                         break;
                     }
+                case "!insanity":
+                    {
+                        setSanity(parseInt(commandArgs[1]));
+                        sendWebhook("monsoon", "yep donezo fonezo", false, msg.channel);
+                        break;
+                    }
                 case "!react":
                     {
                         if (!msg.reference) {
                             sendWebhook("flaps", `reply to a message bub`, false, msg.channel);
                         } else {
-                            msg.fetchReference().then(m => {
+                            msg.fetchReference().then((m) => {
                                 m.react(commandArgs[1]);
                             });
                         }
@@ -407,53 +556,92 @@ client.on('messageCreate', async(msg) => {
                     }
                 case "!badhaircut":
                     {
-                        fetch("https://www.reddit.com/r/justfuckmyshitup/.json?limit=100").then(r => r.json()).then((r) => {
-                            var images = r.data.children.filter(p => { return p.data.post_hint == "image"; }).map(p => { return p.data.url_overridden_by_dest; });
+                        fetch("https://www.reddit.com/r/justfuckmyshitup/.json?limit=100")
+                        .then((r) => r.json())
+                        .then((r) => {
+                            var images = r.data.children
+                                .filter((p) => {
+                                    return p.data.post_hint == "image";
+                                })
+                                .map((p) => {
+                                    return p.data.url_overridden_by_dest;
+                                });
                             var item = randomFromArray(images);
                             console.log(item);
                             var id = uuidv4() + ".jpg";
                             download(item, "images/cache/" + id, async() => {
-                                var message = await client.channels.cache.get("956316856422137856").send({
-                                    files: [{
-                                        attachment: __dirname + "\\images\\cache\\" + id
-                                    }]
-                                });
+                                var message = await client.channels.cache
+                                    .get("956316856422137856")
+                                    .send({
+                                        files: [{
+                                            attachment: __dirname + "\\images\\cache\\" + id,
+                                        }, ],
+                                    });
 
                                 setTimeout(() => {
                                     fs.unlinkSync("./images/cache/" + id);
                                 }, 10000);
 
-                                sendWebhook("haircut", message.attachments.first().url, false, msg.channel);
+                                sendWebhook(
+                                    "haircut",
+                                    message.attachments.first().url,
+                                    false,
+                                    msg.channel
+                                );
                             });
                         });
                         break;
                     }
                 case "!walmart":
                     {
-                        fetch("https://www.reddit.com/r/peopleofwalmart/.json?limit=100").then(r => r.json()).then((r) => {
-                            var images = r.data.children.filter(p => { return p.data.post_hint == "image" && p.data.url_overridden_by_dest; }).map(p => { return p.data.url_overridden_by_dest; });
+                        fetch("https://www.reddit.com/r/peopleofwalmart/.json?limit=100")
+                        .then((r) => r.json())
+                        .then((r) => {
+                            var images = r.data.children
+                                .filter((p) => {
+                                    return (
+                                        p.data.post_hint == "image" && p.data.url_overridden_by_dest
+                                    );
+                                })
+                                .map((p) => {
+                                    return p.data.url_overridden_by_dest;
+                                });
                             var item = randomFromArray(images);
                             console.log(item);
                             var id = uuidv4() + ".jpg";
                             download(item, "images/cache/" + id, async() => {
-                                var message = await client.channels.cache.get("956316856422137856").send({
-                                    files: [{
-                                        attachment: __dirname + "\\images\\cache\\" + id
-                                    }]
-                                });
+                                var message = await client.channels.cache
+                                    .get("956316856422137856")
+                                    .send({
+                                        files: [{
+                                            attachment: __dirname + "\\images\\cache\\" + id,
+                                        }, ],
+                                    });
 
                                 setTimeout(() => {
                                     fs.unlinkSync("./images/cache/" + id);
                                 }, 10000);
 
-                                sendWebhook("flaps", message.attachments.first().url, false, msg.channel);
+                                sendWebhook(
+                                    "flaps",
+                                    message.attachments.first().url,
+                                    false,
+                                    msg.channel
+                                );
                             });
                         });
                         break;
                     }
                 case "!restart":
                     {
-                        flapslib.webhooks.sendWebhook("flaps", "goodbye cruel world <a:woeisgone:797896105488678922>", true, msg.channel).then(() => {
+                        flapslib.webhooks
+                        .sendWebhook(
+                            "flaps",
+                            "goodbye cruel world <a:woeisgone:797896105488678922>",
+                            true,
+                            msg.channel
+                        )
+                        .then(() => {
                             process.exit(0);
                         });
                         break;
@@ -466,32 +654,76 @@ client.on('messageCreate', async(msg) => {
                             try {
                                 eval(commandArgString);
                             } catch (e) {
-                                flapslib.webhooks.sendWebhook("flapserrors", "fuck you. eval didnt work.\n" + e.toString(), true, msg.channel);
+                                flapslib.webhooks.sendWebhook(
+                                    "flapserrors",
+                                    "fuck you. eval didnt work.\n" + e.toString(),
+                                    true,
+                                    msg.channel
+                                );
                             }
                         }
                     }
                     break;
                 case "!audio":
                     {
-                        var validAudio = fs.readFileSync("./audio/audiocommand.txt").toString().split("\r\n");
+                        var validAudio = fs
+                            .readFileSync("./audio/audiocommand.txt")
+                            .toString()
+                            .split("\r\n");
                         if (validAudio.includes(commandArgs[1].toLowerCase())) {
-                            attachRecorder(Object.keys(serverVCs).indexOf(msg.guild.id), commandArgs[1].toLowerCase(), msg.guild.id);
+                            attachRecorder(
+                                Object.keys(serverVCs).indexOf(msg.guild.id),
+                                commandArgs[1].toLowerCase(),
+                                msg.guild.id
+                            );
                         } else {
-                            flapslib.webhooks.sendWebhook("flaps", "that audio not real <a:woeisgone:959946980954636399>\naudios are:\n```ansi\n" + validAudio.map(a => { return a.split("").map(b => { return "\x1b[" + Math.floor((Math.random() * 5) + 91).toString() + "m" + b; }).join(""); }).join("\n") + "```", true, msg.channel);
+                            flapslib.webhooks.sendWebhook(
+                                "flaps",
+                                "that audio not real <a:woeisgone:959946980954636399>\naudios are:\n```ansi\n" +
+                                validAudio
+                                .map((a) => {
+                                    return a
+                                        .split("")
+                                        .map((b) => {
+                                            return (
+                                                "\x1b[" +
+                                                Math.floor(Math.random() * 5 + 91).toString() +
+                                                "m" +
+                                                b
+                                            );
+                                        })
+                                        .join("");
+                                })
+                                .join("\n") +
+                                "```",
+                                true,
+                                msg.channel
+                            );
                         }
                     }
                     break;
                 case "!yturl":
                     {
-                        flapslib.yt.downloadYoutube(Object.keys(serverVCs).indexOf(msg.guild.id), commandArgs[1], msg.channel, (commandArgs[2] == "-v"), attachRecorder);
+                        flapslib.yt.downloadYoutube(
+                            Object.keys(serverVCs).indexOf(msg.guild.id),
+                            commandArgs[1],
+                            msg.channel,
+                            commandArgs[2] == "-v",
+                            attachRecorder
+                        );
                     }
                     break;
                 case "!loop":
                     {
                         var vc = Object.keys(serverVCs).indexOf(msg.guild.id);
                         if (loopingPlayers.includes(vc)) {
-                            loopingPlayers = loopingPlayers.filter(p => p != vc);
-                            sendWebhook("flaps", "stopped looping current track", false, msg.channel);
+                            loopingPlayers = loopingPlayers.filter((p) => p != vc);
+                            sendWebhook(
+                                "flaps",
+                                "stopped looping current track",
+                                false,
+                                msg.channel
+                            );
                         } else {
                             loopingPlayers.push(vc);
                             sendWebhook("flaps", "looping current track", false, msg.channel);
@@ -505,42 +737,89 @@ client.on('messageCreate', async(msg) => {
                     break;
                 case "!wpadd":
                     {
-                        flapslib.yt.wpAddToQueue(commandArgs[2], commandArgs[1], msg.channel);
+                        flapslib.yt.wpAddToQueue(
+                            commandArgs[2],
+                            commandArgs[1],
+                            msg.channel
+                        );
                     }
                     break;
                 case "!wptogglepause":
                     {
-                        fetch("https://konalt.us.to:4930/pause/" + commandArgs[1]).then(r => r.json()).then(response => {
-                            sendWebhook("flaps", (response.wp.paused ? "paused da wath pary" : "unpaused tha wathc parcht"), true, msg.channel);
+                        fetch("https://konalt.us.to:4930/pause/" + commandArgs[1])
+                        .then((r) => r.json())
+                        .then((response) => {
+                            sendWebhook(
+                                "flaps",
+                                response.wp.paused ?
+                                "paused da wath pary" :
+                                "unpaused tha wathc parcht",
+                                true,
+                                msg.channel
+                            );
                         });
                     }
                     break;
                 case "!status":
                     {
-                        var types = ["PLAYING", "STREAMING", "COMPETING", "LISTENING", "WATCHING"];
+                        var types = [
+                            "PLAYING",
+                            "STREAMING",
+                            "COMPETING",
+                            "LISTENING",
+                            "WATCHING",
+                        ];
                         if (types.includes(commandArgs[1].toUpperCase())) {
                             client.user.setPresence({
                                 activities: [{
-                                    name: msg.content.split(" ").map((v, i) => { return ((i == 0 || i == 1) ? "" : v) }).join(" "),
+                                    name: msg.content
+                                        .split(" ")
+                                        .map((v, i) => {
+                                            return i == 0 || i == 1 ? "" : v;
+                                        })
+                                        .join(" "),
                                     type: commandArgs[1].toUpperCase(),
-                                    url: 'https://konalt.us.to',
+                                    url: "https://konalt.us.to",
                                     timestamps: {
-                                        start: Date.now()
+                                        start: Date.now(),
                                     },
-                                }],
+                                }, ],
                                 afk: false,
-                                status: 'online',
+                                status: "online",
                             });
-                            fs.writeFileSync("./saved_status.txt", commandArgs[1].toUpperCase() + " " + msg.content.split(" ").slice(2).join(" "));
-                            flapslib.webhooks.sendWebhook("flaps", "done", false, msg.channel);
+                            fs.writeFileSync(
+                                "./saved_status.txt",
+                                commandArgs[1].toUpperCase() +
+                                " " +
+                                msg.content.split(" ").slice(2).join(" ")
+                            );
+                            flapslib.webhooks.sendWebhook(
+                                "flaps",
+                                "done",
+                                false,
+                                msg.channel
+                            );
                         } else {
-                            flapslib.webhooks.sendWebhook("flaps", "first argument must be one of these:\n```\n" + types.join("\n") + "\n```", false, msg.channel);
+                            flapslib.webhooks.sendWebhook(
+                                "flaps",
+                                "first argument must be one of these:\n```\n" +
+                                types.join("\n") +
+                                "\n```",
+                                false,
+                                msg.channel
+                            );
                         }
                     }
                     break;
                 case "!ytsearch":
                     {
-                        flapslib.yt.downloadYoutube(Object.keys(serverVCs).indexOf(msg.guild.id), commandArgString, msg.channel, false, attachRecorder);
+                        flapslib.yt.downloadYoutube(
+                            Object.keys(serverVCs).indexOf(msg.guild.id),
+                            commandArgString,
+                            msg.channel,
+                            false,
+                            attachRecorder
+                        );
                     }
                     break;
                 case "!markov":
@@ -550,22 +829,46 @@ client.on('messageCreate', async(msg) => {
                     break;
                 case "!fornitesex":
                     {
-                        fetch("https://www.reddit.com/r/fornitesex/about.json").then(r => { return r.json() }).then(r => {
-                            sendWebhook("flaps", `r/fornitesex has ${r.data.subscribers} members! wowie!!`, false, msg.channel);
+                        fetch("https://www.reddit.com/r/fornitesex/about.json")
+                        .then((r) => {
+                            return r.json();
+                        })
+                        .then((r) => {
+                            sendWebhook(
+                                "flaps",
+                                `r/fornitesex has ${r.data.subscribers} members! wowie!!`,
+                                false,
+                                msg.channel
+                            );
                         });
                     }
                     break;
                 case "!randompost":
                     {
-                        fetch("https://www.reddit.com/" + commandArgs[1] + "/.json").then(r => { return r.json() }).then(r => {
-                            var child = r.data.children[Math.floor(Math.random() * r.data.children.length)]
-                            sendWebhook("flaps", `https://www.reddit.com` + child.data.permalink, false, msg.channel);
+                        fetch("https://www.reddit.com/" + commandArgs[1] + "/.json")
+                        .then((r) => {
+                            return r.json();
+                        })
+                        .then((r) => {
+                            var child =
+                                r.data.children[
+                                    Math.floor(Math.random() * r.data.children.length)
+                                ];
+                            sendWebhook(
+                                "flaps",
+                                `https://www.reddit.com` + child.data.permalink,
+                                false,
+                                msg.channel
+                            );
                         });
                     }
                     break;
                 case "!armstrong":
                     {
-                        flapslib.ai.armstrong(commandArgs[1] ? commandArgs[1] : 4, msg.channel);
+                        flapslib.ai.armstrong(
+                            commandArgs[1] ? commandArgs[1] : 4,
+                            msg.channel
+                        );
                     }
                     break;
                 case "!funnynumber":
@@ -577,30 +880,51 @@ client.on('messageCreate', async(msg) => {
                             x = "hornet (hollow knight)".split(" ").join("_");
                         }
                         if (x.includes("child")) {
-                            return sendWebhook("runcling", "🚔🚔🚔🚔🚨🚨🚨🚨🚨🚓🚓🚓🚓👮‍♀️👮‍♂️👮‍♂️👮‍♂️👮‍♂️👮👮‍♂️👮‍♂️🚓🚨👮‍♀️👮‍♂️👮‍♀️🚓🚔🚨", false, msg.channel);
+                            return sendWebhook(
+                                "runcling",
+                                "🚔🚔🚔🚔🚨🚨🚨🚨🚨🚓🚓🚓🚓👮‍♀️👮‍♂️👮‍♂️👮‍♂️👮‍♂️👮👮‍♂️👮‍♂️🚓🚨👮‍♀️👮‍♂️👮‍♀️🚓🚔🚨",
+                                false,
+                                msg.channel
+                            );
                         }
                         x = x.replace("_--showname", "");
                         fetch("https://rule34.xxx/public/autocomplete.php?q=" + x, {
-                            "credentials": "omit",
-                            "headers": {
+                            credentials: "omit",
+                            headers: {
                                 "User-Agent": "FlapsChelton",
-                                "Accept": "*/*",
+                                Accept: "*/*",
                                 "Accept-Language": "en-US,en;q=0.5",
                                 "Sec-Fetch-Dest": "empty",
                                 "Sec-Fetch-Mode": "cors",
-                                "Sec-Fetch-Site": "same-origin"
+                                "Sec-Fetch-Site": "same-origin",
                             },
-                            "referrer": "https://rule34.xxx/",
-                            "method": "GET",
-                            "mode": "cors"
-                        }).then(r => { return r.json() }).then(r => {
+                            referrer: "https://rule34.xxx/",
+                            method: "GET",
+                            mode: "cors",
+                        })
+                        .then((r) => {
+                            return r.json();
+                        })
+                        .then((r) => {
                             var y = "";
                             if (!r[0]) {
-                                sendWebhook("runcling", "holy fuck. you searched for something that even the horniest corner of the internet could not draw. good job dude.", false, msg.channel);
+                                sendWebhook(
+                                    "runcling",
+                                    "holy fuck. you searched for something that even the horniest corner of the internet could not draw. good job dude.",
+                                    false,
+                                    msg.channel
+                                );
                             } else {
-                                y = r.map(z => {
-                                    return "**" + x + "**" + z.label.substring(x.length).replace(/_/g, "\\_")
-                                }).join("\n");
+                                y = r
+                                    .map((z) => {
+                                        return (
+                                            "**" +
+                                            x +
+                                            "**" +
+                                            z.label.substring(x.length).replace(/_/g, "\\_")
+                                        );
+                                    })
+                                    .join("\n");
                             }
                             sendWebhook("runcling", y, false, msg.channel);
                         });
@@ -611,9 +935,14 @@ client.on('messageCreate', async(msg) => {
                         var endTime = new Date("2022-06-03T10:30:00Z");
                         endTime.setHours(endTime.getHours() - 1);
                         endTime = endTime.getTime();
-                        var newTime = (endTime - Date.now());
+                        var newTime = endTime - Date.now();
                         if (commandArgs[1] == "hour") {
-                            return sendWebhook("flaps", Math.floor(newTime / 1000 / 60 / 60) + " hours left.", false, msg.channel);
+                            return sendWebhook(
+                                "flaps",
+                                Math.floor(newTime / 1000 / 60 / 60) + " hours left.",
+                                false,
+                                msg.channel
+                            );
                         }
 
                         var delta = newTime / 1000;
@@ -629,12 +958,17 @@ client.on('messageCreate', async(msg) => {
 
                         var seconds = Math.round(delta % 60);
 
-                        var str = `${days}d ${hours}h ${minutes}m ${seconds}s`
+                        var str = `${days}d ${hours}h ${minutes}m ${seconds}s`;
                         sendWebhook("flaps", str, false, msg.channel);
                     }
                     break;
                 case "!coinflip":
-                    sendWebhook("flaps", (Math.random() < 0.5 ? "heads" : "tails"), false, msg.channel);
+                    sendWebhook(
+                        "flaps",
+                        Math.random() < 0.5 ? "heads" : "tails",
+                        false,
+                        msg.channel
+                    );
                     break;
                 case "!armstrong2":
                     {
@@ -648,23 +982,41 @@ client.on('messageCreate', async(msg) => {
                     break;
                 case "!ytmp3":
                     {
-                        flapslib.yt.downloadYoutubeToMP3(commandArgString, msg.channel, (commandArgs[2] == "-v"), client);
+                        flapslib.yt.downloadYoutubeToMP3(
+                            commandArgString,
+                            msg.channel,
+                            commandArgs[2] == "-v",
+                            client
+                        );
                     }
                     break;
                 case "!gif":
                     {
-                        flapslib.videowrapper.addText("raiden", commandArgString, msg, client);
+                        flapslib.videowrapper.addText(
+                            "raiden",
+                            commandArgString,
+                            msg,
+                            client
+                        );
                     }
                     break;
                 case "!imageaudio":
                     {
                         if (msg.attachments.first(2)[1]) {
                             var id = uuidv4().replace(/-/g, "");
-                            download(msg.attachments.first().url, "./images/cache/" + id + ".png", () => {
-                                download(msg.attachments.first(2)[1].url, "./images/cache/" + id + ".mp3", () => {
-                                    flapslib.videowrapper.imageAudio(id, msg, client);
-                                });
-                            });
+                            download(
+                                msg.attachments.first().url,
+                                "./images/cache/" + id + ".png",
+                                () => {
+                                    download(
+                                        msg.attachments.first(2)[1].url,
+                                        "./images/cache/" + id + ".mp3",
+                                        () => {
+                                            flapslib.videowrapper.imageAudio(id, msg, client);
+                                        }
+                                    );
+                                }
+                            );
                         }
                     }
                     break;
@@ -680,7 +1032,7 @@ client.on('messageCreate', async(msg) => {
                                 download(a.url, "./images/cache/" + id + ".mp4", () => {
                                     flapslib.videowrapper.baitSwitch(id, msg, client, {
                                         w: b.width,
-                                        h: b.height
+                                        h: b.height,
                                     });
                                 });
                             });
@@ -691,11 +1043,19 @@ client.on('messageCreate', async(msg) => {
                     {
                         if (msg.attachments.first(2)[1]) {
                             var id = uuidv4().replace(/-/g, "");
-                            download(msg.attachments.first().url, "./images/cache/" + id + ".mp4", () => {
-                                download(msg.attachments.first(2)[1].url, "./images/cache/" + id + ".mp3", () => {
-                                    flapslib.videowrapper.videoAudio(id, msg, client);
-                                });
-                            });
+                            download(
+                                msg.attachments.first().url,
+                                "./images/cache/" + id + ".mp4",
+                                () => {
+                                    download(
+                                        msg.attachments.first(2)[1].url,
+                                        "./images/cache/" + id + ".mp3",
+                                        () => {
+                                            flapslib.videowrapper.videoAudio(id, msg, client);
+                                        }
+                                    );
+                                }
+                            );
                         }
                     }
                     break;
@@ -704,13 +1064,25 @@ client.on('messageCreate', async(msg) => {
                         if (msg.attachments.first(2)[1]) {
                             var id = uuidv4().replace(/-/g, "");
                             var ext = "." + msg.attachments.first().url.split(".").pop();
-                            download(msg.attachments.first().url, "./images/cache/" + id + ext, () => {
-                                var id1 = uuidv4().replace(/-/g, "");
-                                var ext1 = "." + msg.attachments.first().url.split(".").pop();
-                                download(msg.attachments.first(2)[1].url, "./images/cache/" + id1 + ext1, () => {
-                                    flapslib.videowrapper.stitch([id + ext, id1 + ext1], msg, client);
-                                });
-                            });
+                            download(
+                                msg.attachments.first().url,
+                                "./images/cache/" + id + ext,
+                                () => {
+                                    var id1 = uuidv4().replace(/-/g, "");
+                                    var ext1 = "." + msg.attachments.first().url.split(".").pop();
+                                    download(
+                                        msg.attachments.first(2)[1].url,
+                                        "./images/cache/" + id1 + ext1,
+                                        () => {
+                                            flapslib.videowrapper.stitch(
+                                                [id + ext, id1 + ext1],
+                                                msg,
+                                                client
+                                            );
+                                        }
+                                    );
+                                }
+                            );
                         }
                     }
                     break;
@@ -723,10 +1095,14 @@ client.on('messageCreate', async(msg) => {
                     {
                         if (msg.attachments.first()) {
                             var id = uuidv4().replace(/-/g, "");
-                            var ext = "." + msg.attachments.first().url.split(".").pop()
-                            download(msg.attachments.first().url, "./images/cache/" + id + ext, () => {
-                                flapslib.videowrapper.geq(id, msg, client);
-                            });
+                            var ext = "." + msg.attachments.first().url.split(".").pop();
+                            download(
+                                msg.attachments.first().url,
+                                "./images/cache/" + id + ext,
+                                () => {
+                                    flapslib.videowrapper.geq(id, msg, client);
+                                }
+                            );
                         } else {
                             flapslib.videowrapper.geq("nullsrc", msg, client);
                         }
@@ -736,10 +1112,14 @@ client.on('messageCreate', async(msg) => {
                     {
                         if (msg.attachments.first()) {
                             var id = uuidv4().replace(/-/g, "");
-                            var ext = "." + msg.attachments.first().url.split(".").pop()
-                            download(msg.attachments.first().url, "./images/cache/" + id + ext, () => {
-                                flapslib.videowrapper.complexFFmpeg(id, msg, client);
-                            });
+                            var ext = "." + msg.attachments.first().url.split(".").pop();
+                            download(
+                                msg.attachments.first().url,
+                                "./images/cache/" + id + ext,
+                                () => {
+                                    flapslib.videowrapper.complexFFmpeg(id, msg, client);
+                                }
+                            );
                         } else {
                             flapslib.videowrapper.complexFFmpeg("nullsrc", msg, client);
                         }
@@ -748,71 +1128,161 @@ client.on('messageCreate', async(msg) => {
                 case "!caption":
                     {
                         if (!msg.attachments.first()) {
-                            flapslib.webhooks.sendWebhook("ffmpeg", "i cant caption nothing you dummy", false, msg.channel, {}, msg);
+                            flapslib.webhooks.sendWebhook(
+                                "ffmpeg",
+                                "i cant caption nothing you dummy",
+                                false,
+                                msg.channel, {},
+                                msg
+                            );
                         } else {
-                            var ext = "." + msg.attachments.first().url.split(".").pop()
-                            if (ext != ".png" && ext != ".jpg") flapslib.webhooks.sendWebhook("ffmpeg", "got it bro. this might take a while tho", false, msg.channel, {}, msg);
+                            var ext = "." + msg.attachments.first().url.split(".").pop();
+                            if (ext != ".png" && ext != ".jpg")
+                                flapslib.webhooks.sendWebhook(
+                                    "ffmpeg",
+                                    "got it bro. this might take a while tho",
+                                    false,
+                                    msg.channel, {},
+                                    msg
+                                );
                             var id = flapslib.ai.uuidv4().replace(/-/gi, "");
-                            flapslib.download(msg.attachments.first().url, "images/cache/" + id + ext, () => {
-                                console.log(id + ext);
-                                flapslib.videowrapper.simpleMemeCaption(id, commandArgString, msg, client);
-                            });
+                            flapslib.download(
+                                msg.attachments.first().url,
+                                "images/cache/" + id + ext,
+                                () => {
+                                    console.log(id + ext);
+                                    flapslib.videowrapper.simpleMemeCaption(
+                                        id,
+                                        commandArgString,
+                                        msg,
+                                        client
+                                    );
+                                }
+                            );
                         }
                     }
                     break;
                 case "!squash":
                     {
                         if (!msg.attachments.first()) {
-                            flapslib.webhooks.sendWebhook("ffmpeg", "(die)[https://konalt.us.to/files/videos/memes/dep.mp4]", false, msg.channel, {}, msg);
+                            flapslib.webhooks.sendWebhook(
+                                "ffmpeg",
+                                "(die)[https://konalt.us.to/files/videos/memes/dep.mp4]",
+                                false,
+                                msg.channel, {},
+                                msg
+                            );
                         } else {
-                            flapslib.webhooks.sendWebhook("ffmpeg", "got it bro. this might take a while tho", false, msg.channel, {}, msg);
+                            flapslib.webhooks.sendWebhook(
+                                "ffmpeg",
+                                "got it bro. this might take a while tho",
+                                false,
+                                msg.channel, {},
+                                msg
+                            );
                             var id = flapslib.ai.uuidv4().replace(/-/gi, "");
-                            var ext = "." + msg.attachments.first().url.split(".").pop()
-                            flapslib.download(msg.attachments.first().url, "images/cache/" + id + ext, () => {
-                                flapslib.videowrapper.squash(id, msg, client);
-                            });
+                            var ext = "." + msg.attachments.first().url.split(".").pop();
+                            flapslib.download(
+                                msg.attachments.first().url,
+                                "images/cache/" + id + ext,
+                                () => {
+                                    flapslib.videowrapper.squash(id, msg, client);
+                                }
+                            );
                         }
                     }
                     break;
                 case "!trim":
                     {
                         if (!msg.attachments.first()) {
-                            flapslib.webhooks.sendWebhook("ffmpeg", "(die)[https://konalt.us.to/files/videos/memes/dep.mp4]", false, msg.channel, {}, msg);
+                            flapslib.webhooks.sendWebhook(
+                                "ffmpeg",
+                                "(die)[https://konalt.us.to/files/videos/memes/dep.mp4]",
+                                false,
+                                msg.channel, {},
+                                msg
+                            );
                         } else {
-                            flapslib.webhooks.sendWebhook("ffmpeg", "got it bro. this might take a while tho", false, msg.channel, {}, msg);
+                            flapslib.webhooks.sendWebhook(
+                                "ffmpeg",
+                                "got it bro. this might take a while tho",
+                                false,
+                                msg.channel, {},
+                                msg
+                            );
                             var id = flapslib.ai.uuidv4().replace(/-/gi, "");
-                            var ext = "." + msg.attachments.first().url.split(".").pop()
-                            flapslib.download(msg.attachments.first().url, "images/cache/" + id + ext, () => {
-                                flapslib.videowrapper.trim(id, [commandArgs[1], commandArgs[2]], msg, client);
-                            });
+                            var ext = "." + msg.attachments.first().url.split(".").pop();
+                            flapslib.download(
+                                msg.attachments.first().url,
+                                "images/cache/" + id + ext,
+                                () => {
+                                    flapslib.videowrapper.trim(
+                                        id, [commandArgs[1], commandArgs[2]],
+                                        msg,
+                                        client
+                                    );
+                                }
+                            );
                         }
                     }
                     break;
                 case "!videogif":
                     {
                         if (!msg.attachments.first()) {
-                            flapslib.webhooks.sendWebhook("ffmpeg", "(die)[https://konalt.us.to/files/videos/memes/dep.mp4]", false, msg.channel, {}, msg);
+                            flapslib.webhooks.sendWebhook(
+                                "ffmpeg",
+                                "(die)[https://konalt.us.to/files/videos/memes/dep.mp4]",
+                                false,
+                                msg.channel, {},
+                                msg
+                            );
                         } else {
-                            flapslib.webhooks.sendWebhook("ffmpeg", "got it bro. this might take a while tho", false, msg.channel, {}, msg);
+                            flapslib.webhooks.sendWebhook(
+                                "ffmpeg",
+                                "got it bro. this might take a while tho",
+                                false,
+                                msg.channel, {},
+                                msg
+                            );
                             var id = flapslib.ai.uuidv4().replace(/-/gi, "");
-                            var ext = "." + msg.attachments.first().url.split(".").pop()
-                            flapslib.download(msg.attachments.first().url, "images/cache/" + id + ext, () => {
-                                flapslib.videowrapper.videoGif(id, msg, client);
-                            });
+                            var ext = "." + msg.attachments.first().url.split(".").pop();
+                            flapslib.download(
+                                msg.attachments.first().url,
+                                "images/cache/" + id + ext,
+                                () => {
+                                    flapslib.videowrapper.videoGif(id, msg, client);
+                                }
+                            );
                         }
                     }
                     break;
                 case "!stretch":
                     {
                         if (!msg.attachments.first()) {
-                            flapslib.webhooks.sendWebhook("ffmpeg", "[<@489894082500493349>](https://konalt.us.to/files/videos/memes/findel.mp4)", false, msg.channel, {}, msg);
+                            flapslib.webhooks.sendWebhook(
+                                "ffmpeg",
+                                "[<@489894082500493349>](https://konalt.us.to/files/videos/memes/findel.mp4)",
+                                false,
+                                msg.channel, {},
+                                msg
+                            );
                         } else {
-                            flapslib.webhooks.sendWebhook("ffmpeg", "got it bro. this might take a while tho", false, msg.channel, {}, msg);
+                            flapslib.webhooks.sendWebhook(
+                                "ffmpeg",
+                                "got it bro. this might take a while tho",
+                                false,
+                                msg.channel, {},
+                                msg
+                            );
                             var id = flapslib.ai.uuidv4().replace(/-/gi, "");
                             var ext = "." + msg.attachments.first().url.split(".").pop();
-                            flapslib.download(msg.attachments.first().url, "images/cache/" + id + ext, () => {
-                                flapslib.videowrapper.stretch(id, msg, client);
-                            });
+                            flapslib.download(
+                                msg.attachments.first().url,
+                                "images/cache/" + id + ext,
+                                () => {
+                                    flapslib.videowrapper.stretch(id, msg, client);
+                                }
+                            );
                         }
                     }
                     break;
@@ -825,11 +1295,21 @@ client.on('messageCreate', async(msg) => {
                 case "!dream":
                     {
                         var lastState = "";
-                        dream.generatePicture(commandArgs[1], 3, (task) => {
-                            console.log(task.state, 'stage', task.photo_url_list.length);
-                            if (lastState != task.state + " " + task.photo_url_list.length) {
+                        dream
+                        .generatePicture(commandArgs[1], 3, (task) => {
+                            console.log(task.state, "stage", task.photo_url_list.length);
+                            if (
+                                lastState !=
+                                task.state + " " + task.photo_url_list.length
+                            ) {
                                 lastState = task.state + " " + task.photo_url_list.length;
-                                flapslib.webhooks.sendWebhook("deepai", lastState + "/21", false, msg.channel, {}, msg);
+                                flapslib.webhooks.sendWebhook(
+                                    "deepai",
+                                    lastState + "/21",
+                                    false,
+                                    msg.channel, {},
+                                    msg
+                                );
                             }
                         })
                         .then((task) => msg.channel.send(task.result.final))
@@ -848,39 +1328,65 @@ client.on('messageCreate', async(msg) => {
                     break;
                 case "!carbs":
                     {
-                        carbs(msg, client, false)
+                        carbs(msg, client, false);
                     }
                     break;
                 case "!carbsfunny":
                     {
-                        carbs(msg, client, true)
+                        carbs(msg, client, true);
                     }
                     break;
                 case "!<:owl:964880176355897374>":
                     {
-                        flapslib.webhooks.sendWebhook("<:owl:964880176355897374>", "<:owl:964880176355897374>", true, msg.channel);
+                        flapslib.webhooks.sendWebhook(
+                            "<:owl:964880176355897374>",
+                            "<:owl:964880176355897374>",
+                            true,
+                            msg.channel
+                        );
                     }
                     break;
                 case "!3dtext":
                     {
-                        flapslib.ai.threeDimensionalText(commandArgString, msg.channel, msg, client);
+                        flapslib.ai.threeDimensionalText(
+                            commandArgString,
+                            msg.channel,
+                            msg,
+                            client
+                        );
                     }
                     break;
                 case "!funnyvideo":
                     {
-                        var files = fs.readdirSync('E:/MBG/the Videos/');
+                        var files = fs.readdirSync("E:/MBG/the Videos/");
                         var chosenFile = files[Math.floor(Math.random() * files.length)];
-                        var filesize = fs.statSync("E:/MBG/the Videos/" + chosenFile).size / (1024 * 1024);
+                        var filesize =
+                            fs.statSync("E:/MBG/the Videos/" + chosenFile).size /
+                            (1024 * 1024);
                         if (filesize > 8) {
-                            sendWebhook("scal", "mm.. too big. its " + Math.round(filesize) + " inche-- i mean megabytes. megabytes.", false, msg.channel);
+                            sendWebhook(
+                                "scal",
+                                "mm.. too big. its " +
+                                Math.round(filesize) +
+                                " inche-- i mean megabytes. megabytes.",
+                                false,
+                                msg.channel
+                            );
                         } else {
-                            var message = await client.channels.cache.get("956316856422137856").send({
-                                files: [{
-                                    attachment: "E:/MBG/the Videos/" + chosenFile
-                                }]
-                            });
+                            var message = await client.channels.cache
+                                .get("956316856422137856")
+                                .send({
+                                    files: [{
+                                        attachment: "E:/MBG/the Videos/" + chosenFile,
+                                    }, ],
+                                });
 
-                            sendWebhook("scal", message.attachments.first().url, false, msg.channel);
+                            sendWebhook(
+                                "scal",
+                                message.attachments.first().url,
+                                false,
+                                msg.channel
+                            );
                         }
                     }
                     break;
@@ -891,65 +1397,110 @@ client.on('messageCreate', async(msg) => {
                     break;
                 case "!calamitas":
                     {
-                        var files = fs.readdirSync('E:/MBG/StuffAndThings/38/');
+                        var files = fs.readdirSync("E:/MBG/StuffAndThings/38/");
                         var chosenFile = files[Math.floor(Math.random() * files.length)];
-                        var filesize = fs.statSync("E:/MBG/StuffAndThings/38/" + chosenFile).size / (1024 * 1024);
+                        var filesize =
+                            fs.statSync("E:/MBG/StuffAndThings/38/" + chosenFile).size /
+                            (1024 * 1024);
                         if (filesize > 8) {
-                            sendWebhook("scal", "ohh my god thats such a fucking big file. i cant,,, upload.,,,, itt ohohohhnnggmggnhahdf. its " + Math.round(filesize) + " megabyte. fucking hell. thats what she said.", false, msg.channel);
+                            sendWebhook(
+                                "scal",
+                                "ohh my god thats such a fucking big file. i cant,,, upload.,,,, itt ohohohhnnggmggnhahdf. its " +
+                                Math.round(filesize) +
+                                " megabyte. fucking hell. thats what she said.",
+                                false,
+                                msg.channel
+                            );
                         } else {
-                            var message = await client.channels.cache.get("956316856422137856").send({
-                                files: [{
-                                    attachment: "E:/MBG/StuffAndThings/38/" + chosenFile
-                                }]
-                            });
+                            var message = await client.channels.cache
+                                .get("956316856422137856")
+                                .send({
+                                    files: [{
+                                        attachment: "E:/MBG/StuffAndThings/38/" + chosenFile,
+                                    }, ],
+                                });
 
-                            sendWebhook("scal", message.attachments.first().url, false, msg.channel);
+                            sendWebhook(
+                                "scal",
+                                message.attachments.first().url,
+                                false,
+                                msg.channel
+                            );
                         }
                     }
                     break;
                 case "!millerswife":
                     {
-                        var files = fs.readdirSync('E:/MBG/StuffAndThings/lormastur/');
+                        var files = fs.readdirSync("E:/MBG/StuffAndThings/lormastur/");
                         var chosenFile = files[Math.floor(Math.random() * files.length)];
-                        var filesize = fs.statSync("E:/MBG/StuffAndThings/lormastur/" + chosenFile).size / (1024 * 1024);
+                        var filesize =
+                            fs.statSync("E:/MBG/StuffAndThings/lormastur/" + chosenFile)
+                            .size /
+                            (1024 * 1024);
                         if (Math.random() < 0) {
-                            flapslib.videowrapper.armstrongify("E:/MBG/StuffAndThings/lormastur/" + chosenFile, msg, 1, client);
+                            flapslib.videowrapper.armstrongify(
+                                "E:/MBG/StuffAndThings/lormastur/" + chosenFile,
+                                msg,
+                                1,
+                                client
+                            );
                             return;
                         }
                         if (filesize > 8) {
-                            sendWebhook("millerwife", "*ugngnh* " + Math.round(filesize) + " megabyte~~~~~. ah.. uhn......", false, msg.channel);
+                            sendWebhook(
+                                "millerwife",
+                                "*ugngnh* " +
+                                Math.round(filesize) +
+                                " megabyte~~~~~. ah.. uhn......",
+                                false,
+                                msg.channel
+                            );
                         } else {
-                            var message = await client.channels.cache.get("956316856422137856").send({
-                                files: [{
-                                    attachment: "E:/MBG/StuffAndThings/lormastur/" + chosenFile
-                                }]
-                            });
+                            var message = await client.channels.cache
+                                .get("956316856422137856")
+                                .send({
+                                    files: [{
+                                        attachment: "E:/MBG/StuffAndThings/lormastur/" + chosenFile,
+                                    }, ],
+                                });
 
-                            sendWebhook("millerwife", message.attachments.first().url, false, msg.channel);
+                            sendWebhook(
+                                "millerwife",
+                                message.attachments.first().url,
+                                false,
+                                msg.channel
+                            );
                         }
                     }
                     break;
                 case "!inspire":
                     {
                         fetch("https://inspirobot.me/api?generate=true", {
-                            "credentials": "omit",
-                            "headers": {
+                            credentials: "omit",
+                            headers: {
                                 "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101 Firefox/102.0",
-                                "Accept": "*/*",
+                                Accept: "*/*",
                                 "Accept-Language": "en-US,en;q=0.5",
                                 "X-Requested-With": "XMLHttpRequest",
                                 "Alt-Used": "inspirobot.me",
                                 "Sec-Fetch-Dest": "empty",
                                 "Sec-Fetch-Mode": "cors",
-                                "Sec-Fetch-Site": "same-origin"
+                                "Sec-Fetch-Site": "same-origin",
                             },
-                            "referrer": "https://inspirobot.me/",
-                            "method": "GET",
-                            "mode": "cors"
-                        }).then(r => r.text()).then(r => {
+                            referrer: "https://inspirobot.me/",
+                            method: "GET",
+                            mode: "cors",
+                        })
+                        .then((r) => r.text())
+                        .then((r) => {
                             var id = uuidv4();
                             download(r, "./images/cache/" + id + ".png", () => {
-                                sendWebhookFile("deepai", "./images/cache/" + id + ".png", false, msg.channel);
+                                sendWebhookFile(
+                                    "deepai",
+                                    "./images/cache/" + id + ".png",
+                                    false,
+                                    msg.channel
+                                );
                             });
                         });
                     }
@@ -958,30 +1509,93 @@ client.on('messageCreate', async(msg) => {
                     {
                         var id = uuidv4().replace(/-/g, "");
                         if (msg.attachments.first().url.endsWith(".mp4")) {
-                            download(msg.attachments.first().url, "./images/cache/" + id + ".mp4", () => {
-                                getVideoDurationInSeconds("./images/cache/" + id + ".mp4").then((duration) => {
-                                    console.log(duration);
-                                    flapslib.videowrapper.armstrongify(id + ".mp4", msg, duration, client);
-                                });
-                            });
+                            download(
+                                msg.attachments.first().url,
+                                "./images/cache/" + id + ".mp4",
+                                () => {
+                                    getVideoDurationInSeconds(
+                                        "./images/cache/" + id + ".mp4"
+                                    ).then((duration) => {
+                                        console.log(duration);
+                                        flapslib.videowrapper.armstrongify(
+                                            id + ".mp4",
+                                            msg,
+                                            duration,
+                                            client
+                                        );
+                                    });
+                                }
+                            );
                         } else {
-                            download(msg.attachments.first().url, "./images/cache/" + id + ".png", () => {
-                                flapslib.videowrapper.armstrongify(id + ".png", msg, 1, client);
-                            });
+                            download(
+                                msg.attachments.first().url,
+                                "./images/cache/" + id + ".png",
+                                () => {
+                                    flapslib.videowrapper.armstrongify(
+                                        id + ".png",
+                                        msg,
+                                        1,
+                                        client
+                                    );
+                                }
+                            );
                         }
                     }
                     break;
                 case "!fbifiles":
                     {
-                        var date = new Date(new Date().getTime() + Math.random() * (new Date(new Date().getFullYear() + 10, new Date().getMonth(), new Date().getDate()).getTime() - new Date().getTime()));
-                        var dateStr = `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()} at ${date.getHours().toString().padStart(2, "0")}:${date.getMinutes().toString().padStart(2, "0")}:${date.getSeconds().toString().padStart(2, "0")}`;
+                        var date = new Date(
+                            new Date().getTime() +
+                            Math.random() *
+                            (new Date(
+                                    new Date().getFullYear() + 10,
+                                    new Date().getMonth(),
+                                    new Date().getDate()
+                                ).getTime() -
+                                new Date().getTime())
+                        );
+                        var dateStr = `${date.getDate()}/${
+              date.getMonth() + 1
+            }/${date.getFullYear()} at ${date
+              .getHours()
+              .toString()
+              .padStart(2, "0")}:${date
+              .getMinutes()
+              .toString()
+              .padStart(2, "0")}:${date
+              .getSeconds()
+              .toString()
+              .padStart(2, "0")}`;
                         if (commandArgString == "<:owl:964880176355897374>") {
-                            sendWebhook("fbi", `that owl is FUCKING INVINCIBLE\nhttps://media.discordapp.net/attachments/838732607344214019/980236924994338846/unknown.png`, false, msg.channel);
+                            sendWebhook(
+                                "fbi",
+                                `that owl is FUCKING INVINCIBLE\nhttps://media.discordapp.net/attachments/838732607344214019/980236924994338846/unknown.png`,
+                                false,
+                                msg.channel
+                            );
                         } else if (commandArgString == "miller") {
-                            sendWebhook("fbi", `MILLER IS A DICK FUCK MILLER (dont actually fuck miller, fuck his daughter instead)\nhttps://media.discordapp.net/attachments/882743320554643476/981644975815135362/miller1.PNG`, false, msg.channel);
+                            sendWebhook(
+                                "fbi",
+                                `MILLER IS A DICK FUCK MILLER (dont actually fuck miller, fuck his daughter instead)\nhttps://media.discordapp.net/attachments/882743320554643476/981644975815135362/miller1.PNG`,
+                                false,
+                                msg.channel
+                            );
                         } else {
-                            sendWebhook("fbi", `oh shit. ${commandArgString} will die on ${dateStr}. death by ${flapslib.cahWhiteCard()}
-fbi files on ${commandArgString}: ${(msg.mentions.users.first() ? (descriptions[msg.mentions.users.first().id] + "\nhere's a file photo" ? descriptions[msg.mentions.users.first().id] + "\nhere's a file photo" : "[[Blank]]") : "[[Blank]]")}`, false, msg.channel);
+                            sendWebhook(
+                                "fbi",
+                                `oh shit. ${commandArgString} will die on ${dateStr}. death by ${flapslib.cahWhiteCard()}
+fbi files on ${commandArgString}: ${
+                  msg.mentions.users.first()
+                    ? descriptions[msg.mentions.users.first().id] +
+                      "\nhere's a file photo"
+                      ? descriptions[msg.mentions.users.first().id] +
+                        "\nhere's a file photo"
+                      : "[[Blank]]"
+                    : "[[Blank]]"
+                }`,
+                                false,
+                                msg.channel
+                            );
                         }
                     }
                     break;
@@ -992,35 +1606,63 @@ fbi files on ${commandArgString}: ${(msg.mentions.users.first() ? (descriptions[
                     break;
                 case "!speechbubble":
                     {
-                        sb(msg, client)
+                        sb(msg, client);
                     }
                     break;
                 case "!mybeloved":
                     {
                         if (!msg.attachments.first() || !msg.attachments.first().width) {
-                            sendWebhook("mkswt", "GIVE ME AN IMAGE YOU DWANKIE", false, msg.channel);
+                            sendWebhook(
+                                "mkswt",
+                                "GIVE ME AN IMAGE YOU DWANKIE",
+                                false,
+                                msg.channel
+                            );
                         } else {
                             var filename = uuidv4() + ".png";
-                            download(msg.attachments.first().url, "./images/cache/" + filename, () => {
-                                flapslib.makesweet(commandArgString, filename, msg.channel, client);
-                            });
+                            download(
+                                msg.attachments.first().url,
+                                "./images/cache/" + filename,
+                                () => {
+                                    flapslib.makesweet(
+                                        commandArgString,
+                                        filename,
+                                        msg.channel,
+                                        client
+                                    );
+                                }
+                            );
                         }
                     }
                     break;
                 case "!heartclose":
                     {
                         if (!msg.attachments.first() || !msg.attachments.first().width) {
-                            sendWebhook("mkswt", "GIVE ME AN IMAGE YOU DWANKIE", false, msg.channel);
+                            sendWebhook(
+                                "mkswt",
+                                "GIVE ME AN IMAGE YOU DWANKIE",
+                                false,
+                                msg.channel
+                            );
                         } else {
                             var filename = uuidv4() + ".png";
-                            download(msg.attachments.first().url, "./images/cache/" + filename, () => {
-                                flapslib.reverseMakesweet(commandArgString, filename, msg.channel, client);
-                            });
+                            download(
+                                msg.attachments.first().url,
+                                "./images/cache/" + filename,
+                                () => {
+                                    flapslib.reverseMakesweet(
+                                        commandArgString,
+                                        filename,
+                                        msg.channel,
+                                        client
+                                    );
+                                }
+                            );
                         }
                     }
                     break;
                 case "!flip":
-                    flip(msg, client)
+                    flip(msg, client);
                     break;
                 case "!homodog":
                     homodog(msg, client);
@@ -1042,10 +1684,12 @@ fbi files on ${commandArgString}: ${(msg.mentions.users.first() ? (descriptions[
                         var arrayshit = text.split(" ");
                         if (text.startsWith("-i")) {
                             var nextArr = [];
-                            arrayshit.forEach(word => {
+                            arrayshit.forEach((word) => {
                                 if (word == "-i") return;
-                                if (Math.random() < 0.2) word = (word + " ").repeat(Math.floor(Math.random() * 5) + 2);
-                                if (swears.includes(word.toLowerCase())) word = (word + " ").repeat(Math.floor(Math.random() * 7) + 3);
+                                if (Math.random() < 0.2)
+                                    word = (word + " ").repeat(Math.floor(Math.random() * 5) + 2);
+                                if (swears.includes(word.toLowerCase()))
+                                    word = (word + " ").repeat(Math.floor(Math.random() * 7) + 3);
                                 word = word.toUpperCase();
                                 nextArr.push(word);
                             });
@@ -1068,67 +1712,105 @@ fbi files on ${commandArgString}: ${(msg.mentions.users.first() ? (descriptions[
                             "ima fucking murder my pain *swallows 50 nurofens*",
                         ];
                         var inputText = originalStatusIdeas.join("\n") + "\n";
-                        sendWebhook("deepai", "beep boop am thinking......", false, msg.channel)
+                        sendWebhook(
+                            "deepai",
+                            "beep boop am thinking......",
+                            false,
+                            msg.channel
+                        );
                         flapslib.ai.autocompleteText(inputText, msg.channel, true);
                     }
                     break;
                 case "!call":
                     {
                         if (commandArgs[1] == "1-087-311-9823") {
-                            sendWebhook("smallcock", "https://cdn.discordapp.com/attachments/882743320554643476/983385178254741514/phone_call.mp3", false, msg.channel);
+                            sendWebhook(
+                                "smallcock",
+                                "https://cdn.discordapp.com/attachments/882743320554643476/983385178254741514/phone_call.mp3",
+                                false,
+                                msg.channel
+                            );
                         }
                         break;
                     }
                 case "!define":
                     {
                         if (commandArgs[1]) {
-                            fetch("https://api.dictionaryapi.dev/api/v2/entries/en/" + commandArgs[1]).then(r => { return r.json() }).then(r => {
-                                var word = r[0];
-                                if (!word) return sendWebhook("flaps", "thats not a word dummy", false, msg.channel);
-                                sendWebhook("flaps", word.word + "\n**" + word.phonetic + "**\n" + word.meanings.map(m => m.definitions[0].definition).join("\n"), false, msg.channel);
-                            });
+                            fetch(
+                                    "https://api.dictionaryapi.dev/api/v2/entries/en/" +
+                                    commandArgs[1]
+                                )
+                                .then((r) => {
+                                    return r.json();
+                                })
+                                .then((r) => {
+                                    var word = r[0];
+                                    if (!word)
+                                        return sendWebhook(
+                                            "flaps",
+                                            "thats not a word dummy",
+                                            false,
+                                            msg.channel
+                                        );
+                                    sendWebhook(
+                                        "flaps",
+                                        word.word +
+                                        "\n**" +
+                                        word.phonetic +
+                                        "**\n" +
+                                        word.meanings
+                                        .map((m) => m.definitions[0].definition)
+                                        .join("\n"),
+                                        false,
+                                        msg.channel
+                                    );
+                                });
                         }
                     }
                     break;
                 case "!bruno":
-                    var files = fs.readdirSync('./images/bruno/');
+                    var files = fs.readdirSync("./images/bruno/");
                     var chosenFile = files[Math.floor(Math.random() * files.length)];
-                    var filesize = fs.statSync("./images/bruno/" + chosenFile).size / (1024 * 1024);
+                    var filesize =
+                        fs.statSync("./images/bruno/" + chosenFile).size / (1024 * 1024);
                     if (filesize > 8) {
-                        sendWebhook("bruno", "FUCKING STRS MAKING MY FILES " + Math.round(filesize) + " MEGABYTES", false, msg.channel);
+                        sendWebhook(
+                            "bruno",
+                            "FUCKING STRS MAKING MY FILES " +
+                            Math.round(filesize) +
+                            " MEGABYTES",
+                            false,
+                            msg.channel
+                        );
                     } else {
-                        var message = await client.channels.cache.get("956316856422137856").send({
-                            files: [{
-                                attachment: "./images/bruno/" + chosenFile
-                            }]
-                        });
+                        var message = await client.channels.cache
+                            .get("956316856422137856")
+                            .send({
+                                files: [{
+                                    attachment: "./images/bruno/" + chosenFile,
+                                }, ],
+                            });
 
-                        sendWebhook("bruno", message.attachments.first().url, true, msg.channel);
+                        sendWebhook(
+                            "bruno",
+                            message.attachments.first().url,
+                            true,
+                            msg.channel
+                        );
                     }
                     break;
                 case "!rps":
                     {
                         var input = commandArgString.toLowerCase();
-                        var dicks = [
-                            "nutsack",
-                            "balls",
-                            "testicles",
-                            "dick",
-                            "cock"
-                        ];
-                        var opts = [
-                            "rock", "paper", "scissors"
-                        ];
+                        var dicks = ["nutsack", "balls", "testicles", "dick", "cock"];
+                        var opts = ["rock", "paper", "scissors"];
                         var output = "error";
                         var winner = "error";
                         if (dicks.includes(input)) {
                             output = "scissors";
                             winner = "pain";
                         } else if (!opts.includes(input)) {
-                            var cards = [
-                                cahWhiteCard(),
-                                cahWhiteCard()
-                            ];
+                            var cards = [cahWhiteCard(), cahWhiteCard()];
                             output = cards[0].substring(2, cards[0].length - 3);
                             winner = cards[1].substring(2, cards[1].length - 3);
                         } else {
@@ -1166,7 +1848,12 @@ fbi files on ${commandArgString}: ${(msg.mentions.users.first() ? (descriptions[
                         input = input[0].toUpperCase() + input.substring(1);
                         output = output[0].toUpperCase() + output.substring(1);
                         winner = winner[0].toUpperCase() + winner.substring(1);
-                        sendWebhook("rps", `You chose **${input}**. I chose **${output}**. Winner: **${winner}**!`, false, msg.channel);
+                        sendWebhook(
+                            "rps",
+                            `You chose **${input}**. I chose **${output}**. Winner: **${winner}**!`,
+                            false,
+                            msg.channel
+                        );
                         break;
                     }
                 case "!animethink":
@@ -1176,17 +1863,30 @@ fbi files on ${commandArgString}: ${(msg.mentions.users.first() ? (descriptions[
                     {
                         var x = "pigeons flying in city";
                         if (commandArgs[1]) x = commandArgString;
-                        sendWebhook("dalle", "im thinking.... beep blorp...", false, msg.channel);
-                        flapslib.ai.dalle(x).then(data => {
-                            if (!data.image) return flapslib.webhooks.sendWebhook("dalle", data.prompt, false, msg.channel);
+                        sendWebhook(
+                            "dalle",
+                            "im thinking.... beep blorp...",
+                            false,
+                            msg.channel
+                        );
+                        flapslib.ai.dalle(x).then((data) => {
+                            if (!data.image)
+                                return flapslib.webhooks.sendWebhook(
+                                    "dalle",
+                                    data.prompt,
+                                    false,
+                                    msg.channel
+                                );
                             var c = canvas.createCanvas(768, 768);
-                            var ctx = c.getContext('2d');
+                            var ctx = c.getContext("2d");
                             var x = 0;
                             var y = 0;
                             data.images.forEach((imgurl) => {
                                 var img = new Image();
-                                img.onload = () => ctx.drawImage(img, x * 256, y * 256, 256, 256)
-                                img.onerror = err => { throw err }
+                                img.onload = () => ctx.drawImage(img, x * 256, y * 256, 256, 256);
+                                img.onerror = (err) => {
+                                    throw err;
+                                };
                                 img.src = "data:image/jpeg;base64," + imgurl;
                                 x += 1;
                                 if (x == 3) {
@@ -1195,17 +1895,28 @@ fbi files on ${commandArgString}: ${(msg.mentions.users.first() ? (descriptions[
                                 }
                             });
                             var outID = uuidv4() + ".png";
-                            fs.writeFile("./images/cache/" + outID, Buffer.from(c.toDataURL("image/png").split(",")[1], "base64"), async() => {
-                                var message = await client.channels.cache.get("956316856422137856").send({
-                                    files: [{
-                                        attachment: __dirname + "\\images\\cache\\" + outID
-                                    }]
-                                });
-                                setTimeout(() => {
-                                    fs.unlinkSync("./images/cache/" + outID);
-                                }, 10000);
-                                flapslib.webhooks.sendWebhook("dalle", data.prompt + "\n" + message.attachments.first().url, false, msg.channel);
-                            });
+                            fs.writeFile(
+                                "./images/cache/" + outID,
+                                Buffer.from(c.toDataURL("image/png").split(",")[1], "base64"),
+                                async() => {
+                                    var message = await client.channels.cache
+                                        .get("956316856422137856")
+                                        .send({
+                                            files: [{
+                                                attachment: __dirname + "\\images\\cache\\" + outID,
+                                            }, ],
+                                        });
+                                    setTimeout(() => {
+                                        fs.unlinkSync("./images/cache/" + outID);
+                                    }, 10000);
+                                    flapslib.webhooks.sendWebhook(
+                                        "dalle",
+                                        data.prompt + "\n" + message.attachments.first().url,
+                                        false,
+                                        msg.channel
+                                    );
+                                }
+                            );
                         });
                         break;
                     }
@@ -1222,7 +1933,12 @@ fbi files on ${commandArgString}: ${(msg.mentions.users.first() ? (descriptions[
                             "DO NOT ORDER SONIC 2 HAPPY MEAL FROM MCDONALDS AT 3 AM!! (HE CAME AFTER US)",
                         ];
                         var inputText = originalTitles.join("\n") + "\n";
-                        sendWebhook("deepai", "beep boop am thinking......", false, msg.channel)
+                        sendWebhook(
+                            "deepai",
+                            "beep boop am thinking......",
+                            false,
+                            msg.channel
+                        );
                         flapslib.ai.autocompleteText(inputText, msg.channel, true);
                     }
                     break;
@@ -1230,7 +1946,12 @@ fbi files on ${commandArgString}: ${(msg.mentions.users.first() ? (descriptions[
                     {
                         var white = cahWhiteCard().toUpperCase();
                         white = white.substring(2, white.length - 3);
-                        sendWebhook("flaps", `DO NOT CALL ${white} AT 3AM!!`, false, msg.channel);
+                        sendWebhook(
+                            "flaps",
+                            `DO NOT CALL ${white} AT 3AM!!`,
+                            false,
+                            msg.channel
+                        );
                     }
                     break;
                 case "!whitecard":
@@ -1254,14 +1975,20 @@ fbi files on ${commandArgString}: ${(msg.mentions.users.first() ? (descriptions[
                 case "!retry":
                     {
                         var text = lastRequests[msg.author.id];
-                        if (!text) return sendWebhook("deepai", "request something first you dumbo");
+                        if (!text)
+                            return sendWebhook("deepai", "request something first you dumbo");
                         flapslib.ai.autocompleteText(text, msg.channel);
                     }
                     break;
                 case "!r34":
                     {
                         if (Math.random() < 0.25) {
-                            return sendWebhook("welldressed", "https://media.discordapp.net/attachments/956316856422137856/982985131151228928/88324f31a1fe4aa3a4568285e8771de6.png", false, msg.channel);
+                            return sendWebhook(
+                                "welldressed",
+                                "https://media.discordapp.net/attachments/956316856422137856/982985131151228928/88324f31a1fe4aa3a4568285e8771de6.png",
+                                false,
+                                msg.channel
+                            );
                         }
                         var x = "";
                         if (commandArgs[1]) {
@@ -1271,83 +1998,148 @@ fbi files on ${commandArgString}: ${(msg.mentions.users.first() ? (descriptions[
                         }
                         x = x.replace(/,/g, " ");
                         if (x.includes("child")) {
-                            return sendWebhook("runcling", "🚔🚔🚔🚔🚨🚨🚨🚨🚨🚓🚓🚓🚓👮‍♀️👮‍♂️👮‍♂️👮‍♂️👮‍♂️👮👮‍♂️👮‍♂️🚓🚨👮‍♀️👮‍♂️👮‍♀️🚓🚔🚨", false, msg.channel);
+                            return sendWebhook(
+                                "runcling",
+                                "🚔🚔🚔🚔🚨🚨🚨🚨🚨🚓🚓🚓🚓👮‍♀️👮‍♂️👮‍♂️👮‍♂️👮‍♂️👮👮‍♂️👮‍♂️🚓🚨👮‍♀️👮‍♂️👮‍♀️🚓🚔🚨",
+                                false,
+                                msg.channel
+                            );
                         }
                         x = x.replace("_--showname", "");
                         fetch("https://rule34.xxx/public/autocomplete.php?q=" + x, {
-                            "credentials": "omit",
-                            "headers": {
+                            credentials: "omit",
+                            headers: {
                                 "User-Agent": "FlapsChelton",
-                                "Accept": "*/*",
+                                Accept: "*/*",
                                 "Accept-Language": "en-US,en;q=0.5",
                                 "Sec-Fetch-Dest": "empty",
                                 "Sec-Fetch-Mode": "cors",
-                                "Sec-Fetch-Site": "same-origin"
+                                "Sec-Fetch-Site": "same-origin",
                             },
-                            "referrer": "https://rule34.xxx/",
-                            "method": "GET",
-                            "mode": "cors"
-                        }).then(ra => { return ra.json() }).then(ra => {
+                            referrer: "https://rule34.xxx/",
+                            method: "GET",
+                            mode: "cors",
+                        })
+                        .then((ra) => {
+                            return ra.json();
+                        })
+                        .then((ra) => {
                             if (!ra[0] && !x.includes(" ")) {
-                                return sendWebhook("runcling", "go outside horny runcling\nhttps://media.discordapp.net/attachments/882743320554643476/982983490075254784/unknown.png", false, msg.channel);
+                                return sendWebhook(
+                                    "runcling",
+                                    "go outside horny runcling\nhttps://media.discordapp.net/attachments/882743320554643476/982983490075254784/unknown.png",
+                                    false,
+                                    msg.channel
+                                );
                             }
-                            fetch("https://rule34.xxx/index.php?page=post&s=list&tags=" + (x.includes(" ") ? x : ra[0].value)).then(r => { return r.text() }).then(r => {
-                                if (!r.split('<div class="image-list">')[1]) {
-                                    return sendWebhook("runcling", "go outside horny runcling\nhttps://media.discordapp.net/attachments/882743320554643476/982983490075254784/unknown.png", false, msg.channel);
-                                }
-                                var list = r.split('<div class="image-list">')[1].split('<div id="paginator">')[0].split(/<\/a>\n<\/span>\n<span id="s[0-9]*" class="thumb">\n<a id="p[0-9]*" href="[A-z\.\&\?\=0-9]*" style="">/gi);
-                                list = list.filter(item => {
-                                    return item.startsWith("\n<img s");
-                                });
-                                list = list.map(item => {
-                                    return item.substring("<img src=\"".length + 1, "https://wimg.rule34.xxx/thumbnails/5074/thumbnail_d3b24d47c2ac59b0c0f2d04319ec240e.jpg?5784441".length + "<img src=\"".length + 1);
-                                });
-                                list = list.map(item => {
-                                    return item.replace(/thumbnail/g, "sample");
-                                });
-                                console.log(list);
-                                var item = randomFromArray(list);
-                                console.log(item);
-                                var id = uuidv4() + ".jpg";
-                                if (!item) {
-                                    return sendWebhook("runcling", "go outside horny runcling\nhttps://media.discordapp.net/attachments/882743320554643476/982983490075254784/unknown.png", false, msg.channel);
-                                }
-                                download(item, "images/cache/" + id, async(err) => {
-                                    if (err) {
-                                        console.log("ERROR WEEWOOWOOEOEOWEO");
-                                        return download(item.replace(/sample/g, "thumbnail"), "images/cache/" + id, async(err) => {
-                                            var message = await client.channels.cache.get("956316856422137856").send({
+                            fetch(
+                                    "https://rule34.xxx/index.php?page=post&s=list&tags=" +
+                                    (x.includes(" ") ? x : ra[0].value)
+                                )
+                                .then((r) => {
+                                    return r.text();
+                                })
+                                .then((r) => {
+                                    if (!r.split('<div class="image-list">')[1]) {
+                                        return sendWebhook(
+                                            "runcling",
+                                            "go outside horny runcling\nhttps://media.discordapp.net/attachments/882743320554643476/982983490075254784/unknown.png",
+                                            false,
+                                            msg.channel
+                                        );
+                                    }
+                                    var list = r
+                                        .split('<div class="image-list">')[1]
+                                        .split('<div id="paginator">')[0]
+                                        .split(
+                                            /<\/a>\n<\/span>\n<span id="s[0-9]*" class="thumb">\n<a id="p[0-9]*" href="[A-z\.\&\?\=0-9]*" style="">/gi
+                                        );
+                                    list = list.filter((item) => {
+                                        return item.startsWith("\n<img s");
+                                    });
+                                    list = list.map((item) => {
+                                        return item.substring(
+                                            '<img src="'.length + 1,
+                                            "https://wimg.rule34.xxx/thumbnails/5074/thumbnail_d3b24d47c2ac59b0c0f2d04319ec240e.jpg?5784441"
+                                            .length +
+                                            '<img src="'.length +
+                                            1
+                                        );
+                                    });
+                                    list = list.map((item) => {
+                                        return item.replace(/thumbnail/g, "sample");
+                                    });
+                                    console.log(list);
+                                    var item = randomFromArray(list);
+                                    console.log(item);
+                                    var id = uuidv4() + ".jpg";
+                                    if (!item) {
+                                        return sendWebhook(
+                                            "runcling",
+                                            "go outside horny runcling\nhttps://media.discordapp.net/attachments/882743320554643476/982983490075254784/unknown.png",
+                                            false,
+                                            msg.channel
+                                        );
+                                    }
+                                    download(item, "images/cache/" + id, async(err) => {
+                                        if (err) {
+                                            console.log("ERROR WEEWOOWOOEOEOWEO");
+                                            return download(
+                                                item.replace(/sample/g, "thumbnail"),
+                                                "images/cache/" + id,
+                                                async(err) => {
+                                                    var message = await client.channels.cache
+                                                        .get("956316856422137856")
+                                                        .send({
+                                                            files: [{
+                                                                attachment: __dirname + "\\images\\cache\\" + id,
+                                                            }, ],
+                                                        });
+
+                                                    setTimeout(() => {
+                                                        fs.unlinkSync("./images/cache/" + id);
+                                                    }, 10000);
+
+                                                    sendWebhook(
+                                                        "runcling",
+                                                        message.attachments.first().url,
+                                                        false,
+                                                        msg.channel
+                                                    );
+                                                }
+                                            );
+                                        }
+                                        var message = await client.channels.cache
+                                            .get("956316856422137856")
+                                            .send({
                                                 files: [{
-                                                    attachment: __dirname + "\\images\\cache\\" + id
-                                                }]
+                                                    attachment: __dirname + "\\images\\cache\\" + id,
+                                                }, ],
                                             });
 
-                                            setTimeout(() => {
-                                                fs.unlinkSync("./images/cache/" + id);
-                                            }, 10000);
+                                        setTimeout(() => {
+                                            fs.unlinkSync("./images/cache/" + id);
+                                        }, 10000);
 
-                                            sendWebhook("runcling", message.attachments.first().url, false, msg.channel);
-                                        });
-                                    }
-                                    var message = await client.channels.cache.get("956316856422137856").send({
-                                        files: [{
-                                            attachment: __dirname + "\\images\\cache\\" + id
-                                        }]
+                                        sendWebhook(
+                                            "runcling",
+                                            message.attachments.first().url,
+                                            false,
+                                            msg.channel
+                                        );
                                     });
-
-                                    setTimeout(() => {
-                                        fs.unlinkSync("./images/cache/" + id);
-                                    }, 10000);
-
-                                    sendWebhook("runcling", message.attachments.first().url, false, msg.channel);
                                 });
-                            });
                         });
                     }
                     break;
                 case "!basedmeter":
                     {
-                        flapslib.webhooks.sendWebhook("based", "https://media.discordapp.net/attachments/882743320554643476/929056031101833216/IlphMLX5ggUAAAAASUVORK5CYII.png", false, msg.channel);
+                        flapslib.webhooks.sendWebhook(
+                            "based",
+                            "https://media.discordapp.net/attachments/882743320554643476/929056031101833216/IlphMLX5ggUAAAAASUVORK5CYII.png",
+                            false,
+                            msg.channel
+                        );
                     }
                     break;
                 case "!degeneracy":
@@ -1356,31 +2148,62 @@ fbi files on ${commandArgString}: ${(msg.mentions.users.first() ? (descriptions[
                     }
                     break;
                 case "!owo":
-                    sendWebhook("ghost", owoify(commandArgString, "uvu"), false, msg.channel);
+                    sendWebhook(
+                        "ghost",
+                        owoify(commandArgString, "uvu"),
+                        false,
+                        msg.channel
+                    );
                     break;
                 case "!flapslength":
                     {
-                        var lines = fs.readFileSync("./main.js").toString().split("\r\n").length;
+                        var lines = fs
+                            .readFileSync("./main.js")
+                            .toString()
+                            .split("\r\n").length;
                         var lengths = {
-                            "main.js": parseInt(lines.toString())
+                            "main.js": parseInt(lines.toString()),
                         };
                         fs.readdir("./flapslib", (err, files) => {
-                            files.forEach(file => {
-                                var l = fs.readFileSync("./flapslib/" + file).toString().split("\r\n").length;
+                            files.forEach((file) => {
+                                var l = fs
+                                    .readFileSync("./flapslib/" + file)
+                                    .toString()
+                                    .split("\r\n").length;
                                 lines += l;
                                 lengths[file] = l;
                             });
-                            fs.readdir("E:/MBG/2site/sites/konalt/flaps/watchparty/videos", (err, files) => {
-                                var flapsCacheFilesize = 0;
-                                files.forEach(file => {
-                                    var stats = fs.statSync("E:/MBG/2site/sites/konalt/flaps/watchparty/videos/" + file);
-                                    var fileSizeInBytes = stats.size;
-                                    var fileSizeInMegabytes = fileSizeInBytes / (1024 * 1024);
-                                    flapsCacheFilesize += fileSizeInMegabytes;
-                                });
-                                flapsCacheFilesize = Math.round(flapsCacheFilesize * 10) / 10;
-                                flapslib.webhooks.sendWebhook("flaps", "i grow to " + lines + " lines.\nFlapsCache:tm: total size taken: " + flapsCacheFilesize + "MB\nbreakdown:\n" + (Object.entries(lengths).map((x) => { return x[0] + ": " + x[1] + " lines" }).join("\n")), false, msg.channel);
-                            });
+                            fs.readdir(
+                                "E:/MBG/2site/sites/konalt/flaps/watchparty/videos",
+                                (err, files) => {
+                                    var flapsCacheFilesize = 0;
+                                    files.forEach((file) => {
+                                        var stats = fs.statSync(
+                                            "E:/MBG/2site/sites/konalt/flaps/watchparty/videos/" +
+                                            file
+                                        );
+                                        var fileSizeInBytes = stats.size;
+                                        var fileSizeInMegabytes = fileSizeInBytes / (1024 * 1024);
+                                        flapsCacheFilesize += fileSizeInMegabytes;
+                                    });
+                                    flapsCacheFilesize = Math.round(flapsCacheFilesize * 10) / 10;
+                                    flapslib.webhooks.sendWebhook(
+                                        "flaps",
+                                        "i grow to " +
+                                        lines +
+                                        " lines.\nFlapsCache:tm: total size taken: " +
+                                        flapsCacheFilesize +
+                                        "MB\nbreakdown:\n" +
+                                        Object.entries(lengths)
+                                        .map((x) => {
+                                            return x[0] + ": " + x[1] + " lines";
+                                        })
+                                        .join("\n"),
+                                        false,
+                                        msg.channel
+                                    );
+                                }
+                            );
                         });
                     }
                     break;
@@ -1388,24 +2211,37 @@ fbi files on ${commandArgString}: ${(msg.mentions.users.first() ? (descriptions[
                     {
                         try {
                             await fetch("https://petittube.com/index.php", {
-                                "credentials": "omit",
-                                "headers": {
-                                    "User-Agent": "FlapsChelton",
-                                    "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8",
-                                    "Accept-Language": "en-US,en;q=0.5",
-                                    "Upgrade-Insecure-Requests": "1",
-                                    "Sec-Fetch-Dest": "document",
-                                    "Sec-Fetch-Mode": "navigate",
-                                    "Sec-Fetch-Site": "same-origin",
-                                    "Cache-Control": "max-age=0"
-                                },
-                                "method": "GET",
-                                "mode": "cors"
-                            }).then(r => r.text()).then((content) => {
-                                var a = content.substring(content.indexOf("https://www.youtube.com/embed/") + "https://www.youtube.com/embed/".length, (content.indexOf("https://www.youtube.com/embed/") + "https://www.youtube.com/embed/".length + 11));
-                                console.log(a);
-                                flapslib.webhooks.sendWebhook("deepai", "https://youtube.com/watch?v=" + a, false, msg.channel);
-                            });
+                                    credentials: "omit",
+                                    headers: {
+                                        "User-Agent": "FlapsChelton",
+                                        Accept: "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8",
+                                        "Accept-Language": "en-US,en;q=0.5",
+                                        "Upgrade-Insecure-Requests": "1",
+                                        "Sec-Fetch-Dest": "document",
+                                        "Sec-Fetch-Mode": "navigate",
+                                        "Sec-Fetch-Site": "same-origin",
+                                        "Cache-Control": "max-age=0",
+                                    },
+                                    method: "GET",
+                                    mode: "cors",
+                                })
+                                .then((r) => r.text())
+                                .then((content) => {
+                                    var a = content.substring(
+                                        content.indexOf("https://www.youtube.com/embed/") +
+                                        "https://www.youtube.com/embed/".length,
+                                        content.indexOf("https://www.youtube.com/embed/") +
+                                        "https://www.youtube.com/embed/".length +
+                                        11
+                                    );
+                                    console.log(a);
+                                    flapslib.webhooks.sendWebhook(
+                                        "deepai",
+                                        "https://youtube.com/watch?v=" + a,
+                                        false,
+                                        msg.channel
+                                    );
+                                });
                         } catch (e) {
                             console.log("aw");
                             console.log(e);
@@ -1415,32 +2251,54 @@ fbi files on ${commandArgString}: ${(msg.mentions.users.first() ? (descriptions[
                 case "!help":
                     {
                         var f = "flaps chelton help:\n";
-                        Object.entries(commands).forEach(x => {
+                        Object.entries(commands).forEach((x) => {
                             f += `${x[0]}: ${x[1]}\n`;
                         });
-                        flapslib.webhooks.sendWebhook("flaps", f, false, msg.channel, {}, msg);
+                        flapslib.webhooks.sendWebhook(
+                            "flaps",
+                            f,
+                            false,
+                            msg.channel, {},
+                            msg
+                        );
                     }
                     break;
                 case "!balkancuisine":
                     {
-                        var message = await client.channels.cache.get("956316856422137856").send({
-                            files: [{
-                                attachment: "images/ciggies/" + Math.floor(Math.random() * 17) + ".jpg"
-                            }]
-                        });
+                        var message = await client.channels.cache
+                            .get("956316856422137856")
+                            .send({
+                                files: [{
+                                    attachment: "images/ciggies/" +
+                                        Math.floor(Math.random() * 17) +
+                                        ".jpg",
+                                }, ],
+                            });
 
-                        flapslib.webhooks.sendWebhook("balkan", message.attachments.first().url, false, msg.channel);
+                        flapslib.webhooks.sendWebhook(
+                            "balkan",
+                            message.attachments.first().url,
+                            false,
+                            msg.channel
+                        );
                     }
                     break;
                 case "!methrecipe":
                     {
-                        flapslib.webhooks.sendWebhook("flaps", "https://cdn.discordapp.com/attachments/956316856422137856/993527069185151047/meth.mp4", false, msg.channel);
+                        flapslib.webhooks.sendWebhook(
+                            "flaps",
+                            "https://cdn.discordapp.com/attachments/956316856422137856/993527069185151047/meth.mp4",
+                            false,
+                            msg.channel
+                        );
                     }
                     break;
                 case "!translate":
                     {
                         var n = parseInt(commandArgs[1]) ? parseInt(commandArgs[1]) : 10;
-                        var t = parseInt(commandArgs[1]) ? commandArgs.slice(2).join(" ") : commandArgString;
+                        var t = parseInt(commandArgs[1]) ?
+                            commandArgs.slice(2).join(" ") :
+                            commandArgString;
                         sendWebhook("flaps", "woo we translatin baby", false, msg.channel);
                         var translated = await doTranslate(t, n);
                         sendWebhook("flaps", translated, false, msg.channel);
@@ -1457,13 +2315,20 @@ fbi files on ${commandArgString}: ${(msg.mentions.users.first() ? (descriptions[
                     }
                 case "!funnycat":
                     {
-                        var message = await client.channels.cache.get("956316856422137856").send({
-                            files: [{
-                                attachment: "images/cybercat.jpg"
-                            }]
-                        });
+                        var message = await client.channels.cache
+                            .get("956316856422137856")
+                            .send({
+                                files: [{
+                                    attachment: "images/cybercat.jpg",
+                                }, ],
+                            });
 
-                        flapslib.webhooks.sendWebhook("balkan", message.attachments.first().url, false, msg.channel);
+                        flapslib.webhooks.sendWebhook(
+                            "balkan",
+                            message.attachments.first().url,
+                            false,
+                            msg.channel
+                        );
                     }
                     break;
                 case "!morbius":
@@ -1475,11 +2340,19 @@ fbi files on ${commandArgString}: ${(msg.mentions.users.first() ? (descriptions[
                     {
                         if (canvases[msg.author.id]) {
                             var mc_c = canvases[msg.author.id];
-                            var mc = mc_c.getContext('2d');
-                            var a = parseInt(commandArgs[2]) ? parseInt(commandArgs[2]) : commandArgs[2];
-                            var b = parseInt(commandArgs[3]) ? parseInt(commandArgs[3]) : commandArgs[3];
-                            var c = parseInt(commandArgs[4]) ? parseInt(commandArgs[4]) : commandArgs[4];
-                            var d = parseInt(commandArgs[5]) ? parseInt(commandArgs[5]) : commandArgs[5];
+                            var mc = mc_c.getContext("2d");
+                            var a = parseInt(commandArgs[2]) ?
+                                parseInt(commandArgs[2]) :
+                                commandArgs[2];
+                            var b = parseInt(commandArgs[3]) ?
+                                parseInt(commandArgs[3]) :
+                                commandArgs[3];
+                            var c = parseInt(commandArgs[4]) ?
+                                parseInt(commandArgs[4]) :
+                                commandArgs[4];
+                            var d = parseInt(commandArgs[5]) ?
+                                parseInt(commandArgs[5]) :
+                                commandArgs[5];
                             var send = true;
                             switch (commandArgs[1]) {
                                 case "rect":
@@ -1499,34 +2372,55 @@ fbi files on ${commandArgString}: ${(msg.mentions.users.first() ? (descriptions[
                             if (send) {
                                 console.log("the best pigon");
                                 var imgID = uuidv4().replace(/-/g, "_") + ".png";
-                                var imageStream = Buffer.from(mc_c.toDataURL("image/png").split(",")[1], "base64");
+                                var imageStream = Buffer.from(
+                                    mc_c.toDataURL("image/png").split(",")[1],
+                                    "base64"
+                                );
                                 fs.writeFileSync("./images/cache/" + imgID, imageStream);
 
                                 console.log(__dirname + "\\images\\cache\\" + imgID);
                                 /**
                                  * @type {Discord.Message}
                                  */
-                                client.channels.cache.get("956316856422137856").send({
-                                    files: [{
-                                        attachment: __dirname + "\\images\\cache\\" + imgID
-                                    }]
-                                }).then(message => {
-                                    setTimeout(() => {
-                                        fs.unlinkSync("./images/cache/" + imgID);
-                                    }, 10000);
+                                client.channels.cache
+                                    .get("956316856422137856")
+                                    .send({
+                                        files: [{
+                                            attachment: __dirname + "\\images\\cache\\" + imgID,
+                                        }, ],
+                                    })
+                                    .then((message) => {
+                                        setTimeout(() => {
+                                            fs.unlinkSync("./images/cache/" + imgID);
+                                        }, 10000);
 
-                                    flapslib.webhooks.sendWebhook("flaps", message.attachments.first().url, false, msg.channel);
-                                });
+                                        flapslib.webhooks.sendWebhook(
+                                            "flaps",
+                                            message.attachments.first().url,
+                                            false,
+                                            msg.channel
+                                        );
+                                    });
                             }
                         } else {
                             canvases[msg.author.id] = createCanvas(1000, 1000);
-                            sendWebhook("flaps", "yer canvas has been created!!!", false, msg.channel);
+                            sendWebhook(
+                                "flaps",
+                                "yer canvas has been created!!!",
+                                false,
+                                msg.channel
+                            );
                         }
                         break;
                     }
                 case "!tca":
                     {
-                        sendWebhook("flaps", "<:swagger4:983694508392857600>", false, msg.channel);
+                        sendWebhook(
+                            "flaps",
+                            "<:swagger4:983694508392857600>",
+                            false,
+                            msg.channel
+                        );
                         break;
                     }
                 case "!southerner":
@@ -1555,23 +2449,43 @@ fbi files on ${commandArgString}: ${(msg.mentions.users.first() ? (descriptions[
                     elcomplete(commandArgString, msg.channel, 1);
                     break;
                 case "!mimenod":
-                    if (!parseInt(commandArgs[1])) return sendWebhook("ffmpeg", "argument must be a number (bpm)", false, msg.channel);
+                    if (!parseInt(commandArgs[1]))
+                        return sendWebhook(
+                            "ffmpeg",
+                            "argument must be a number (bpm)",
+                            false,
+                            msg.channel
+                        );
                     flapslib.videowrapper.mimeNod(parseInt(commandArgs[1]), msg);
                     break;
                 case "!gifaudio":
                     if (msg.attachments.first(2)[1]) {
                         var id = uuidv4().replace(/-/g, "");
-                        download(msg.attachments.first().url, "./images/cache/" + id + ".gif", () => {
-                            download(msg.attachments.first(2)[1].url, "./images/cache/" + id + ".mp3", () => {
-                                flapslib.videowrapper.gifAudio(id, msg, client);
-                            });
-                        });
+                        download(
+                            msg.attachments.first().url,
+                            "./images/cache/" + id + ".gif",
+                            () => {
+                                download(
+                                    msg.attachments.first(2)[1].url,
+                                    "./images/cache/" + id + ".mp3",
+                                    () => {
+                                        flapslib.videowrapper.gifAudio(id, msg, client);
+                                    }
+                                );
+                            }
+                        );
                     }
                     break;
             }
         }
     } catch (err) {
-        flapslib.webhooks.sendWebhook("flapserrors", "Oooops! Looks like flaps broke.\n<@445968175381610496>, here's the scoop:\n" + err.stack, false, msg.channel);
+        flapslib.webhooks.sendWebhook(
+            "flapserrors",
+            "Oooops! Looks like flaps broke.\n<@445968175381610496>, here's the scoop:\n" +
+            err.stack,
+            false,
+            msg.channel
+        );
     }
 });
 
@@ -1582,21 +2496,38 @@ setInterval(() => {
         d.getHours() == 23 &&
         d.getFullYear() == 2033 &&
         d.getMonth() == 2 &&
-        d.getDate() == 3) {
-        console.log(d.getMinutes(), d.getHours(), d.getFullYear(), d.getMonth(), d.getDate());
-        sendWebhook("flaps", "@everyone R.I.P. FUNKY TOWN\n IT\'S 3/3/33 23:33 THO YA FUCKIN DONGS!!!!!", false, client.channels.cache.get("882743320554643476"));
+        d.getDate() == 3
+    ) {
+        console.log(
+            d.getMinutes(),
+            d.getHours(),
+            d.getFullYear(),
+            d.getMonth(),
+            d.getDate()
+        );
+        sendWebhook(
+            "flaps",
+            "@everyone R.I.P. FUNKY TOWN\n IT'S 3/3/33 23:33 THO YA FUCKIN DONGS!!!!!",
+            false,
+            client.channels.cache.get("882743320554643476")
+        );
     }
     /*     var bsc = client.guilds.cache.get("760524739239477340");
-        var memberPlaying = Array.from(bsc.members.cache).map(u => { return u[1].user.currentStatus });
-        if (memberPlaying == "Genshin Impact" ||
-            memberPlaying == "League of Legends") {
-            member.ban();
-        } */
+                    var memberPlaying = Array.from(bsc.members.cache).map(u => { return u[1].user.currentStatus });
+                    if (memberPlaying == "Genshin Impact" ||
+                        memberPlaying == "League of Legends") {
+                        member.ban();
+                    } */
 }, 1000);
 setInterval(() => {
     var d = new Date();
     if (d.getMinutes() == 0 && d.getHours() == 0 && d.getSeconds() < 1) {
-        sendWebhook("flaps", "midnight", false, client.channels.cache.get("882743320554643476"));
+        sendWebhook(
+            "flaps",
+            "midnight",
+            false,
+            client.channels.cache.get("882743320554643476")
+        );
     }
 }, 1000);
 //#endregion

@@ -775,8 +775,8 @@ function dalle(prompt, isSecondReq = false) {
                         console.log("SR: Error");
                         out.prompt = r.replace(/<[/A-z0-9 =!]+>/g, "");
                         /* if (Math.random() < 0.4) {
-                                                                                                                                                            out.prompt = "418 I'm a Teapot\n\nThe server refused to handle this due to a long queue.\nnginx/1.18.0 (Ubuntu)"
-                                                                                                                                                        } */
+                                                                                                                                                                                                                        out.prompt = "418 I'm a Teapot\n\nThe server refused to handle this due to a long queue.\nnginx/1.18.0 (Ubuntu)"
+                                                                                                                                                                                                                    } */
                         out.image = false;
                     } else {
                         setTimeout(() => {
@@ -804,6 +804,14 @@ var monsoonPre = fs.readFileSync("./monsoon.txt");
 
 var model = "text-davinci-002";
 
+var sanity = -1;
+
+function setSanity(n) {
+    if (typeof n !== "number" || !n) return;
+    if ((n < 0 || n > 2) && n !== -1) return;
+    sanity = n;
+}
+
 async function question(question, channel) {
     if (
         question.toLowerCase().includes("fr") &&
@@ -813,7 +821,7 @@ async function question(question, channel) {
     }
     var monsoonData = fs.readFileSync("./monsoon.txt").toString();
     monsoonPre = [
-        parseFloat(monsoonData.split(" ")[0]),
+        sanity == -1 ? parseFloat(monsoonData.split(" ")[0]) : sanity,
         monsoonData.split(" ")[1],
         monsoonData.split(" ").slice(2).join(" "),
     ];
@@ -1085,6 +1093,7 @@ module.exports = {
     googleTrends: googleTrends,
     monsoonChatEvent: monsoonChatEvent,
     gpt3complete_new: gpt3complete_new,
+    setSanity: setSanity,
 };
 
 init();
