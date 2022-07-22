@@ -337,8 +337,8 @@ client.on("messageCreate", async(msg) => {
         var commandArgString = commandArgs.slice(1).join(" ");
         var command = commandArgs[0].toLowerCase();
         /* if (msg.channel.topic.includes("##Monsoon")) {
-                                                if (!msg.author.bot) monsoonChatEvent(msg.channel);
-                                            } */
+                                                                if (!msg.author.bot) monsoonChatEvent(msg.channel);
+                                                            } */
         if (userStickies[msg.author.id]) {
             if (msg.content.startsWith("!..unsticky")) {
                 return (userStickies[msg.author.id] = false);
@@ -1696,6 +1696,14 @@ fbi files on ${commandArgString}: ${
                         flapslib.ai.autocompleteText(text, msg.channel);
                     }
                     break;
+                case "!tti":
+                    {
+                        sendWebhook("deepai", "i'm working on it", false, msg.channel);
+                        var text = msg.content.substring("!tti ".length);
+                        lastRequests[msg.author.id] = text;
+                        flapslib.ai.tti(text, msg.channel, client);
+                    }
+                    break;
                 case "!statusideas":
                     {
                         var originalStatusIdeas = [
@@ -2510,11 +2518,11 @@ setInterval(() => {
         );
     }
     /*     var bsc = client.guilds.cache.get("760524739239477340");
-                          var memberPlaying = Array.from(bsc.members.cache).map(u => { return u[1].user.currentStatus });
-                          if (memberPlaying == "Genshin Impact" ||
-                              memberPlaying == "League of Legends") {
-                              member.ban();
-                          } */
+                                  var memberPlaying = Array.from(bsc.members.cache).map(u => { return u[1].user.currentStatus });
+                                  if (memberPlaying == "Genshin Impact" ||
+                                      memberPlaying == "League of Legends") {
+                                      member.ban();
+                                  } */
 }, 1000);
 setInterval(() => {
     var d = new Date();

@@ -738,6 +738,99 @@ async function upscaleImage(msg, msgChannel, client) {
     }
 }
 
+async function tti(text, msgChannel, client) {
+    try {
+        if (!puppeteerInitialized) {
+            return sendWebhook(
+                "deepai",
+                "Puppeteer not initialized. Wait a few seconds.",
+                false,
+                msgChannel
+            );
+        }
+        (async() => {
+            await aiPageData.page.goto(
+                "https://deepai.org/machine-learning-model/text2img"
+            );
+            await aiPageData.page.evaluate((t) => {
+                document.querySelector(".model-input-text-input").value = t;
+            }, text);
+            await aiPageData.page.click(".model-input-row > button:nth-child(2)");
+
+            var originalHTMLContent = await aiPageData.page.evaluate(() => {
+                return document.querySelector(".try-it-result-area").innerHTML;
+            });
+            waitInterval = setInterval(async() => {
+                waitCounts++;
+                var a = await aiPageData.page.evaluate((original) => {
+                    if (
+                        original == document.querySelector(".try-it-result-area").innerHTML
+                    ) {
+                        return false;
+                    } else return document.querySelector(".try-it-result-area").innerHTML;
+                }, originalHTMLContent);
+                console.log("Waiting...");
+                if (a !== false) {
+                    var a2 = a.substring('<img src="'.length);
+                    a2 = a2.substring(
+                        0,
+                        a2.length -
+                        '" style="position: relative; width: 100%; height: 100%; object-fit: contain;">'
+                        .length
+                    );
+                    console.log(a2);
+                    clearInterval(waitInterval);
+                    waitCounts = 0;
+                    var imgID2 = uuidv4().replace(/-/gi, "");
+                    var imagePath = path.join(
+                        __dirname,
+                        "../images/cache/",
+                        imgID2 + ".jpg"
+                    );
+                    fs.writeFileSync(imagePath, "");
+                    download(a2, imagePath, async(err) => {
+                        if (err) return sendWebhook("deepai", err, false, msgChannel);
+                        /**
+                         * @type {Discord.Message}
+                         */
+                        var message = await client.channels.cache
+                            .get("956316856422137856")
+                            .send({
+                                files: [{
+                                    attachment: imagePath,
+                                }, ],
+                            });
+
+                        setTimeout(() => {
+                            fs.unlinkSync(imagePath);
+                        }, 10000);
+
+                        sendWebhook(
+                            "deepai",
+                            message.attachments.first().url,
+                            false,
+                            msgChannel
+                        );
+                    });
+                }
+                if (waitCounts == 20) {
+                    waitCounts = 0;
+                    clearInterval(waitInterval);
+                    return sendWebhook(
+                        "deepai",
+                        "Loop detected (took more than 20 seconds)",
+                        false,
+                        msgChannel
+                    );
+                }
+            }, 1000);
+        })();
+    } catch (e) {
+        console.log("aw");
+        console.log(e);
+    }
+}
+
 function dalle(prompt, isSecondReq = false) {
     return new Promise((resolve, reject) => {
         fetch("https://bf.dallemini.ai/generate", {
@@ -775,8 +868,8 @@ function dalle(prompt, isSecondReq = false) {
                         console.log("SR: Error");
                         out.prompt = r.replace(/<[/A-z0-9 =!]+>/g, "");
                         /* if (Math.random() < 0.4) {
-                                                                                                                                                                                                                        out.prompt = "418 I'm a Teapot\n\nThe server refused to handle this due to a long queue.\nnginx/1.18.0 (Ubuntu)"
-                                                                                                                                                                                                                    } */
+                                                                                                                                                                                                                                                            out.prompt = "418 I'm a Teapot\n\nThe server refused to handle this due to a long queue.\nnginx/1.18.0 (Ubuntu)"
+                                                                                                                                                                                                                                                        } */
                         out.image = false;
                     } else {
                         setTimeout(() => {
@@ -1094,6 +1187,7 @@ module.exports = {
     monsoonChatEvent: monsoonChatEvent,
     gpt3complete_new: gpt3complete_new,
     setSanity: setSanity,
+    tti: tti,
 };
 
 init();
