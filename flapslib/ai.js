@@ -813,12 +813,12 @@ async function tti(text, msgChannel, client) {
                         );
                     });
                 }
-                if (waitCounts == 20) {
+                if (waitCounts == 40) {
                     waitCounts = 0;
                     clearInterval(waitInterval);
                     return sendWebhook(
                         "deepai",
-                        "Loop detected (took more than 20 seconds)",
+                        "Loop detected (took more than 40 seconds)",
                         false,
                         msgChannel
                     );
@@ -868,8 +868,8 @@ function dalle(prompt, isSecondReq = false) {
                         console.log("SR: Error");
                         out.prompt = r.replace(/<[/A-z0-9 =!]+>/g, "");
                         /* if (Math.random() < 0.4) {
-                                                                                                                                                                                                                                                            out.prompt = "418 I'm a Teapot\n\nThe server refused to handle this due to a long queue.\nnginx/1.18.0 (Ubuntu)"
-                                                                                                                                                                                                                                                        } */
+                                                                                                                                                                                                                                                                                    out.prompt = "418 I'm a Teapot\n\nThe server refused to handle this due to a long queue.\nnginx/1.18.0 (Ubuntu)"
+                                                                                                                                                                                                                                                                                } */
                         out.image = false;
                     } else {
                         setTimeout(() => {
