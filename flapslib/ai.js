@@ -6,6 +6,7 @@ const path = require("path");
 const fetch = require("node-fetch");
 const { sentence } = require("txtgen/dist/cjs/txtgen");
 const MarkovTextGenerator = require("markov-text-generator").default;
+const { randomBytes } = require("crypto");
 
 var lastRequests = {};
 var waitInterval = 0;
@@ -868,8 +869,8 @@ function dalle(prompt, isSecondReq = false) {
                         console.log("SR: Error");
                         out.prompt = r.replace(/<[/A-z0-9 =!]+>/g, "");
                         /* if (Math.random() < 0.4) {
-                                                                                                                                                                                                                                                                                    out.prompt = "418 I'm a Teapot\n\nThe server refused to handle this due to a long queue.\nnginx/1.18.0 (Ubuntu)"
-                                                                                                                                                                                                                                                                                } */
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        out.prompt = "418 I'm a Teapot\n\nThe server refused to handle this due to a long queue.\nnginx/1.18.0 (Ubuntu)"
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    } */
                         out.image = false;
                     } else {
                         setTimeout(() => {
@@ -933,6 +934,47 @@ async function question(question, channel) {
         false,
         channel
     );
+}
+
+function describe(message) {
+    console.log("line 940");
+    if (!message.attachments.first()) {
+        console.log("line 942");
+        return sendWebhook(
+            "scott",
+            "i cant describe nothing",
+            false,
+            message.channel
+        );
+    }
+    console.log("949");
+    fetch(message.attachments.first().url)
+        .then((r) => {
+            return new Promise((r2, _r) => {
+                console.log("line 953");
+                r.arrayBuffer().then((x) => {
+                    r2([x, r.headers.get("content-type")]);
+                });
+            });
+        })
+        .then((r) => {
+            data = "data:" + r[1] + ";base64," + Buffer.from(r[0]).toString("base64");
+            fetch("https://hf.space/embed/OFA-Sys/OFA-Image_Caption/api/predict/", {
+                    body: JSON.stringify({
+                        data: [data],
+                        example_id: null,
+                        session_hash: "xdj84bh71fd",
+                    }),
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                })
+                .then((r) => r.json())
+                .then((r2) => {
+                    sendWebhook("scott", "that's " + r2.data[0], false, message.channel);
+                });
+        });
 }
 
 /* var openAIKey = "err";
@@ -1188,6 +1230,7 @@ module.exports = {
     gpt3complete_new: gpt3complete_new,
     setSanity: setSanity,
     tti: tti,
+    describe: describe,
 };
 
 init();
