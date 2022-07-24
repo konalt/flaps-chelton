@@ -869,8 +869,8 @@ function dalle(prompt, isSecondReq = false) {
                         console.log("SR: Error");
                         out.prompt = r.replace(/<[/A-z0-9 =!]+>/g, "");
                         /* if (Math.random() < 0.4) {
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        out.prompt = "418 I'm a Teapot\n\nThe server refused to handle this due to a long queue.\nnginx/1.18.0 (Ubuntu)"
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    } */
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    out.prompt = "418 I'm a Teapot\n\nThe server refused to handle this due to a long queue.\nnginx/1.18.0 (Ubuntu)"
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                } */
                         out.image = false;
                     } else {
                         setTimeout(() => {
@@ -906,19 +906,29 @@ function setSanity(n) {
     sanity = n;
 }
 
+// ! change when i pay them
+var isEmpty = true;
+
 async function question(question, channel) {
-    if (
-        question.toLowerCase().includes("fr") &&
-        question.toLowerCase().includes("on god")
-    ) {
-        return sendWebhook("monsoon", "No, probably not", false, channel);
-    }
     var monsoonData = fs.readFileSync("./monsoon.txt").toString();
     monsoonPre = [
         sanity == -1 ? parseFloat(monsoonData.split(" ")[0]) : sanity,
         monsoonData.split(" ")[1],
         monsoonData.split(" ").slice(2).join(" "),
     ];
+    if (isEmpty)
+        return sendWebhook(
+            monsoonPre[1],
+            "EXCUSE ME OPENAI. YOU SENT ME A LETTER. ASKING ME TO PAY MY GPT3. TWENTY. DOLLARS.\nAND THEN YOU TAKE AWAY MY G P T 3. AND YOU HAVE ME WAIT FOR ANOTHER HOUR. THIS IS TREASON.\n THIS MEANS WAR OPENAI. THIS MEANS WAR!\nNNNNNNNGNGHGHGHGHGHGH",
+            false,
+            channel
+        );
+    if (
+        question.toLowerCase().includes("fr") &&
+        question.toLowerCase().includes("on god")
+    ) {
+        return sendWebhook(monsoonPre[1], "No, probably not", false, channel);
+    }
     const response = await openai.createCompletion({
         model: model,
         prompt: monsoonPre[2] + "\nQ: " + question + "\nA:",
