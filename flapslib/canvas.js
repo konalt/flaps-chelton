@@ -538,7 +538,6 @@ function frame2(msg, client) {
                     fs.writeFileSync("../images/cache/" + imgID, imageStream);
                     //sendWebhook("flaps", imageStream.toString("base64").substring(0, 1000), true, msg.channel);
                     var fsize = 90;
-                    fsize = w * (90 / 1920);
                     var c = canvas.createCanvas(w + fsize * 2, h + fsize * 2);
                     var ctx = c.getContext("2d");
 
