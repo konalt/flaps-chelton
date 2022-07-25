@@ -516,6 +516,99 @@ function frame(msg, client) {
     }
 }
 
+function pj(fn) {
+    return path.join(__dirname, "..", "images", fn);
+}
+
+function frame2(msg, client) {
+    if (msg.attachments.size > 0) {
+        console.log(msg.attachments.first());
+        var request = require("request").defaults({ encoding: null });
+
+        request.get(
+            msg.attachments.first().url,
+            async function(error, response, body) {
+                if (!error && response.statusCode == 200) {
+                    //data = "data:" + response.headers["content-type"] + ";base64," + Buffer.from(body).toString('base64');
+                    var imageStream = Buffer.from(body, "base64");
+                    var imgID = uuidv4().replace(/-/g, "_") + ".jpg";
+                    var imgID2 = uuidv4().replace(/-/g, "_") + ".png";
+                    var w = msg.attachments.first().width;
+                    var h = msg.attachments.first().height;
+                    fs.writeFileSync("../images/cache/" + imgID, imageStream);
+                    //sendWebhook("flaps", imageStream.toString("base64").substring(0, 1000), true, msg.channel);
+                    var fsize = 90;
+                    fsize = w * (90 / 1920);
+                    var c = canvas.createCanvas(w + fsize * 2, h + fsize * 2);
+                    var ctx = c.getContext("2d");
+
+                    var frame_tl = await canvas.loadImage(pj("framecorner_topleft.png")),
+                        frame_tr = await canvas.loadImage(pj("framecorner_topright.png")),
+                        frame_br = await canvas.loadImage(
+                            pj("framecorner_bottomright.png")
+                        ),
+                        frame_bl = await canvas.loadImage(pj("framecorner_bottomleft.png")),
+                        frame_l = await canvas.loadImage(pj("frameside_left.png")),
+                        frame_r = await canvas.loadImage(pj("frameside_right.png")),
+                        frame_t = await canvas.loadImage(pj("frameside_top.png")),
+                        frame_b = await canvas.loadImage(pj("frameside_bottom.png")),
+                        img = await canvas.loadImage("./../images/cache/" + imgID);
+
+                    ctx.drawImage(frame_tl, 0, 0, fsize, fsize);
+                    ctx.drawImage(frame_t, fsize, 0, w, fsize);
+                    ctx.drawImage(frame_tr, w + fsize, 0, fsize, fsize);
+                    ctx.drawImage(frame_r, w + fsize, fsize, fsize, h);
+                    ctx.drawImage(frame_br, w + fsize, h + fsize, fsize, fsize);
+                    ctx.drawImage(frame_b, fsize, h + fsize, w, fsize);
+                    ctx.drawImage(frame_bl, 0, h + fsize, fsize, fsize);
+                    ctx.drawImage(frame_l, 0, fsize, fsize, h);
+
+                    ctx.drawImage(img, fsize, fsize, w, h);
+
+                    var imageStream2 = Buffer.from(
+                        c.toDataURL("image/png").split(",")[1],
+                        "base64"
+                    );
+                    fs.writeFileSync("../images/cache/" + imgID2, imageStream2);
+                    console.log("../images/cache/" + imgID2);
+
+                    /**
+                     * @type {Discord.Message}
+                     */
+                    var message = await client.channels.cache
+                        .get("956316856422137856")
+                        .send({
+                            files: [{
+                                attachment: "../images\\cache\\" + imgID2,
+                            }, ],
+                        });
+
+                    setTimeout(() => {
+                        fs.unlinkSync("./../images/cache/" + imgID);
+                        fs.unlinkSync("./../images/cache/" + imgID2);
+                    }, 10000);
+
+                    sendWebhook(
+                        "jamesphotoframe",
+                        message.attachments.first().url,
+                        false,
+                        msg.channel
+                    );
+                } else {
+                    sendWebhook("jamesphotoframe", error, true, msg.channel);
+                }
+            }
+        );
+    } else {
+        sendWebhook(
+            "jamesphotoframe",
+            "i cant frame nothing you dummy",
+            false,
+            msg.channel
+        );
+    }
+}
+
 function dalle2watermark(msg, client) {
     if (msg.attachments.size > 0) {
         console.log(msg.attachments.first());
@@ -1051,4 +1144,5 @@ module.exports = {
     watermark: watermark,
     animethink: animethink,
     dalle2watermark: dalle2watermark,
+    frame2: frame2,
 };
