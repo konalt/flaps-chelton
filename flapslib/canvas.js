@@ -386,53 +386,51 @@ function sb(msg, client) {
                 var c = canvas.createCanvas(w, h + 10);
                 var ctx = c.getContext("2d");
                 canvas
-                    .loadImage(__dirname + "./../images\\cache\\" + imgID)
+                    .loadImage(path.join("..", "images/cache/", imgID))
                     .then(async(photo) => {
-                        canvas
-                            .loadImage(__dirname + "./../images\\speech.png")
-                            .then(async(speechbubble) => {
-                                var sbHeight = w * (17 / 22);
-                                ctx.drawImage(photo, 0, 10, w, h);
-                                if (msg.content.includes("flip")) {
-                                    ctx.translate(w, 0);
-                                    ctx.scale(-1, 1);
-                                }
-                                ctx.drawImage(
-                                    speechbubble,
-                                    0, -(sbHeight - sbHeight / 3),
-                                    w,
-                                    sbHeight
-                                );
-                                var imageStream2 = Buffer.from(
-                                    c.toDataURL("image/png").split(",")[1],
-                                    "base64"
-                                );
-                                fs.writeFileSync("../images/cache/" + imgID2, imageStream2);
+                        canvas.loadImage(pj("speech.png")).then(async(speechbubble) => {
+                            var sbHeight = w * (17 / 22);
+                            ctx.drawImage(photo, 0, 10, w, h);
+                            if (msg.content.includes("flip")) {
+                                ctx.translate(w, 0);
+                                ctx.scale(-1, 1);
+                            }
+                            ctx.drawImage(
+                                speechbubble,
+                                0, -(sbHeight - sbHeight / 3),
+                                w,
+                                sbHeight
+                            );
+                            var imageStream2 = Buffer.from(
+                                c.toDataURL("image/png").split(",")[1],
+                                "base64"
+                            );
+                            fs.writeFileSync("../images/cache/" + imgID2, imageStream2);
+                            console.log("../images/cache/" + imgID2);
 
-                                console.log(__dirname + "./../images\\cache\\" + imgID2);
-                                /**
-                                 * @type {Discord.Message}
-                                 */
-                                var message = await client.channels.cache
-                                    .get("956316856422137856")
-                                    .send({
-                                        files: [{
-                                            attachment: __dirname + "./../images\\cache\\" + imgID2,
-                                        }, ],
-                                    });
+                            /**
+                             * @type {Discord.Message}
+                             */
+                            var message = await client.channels.cache
+                                .get("956316856422137856")
+                                .send({
+                                    files: [{
+                                        attachment: "../images\\cache\\" + imgID2,
+                                    }, ],
+                                });
 
-                                setTimeout(() => {
-                                    fs.unlinkSync("../images/cache/" + imgID);
-                                    fs.unlinkSync("../images/cache/" + imgID2);
-                                }, 10000);
+                            setTimeout(() => {
+                                fs.unlinkSync("./../images/cache/" + imgID);
+                                fs.unlinkSync("./../images/cache/" + imgID2);
+                            }, 10000);
 
-                                sendWebhook(
-                                    "jamesphotoframe",
-                                    message.attachments.first().url,
-                                    false,
-                                    msg.channel
-                                );
-                            });
+                            sendWebhook(
+                                "jamesphotoframe",
+                                message.attachments.first().url,
+                                false,
+                                msg.channel
+                            );
+                        });
                     });
             } else {
                 sendWebhook("jamesphotoframe", error, true, msg.channel);
