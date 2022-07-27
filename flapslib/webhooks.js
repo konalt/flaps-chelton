@@ -27,6 +27,15 @@ function sendWebhook(
     msg
 ) {
     return new Promise((resolve, _reject) => {
+        if (!users[id]) {
+            return sendWebhook(
+                "flapserrors",
+                'Error: unknown webhook bot "' +
+                id +
+                '". Original message content:\n---\n' +
+                content
+            );
+        }
         var custom = false;
         if (id == "custom") {
             content = customData.content;
@@ -124,9 +133,9 @@ async function sendWebhookFile(id, filename, noDelete = false, msgChannel) {
 
     if (!noDelete) {
         /* setTimeout(() => {
-                                    fs.unlinkSync("images/cache/" + newId);
-                                    fs.unlinkSync(outputFilename);
-                                }, 10000); */
+                                            fs.unlinkSync("images/cache/" + newId);
+                                            fs.unlinkSync(outputFilename);
+                                        }, 10000); */
     }
 
     sendWebhook(id, message.attachments.first().url, false, msgChannel);
