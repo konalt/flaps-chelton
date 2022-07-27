@@ -210,7 +210,50 @@ async function fineart(msg) {
     });
 }
 
+/**
+ * @type {Discord.Client}
+ */
+var client;
+
+function setClient(c) {
+    client = c;
+}
+
+function randomRedditImage(sub, bot, msg) {
+    fetch("https://www.reddit.com/r/" + sub + "/.json?limit=100")
+        .then((r) => r.json())
+        .then((r) => {
+            var images = r.data.children
+                .filter((p) => {
+                    return p.data.post_hint == "image" && p.data.url_overridden_by_dest;
+                })
+                .map((p) => {
+                    return p.data.url_overridden_by_dest;
+                });
+            var item = randomArr(images);
+            console.log(item);
+            var id = uuidv4() + ".jpg";
+            download(item, "images/cache/" + id, async() => {
+                var message = await client.channels.cache
+                    .get("956316856422137856")
+                    .send({
+                        files: [{
+                            attachment: __dirname + "\\..\\images\\cache\\" + id,
+                        }, ],
+                    });
+
+                setTimeout(() => {
+                    fs.unlinkSync("./images/cache/" + id);
+                }, 10000);
+
+                sendWebhook(bot, message.attachments.first().url, false, msg.channel);
+            });
+        });
+}
+
 module.exports = {
     roulette: roulette,
     fineart: fineart,
+    randomRedditImage: randomRedditImage,
+    setClient: setClient,
 };
