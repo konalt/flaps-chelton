@@ -58,11 +58,13 @@ const { createCanvas } = require("canvas");
 const { Canvas } = require("canvas");
 const { AudioPlayerStatus } = require("@discordjs/voice");
 const { doTranslate, doTranslateSending } = require("./flapslib/translator");
+const { randomRedditImage } = require("./flapslib/fetchapis");
 const owoify = require("owoify-js").default;
 //var dream = WomboDreamApi.buildDefaultInstance();
 //TODO look at line 12
 
 flapslib.webhooks.setClient(client);
+flapslib.fetchapis.setClient(client);
 
 var players = [
     createAudioPlayer({
@@ -339,8 +341,8 @@ client.on("messageCreate", async(msg) => {
         var commandArgString = commandArgs.slice(1).join(" ");
         var command = commandArgs[0].toLowerCase();
         /* if (msg.channel.topic.includes("##Monsoon")) {
-                                                                            if (!msg.author.bot) monsoonChatEvent(msg.channel);
-                                                                        } */
+                                                                                                if (!msg.author.bot) monsoonChatEvent(msg.channel);
+                                                                                            } */
         if (userStickies[msg.author.id]) {
             if (msg.content.startsWith("!..unsticky")) {
                 return (userStickies[msg.author.id] = false);
@@ -555,80 +557,21 @@ client.on("messageCreate", async(msg) => {
                     }
                 case "!badhaircut":
                     {
-                        fetch("https://www.reddit.com/r/justfuckmyshitup/.json?limit=100")
-                        .then((r) => r.json())
-                        .then((r) => {
-                            var images = r.data.children
-                                .filter((p) => {
-                                    return p.data.post_hint == "image";
-                                })
-                                .map((p) => {
-                                    return p.data.url_overridden_by_dest;
-                                });
-                            var item = randomFromArray(images);
-                            console.log(item);
-                            var id = uuidv4() + ".jpg";
-                            download(item, "images/cache/" + id, async() => {
-                                var message = await client.channels.cache
-                                    .get("956316856422137856")
-                                    .send({
-                                        files: [{
-                                            attachment: __dirname + "\\images\\cache\\" + id,
-                                        }, ],
-                                    });
-
-                                setTimeout(() => {
-                                    fs.unlinkSync("./images/cache/" + id);
-                                }, 10000);
-
-                                sendWebhook(
-                                    "haircut",
-                                    message.attachments.first().url,
-                                    false,
-                                    msg.channel
-                                );
-                            });
-                        });
+                        randomRedditImage("justfuckmyshitup", "flaps", msg);
                         break;
                     }
                 case "!walmart":
                     {
-                        fetch("https://www.reddit.com/r/peopleofwalmart/.json?limit=100")
-                        .then((r) => r.json())
-                        .then((r) => {
-                            var images = r.data.children
-                                .filter((p) => {
-                                    return (
-                                        p.data.post_hint == "image" && p.data.url_overridden_by_dest
-                                    );
-                                })
-                                .map((p) => {
-                                    return p.data.url_overridden_by_dest;
-                                });
-                            var item = randomFromArray(images);
-                            console.log(item);
-                            var id = uuidv4() + ".jpg";
-                            download(item, "images/cache/" + id, async() => {
-                                var message = await client.channels.cache
-                                    .get("956316856422137856")
-                                    .send({
-                                        files: [{
-                                            attachment: __dirname + "\\images\\cache\\" + id,
-                                        }, ],
-                                    });
-
-                                setTimeout(() => {
-                                    fs.unlinkSync("./images/cache/" + id);
-                                }, 10000);
-
-                                sendWebhook(
-                                    "flaps",
-                                    message.attachments.first().url,
-                                    false,
-                                    msg.channel
-                                );
-                            });
-                        });
+                        randomRedditImage("peopleofwalmart", "flaps", msg);
+                        break;
+                    }
+                case "!meal":
+                    {
+                        randomRedditImage(
+                            ["StupidFood", "ShittyFoodPorn"][Math.floor(Math.random() * 2)],
+                            "flaps",
+                            msg
+                        );
                         break;
                     }
                 case "!restart":
@@ -2529,11 +2472,11 @@ setInterval(() => {
         );
     }
     /*     var bsc = client.guilds.cache.get("760524739239477340");
-                                        var memberPlaying = Array.from(bsc.members.cache).map(u => { return u[1].user.currentStatus });
-                                        if (memberPlaying == "Genshin Impact" ||
-                                            memberPlaying == "League of Legends") {
-                                            member.ban();
-                                        } */
+                                                  var memberPlaying = Array.from(bsc.members.cache).map(u => { return u[1].user.currentStatus });
+                                                  if (memberPlaying == "Genshin Impact" ||
+                                                      memberPlaying == "League of Legends") {
+                                                      member.ban();
+                                                  } */
 }, 1000);
 setInterval(() => {
     var d = new Date();
