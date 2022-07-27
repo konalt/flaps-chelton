@@ -368,6 +368,148 @@ function flip(msg, client) {
     }
 }
 
+function valueInRange(val, min, max) {
+    return val >= min && val <= max;
+}
+
+function isWhite(pix, cutoff) {
+    cutoff = 255 - cutoff;
+    return pix[0] > cutoff && pix[1] > cutoff && pix[2] > cutoff;
+}
+
+function isBlack(pix, cutoff) {
+    return pix[0] < cutoff && pix[1] < cutoff && pix[2] < cutoff;
+}
+
+function isGray(pix, cutoff) {
+    var redGreen = valueInRange(pix[0], pix[1] - cutoff, pix[1] + cutoff);
+    var redBlue = valueInRange(pix[0], pix[2] - cutoff, pix[2] + cutoff);
+    return redGreen && redBlue;
+}
+
+function unfunnyToImg(ctx, img, unfunnyCutoff = 10) {
+    var imageData = ctx.getImageData(0, 0, ctx.canvas.width, ctx.canvas.height);
+    var readIndex = 0;
+    var curPix = [-1, -1, -1, -1];
+    var imageData2 = [];
+    var backgroundCanvas = canvas.createCanvas(
+        ctx.canvas.width,
+        ctx.canvas.height
+    );
+    var bgCtx = backgroundCanvas.getContext("2d");
+    bgCtx.drawImage(img, 0, 0, ctx.canvas.width, ctx.canvas.height);
+    var bg = bgCtx.getImageData(0, 0, ctx.canvas.width, ctx.canvas.height);
+    Array.from(imageData.data).forEach((element, index) => {
+        curPix[readIndex] = element;
+        if (!curPix.includes(-1)) {
+            if (!isBlack(curPix, unfunnyCutoff) &&
+                !isWhite(curPix, unfunnyCutoff) &&
+                !isGray(curPix, unfunnyCutoff)
+            ) {
+                curPix = [
+                    bg.data[index - 3],
+                    bg.data[index - 2],
+                    bg.data[index - 1],
+                    bg.data[index],
+                ];
+            }
+        }
+        readIndex++;
+        if (readIndex == 4) {
+            imageData2.push([...curPix]);
+            curPix = [-1, -1, -1, -1];
+            readIndex = 0;
+        }
+    });
+    var imageData3 = [];
+    imageData2.forEach((pixel) => {
+        imageData3.push(pixel[0]);
+        imageData3.push(pixel[1]);
+        imageData3.push(pixel[2]);
+        imageData3.push(pixel[3]);
+    });
+    var imageData4 = new canvas.ImageData(
+        new Uint8ClampedArray(imageData3),
+        ctx.canvas.width,
+        ctx.canvas.height
+    );
+    ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+    ctx.drawImage(img, 0, 0, ctx.canvas.width, ctx.canvas.height);
+    ctx.putImageData(imageData4, 0, 0);
+}
+
+function unfunnyTest(msg, client) {
+    if (msg.attachments.size > 0) {
+        console.log(msg.attachments.first());
+        var request = require("request").defaults({ encoding: null });
+
+        request.get(msg.attachments.first().url, function(error, response, body) {
+            if (!error && response.statusCode == 200) {
+                //data = "data:" + response.headers["content-type"] + ";base64," + Buffer.from(body).toString('base64');
+                var imageStream = Buffer.from(body, "base64");
+                var imgID = uuidv4().replace(/-/g, "_") + ".jpg";
+                var imgID2 = uuidv4().replace(/-/g, "_") + ".png";
+                fs.writeFileSync("../images/cache/" + imgID, imageStream);
+                //sendWebhook("flaps", imageStream.toString("base64").substring(0, 1000), true, msg.channel);
+                var w = msg.attachments.first().width;
+                var h = msg.attachments.first().height;
+                var c = canvas.createCanvas(w, h);
+                var ctx = c.getContext("2d");
+                canvas
+                    .loadImage(path.join("..", "images/cache/", imgID))
+                    .then(async(photo) => {
+                        ctx.drawImage(photo, 0, 0);
+                        unfunnyToImg(
+                            ctx,
+                            await canvas.loadImage(pj("saul.png")),
+                            msg.content.split(" ")[1] ?
+                            parseInt(msg.content.split(" ")[1]) :
+                            40
+                        );
+                        var imageStream2 = Buffer.from(
+                            c.toDataURL("image/png").split(",")[1],
+                            "base64"
+                        );
+                        fs.writeFileSync("../images/cache/" + imgID2, imageStream2);
+                        console.log("../images/cache/" + imgID2);
+
+                        /**
+                         * @type {Discord.Message}
+                         */
+                        var message = await client.channels.cache
+                            .get("956316856422137856")
+                            .send({
+                                files: [{
+                                    attachment: "../images\\cache\\" + imgID2,
+                                }, ],
+                            });
+
+                        setTimeout(() => {
+                            fs.unlinkSync("./../images/cache/" + imgID);
+                            fs.unlinkSync("./../images/cache/" + imgID2);
+                        }, 10000);
+
+                        sendWebhook(
+                            "jamesphotoframe",
+                            message.attachments.first().url,
+                            false,
+                            msg.channel
+                        );
+                    });
+            } else {
+                sendWebhook("jamesphotoframe", error, true, msg.channel);
+            }
+        });
+    } else {
+        sendWebhook(
+            "jamesphotoframe",
+            "i cant put a speech bubble on nothing you dummy",
+            false,
+            msg.channel
+        );
+    }
+}
+
 function sb(msg, client) {
     if (msg.attachments.size > 0) {
         console.log(msg.attachments.first());
@@ -1142,4 +1284,5 @@ module.exports = {
     animethink: animethink,
     dalle2watermark: dalle2watermark,
     frame2: frame2,
+    unfunnyTest: unfunnyTest,
 };
