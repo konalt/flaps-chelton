@@ -405,6 +405,35 @@ client.on("messageCreate", async(msg) => {
                 });
                 msg.delete();
                 return;
+            } else if (commandArgs[0].substring(1) == "random") {
+                var user = Object.keys(flapslib.webhooks.users)[
+                    Math.floor(
+                        Math.random() * Object.keys(flapslib.webhooks.users).length
+                    )
+                ];
+                flapslib.webhooks
+                    .sendWebhook(
+                        user,
+                        content.substring(content.split(" ")[0].length + 1),
+                        false,
+                        msg.channel
+                    )
+                    .then((r) => {
+                        if (r == "ALL_WAIT") {
+                            setTimeout(() => {
+                                flapslib.webhooks
+                                    .sendWebhook(
+                                        user,
+                                        content.substring(content.split(" ")[0].length + 1),
+                                        false,
+                                        msg.channel
+                                    )
+                                    .then();
+                            }, 4000);
+                        }
+                    });
+                msg.delete();
+                return;
             } else if (commandArgs[0].substring(1) == "custom") {
                 console.log(
                     msg.content.includes("--u") &&
