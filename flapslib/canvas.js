@@ -342,12 +342,15 @@ function unfunnyTest(msg, client) {
                     .loadImage(path.join("..", "images/cache/", imgID))
                     .then(async(photo) => {
                         ctx.drawImage(photo, 0, 0);
+                        var imgs = ["saul", "gman", "homophobicdog", "iron", "killnow"];
                         unfunnyToImg(
                             ctx,
-                            await canvas.loadImage(pj("saul.png")),
+                            await canvas.loadImage(
+                                pj(imgs[Math.floor(Math.random() * imgs.length)] + ".png")
+                            ),
                             msg.content.split(" ")[1] ?
                             parseInt(msg.content.split(" ")[1]) :
-                            40
+                            5
                         );
 
                         sendCanvas(c, msg, client, "jamesphotoframe");

@@ -619,7 +619,7 @@ client.on("messageCreate", async(msg) => {
                         randomRedditImage("peopleofwalmart", "walmart", msg);
                         break;
                     }
-                case "!unfunnytest":
+                case "!unfunny":
                     {
                         unfunnyTest(msg, client);
                         break;
