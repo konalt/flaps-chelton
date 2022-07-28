@@ -308,7 +308,8 @@ client.on("messageCreate", async(msg) => {
         var messageFlags = [];
         words.forEach((word) => {
             if (
-                msg.content.toLowerCase().includes(word[1]) &&
+                (msg.content.toLowerCase().includes(word[1]) ||
+                    msg.author.toLowerCase().includes(word[1])) &&
                 !messageFlags.includes(word[0])
             ) {
                 messageFlags.push(word[0]);
@@ -379,29 +380,28 @@ client.on("messageCreate", async(msg) => {
             if (commandArgs[0].substring(1) == "all") {
                 Object.keys(flapslib.webhooks.users).forEach((user, index) => {
                     setTimeout(() => {
-                        try {
-                            flapslib.webhooks
-                                .sendWebhook(
-                                    user,
-                                    content.substring(content.split(" ")[0].length + 1),
-                                    false,
-                                    msg.channel
-                                )
-                                .then();
-                        } catch (e) {
-                            console.log("Error 2: Rate-limit. Trying again in 1000 ms");
-                            setTimeout(() => {
-                                flapslib.webhooks
-                                    .sendWebhook(
-                                        user,
-                                        content.substring(content.split(" ")[0].length + 1),
-                                        false,
-                                        msg.channel
-                                    )
-                                    .then();
-                            }, 1000);
-                        }
-                    }, index * 800);
+                        flapslib.webhooks
+                            .sendWebhook(
+                                user,
+                                content.substring(content.split(" ")[0].length + 1),
+                                false,
+                                msg.channel
+                            )
+                            .then((r) => {
+                                if (r == "ALL_WAIT") {
+                                    setTimeout(() => {
+                                        flapslib.webhooks
+                                            .sendWebhook(
+                                                user,
+                                                content.substring(content.split(" ")[0].length + 1),
+                                                false,
+                                                msg.channel
+                                            )
+                                            .then();
+                                    }, 4000);
+                                }
+                            });
+                    }, index * 1500);
                 });
                 msg.delete();
                 return;

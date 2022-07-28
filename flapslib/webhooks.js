@@ -73,26 +73,41 @@ function sendWebhook(
                             reason: "flap chelton needed a webhook for the channel.",
                         })
                         .then((hook2) => {
-                            fetch(hook2.url, {
-                                method: "POST",
-                                body: JSON.stringify(data),
-                                headers: { "Content-Type": "application/json" },
-                            }).then(() => {
-                                resolve();
-                            });
+                            trySend(hook2.url, data)
+                                .then(() => {
+                                    resolve();
+                                })
+                                .catch(() => {
+                                    resolve("ALL_WAIT");
+                                });
                         })
                         .catch(console.error);
                 } else {
-                    fetch(hook.url, {
-                        method: "POST",
-                        body: JSON.stringify(data),
-                        headers: { "Content-Type": "application/json" },
-                    }).then(() => {
-                        resolve();
-                    });
+                    trySend(hook.url, data)
+                        .then(() => {
+                            resolve();
+                        })
+                        .catch(() => {
+                            resolve("ALL_WAIT");
+                        });
                 }
             })
             .catch(console.error);
+    });
+}
+
+function trySend(url, data) {
+    return new Promise((res, rej) => {
+        fetch(url, {
+            method: "POST",
+            body: JSON.stringify(data),
+            headers: { "Content-Type": "application/json" },
+        }).then((r) => {
+            if (r.status == 429) {
+                rej();
+            }
+            res();
+        });
     });
 }
 
