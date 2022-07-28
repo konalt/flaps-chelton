@@ -8,7 +8,7 @@ const client = new Discord.Client({
     intents: ["GUILDS", "GUILD_MESSAGES", "GUILD_VOICE_STATES"],
 });
 const flapslib = require("./flapslib/index");
-//const WomboDreamApi = require("wombo-dream");
+const WomboDreamApi = require("wombo-dream-api");
 //! FIX THIS!!!!!!
 const { getVideoDurationInSeconds } = require("get-video-duration");
 const prism = require("prism-media");
@@ -61,7 +61,7 @@ const { AudioPlayerStatus } = require("@discordjs/voice");
 const { doTranslate, doTranslateSending } = require("./flapslib/translator");
 const { randomRedditImage } = require("./flapslib/fetchapis");
 const owoify = require("owoify-js").default;
-//var dream = WomboDreamApi.buildDefaultInstance();
+var dream = WomboDreamApi.buildDefaultInstance();
 //TODO look at line 12
 
 flapslib.webhooks.setClient(client);
@@ -1287,33 +1287,43 @@ client.on("messageCreate", async(msg) => {
                         }
                     }
                     break;
-                case "!aigen":
-                    {
-                        //startGenerating(commandArgString, 3);
-                        flapslib.ai.generateImage(commandArgString, msg.channel, client);
-                    }
-                    break;
                 case "!dream":
                     {
                         var lastState = "";
                         dream
-                        .generatePicture(commandArgs[1], 3, (task) => {
+                        .generatePicture(commandArgString, 32, (task) => {
                             console.log(task.state, "stage", task.photo_url_list.length);
                             if (
                                 lastState !=
                                 task.state + " " + task.photo_url_list.length
                             ) {
                                 lastState = task.state + " " + task.photo_url_list.length;
-                                flapslib.webhooks.sendWebhook(
-                                    "deepai",
-                                    lastState + "/21",
-                                    false,
-                                    msg.channel, {},
-                                    msg
-                                );
+                                console.log(lastState + "/7");
                             }
                         })
-                        .then((task) => msg.channel.send(task.result.final))
+                        .then((task) => {
+                            var id = uuidv4() + ".jpg";
+                            download(task.result.final, "images/cache/" + id, async() => {
+                                var message = await client.channels.cache
+                                    .get("956316856422137856")
+                                    .send({
+                                        files: [{
+                                            attachment: __dirname + "\\images\\cache\\" + id,
+                                        }, ],
+                                    });
+
+                                setTimeout(() => {
+                                    fs.unlinkSync("./images/cache/" + id);
+                                }, 10000);
+
+                                sendWebhook(
+                                    "wombo",
+                                    message.attachments.first().url,
+                                    false,
+                                    msg.channel
+                                );
+                            });
+                        })
                         .catch(console.error);
                     }
                     break;
