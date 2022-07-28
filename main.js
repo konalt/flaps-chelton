@@ -290,6 +290,31 @@ var descriptions = {
 
 var userStickies = {};
 
+async function scalFunnyVideo(msg) {
+    var files = fs.readdirSync("E:/MBG/the Videos/");
+    var chosenFile = files[Math.floor(Math.random() * files.length)];
+    var filesize =
+        fs.statSync("E:/MBG/the Videos/" + chosenFile).size / (1024 * 1024);
+    if (filesize > 8) {
+        sendWebhook(
+            "scal",
+            "mm.. too big. its " +
+            Math.round(filesize) +
+            " inche-- i mean megabytes. megabytes.",
+            false,
+            msg.channel
+        );
+    } else {
+        var message = await client.channels.cache.get("956316856422137856").send({
+            files: [{
+                attachment: "E:/MBG/the Videos/" + chosenFile,
+            }, ],
+        });
+
+        sendWebhook("scal", message.attachments.first().url, false, msg.channel);
+    }
+}
+
 client.on("messageCreate", async(msg) => {
     try {
         console.log(
@@ -352,6 +377,9 @@ client.on("messageCreate", async(msg) => {
                 false,
                 msg.channel
             );
+        }
+        if (msg.content.includes("scal") && msg.content.includes("funny video")) {
+            return scalFunnyVideo(msg);
         }
         if (msg.content.startsWith("!..sticky")) {
             var stickyBot = commandArgs[1];
@@ -1331,36 +1359,7 @@ client.on("messageCreate", async(msg) => {
                     break;
                 case "!funnyvideo":
                     {
-                        var files = fs.readdirSync("E:/MBG/the Videos/");
-                        var chosenFile = files[Math.floor(Math.random() * files.length)];
-                        var filesize =
-                            fs.statSync("E:/MBG/the Videos/" + chosenFile).size /
-                            (1024 * 1024);
-                        if (filesize > 8) {
-                            sendWebhook(
-                                "scal",
-                                "mm.. too big. its " +
-                                Math.round(filesize) +
-                                " inche-- i mean megabytes. megabytes.",
-                                false,
-                                msg.channel
-                            );
-                        } else {
-                            var message = await client.channels.cache
-                                .get("956316856422137856")
-                                .send({
-                                    files: [{
-                                        attachment: "E:/MBG/the Videos/" + chosenFile,
-                                    }, ],
-                                });
-
-                            sendWebhook(
-                                "scal",
-                                message.attachments.first().url,
-                                false,
-                                msg.channel
-                            );
-                        }
+                        scalFunnyVideo(msg);
                     }
                     break;
                 case "!weezer":
