@@ -1324,7 +1324,18 @@ client.on("messageCreate", async(msg) => {
                                 );
                             });
                         })
-                        .catch(console.error);
+                        .catch((err) => {
+                            sendWebhook(
+                                "wombo",
+                                client.emojis.cache
+                                .find((emoji) => emoji.name === "literally1984")
+                                .toString() +
+                                "\n" +
+                                err,
+                                false,
+                                msg.channel
+                            );
+                        });
                     }
                     break;
                 case "!txtgen":
