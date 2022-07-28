@@ -102,7 +102,7 @@ bee--bee girl--https://cdn.discordapp.com/emojis/992057629469851728.gif
 tree--tree girl--https://e.snmc.io/i/600/s/ab3cafad940bdc8340c59e4c12e410b7/9619722
 moth--funny moth--https://cdn.discordapp.com/emojis/887419530308108290.png
 howard--howar hamin--https://www.medadmbjmc.in/wp-content/uploads/2022/05/Howard-Hamlin-1.png
-weezer--weezing time--https://upload.wikimedia.org/wikipedia/en/thumb/7/70/Weezer_-_Blue_Album.png/220px-Weezer_-_Blue_Album.png
+weezer--weezing time--https://upload.wikimedia.org/wikipedia/en/thumb/7/70/Weezer_-_Blue_Album.png/220px-Weezer_-_Blue_Album.png--(x) => {return x.split(" ").map(y => {return "w" + y.substring(1)}).join(" ")}
 chuchu--chuchu (the better one)--https://cdn.discordapp.com/emojis/1001476464434221066.png
 bonbon--bonbon--https://cdn.discordapp.com/emojis/880078501779210280.png
 politics--politician--https://cdn.discordapp.com/emojis/919570340433252412.png
