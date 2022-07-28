@@ -98,38 +98,7 @@ function laugh(msg, client) {
                 ctx.fillText(text[1], text2Pos[0], text2Pos[1]);
                 ctx.strokeText(text[1], text2Pos[0], text2Pos[1]);
 
-                //console.log(c.toDataURL("image/png").split(",")[1]);
-
-                var imgID = uuidv4().replace(/-/g, "_") + ".png";
-
-                var imageStream = Buffer.from(
-                    c.toDataURL("image/png").split(",")[1],
-                    "base64"
-                );
-                fs.writeFileSync("../images/cache/" + imgID, imageStream);
-
-                console.log(__dirname + "./../images\\cache\\" + imgID);
-                /**
-                 * @type {Discord.Message}
-                 */
-                var message = await client.channels.cache
-                    .get("956316856422137856")
-                    .send({
-                        files: [{
-                            attachment: __dirname + "./../images\\cache\\" + imgID,
-                        }, ],
-                    });
-
-                setTimeout(() => {
-                    fs.unlinkSync("../images/cache/" + imgID);
-                }, 10000);
-
-                sendWebhook(
-                    "flaps",
-                    message.attachments.first().url,
-                    false,
-                    msg.channel
-                );
+                sendCanvas(c, msg, client, "jamesphotoframe");
             });
         });
     } else {
@@ -200,38 +169,7 @@ function laugh(msg, client) {
                 ctx.fillText(text[1], text2Pos[0], text2Pos[1]);
                 ctx.strokeText(text[1], text2Pos[0], text2Pos[1]);
 
-                //console.log(c.toDataURL("image/png").split(",")[1]);
-
-                var imgID = uuidv4().replace(/-/g, "_") + ".png";
-
-                var imageStream = Buffer.from(
-                    c.toDataURL("image/png").split(",")[1],
-                    "base64"
-                );
-                fs.writeFileSync("../images/cache/" + imgID, imageStream);
-
-                console.log(__dirname + "./../images\\cache\\" + imgID);
-                /**
-                 * @type {Discord.Message}
-                 */
-                var message = await client.channels.cache
-                    .get("956316856422137856")
-                    .send({
-                        files: [{
-                            attachment: __dirname + "./../images\\cache\\" + imgID,
-                        }, ],
-                    });
-
-                setTimeout(() => {
-                    fs.unlinkSync("../images/cache/" + imgID);
-                }, 10000);
-
-                sendWebhook(
-                    "flaps",
-                    message.attachments.first().url,
-                    false,
-                    msg.channel
-                );
+                sendCanvas(c, msg, client, "jamesphotoframe");
             });
     }
 }
@@ -259,34 +197,7 @@ function homodog(msg, client) {
                 ctx.fillText(text, w / 2, h / 2);
                 ctx.strokeText(text, w / 2, h / 2);
 
-                var imageStream2 = Buffer.from(
-                    c.toDataURL("image/png").split(",")[1],
-                    "base64"
-                );
-                fs.writeFileSync("../images/cache/" + imgID2, imageStream2);
-                console.log("../images/cache/" + imgID2);
-
-                /**
-                 * @type {Discord.Message}
-                 */
-                var message = await client.channels.cache
-                    .get("956316856422137856")
-                    .send({
-                        files: [{
-                            attachment: "../images\\cache\\" + imgID2,
-                        }, ],
-                    });
-
-                setTimeout(() => {
-                    fs.unlinkSync("./../images/cache/" + imgID2);
-                }, 10000);
-
-                sendWebhook(
-                    "jamesphotoframe",
-                    message.attachments.first().url,
-                    false,
-                    msg.channel
-                );
+                sendCanvas(c, msg, client, "jamesphotoframe");
             });
     }
     if (msg.attachments.first()) {
@@ -312,7 +223,6 @@ function flip(msg, client) {
                 //data = "data:" + response.headers["content-type"] + ";base64," + Buffer.from(body).toString('base64');
                 var imageStream = Buffer.from(body, "base64");
                 var imgID = uuidv4().replace(/-/g, "_") + ".jpg";
-                var imgID2 = uuidv4().replace(/-/g, "_") + ".png";
                 fs.writeFileSync("../images/cache/" + imgID, imageStream);
                 var w = msg.attachments.first().width;
                 var h = msg.attachments.first().height;
@@ -324,35 +234,8 @@ function flip(msg, client) {
                         ctx.translate(w, 0);
                         ctx.scale(-1, 1);
                         ctx.drawImage(photo, 0, 10, w, h);
-                        var imageStream2 = Buffer.from(
-                            c.toDataURL("image/png").split(",")[1],
-                            "base64"
-                        );
-                        fs.writeFileSync("../images/cache/" + imgID2, imageStream2);
 
-                        console.log(__dirname + "./../images\\cache\\" + imgID2);
-                        /**
-                         * @type {Discord.Message}
-                         */
-                        var message = await client.channels.cache
-                            .get("956316856422137856")
-                            .send({
-                                files: [{
-                                    attachment: __dirname + "./../images\\cache\\" + imgID2,
-                                }, ],
-                            });
-
-                        setTimeout(() => {
-                            fs.unlinkSync("../images/cache/" + imgID);
-                            fs.unlinkSync("../images/cache/" + imgID2);
-                        }, 10000);
-
-                        sendWebhook(
-                            "jamesphotoframe",
-                            message.attachments.first().url,
-                            false,
-                            msg.channel
-                        );
+                        sendCanvas(c, msg, client, "jamesphotoframe");
                     });
             } else {
                 sendWebhook("jamesphotoframe", error, true, msg.channel);
@@ -466,35 +349,8 @@ function unfunnyTest(msg, client) {
                             parseInt(msg.content.split(" ")[1]) :
                             40
                         );
-                        var imageStream2 = Buffer.from(
-                            c.toDataURL("image/png").split(",")[1],
-                            "base64"
-                        );
-                        fs.writeFileSync("../images/cache/" + imgID2, imageStream2);
-                        console.log("../images/cache/" + imgID2);
 
-                        /**
-                         * @type {Discord.Message}
-                         */
-                        var message = await client.channels.cache
-                            .get("956316856422137856")
-                            .send({
-                                files: [{
-                                    attachment: "../images\\cache\\" + imgID2,
-                                }, ],
-                            });
-
-                        setTimeout(() => {
-                            fs.unlinkSync("./../images/cache/" + imgID);
-                            fs.unlinkSync("./../images/cache/" + imgID2);
-                        }, 10000);
-
-                        sendWebhook(
-                            "jamesphotoframe",
-                            message.attachments.first().url,
-                            false,
-                            msg.channel
-                        );
+                        sendCanvas(c, msg, client, "jamesphotoframe");
                     });
             } else {
                 sendWebhook("jamesphotoframe", error, true, msg.channel);
@@ -543,35 +399,8 @@ function sb(msg, client) {
                                 w,
                                 sbHeight
                             );
-                            var imageStream2 = Buffer.from(
-                                c.toDataURL("image/png").split(",")[1],
-                                "base64"
-                            );
-                            fs.writeFileSync("../images/cache/" + imgID2, imageStream2);
-                            console.log("../images/cache/" + imgID2);
 
-                            /**
-                             * @type {Discord.Message}
-                             */
-                            var message = await client.channels.cache
-                                .get("956316856422137856")
-                                .send({
-                                    files: [{
-                                        attachment: "../images\\cache\\" + imgID2,
-                                    }, ],
-                                });
-
-                            setTimeout(() => {
-                                fs.unlinkSync("./../images/cache/" + imgID);
-                                fs.unlinkSync("./../images/cache/" + imgID2);
-                            }, 10000);
-
-                            sendWebhook(
-                                "jamesphotoframe",
-                                message.attachments.first().url,
-                                false,
-                                msg.channel
-                            );
+                            sendCanvas(c, msg, client, "jamesphotoframe");
                         });
                     });
             } else {
@@ -598,9 +427,6 @@ function frame(msg, client) {
                 //data = "data:" + response.headers["content-type"] + ";base64," + Buffer.from(body).toString('base64');
                 var imageStream = Buffer.from(body, "base64");
                 var imgID = uuidv4().replace(/-/g, "_") + ".jpg";
-                var imgID2 = uuidv4().replace(/-/g, "_") + ".png";
-                var w = msg.attachments.first().width;
-                var h = msg.attachments.first().height;
                 fs.writeFileSync("../images/cache/" + imgID, imageStream);
                 //sendWebhook("flaps", imageStream.toString("base64").substring(0, 1000), true, msg.channel);
                 var c = canvas.createCanvas(1413 - 130, 1031 - 140);
@@ -611,35 +437,8 @@ function frame(msg, client) {
                         .then(async(frame) => {
                             ctx.drawImage(photo, 72, 73, 1125, 729);
                             ctx.drawImage(frame, -130 / 2, -140 / 2, 1413, 1031);
-                            var imageStream2 = Buffer.from(
-                                c.toDataURL("image/png").split(",")[1],
-                                "base64"
-                            );
-                            fs.writeFileSync("../images/cache/" + imgID2, imageStream2);
-                            console.log("../images/cache/" + imgID2);
 
-                            /**
-                             * @type {Discord.Message}
-                             */
-                            var message = await client.channels.cache
-                                .get("956316856422137856")
-                                .send({
-                                    files: [{
-                                        attachment: "../images\\cache\\" + imgID2,
-                                    }, ],
-                                });
-
-                            setTimeout(() => {
-                                fs.unlinkSync("./../images/cache/" + imgID);
-                                fs.unlinkSync("./../images/cache/" + imgID2);
-                            }, 10000);
-
-                            sendWebhook(
-                                "jamesphotoframe",
-                                message.attachments.first().url,
-                                false,
-                                msg.channel
-                            );
+                            sendCanvas(c, msg, client, "jamesphotoframe");
                         });
                 });
             } else {
@@ -704,35 +503,7 @@ function frame2(msg, client) {
 
                     ctx.drawImage(img, fsize, fsize, w, h);
 
-                    var imageStream2 = Buffer.from(
-                        c.toDataURL("image/png").split(",")[1],
-                        "base64"
-                    );
-                    fs.writeFileSync("../images/cache/" + imgID2, imageStream2);
-                    console.log("../images/cache/" + imgID2);
-
-                    /**
-                     * @type {Discord.Message}
-                     */
-                    var message = await client.channels.cache
-                        .get("956316856422137856")
-                        .send({
-                            files: [{
-                                attachment: "../images\\cache\\" + imgID2,
-                            }, ],
-                        });
-
-                    setTimeout(() => {
-                        fs.unlinkSync("./../images/cache/" + imgID);
-                        fs.unlinkSync("./../images/cache/" + imgID2);
-                    }, 10000);
-
-                    sendWebhook(
-                        "jamesphotoframe",
-                        message.attachments.first().url,
-                        false,
-                        msg.channel
-                    );
+                    sendCanvas(c, msg, client, "jamesphotoframe");
                 } else {
                     sendWebhook("jamesphotoframe", error, true, msg.channel);
                 }
@@ -775,35 +546,8 @@ function dalle2watermark(msg, client) {
                                 h: w * (16 / 1024),
                             };
                             ctx.drawImage(wm, w - dalle.w, h - dalle.h, dalle.w, dalle.h);
-                            var imageStream2 = Buffer.from(
-                                c.toDataURL("image/png").split(",")[1],
-                                "base64"
-                            );
-                            fs.writeFileSync("../images/cache/" + imgID2, imageStream2);
-                            console.log("../images/cache/" + imgID2);
 
-                            /**
-                             * @type {Discord.Message}
-                             */
-                            var message = await client.channels.cache
-                                .get("956316856422137856")
-                                .send({
-                                    files: [{
-                                        attachment: "../images\\cache\\" + imgID2,
-                                    }, ],
-                                });
-
-                            setTimeout(() => {
-                                fs.unlinkSync("./../images/cache/" + imgID);
-                                fs.unlinkSync("./../images/cache/" + imgID2);
-                            }, 10000);
-
-                            sendWebhook(
-                                "jamesphotoframe",
-                                message.attachments.first().url,
-                                false,
-                                msg.channel
-                            );
+                            sendCanvas(c, msg, client, "jamesphotoframe");
                         });
                 });
             } else {
@@ -830,9 +574,6 @@ function animethink(msg, client) {
                 //data = "data:" + response.headers["content-type"] + ";base64," + Buffer.from(body).toString('base64');
                 var imageStream = Buffer.from(body, "base64");
                 var imgID = uuidv4().replace(/-/g, "_") + ".jpg";
-                var imgID2 = uuidv4().replace(/-/g, "_") + ".png";
-                var w = msg.attachments.first().width;
-                var h = msg.attachments.first().height;
                 fs.writeFileSync("../images/cache/" + imgID, imageStream);
                 //sendWebhook("flaps", imageStream.toString("base64").substring(0, 1000), true, msg.channel);
                 var c = canvas.createCanvas(499, 442);
@@ -843,35 +584,7 @@ function animethink(msg, client) {
                         .then(async(think) => {
                             ctx.drawImage(photo, 0, 0, 499, 241);
                             ctx.drawImage(think, 0, 0, 499, 442);
-                            var imageStream2 = Buffer.from(
-                                c.toDataURL("image/png").split(",")[1],
-                                "base64"
-                            );
-                            fs.writeFileSync("../images/cache/" + imgID2, imageStream2);
-                            console.log("../images/cache/" + imgID2);
-
-                            /**
-                             * @type {Discord.Message}
-                             */
-                            var message = await client.channels.cache
-                                .get("956316856422137856")
-                                .send({
-                                    files: [{
-                                        attachment: "../images\\cache\\" + imgID2,
-                                    }, ],
-                                });
-
-                            setTimeout(() => {
-                                fs.unlinkSync("./../images/cache/" + imgID);
-                                fs.unlinkSync("./../images/cache/" + imgID2);
-                            }, 10000);
-
-                            sendWebhook(
-                                "jamesphotoframe",
-                                message.attachments.first().url,
-                                false,
-                                msg.channel
-                            );
+                            sendCanvas(c, msg, client, "jamesphotoframe");
                         });
                 });
             } else {
@@ -888,7 +601,7 @@ function animethink(msg, client) {
     }
 }
 
-function weezer(msg, client) {
+async function weezer(msg, client) {
     var w = 552;
     var h = w;
     var c = canvas.createCanvas(w, h);
@@ -898,34 +611,17 @@ function weezer(msg, client) {
         weez2 = await canvas.loadImage(pj("weezer2.png")),
         weez3 = await canvas.loadImage(pj("weezer3.png")),
         weez4 = await canvas.loadImage(pj("weezer4.png"));
-    ctx.fillStyle =
-        "#" +
-        Math.floor(
-            Math.random() * 16777215
-        ).toString(16);
+    ctx.fillStyle = "#" + Math.floor(Math.random() * 16777215).toString(16);
     var xs = [0, 138, 276, 414];
-    var weezes = [
-        weez1,
-        weez2,
-        weez3,
-        weez4
-    ];
+    var weezes = [weez1, weez2, weez3, weez4];
     var currentIndex = xs.length,
         randomIndex;
-    while (currentIndex != 0) {
-        randomIndex = Math.floor(
-            Math.random() * currentIndex
-        );
+    while (currentIndex > 0) {
+        randomIndex = Math.floor(Math.random() * currentIndex);
         currentIndex--;
-        [xs[currentIndex], xs[randomIndex]] = [
-            xs[randomIndex],
-            xs[currentIndex],
-        ];
+        [xs[currentIndex], xs[randomIndex]] = [xs[randomIndex], xs[currentIndex]];
     }
-    var randomImage =
-        weezes[
-            Math.floor(Math.random() * weezes.length)
-        ];
+    var randomImage = weezes[Math.floor(Math.random() * weezes.length)];
 
     ctx.fillRect(0, 0, w, h);
     if (Math.random() < 0.5) {
@@ -936,15 +632,9 @@ function weezer(msg, client) {
     for (let i = 0; i < 4; i++) {
         var randomizer = Math.random() + 0.5;
         var randomizer2 = Math.random() * 0.4 + 0.8;
-        var willRotate = Math.random < 0.5;
-        var angleInRadians = 90;
         if (randomizer > 0.5) {
             ctx.drawImage(
-                weezes[
-                    Math.floor(
-                        Math.random() * weezes.length
-                    )
-                ],
+                weezes[Math.floor(Math.random() * weezes.length)],
                 xs[i] * randomizer2,
                 (h / 3) * randomizer,
                 138,
@@ -952,13 +642,11 @@ function weezer(msg, client) {
             );
         }
     }
-    ctx.transform(0, 0);
-    ctx.scale(1, 1);
 
     ctx.fillStyle = "black";
     ctx.font = "bold 48px Weezer";
     var takenIndexes = [];
-    var y = Math.floor(Math.random() * 4) + 4;
+    var y = Math.floor(Math.random() * 4);
     var texts = [
         "weezer",
         "weezur",
@@ -972,10 +660,7 @@ function weezer(msg, client) {
         "doobus",
     ];
     for (let i = 0; i < y; i++) {
-        var chosenText =
-            texts[
-                Math.floor(Math.random() * texts.length)
-            ];
+        var chosenText = texts[Math.floor(Math.random() * texts.length)];
         var tw = ctx.measureText(chosenText).width;
         var possibleTextPlaces = [
             [w - tw, 30],
@@ -984,28 +669,13 @@ function weezer(msg, client) {
             [w - tw, h - 5],
         ];
         var chosenPlace =
-            possibleTextPlaces[
-                Math.floor(
-                    Math.random() *
-                    possibleTextPlaces.length
-                )
-            ];
-        if (
-            takenIndexes.includes(
-                possibleTextPlaces.indexOf(chosenPlace)
-            )
-        ) {
+            possibleTextPlaces[Math.floor(Math.random() * possibleTextPlaces.length)];
+        if (takenIndexes.includes(possibleTextPlaces.indexOf(chosenPlace))) {
             y++;
             continue;
         }
-        ctx.fillText(
-            chosenText,
-            chosenPlace[0],
-            chosenPlace[1]
-        );
-        takenIndexes.push(
-            possibleTextPlaces.indexOf(chosenPlace)
-        );
+        ctx.fillText(chosenText, chosenPlace[0], chosenPlace[1]);
+        takenIndexes.push(possibleTextPlaces.indexOf(chosenPlace));
         texts = texts.filter((t) => {
             return t != chosenText;
         });
@@ -1015,39 +685,51 @@ function weezer(msg, client) {
         c.toDataURL("image/png").split(",")[1],
         "base64"
     );
-    fs.writeFileSync(
-        "../images/cache/" + imgID2,
-        imageStream2
-    );
+    fs.writeFileSync("../images/cache/" + imgID2, imageStream2);
     /**
      * @type {Discord.Message}
      */
-    var message = await client.channels.cache
-        .get("956316856422137856")
-        .send({
-            files: [{
-                attachment: "../images\\cache\\" + imgID2,
-            }, ],
-        });
+    var message = await client.channels.cache.get("956316856422137856").send({
+        files: [{
+            attachment: "../images\\cache\\" + imgID2,
+        }, ],
+    });
 
     setTimeout(() => {
         fs.unlinkSync("../images/cache/" + imgID2);
     }, 10000);
 
-    sendWebhook(
-        "custom",
-        message.attachments.first().url,
-        false,
-        msg.channel, {
-            username: "weezer",
-            avatar: message.attachments.first().url,
-            content: message.attachments.first().url,
-        }
+    sendWebhook("custom", message.attachments.first().url, false, msg.channel, {
+        username: "weezer",
+        avatar: message.attachments.first().url,
+        content: message.attachments.first().url,
+    });
+}
+
+async function sendCanvas(c, msg, client, botname) {
+    var imgID2 = uuidv4() + ".png";
+    var imageStream2 = Buffer.from(
+        c.toDataURL("image/png").split(",")[1],
+        "base64"
     );
+    fs.writeFileSync("../images/cache/" + imgID2, imageStream2);
+    /**
+     * @type {Discord.Message}
+     */
+    var message = await client.channels.cache.get("956316856422137856").send({
+        files: [{
+            attachment: "../images\\cache\\" + imgID2,
+        }, ],
+    });
+
+    setTimeout(() => {
+        fs.unlinkSync("../images/cache/" + imgID2);
+    }, 10000);
+
+    sendWebhook(botname, message.attachments.first().url, false, msg.channel);
 }
 
 function carbs(msg, client, custom = false) {
-    var imgID2 = uuidv4().replace(/-/g, "_") + ".png";
     var w = 960,
         h = 540,
         fontScaleFactor = 0.09;
@@ -1090,36 +772,12 @@ function carbs(msg, client, custom = false) {
                 "TEST AIFISDHFAJEAFHAIJDFHNSEIFOUHADJIFNBASIEFUHSI CUM CUM CUM CUM CUM CUM CUM CUM CUM CUM";
             ctx.fillText(card, w / 2, h * fontScaleFactor + 10, w);
             ctx.strokeText(card, w / 2, h * fontScaleFactor + 10, w);
-            var imageStream2 = Buffer.from(
-                c.toDataURL("image/png").split(",")[1],
-                "base64"
-            );
-            fs.writeFileSync("../images/cache/" + imgID2, imageStream2);
-            /**
-             * @type {Discord.Message}
-             */
-            var message = await client.channels.cache.get("956316856422137856").send({
-                files: [{
-                    attachment: "../images\\cache\\" + imgID2,
-                }, ],
-            });
-
-            setTimeout(() => {
-                fs.unlinkSync("../images/cache/" + imgID2);
-            }, 10000);
-
-            sendWebhook(
-                "jamesphotoframe",
-                message.attachments.first().url,
-                false,
-                msg.channel
-            );
+            sendCanvas(c, msg, client, "jamesphotoframe");
         });
 }
 
 function watermark(msg, client) {
     var id = uuidv4() + ".png";
-    var imgID2 = uuidv4() + ".png";
     if (!msg.attachments.first()) return;
     flapslib.download(msg.attachments.first().url, "images/cache/" + id, () => {
         var w = msg.attachments.first().width,
@@ -1154,32 +812,7 @@ function watermark(msg, client) {
                             ctx.globalAlpha = 1;
                         }
 
-                        var imageStream2 = Buffer.from(
-                            c.toDataURL("image/png").split(",")[1],
-                            "base64"
-                        );
-                        fs.writeFileSync("../images/cache/" + imgID2, imageStream2);
-                        /**
-                         * @type {Discord.Message}
-                         */
-                        var message = await client.channels.cache
-                            .get("956316856422137856")
-                            .send({
-                                files: [{
-                                    attachment: "../images\\cache\\" + imgID2,
-                                }, ],
-                            });
-
-                        setTimeout(() => {
-                            fs.unlinkSync("../images/cache/" + imgID2);
-                        }, 10000);
-
-                        sendWebhook(
-                            "reddit",
-                            message.attachments.first().url,
-                            false,
-                            msg.channel
-                        );
+                        sendCanvas(c, msg, client, "reddit");
                     });
             });
     });

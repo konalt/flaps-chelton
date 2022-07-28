@@ -27,13 +27,15 @@ function sendWebhook(
     msg
 ) {
     return new Promise((resolve, _reject) => {
-        if (!users[id]) {
+        if (!users[id] && id != "custom") {
             return sendWebhook(
                 "flapserrors",
                 'Error: unknown webhook bot "' +
                 id +
                 '". Original message content:\n---\n' +
-                content
+                content,
+                false,
+                msgChannel
             );
         }
         var custom = false;
