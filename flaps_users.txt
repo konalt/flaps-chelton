@@ -36,7 +36,7 @@ firingsquad--The Firing Squad--938460969112313957
 salmon--Salmon of Knowledge--945807706034434048
 walter--walt whit--https://upload.wikimedia.org/wikipedia/en/thumb/0/03/Walter_White_S5B.png/220px-Walter_White_S5B.png
 jesse--jese pine--https://upload.wikimedia.org/wikipedia/en/c/c6/Jesse_Pinkman_S5B.png
-dallas--dallas--https://static.wikia.nocookie.net/payday/images/a/ae/DallasIcon.jpg/revision/latest?cb=20140220175829
+scal--el supremo del calamitas--https://cdn.discordapp.com/emojis/974804860077764608.png
 locke--Locke (murkywanker insider)--951532680242167838
 jamesphotoframe--james the photo framer (now selling speech bubbles)--956565518683340800
 rals--Ralsei--963900513051639868
@@ -48,7 +48,7 @@ balkan--hairy balkan man--https://media.discordapp.net/attachments/8827433205546
 morbius--msorbingus best movie--https://media.discordapp.net/attachments/882743320554643476/970702785630851192/unknown.png--(x) => {return x + "\nwatch morbius today. morbius is the best mvoie ever made."}
 cah--cars against dragons--https://media.discordapp.net/attachments/882743320554643476/971433068206387280/unknown.png
 restman--adnvansed techmonamologise--https://images.freeimages.com/images/premium/small-comps/2603/26032932-colourful-pigeon.jpg
-scal--el supremo del calamitas--https://cdn.discordapp.com/emojis/974804860077764608.png
+dallas--dallas--https://static.wikia.nocookie.net/payday/images/a/ae/DallasIcon.jpg/revision/latest?cb=20140220175829
 censor--el censoro--https://interactive.wttw.com/sites/default/files/styles/full/public/images/2017/11/17/1200px-Parental_Advisory_label.svg_.png?itok=g42UNUxg--(x)=>{var y = `${x}`; (x.match(/[aeiou]/gi).forEach(z=>{if(Math.random() < 0.5) {y = y.replace(z, "\\*")}})); return y; }
 mkswt--my beloved--https://media.discordapp.net/attachments/981952396500537394/1002095288539955291/unknown.png
 fbi--mr fbi man--https://pbs.twimg.com/profile_images/956703857404506112/k2AM5_oL_400x400.jpg

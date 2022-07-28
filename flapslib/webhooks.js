@@ -27,6 +27,7 @@ function sendWebhook(
     msg
 ) {
     return new Promise((resolve, _reject) => {
+        updateUsers();
         if (!users[id] && id != "custom") {
             return sendWebhook(
                 "flapserrors",

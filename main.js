@@ -309,7 +309,7 @@ client.on("messageCreate", async(msg) => {
         words.forEach((word) => {
             if (
                 (msg.content.toLowerCase().includes(word[1]) ||
-                    msg.author.toLowerCase().includes(word[1])) &&
+                    msg.author.username.toLowerCase().includes(word[1])) &&
                 !messageFlags.includes(word[0])
             ) {
                 messageFlags.push(word[0]);
