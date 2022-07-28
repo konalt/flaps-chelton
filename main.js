@@ -298,42 +298,44 @@ client.on("messageCreate", async(msg) => {
         if (msg.content.includes("copper") && !msg.author.bot) {
             msg.channel.send("copper you say?");
         }
-        words = fs
-            .readFileSync("./flags.txt")
-            .toString()
-            .split("\r\n")
-            .map((x) => {
-                return [x.split(" ")[0], x.split(" ").slice(1).join(" ")];
+        if (!msg.content.startsWith("<")) {
+            words = fs
+                .readFileSync("./flags.txt")
+                .toString()
+                .split("\r\n")
+                .map((x) => {
+                    return [x.split(" ")[0], x.split(" ").slice(1).join(" ")];
+                });
+            var messageFlags = [];
+            words.forEach((word) => {
+                if (
+                    (msg.content.toLowerCase().includes(word[1]) ||
+                        msg.author.username.toLowerCase().includes(word[1])) &&
+                    !messageFlags.includes(word[0])
+                ) {
+                    messageFlags.push(word[0]);
+                }
             });
-        var messageFlags = [];
-        words.forEach((word) => {
-            if (
-                (msg.content.toLowerCase().includes(word[1]) ||
-                    msg.author.username.toLowerCase().includes(word[1])) &&
-                !messageFlags.includes(word[0])
-            ) {
-                messageFlags.push(word[0]);
+            if (messageFlags.includes("rember")) {
+                messageFlags = messageFlags.filter((x) => x != "forgor");
             }
-        });
-        if (messageFlags.includes("rember")) {
-            messageFlags = messageFlags.filter((x) => x != "forgor");
-        }
-        if (messageFlags.includes("political"))
-            msg.react(
-                client.emojis.cache.find((emoji) => emoji.name === "political")
-            );
-        if (messageFlags.includes("forgor")) msg.react("💀");
-        if (messageFlags.includes("rember")) msg.react("😁");
-        if (messageFlags.includes("trans")) msg.react("🏳️‍⚧️");
-        if (messageFlags.includes("literally"))
-            msg.react(
-                client.emojis.cache.find((emoji) => emoji.name === "literally1984")
-            );
-        if (messageFlags.includes("selfie")) {
-            if (Math.random() > 0.5) {
-                msg.react("👍");
-            } else {
-                msg.react("👎");
+            if (messageFlags.includes("political"))
+                msg.react(
+                    client.emojis.cache.find((emoji) => emoji.name === "political")
+                );
+            if (messageFlags.includes("forgor")) msg.react("💀");
+            if (messageFlags.includes("rember")) msg.react("😁");
+            if (messageFlags.includes("trans")) msg.react("🏳️‍⚧️");
+            if (messageFlags.includes("literally"))
+                msg.react(
+                    client.emojis.cache.find((emoji) => emoji.name === "literally1984")
+                );
+            if (messageFlags.includes("selfie")) {
+                if (Math.random() > 0.5) {
+                    msg.react("👍");
+                } else {
+                    msg.react("👎");
+                }
             }
         }
         var commandArgs = msg.content.split(" ");
