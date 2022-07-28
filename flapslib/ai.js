@@ -868,9 +868,6 @@ function dalle(prompt, isSecondReq = false) {
                     if (isSecondReq) {
                         console.log("SR: Error");
                         out.prompt = r.replace(/<[/A-z0-9 =!]+>/g, "");
-                        /* if (Math.random() < 0.4) {
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                out.prompt = "418 I'm a Teapot\n\nThe server refused to handle this due to a long queue.\nnginx/1.18.0 (Ubuntu)"
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            } */
                         out.image = false;
                     } else {
                         setTimeout(() => {
@@ -986,51 +983,6 @@ function describe(message) {
                 });
         });
 }
-
-/* var openAIKey = "err";
-
-fetch("https://auth0.openai.com/oauth/token", {
-    "credentials": "omit",
-    "headers": {
-        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:101.0) Gecko/20100101 Firefox/101.0",
-        "Accept": "*\//",
-        "Accept-Language": "en-US,en;q=0.5",
-        "Content-Type": "application/json",
-        "Auth0-Client": "eyJuYW1lIjoiYXV0aDAtc3BhLWpzIiwidmVyc2lvbiI6IjEuMjEuMCJ9",
-        "Sec-Fetch-Dest": "empty",
-        "Sec-Fetch-Mode": "cors",
-        "Sec-Fetch-Site": "same-site"
-    },
-    "referrer": "https://beta.openai.com/",
-    "body": "{\"client_id\":\"DRivsnm2Mu42T3KOpqdtwB3NYviHYzwD\",\"code_verifier\":\"Eh2LJN4kjU5iBFdVp7kkye~Y0k8btGF8r_f-m8mDtJB\"}",
-    "method": "POST",
-    "mode": "cors"
-}).then(r => r.json()).then(r => {
-    console.log(r);
-    fetch("https://api.openai.com/dashboard/onboarding/login", {
-        "credentials": "include",
-        "headers": {
-            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:101.0) Gecko/20100101 Firefox/101.0",
-            "Accept": "*\/*",
-            "Accept-Language": "en-US,en;q=0.5",
-            "Content-Type": "application/json",
-            "Authorization": "Bearer " + r.access_token,
-            "Sec-Fetch-Dest": "empty",
-            "Sec-Fetch-Mode": "cors",
-            "Sec-Fetch-Site": "same-site"
-        },
-        "referrer": "https://beta.openai.com/",
-        "body": "{}",
-        "method": "POST",
-        "mode": "cors"
-    }).then(r => r.json()).then(r2 => {
-        if (!r2.user) {
-            console.log(r2);
-        } else {
-            openAIKey = r2.user.session.sensitive_id;
-        }
-    });
-}); */
 
 async function newQuestion(question, channel) {
     monsoonPre = fs.readFileSync("./monsoon.txt");

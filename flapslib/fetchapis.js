@@ -107,7 +107,6 @@ async function roulette(msgChannel) {
                                             name: post.name ? post.name : "Author",
                                             iconURL: "https://res.cloudinary.com/crunchbase-production/image/upload/c_lpad,h_256,w_256,f_auto,q_auto:eco,dpr_1/v1506977414/y31m3uyt8lskvx7rlmjo.png",
                                         })
-                                        /* .setTimestamp(post.tim) */
                                         .addFields({
                                                 name: "Replies",
                                                 value: (post.replies ? post.replies : 0).toString(),

@@ -288,16 +288,6 @@ var descriptions = {
     "547476998071517195": "we couldnt find a photo for this guy. we went to mcdonalds instead\nhttps://media.discordapp.net/attachments/910525327585992737/980523453042028574/mcdondil.PNG",
 };
 
-var deathCauses = [
-    "so sad, dying of suicide. two shots to bak of hed",
-    "they will slipp in the shower while masturbating",
-    "they will slipp in the shower",
-    "hanging themselves",
-    "electrocution!!",
-    "those RUSSIANs will get him!!!",
-    "death by carrier pigeon",
-];
-
 var userStickies = {};
 
 client.on("messageCreate", async(msg) => {
@@ -341,9 +331,6 @@ client.on("messageCreate", async(msg) => {
         var commandArgs = msg.content.split(" ");
         var commandArgString = commandArgs.slice(1).join(" ");
         var command = commandArgs[0].toLowerCase();
-        /* if (msg.channel.topic.includes("##Monsoon")) {
-                                                                                                                if (!msg.author.bot) monsoonChatEvent(msg.channel);
-                                                                                                            } */
         if (userStickies[msg.author.id]) {
             if (msg.content.startsWith("!..unsticky")) {
                 return (userStickies[msg.author.id] = false);
@@ -2477,12 +2464,6 @@ setInterval(() => {
             client.channels.cache.get("882743320554643476")
         );
     }
-    /*     var bsc = client.guilds.cache.get("760524739239477340");
-                                                          var memberPlaying = Array.from(bsc.members.cache).map(u => { return u[1].user.currentStatus });
-                                                          if (memberPlaying == "Genshin Impact" ||
-                                                              memberPlaying == "League of Legends") {
-                                                              member.ban();
-                                                          } */
 }, 1000);
 setInterval(() => {
     var d = new Date();
