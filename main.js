@@ -329,6 +329,13 @@ client.on("messageCreate", async(msg) => {
             msg.react(
                 client.emojis.cache.find((emoji) => emoji.name === "literally1984")
             );
+        if (messageFlags.includes("selfie")) {
+            if (Math.random() > 0.5) {
+                msg.react("👍");
+            } else {
+                msg.react("👎");
+            }
+        }
         var commandArgs = msg.content.split(" ");
         var commandArgString = commandArgs.slice(1).join(" ");
         var command = commandArgs[0].toLowerCase();
