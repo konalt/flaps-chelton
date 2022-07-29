@@ -1039,7 +1039,14 @@ function questionFree(question, msg) {
         )
         .then((r) => r.text())
         .then((a) => {
-            sendWebhook("jonathan", a, false, msg.channel);
+            sendWebhook(
+                "jonathan",
+                a[0].generated_text ?
+                a[0].generated_text.substring(("Q: " + question + "\nA:").length) :
+                "no response, probably rate limited",
+                false,
+                msg.channel
+            );
         });
 }
 
@@ -1080,9 +1087,61 @@ function sendToChatbot(text, cb) {
                     })
                     .then((r2) => r2.json())
                     .then((r2) => {
+                        console.log(r2);
                         if (r2.status == "COMPLETE") {
                             clearInterval(chatbotWaitingIntervals[r.hash]);
                             cb(r2.data.data[0][r2.data.data[0].length - 1][1]);
+                        }
+                    });
+            }, 1000);
+        });
+}
+
+var ruGPTSession = uuidv4().substring(0, 8);
+var ruGPTWaitingIntervals = {};
+var ruGPTWaitingIntervalCounts = {};
+
+function ruQuestion(question, cb) {
+    fetch("https://hf.space/embed/AlekseyKorshuk/rugpt3/api/queue/push/", {
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                action: "predict",
+                cleared: false,
+                data: ["Q: " + question + "\nA:"],
+                example_id: null,
+                session_hash: ruGPTSession,
+            }),
+            method: "POST",
+            mode: "cors",
+        })
+        .then((r) => r.json())
+        .then((r) => {
+            console.log("Awaiting response for ruGPT");
+            ruGPTWaitingIntervalCounts[r.hash] = 0;
+            ruGPTWaitingIntervals[r.hash] = setInterval(() => {
+                ruGPTWaitingIntervalCounts[r.hash]++;
+                if (ruGPTWaitingIntervalCounts[r.hash] > 20) {
+                    clearInterval(ruGPTWaitingIntervals[r.hash]);
+                    cb("Loop detected");
+                }
+                fetch(
+                        "https://hf.space/embed/AlekseyKorshuk/rugpt3/api/queue/status/", {
+                            credentials: "omit",
+                            headers: {
+                                "Content-Type": "application/json",
+                            },
+                            body: '{"hash":"' + r.hash + '"}',
+                            method: "POST",
+                        }
+                    )
+                    .then((r2) => r2.json())
+                    .then((r2) => {
+                        console.log(r2);
+                        if (r2.status == "COMPLETE") {
+                            clearInterval(ruGPTWaitingIntervals[r.hash]);
+                            cb(r2.data.data[0]);
                         }
                     });
             }, 1000);
@@ -1301,6 +1360,7 @@ module.exports = {
     questionImage: questionImage,
     questionFree: questionFree,
     sendToChatbot: sendToChatbot,
+    ruQuestion: ruQuestion,
 };
 
 init();

@@ -35,6 +35,7 @@ const {
     questionImage,
     questionFree,
     sendToChatbot,
+    ruQuestion,
 } = require("./flapslib/ai");
 const {
     sendWebhook,
@@ -2460,7 +2461,14 @@ fbi files on ${commandArgString}: ${
                     if (msg.attachments.first()) {
                         questionImage(commandArgString, msg);
                     } else {
-                        questionFree(commandArgString, msg);
+                        ruQuestion(commandArgString, (res) => {
+                            sendWebhook(
+                                "restman",
+                                res.split("A:")[1] ? res.split("A:")[1] : res,
+                                false,
+                                msg.channel
+                            );
+                        });
                     }
                     //question(commandArgString, msg.channel);
                     break;
