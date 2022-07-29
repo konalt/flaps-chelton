@@ -984,6 +984,111 @@ function describe(message) {
         });
 }
 
+function questionImage(question, message) {
+    if (!message.attachments.first()) {
+        console.log("line 942");
+        return sendWebhook(
+            "scott",
+            "i cant answer questions about nothing",
+            false,
+            message.channel
+        );
+    }
+    fetch(message.attachments.first().url)
+        .then((r) => {
+            return new Promise((r2, _r) => {
+                console.log("line 953");
+                r.arrayBuffer().then((x) => {
+                    r2([x, r.headers.get("content-type")]);
+                });
+            });
+        })
+        .then((r) => {
+            data = "data:" + r[1] + ";base64," + Buffer.from(r[0]).toString("base64");
+            fetch(
+                    "https://hf.space/embed/OFA-Sys/OFA-Visual_Question_Answering/api/predict/", {
+                        body: JSON.stringify({
+                            data: [data, question],
+                            example_id: null,
+                            session_hash: "xdj84bh71fd",
+                        }),
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                        },
+                    }
+                )
+                .then((r) => r.json())
+                .then((r2) => {
+                    sendWebhook("jonathan", r2.data[0], false, message.channel);
+                });
+        });
+}
+
+function questionFree(question, msg) {
+    fetch(
+            "https://api-inference.huggingface.co/models/danyaljj/gpt2_question_answering_squad2", {
+                body: JSON.stringify({
+                    inputs: "Q: " + question + "\nA:",
+                }),
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                method: "POST",
+            }
+        )
+        .then((r) => r.text())
+        .then((a) => {
+            sendWebhook("jonathan", a, false, msg.channel);
+        });
+}
+
+var chatbotSession = uuidv4().substring(0, 8);
+var chatbotWaitingIntervals = {};
+var chatbotWaitingIntervalCounts = {};
+
+function sendToChatbot(text, cb) {
+    fetch("https://hf.space/embed/carblacac/chatbot/api/queue/push/", {
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: '{"fn_index":0,"data":["' +
+                text +
+                '",null],"action":"predict","session_hash":"' +
+                chatbotSession +
+                '"}',
+            method: "POST",
+            mode: "cors",
+        })
+        .then((r) => r.json())
+        .then((r) => {
+            console.log("Awaiting response for chatbot message");
+            chatbotWaitingIntervalCounts[r.hash] = 0;
+            chatbotWaitingIntervals[r.hash] = setInterval(() => {
+                chatbotWaitingIntervalCounts[r.hash]++;
+                if (chatbotWaitingIntervalCounts[r.hash] > 20) {
+                    clearInterval(chatbotWaitingIntervals[r.hash]);
+                    cb("Loop detected");
+                }
+                fetch("https://hf.space/embed/carblacac/chatbot/api/queue/status/", {
+                        credentials: "omit",
+                        headers: {
+                            "Content-Type": "application/json",
+                        },
+                        body: '{"hash":"' + r.hash + '"}',
+                        method: "POST",
+                    })
+                    .then((r2) => r2.json())
+                    .then((r2) => {
+                        if (r2.status == "COMPLETE") {
+                            clearInterval(chatbotWaitingIntervals[r.hash]);
+                            cb(r2.data.data[0][r2.data.data[0].length - 1][1]);
+                        }
+                    });
+            }, 1000);
+        });
+}
+
 async function newQuestion(question, channel) {
     monsoonPre = fs.readFileSync("./monsoon.txt");
     fetch("https://api.openai.com/v1/engines/text-davinci-002/completions", {
@@ -1193,6 +1298,9 @@ module.exports = {
     setSanity: setSanity,
     tti: tti,
     describe: describe,
+    questionImage: questionImage,
+    questionFree: questionFree,
+    sendToChatbot: sendToChatbot,
 };
 
 init();

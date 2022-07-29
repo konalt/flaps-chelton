@@ -32,6 +32,9 @@ const {
     monsoonChatEvent,
     setSanity,
     describe,
+    questionImage,
+    questionFree,
+    sendToChatbot,
 } = require("./flapslib/ai");
 const {
     sendWebhook,
@@ -2433,6 +2436,13 @@ fbi files on ${commandArgString}: ${
                         );
                         break;
                     }
+                case "!c":
+                    {
+                        sendToChatbot(commandArgString, (text) => {
+                            sendWebhook("sammy", text, false, msg.channel);
+                        });
+                        break;
+                    }
                 case "!southerner":
                     var str = `the best part
                         about meatballs
@@ -2447,7 +2457,12 @@ fbi files on ${commandArgString}: ${
                     sendWebhook("southerner", str, false, msg.channel);
                     break;
                 case "!question":
-                    question(commandArgString, msg.channel);
+                    if (msg.attachments.first()) {
+                        questionImage(commandArgString, msg);
+                    } else {
+                        questionFree(commandArgString, msg);
+                    }
+                    //question(commandArgString, msg.channel);
                     break;
                 case "!gpt3complete":
                     gpt3complete(commandArgString, msg.channel);
