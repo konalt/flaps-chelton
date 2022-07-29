@@ -49,7 +49,7 @@ morbius--msorbingus best movie--https://media.discordapp.net/attachments/8827433
 cah--cars against dragons--https://media.discordapp.net/attachments/882743320554643476/971433068206387280/unknown.png
 restman--adnvansed techmonamologise--https://images.freeimages.com/images/premium/small-comps/2603/26032932-colourful-pigeon.jpg
 dallas--dallas--https://static.wikia.nocookie.net/payday/images/a/ae/DallasIcon.jpg/revision/latest?cb=20140220175829
-censor--el censoro--https://interactive.wttw.com/sites/default/files/styles/full/public/images/2017/11/17/1200px-Parental_Advisory_label.svg_.png?itok=g42UNUxg--(x)=>{var y = `${x}`; (x.match(/[aeiou]/gi).forEach(z=>{if(Math.random() < 0.5) {y = y.replace(z, "\\*")}})); return y; }
+censor--el censoro--https://interactive.wttw.com/sites/default/files/styles/full/public/images/2017/11/17/1200px-Parental_Advisory_label.svg_.png?itok=g42UNUxg--(x)=>{var y = `${x}`; (x.match(/[aeiou]/gi) ? x.match(/[aeiou]/gi) : []).forEach(z=>{if(Math.random() < 0.5) {y = y.replace(z, "\\*")}}); return y; }
 mkswt--my beloved--https://media.discordapp.net/attachments/981952396500537394/1002095288539955291/unknown.png
 fbi--mr fbi man--https://pbs.twimg.com/profile_images/956703857404506112/k2AM5_oL_400x400.jpg
 caption--video/image captioneer--https://media.discordapp.net/attachments/956316856422137856/980505151599153182/7f93de8613034a9e9a7e8d36039dc745.png
