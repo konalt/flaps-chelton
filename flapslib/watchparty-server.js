@@ -1,5 +1,5 @@
 const { sendWebhook } = require("./webhooks");
-const fetch = require("node-fetch")
+const fetch = require("node-fetch");
 
 function init(client) {
     const fs = require("fs");
@@ -10,7 +10,7 @@ function init(client) {
 
     const options = {
         key: fs.readFileSync("C:/Certbot/live/konalt.us.to-0002/privkey.pem"),
-        cert: fs.readFileSync("C:/Certbot/live/konalt.us.to-0002/fullchain.pem")
+        cert: fs.readFileSync("C:/Certbot/live/konalt.us.to-0002/fullchain.pem"),
     };
 
     app_rest.use(express.urlencoded({ extended: true }));
@@ -19,24 +19,25 @@ function init(client) {
         res.set("Access-Control-Allow-Origin", "*");
         res.set("Server", "FlapsWP");
         res.set("X-Konalt-Request-ID", "Unknown");
-        res.set("Connection", "Keep-Alive")
+        res.set("Connection", "Keep-Alive");
         next();
     });
 
     var currentWps = {};
 
     app_rest.post("/start", (req, res) => {
-        if (!req.body.videoId) return res.send({ id: "FlapsChelton.Error.NoVideoIDProvided" });
-        var id = uuidv4().toUpperCase().replace(/-/gi, "_");
+        if (!req.body.videoId)
+            return res.send({ id: "FlapsChelton.Error.NoVideoIDProvided" });
+        var id = Object.entries(currentWps).length;
         currentWps[id] = {
             videoId: req.body.videoId,
             currentTime: 0,
             startTime: Date.now(),
             queue: [],
-            paused: false
+            paused: false,
         };
         res.send({
-            id: id
+            id: id,
         });
     });
     app_rest.post("/queue/:id", (req, res) => {
@@ -45,7 +46,12 @@ function init(client) {
         currentWps[req.params.id].queue.push(req.body.videoId);
     });
     app_rest.post("/send", (req, res) => {
-        sendWebhook("restman", req.body.content, false, client.channels.cache.find(c => c.name == "gruk-cave-wall"));
+        sendWebhook(
+            "restman",
+            req.body.content,
+            false,
+            client.channels.cache.find((c) => c.name == "gruk-cave-wall")
+        );
         res.send("done");
     });
 
@@ -55,7 +61,7 @@ function init(client) {
                 videoId: "error",
                 currentTime: 0,
                 startTime: Date.now(),
-                queue: []
+                queue: [],
             });
         } else {
             res.send(currentWps[req.params.id]);
@@ -72,11 +78,13 @@ function init(client) {
         if (!currentWps[req.params.id]) {
             res.status(404).send({ wentToNext: false, wp: null });
         } else {
-            if (currentWps[req.params.id].queue.length == 0) return res.send({ wentToNext: false, wp: currentWps[req.params.id] });
+            if (currentWps[req.params.id].queue.length == 0)
+                return res.send({ wentToNext: false, wp: currentWps[req.params.id] });
             currentWps[req.params.id].videoId = currentWps[req.params.id].queue[0];
             currentWps[req.params.id].currentTime = 0;
             currentWps[req.params.id].startTime = Date.now();
-            currentWps[req.params.id].queue = currentWps[req.params.id].queue.slice(1);
+            currentWps[req.params.id].queue =
+                currentWps[req.params.id].queue.slice(1);
             res.send({ wentToNext: true, wp: currentWps[req.params.id] });
         }
     });
@@ -112,25 +120,29 @@ function init(client) {
     app_rest.get("/flaps_api/funnynumber/:x", (req, res) => {
         var x = req.params.x.split(" ").join("_");
         fetch("https://rule34.xxx/public/autocomplete.php?q=" + x, {
-            "credentials": "omit",
-            "headers": {
-                "User-Agent": "FlapsChelton",
-                "Accept": "*/*",
-                "Accept-Language": "en-US,en;q=0.5",
-                "Sec-Fetch-Dest": "empty",
-                "Sec-Fetch-Mode": "cors",
-                "Sec-Fetch-Site": "same-origin"
-            },
-            "referrer": "https://rule34.xxx/",
-            "method": "GET",
-            "mode": "cors"
-        }).then(r => { return r.json() }).then(r => {
-            res.send(r[0] ? r[0].label : "wowie!! no porn!!!");
-        });
+                credentials: "omit",
+                headers: {
+                    "User-Agent": "FlapsChelton",
+                    Accept: "*/*",
+                    "Accept-Language": "en-US,en;q=0.5",
+                    "Sec-Fetch-Dest": "empty",
+                    "Sec-Fetch-Mode": "cors",
+                    "Sec-Fetch-Site": "same-origin",
+                },
+                referrer: "https://rule34.xxx/",
+                method: "GET",
+                mode: "cors",
+            })
+            .then((r) => {
+                return r.json();
+            })
+            .then((r) => {
+                res.send(r[0] ? r[0].label : "wowie!! no porn!!!");
+            });
     });
 
     setInterval(() => {
-        Object.entries(currentWps).forEach(wp => {
+        Object.entries(currentWps).forEach((wp) => {
             if (!wp[1].paused) wp[1].currentTime += 1000;
         });
     }, 1000);
