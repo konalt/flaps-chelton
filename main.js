@@ -939,6 +939,62 @@ client.on("messageCreate", async(msg) => {
                         });
                     }
                     break;
+                case "!funnynumbers":
+                    {
+                        var chars = [
+                            "calamitas",
+                            "brimstone_elemental",
+                            "loremaster_(helltaker)",
+                            "nickygirl",
+                            "nikku_(saruky)",
+                            "hornet_(hollow_knight)",
+                            "chuchu_(derpixon)",
+                            "bonbon_(derpixon)",
+                            "tasque_manager_(deltarune)",
+                            "sakuroma_(retrospecter)",
+                        ];
+                        var out = "";
+                        chars.forEach((element) => {
+                            var x = element.split(" ").join("_");
+                            fetch("https://rule34.xxx/public/autocomplete.php?q=" + x, {
+                                    credentials: "omit",
+                                    headers: {
+                                        "User-Agent": "FlapsChelton",
+                                        Accept: "*/*",
+                                        "Accept-Language": "en-US,en;q=0.5",
+                                        "Sec-Fetch-Dest": "empty",
+                                        "Sec-Fetch-Mode": "cors",
+                                        "Sec-Fetch-Site": "same-origin",
+                                    },
+                                    referrer: "https://rule34.xxx/",
+                                    method: "GET",
+                                    mode: "cors",
+                                })
+                                .then((r) => {
+                                    return r.json();
+                                })
+                                .then((r) => {
+                                    var y = "";
+                                    if (!r[0]) {
+                                        console.log("WHN !!?");
+                                    } else {
+                                        y = r[0].label.replace(/_/g, "\\_") + "\n";
+                                        console.log(y.trim());
+                                        out += y;
+                                    }
+                                    var done = true;
+                                    chars.forEach((element2) => {
+                                        if (!out.includes(element2.replace(/_/g, "\\_"))) {
+                                            done = false;
+                                        }
+                                    });
+                                    if (done) {
+                                        sendWebhook("runcling", out, false, msg.channel);
+                                    }
+                                });
+                        });
+                    }
+                    break;
                 case "!countdown":
                     {
                         var endTime = new Date("2022-06-03T10:30:00Z");
