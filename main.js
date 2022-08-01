@@ -689,21 +689,7 @@ client.on("messageCreate", async(msg) => {
                             flapslib.webhooks.sendWebhook(
                                 "flaps",
                                 "that audio not real <a:woeisgone:959946980954636399>\naudios are:\n```ansi\n" +
-                                validAudio
-                                .map((a) => {
-                                    return a
-                                        .split("")
-                                        .map((b) => {
-                                            return (
-                                                "\x1b[" +
-                                                Math.floor(Math.random() * 5 + 91).toString() +
-                                                "m" +
-                                                b
-                                            );
-                                        })
-                                        .join("");
-                                })
-                                .join("\n") +
+                                validAudio.join("\n") +
                                 "```",
                                 true,
                                 msg.channel
