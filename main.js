@@ -380,6 +380,18 @@ client.on("messageCreate", async(msg) => {
         var commandArgs = msg.content.split(" ");
         var commandArgString = commandArgs.slice(1).join(" ");
         var command = commandArgs[0].toLowerCase();
+        var toDelete = false;
+        if (command == "!ad") {
+            toDelete = true;
+            commandArgs.shift();
+            command = commandArgs[0].toLowerCase();
+            if (!command.startsWith("!")) {
+                toDelete = false;
+                setTimeout(() => {
+                    return msg.delete();
+                }, 1500);
+            }
+        }
         if (userStickies[msg.author.id]) {
             if (msg.content.startsWith("!..unsticky")) {
                 return (userStickies[msg.author.id] = false);
@@ -597,13 +609,6 @@ client.on("messageCreate", async(msg) => {
                 });
         } else {
             switch (command) {
-                case "!ad":
-                    {
-                        setTimeout(() => {
-                            msg.delete();
-                        }, 1000);
-                        break;
-                    }
                 case "!insanity":
                     {
                         setSanity(parseFloat(commandArgs[1]));
@@ -2576,6 +2581,11 @@ fbi files on ${commandArgString}: ${
                         );
                     }
                     break;
+            }
+            if (toDelete) {
+                setTimeout(() => {
+                    msg.delete();
+                }, 1000);
             }
         }
     } catch (err) {
