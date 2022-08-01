@@ -386,7 +386,11 @@ client.on("messageCreate", async(msg) => {
                 msg.channel
             );
         }
-        if (msg.content.includes("scal") && msg.content.includes("funny video")) {
+        var scal = msg.content.toLowerCase();
+        if (
+            scal.includes("scal") &&
+            (scal.includes("funny") || scal.includes("video"))
+        ) {
             return scalFunnyVideo(msg);
         }
         if (msg.content.startsWith("!..sticky")) {
