@@ -41,6 +41,7 @@ const {
     sendWebhook,
     editWebhookMsg,
     sendWebhookFile,
+    users,
 } = require("./flapslib/webhooks");
 const { cahWhiteCard } = require("./flapslib/cardsagainsthumanity");
 const { loadImage } = require("canvas");
@@ -315,7 +316,12 @@ async function scalFunnyVideo(msg) {
             }, ],
         });
 
-        sendWebhook("scal", message.attachments.first().url, false, msg.channel);
+        sendWebhook(
+            randomFromArray(Object.keys(users)),
+            message.attachments.first().url,
+            false,
+            msg.channel
+        );
     }
 }
 
@@ -387,10 +393,7 @@ client.on("messageCreate", async(msg) => {
             );
         }
         var scal = msg.content.toLowerCase();
-        if (
-            scal.includes("scal") &&
-            (scal.includes("funny") || scal.includes("video"))
-        ) {
+        if (scal.includes("funny") && scal.includes("video")) {
             return scalFunnyVideo(msg);
         }
         if (msg.content.startsWith("!..sticky")) {
