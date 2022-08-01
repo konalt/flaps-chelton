@@ -948,10 +948,7 @@ client.on("messageCreate", async(msg) => {
                             "nickygirl",
                             "nikku_(saruky)",
                             "hornet_(hollow_knight)",
-                            "chuchu_(derpixon)",
-                            "bonbon_(derpixon)",
                             "tasque_manager_(deltarune)",
-                            "sakuroma_(retrospecter)",
                         ];
                         var out = "";
                         chars.forEach((element) => {
@@ -970,15 +967,22 @@ client.on("messageCreate", async(msg) => {
                                     method: "GET",
                                     mode: "cors",
                                 })
+                                .then((r) => r.text())
                                 .then((r) => {
-                                    return r.json();
+                                    return new Promise((res, rej) => {
+                                        try {
+                                            res([r, JSON.parse(r)]);
+                                        } catch (e) {
+                                            res([r, [{ label: e }]]);
+                                        }
+                                    });
                                 })
                                 .then((r) => {
                                     var y = "";
-                                    if (!r[0]) {
+                                    if (!r[1]) {
                                         console.log("WHN !!?");
                                     } else {
-                                        y = r[0].label.replace(/_/g, "\\_") + "\n";
+                                        y = r[1][0].label.replace(/_/g, "\\_") + "\n";
                                         console.log(y.trim());
                                         out += y;
                                     }
@@ -991,6 +995,9 @@ client.on("messageCreate", async(msg) => {
                                     if (done) {
                                         sendWebhook("runcling", out, false, msg.channel);
                                     }
+                                })
+                                .catch((e) => {
+                                    console.log(e);
                                 });
                         });
                     }
