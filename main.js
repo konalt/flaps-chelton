@@ -2533,14 +2533,7 @@ fbi files on ${commandArgString}: ${
                     if (msg.attachments.first()) {
                         questionImage(commandArgString, msg);
                     } else {
-                        ruQuestion(commandArgString, (res) => {
-                            sendWebhook(
-                                "restman",
-                                res.split("A:")[1] ? res.split("A:")[1] : res,
-                                false,
-                                msg.channel
-                            );
-                        });
+                        question(commandArgString, msg.channel);
                     }
                     //question(commandArgString, msg.channel);
                     break;
