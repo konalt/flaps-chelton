@@ -2236,6 +2236,9 @@ fbi files on ${commandArgString}: ${
                         msg.channel
                     );
                     break;
+                case "!yougoodslime":
+                    sendWebhook("flaps", "im ok slime!", false, msg.channel);
+                    break;
                 case "!flapslength":
                     {
                         var lines = fs
