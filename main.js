@@ -778,15 +778,16 @@ client.on("messageCreate", async(msg) => {
                             "LISTENING",
                             "WATCHING",
                         ];
+                        var activityName = msg.content.split(" ").slice(2).join(" ");
+                        if (
+                            commandArgs[1].toUpperCase() == "LISTENING" &&
+                            commandArgs[2] == "to"
+                        )
+                            activityName = activityName.split(" ").slice(1).join(" ");
                         if (types.includes(commandArgs[1].toUpperCase())) {
                             client.user.setPresence({
                                 activities: [{
-                                    name: msg.content
-                                        .split(" ")
-                                        .map((v, i) => {
-                                            return i == 0 || i == 1 ? "" : v;
-                                        })
-                                        .join(" "),
+                                    name: activityName,
                                     type: commandArgs[1].toUpperCase(),
                                     url: "https://konalt.us.to",
                                     timestamps: {
