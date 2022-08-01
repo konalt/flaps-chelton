@@ -2276,6 +2276,9 @@ fbi files on ${commandArgString}: ${
                                         flapsCacheFilesize +
                                         "MB\nbreakdown:\n" +
                                         Object.entries(lengths)
+                                        .sort((a, b) => {
+                                            return b[1] - a[1];
+                                        })
                                         .map((x) => {
                                             return x[0] + ": " + x[1] + " lines";
                                         })
