@@ -115,3 +115,4 @@ quizzical--huh?--https://media.discordapp.net/attachments/882743320554643476/100
 wombo--NEXT-GENERATION DIFFUSION AI-GENERATED IMAGES--https://media.discordapp.net/attachments/882743320554643476/1002165129028304997/unknown.png
 dalle2--Dall-E 2's Diversity Filter--https://cdn.discordapp.com/icons/974519864045756446/04c7960b6b6c4bc0aceaa644b8b53932.png--(x) => {var diversity = ["black", "asian", "indian", "ethnic"]; return x + (", " + diversity[Math.floor(Math.random() * diversity.length)] + " woman")}
 jonathan--jonathan--https://media.discordapp.net/attachments/882743320554643476/1002509182135717948/unknown.png
+toshiro--bigtime toshiro--https://media.discordapp.net/attachments/882743320554643476/1004126279685124137/bigtime.PNG

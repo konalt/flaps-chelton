@@ -137,6 +137,45 @@ function attachRecorder(player, file, loop = false) {
     curPlayerTracks[player] = file;
 }
 
+function decodeEntities(encodedString) {
+    var translate_re = /&(nbsp|amp|quot|lt|gt);/g;
+    var translate = {
+        nbsp: " ",
+        amp: "&",
+        quot: '"',
+        lt: "<",
+        gt: ">",
+    };
+    return encodedString
+        .replace(translate_re, function(match, entity) {
+            return translate[entity];
+        })
+        .replace(/&#(\d+);/gi, function(match, numStr) {
+            var num = parseInt(numStr, 10);
+            return String.fromCharCode(num);
+        });
+}
+
+function getR34Comments(postId) {
+    return new Promise((res, rej) => {
+        if (!postId) return res("[No comments on this post]");
+        fetch("https://rule34.xxx/index.php?page=post&s=view&id=" + postId)
+            .then((r) => r.text())
+            .then((r) => {
+                var comments = r
+                    .split('<div id="comment-list">')[1]
+                    .split('<div class="col2">')
+                    .slice(1)
+                    .map((c) => {
+                        return decodeEntities(c.trim().split("\n")[0]);
+                    })
+                    .join("\n");
+                if (!comments) return res("[No comments on this post]");
+                res(comments);
+            });
+    });
+}
+
 /**
  * @type {Canvas[]}
  */
@@ -2060,6 +2099,7 @@ fbi files on ${commandArgString}: ${
                         flapslib.ai.autocompleteText(text, msg.channel);
                     }
                     break;
+                case "!r34comments":
                 case "!r34":
                     {
                         if (Math.random() < 0.25) {
@@ -2180,11 +2220,19 @@ fbi files on ${commandArgString}: ${
                                                         fs.unlinkSync("./images/cache/" + id);
                                                     }, 10000);
 
-                                                    sendWebhook(
-                                                        "runcling",
-                                                        message.attachments.first().url,
-                                                        false,
-                                                        msg.channel
+                                                    getR34Comments(item.split("?")[1]).then(
+                                                        (comments) => {
+                                                            if (!command.includes("comments"))
+                                                                comments = "";
+                                                            sendWebhook(
+                                                                "runcling",
+                                                                comments +
+                                                                "\n" +
+                                                                message.attachments.first().url,
+                                                                false,
+                                                                msg.channel
+                                                            );
+                                                        }
                                                     );
                                                 }
                                             );
@@ -2201,12 +2249,15 @@ fbi files on ${commandArgString}: ${
                                             fs.unlinkSync("./images/cache/" + id);
                                         }, 10000);
 
-                                        sendWebhook(
-                                            "runcling",
-                                            message.attachments.first().url,
-                                            false,
-                                            msg.channel
-                                        );
+                                        getR34Comments(item.split("?")[1]).then((comments) => {
+                                            if (!command.includes("comments")) comments = "";
+                                            sendWebhook(
+                                                "runcling",
+                                                comments + "\n" + message.attachments.first().url,
+                                                false,
+                                                msg.channel
+                                            );
+                                        });
                                     });
                                 });
                         });
