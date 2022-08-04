@@ -355,12 +355,7 @@ async function scalFunnyVideo(msg) {
             }, ],
         });
 
-        sendWebhook(
-            randomFromArray(Object.keys(users)),
-            message.attachments.first().url,
-            false,
-            msg.channel
-        );
+        sendWebhook("scal", message.attachments.first().url, false, msg.channel);
     }
 }
 
