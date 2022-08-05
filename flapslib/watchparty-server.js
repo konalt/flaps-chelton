@@ -5,7 +5,7 @@ function init(client) {
     const fs = require("fs");
     const express = require("express");
     const https = require("https");
-    const { uuidv4 } = require("./ai");
+    const { uuidv4, questionPromise } = require("./ai");
     var app_rest = express();
 
     const options = {
@@ -139,6 +139,11 @@ function init(client) {
             .then((r) => {
                 res.send(r[0] ? r[0].label : "wowie!! no porn!!!");
             });
+    });
+    app_rest.get("/flaps_api/question/:x", (req, res) => {
+        questionPromise(req.params.x.replace(/_sps_/g, " ")).then((data) => {
+            res.send(data);
+        });
     });
 
     setInterval(() => {
