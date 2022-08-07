@@ -116,3 +116,4 @@ wombo--NEXT-GENERATION DIFFUSION AI-GENERATED IMAGES--https://media.discordapp.n
 dalle2--Dall-E 2's Diversity Filter--https://cdn.discordapp.com/icons/974519864045756446/04c7960b6b6c4bc0aceaa644b8b53932.png--(x) => {var diversity = ["black", "asian", "indian", "ethnic"]; return x + (", " + diversity[Math.floor(Math.random() * diversity.length)] + " woman")}
 jonathan--jonathan--https://media.discordapp.net/attachments/882743320554643476/1002509182135717948/unknown.png
 toshiro--bigtime toshiro--https://media.discordapp.net/attachments/882743320554643476/1004126279685124137/bigtime.PNG
+barry--barry, 63--https://media.discordapp.net/attachments/882743320554643476/1005621899100954685/unknown.png
