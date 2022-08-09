@@ -65,6 +65,8 @@ const { Canvas } = require("canvas");
 const { AudioPlayerStatus } = require("@discordjs/voice");
 const { doTranslate, doTranslateSending } = require("./flapslib/translator");
 const { randomRedditImage } = require("./flapslib/fetchapis");
+const { OpenAIApi } = require("openai");
+const { Configuration } = require("openai");
 const owoify = require("owoify-js").default;
 var dream = WomboDreamApi.buildDefaultInstance();
 //TODO look at line 12
@@ -2672,8 +2674,16 @@ setInterval(() => {
             client.channels.cache.get("882743320554643476")
         );
     }
+    if (d.getMinutes() == 39 && d.getSeconds() < 1 && Math.random() < 0.25) {
+        sendWebhook(
+            "scal",
+            "TIME\nHAHAHAHH",
+            false,
+            client.channels.cache.get("882743320554643476")
+        );
+    }
 }, 1000);
-//#endregion
+
 fs.readFile("./token.txt", (err, data) => {
     if (err) {
         console.error(err);

@@ -938,7 +938,7 @@ async function question(question, channel) {
     });
     sendWebhook(
         monsoonPre[1],
-        response.data.choices[0].text.split("Q:")[0].trim(),
+        response.data.choices[0].text.split("Q:")[0].split("</code>")[0].trim(),
         false,
         channel
     );

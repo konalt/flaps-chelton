@@ -95,7 +95,7 @@ brimmy--briston elementalo--https://media.discordapp.net/attachments/98195239650
 goofygabe--and why he goufy--https://us-tuna-sounds-images.voicemod.net/ff1075d2-5e60-4e0a-b8e5-5fce6cd7508d-1657133488913.png
 ballin--BALLIN !?!?--https://i.pinimg.com/originals/a5/94/89/a594898fba9079c0ecf4b6057b80a31a.jpg
 tressel--jim tressel--https://buckeyeswire.usatoday.com/wp-content/uploads/sites/32/2019/11/jim-tressel.jpg
-twink--femboy twink--https://media.discordapp.net/attachments/981952396500537394/1002105407235440700/unknown.png
+twink--femboy twink--https://media.discordapp.net/attachments/882743320554643476/1006350064253407353/unknown.png
 gus--gus frig--https://static.wikia.nocookie.net/breakingbad/images/d/d2/Gus_2008.png/revision/latest?cb=20220611213736
 100--THE 100TH BOT 💯💯--https://ichef.bbci.co.uk/news/624/mcs/media/images/71922000/jpg/_71922912_100_thinkstock.jpg--(x) => {return "💯💯" + x.toUpperCase() + "💯💯"}
 bee--bee girl--https://cdn.discordapp.com/emojis/992057629469851728.gif
