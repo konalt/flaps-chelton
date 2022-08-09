@@ -444,6 +444,8 @@ client.on("messageCreate", async(msg) => {
         if (scal.includes("funny") && scal.includes("video")) {
             return scalFunnyVideo(msg);
         }
+        if (scal.includes("scal") && scal.includes("<:cookie:1006706770309292042>"))
+            return sendWebhook("scal", "I LOVE COOKIES", false, msg.channel);
         if (msg.content.startsWith("!..sticky")) {
             var stickyBot = commandArgs[1];
             flapslib.webhooks.updateUsers();
@@ -2097,6 +2099,8 @@ fbi files on ${commandArgString}: ${
                     }
                     break;
                 case "!r34comments":
+                case "!r34commentsvideo":
+                case "!r34video":
                 case "!r34":
                     {
                         if (Math.random() < 0.25) {
@@ -2172,23 +2176,31 @@ fbi files on ${commandArgString}: ${
                                             /<\/a>\n<\/span>\n<span id="s[0-9]*" class="thumb">\n<a id="p[0-9]*" href="[A-z\.\&\?\=0-9]*" style="">/gi
                                         );
                                     list = list.filter((item) => {
-                                        return item.startsWith("\n<img s");
-                                    });
-                                    list = list.map((item) => {
-                                        return item.substring(
-                                            '<img src="'.length + 1,
-                                            "https://wimg.rule34.xxx/thumbnails/5074/thumbnail_d3b24d47c2ac59b0c0f2d04319ec240e.jpg?5784441"
-                                            .length +
-                                            '<img src="'.length +
-                                            1
+                                        return (
+                                            item.startsWith("\n<img s") &&
+                                            (command.includes("video") ?
+                                                item.includes("border: 3px solid #0000ff;") :
+                                                true)
                                         );
                                     });
+
                                     list = list.map((item) => {
-                                        return item.replace(/thumbnail/g, "sample");
+                                        return [
+                                            item.substring(
+                                                '<img src="'.length + 1,
+                                                "https://wimg.rule34.xxx/thumbnails/5074/thumbnail_d3b24d47c2ac59b0c0f2d04319ec240e.jpg?5784441"
+                                                .length +
+                                                '<img src="'.length +
+                                                1
+                                            ),
+                                            item.includes("border: 3px solid #0000ff;"),
+                                        ];
+                                    });
+                                    list = list.map((item) => {
+                                        return [item[0].replace(/thumbnail/g, "sample"), item[1]];
                                     });
                                     console.log(list);
                                     var item = randomFromArray(list);
-                                    console.log(item);
                                     var id = uuidv4() + ".jpg";
                                     if (!item) {
                                         return sendWebhook(
@@ -2198,64 +2210,107 @@ fbi files on ${commandArgString}: ${
                                             msg.channel
                                         );
                                     }
-                                    download(item, "images/cache/" + id, async(err) => {
-                                        if (err) {
-                                            console.log("ERROR WEEWOOWOOEOEOWEO");
-                                            return download(
-                                                item.replace(/sample/g, "thumbnail"),
-                                                "images/cache/" + id,
-                                                async(err) => {
-                                                    var message = await client.channels.cache
-                                                        .get("956316856422137856")
-                                                        .send({
-                                                            files: [{
-                                                                attachment: __dirname + "\\images\\cache\\" + id,
-                                                            }, ],
-                                                        });
+                                    var isVideoStr = item[1] ? "Video: YES" : "Video: NO";
+                                    if (item[1] && command.includes("video")) {
+                                        id = uuidv4() + ".mp4";
+                                        var videoURL =
+                                            "https://ws-cdn-video.rule34.xxx/images/" +
+                                            item[0].split("/")[4] +
+                                            "/" +
+                                            item[0].split("_")[1].replace(/(png|jpe*g)/g, "mp4");
+                                        download(videoURL, "images/cache/" + id, async(err) => {
+                                            var message = await client.channels.cache
+                                                .get("956316856422137856")
+                                                .send({
+                                                    files: [{
+                                                        attachment: __dirname + "\\images\\cache\\" + id,
+                                                    }, ],
+                                                });
 
-                                                    setTimeout(() => {
-                                                        fs.unlinkSync("./images/cache/" + id);
-                                                    }, 10000);
+                                            setTimeout(() => {
+                                                fs.unlinkSync("./images/cache/" + id);
+                                            }, 10000);
 
-                                                    getR34Comments(item.split("?")[1]).then(
-                                                        (comments) => {
-                                                            if (!command.includes("comments"))
-                                                                comments = "";
-                                                            sendWebhook(
-                                                                "runcling",
-                                                                comments +
-                                                                "\n" +
-                                                                message.attachments.first().url,
-                                                                false,
-                                                                msg.channel
-                                                            );
-                                                        }
+                                            getR34Comments(item[0].split("?")[1]).then(
+                                                (comments) => {
+                                                    if (!command.includes("comments")) comments = "";
+                                                    sendWebhook(
+                                                        "runcling",
+                                                        comments +
+                                                        "\n" +
+                                                        isVideoStr +
+                                                        "\n" +
+                                                        message.attachments.first().url,
+                                                        false,
+                                                        msg.channel
                                                     );
                                                 }
                                             );
-                                        }
-                                        var message = await client.channels.cache
-                                            .get("956316856422137856")
-                                            .send({
-                                                files: [{
-                                                    attachment: __dirname + "\\images\\cache\\" + id,
-                                                }, ],
-                                            });
+                                        });
+                                    } else {
+                                        download(item[0], "images/cache/" + id, async(err) => {
+                                            if (err) {
+                                                console.log("ERROR WEEWOOWOOEOEOWEO");
+                                                return download(
+                                                    item[0].replace(/sample/g, "thumbnail"),
+                                                    "images/cache/" + id,
+                                                    async(err) => {
+                                                        var message = await client.channels.cache
+                                                            .get("956316856422137856")
+                                                            .send({
+                                                                files: [{
+                                                                    attachment: __dirname + "\\images\\cache\\" + id,
+                                                                }, ],
+                                                            });
 
-                                        setTimeout(() => {
-                                            fs.unlinkSync("./images/cache/" + id);
-                                        }, 10000);
+                                                        setTimeout(() => {
+                                                            fs.unlinkSync("./images/cache/" + id);
+                                                        }, 10000);
 
-                                        getR34Comments(item.split("?")[1]).then((comments) => {
-                                            if (!command.includes("comments")) comments = "";
-                                            sendWebhook(
-                                                "runcling",
-                                                comments + "\n" + message.attachments.first().url,
-                                                false,
-                                                msg.channel
+                                                        getR34Comments(item[0].split("?")[1]).then(
+                                                            (comments) => {
+                                                                if (!command.includes("comments"))
+                                                                    comments = "";
+                                                                sendWebhook(
+                                                                    "runcling",
+                                                                    comments +
+                                                                    "\n" +
+                                                                    isVideoStr +
+                                                                    "\n" +
+                                                                    message.attachments.first().url,
+                                                                    false,
+                                                                    msg.channel
+                                                                );
+                                                            }
+                                                        );
+                                                    }
+                                                );
+                                            }
+                                            var message = await client.channels.cache
+                                                .get("956316856422137856")
+                                                .send({
+                                                    files: [{
+                                                        attachment: __dirname + "\\images\\cache\\" + id,
+                                                    }, ],
+                                                });
+
+                                            setTimeout(() => {
+                                                fs.unlinkSync("./images/cache/" + id);
+                                            }, 10000);
+
+                                            getR34Comments(item[0].split("?")[1]).then(
+                                                (comments) => {
+                                                    if (!command.includes("comments")) comments = "";
+                                                    sendWebhook(
+                                                        "runcling",
+                                                        comments + "\n" + message.attachments.first().url,
+                                                        false,
+                                                        msg.channel
+                                                    );
+                                                }
                                             );
                                         });
-                                    });
+                                    }
                                 });
                         });
                     }
