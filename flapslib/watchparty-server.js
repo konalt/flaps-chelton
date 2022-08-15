@@ -1,4 +1,4 @@
-const { sendWebhook } = require("./webhooks");
+const { sendWebhook, users } = require("./webhooks");
 const fetch = require("node-fetch");
 
 function init(client) {
@@ -144,6 +144,17 @@ function init(client) {
         questionPromise(req.params.x.replace(/_sps_/g, " ")).then((data) => {
             res.send(data);
         });
+    });
+    app_rest.get("/flaps_api/userdata/:x", (req, res) => {
+        var user = req.params.x;
+        if (user.startsWith("<")) user = user.substring(1);
+        if (users[user]) {
+            res.send(
+                users[user][0] == "__FlapsNick__" ? "flaps chelton" : users[user][0]
+            );
+        } else {
+            res.send("FlapsAPIUnknownUser");
+        }
     });
 
     setInterval(() => {
