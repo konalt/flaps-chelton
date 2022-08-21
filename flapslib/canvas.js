@@ -12,7 +12,7 @@ var memeMaking = {
             n = "farquaad";
         }
         return fs
-            .readFileSync("../images/sizes.txt")
+            .readFileSync("./images/sizes.txt")
             .toString()
             .split("\r\n")
             .filter((l) => {
@@ -21,13 +21,14 @@ var memeMaking = {
             .split(" ");
     },
     imageExists: function(n) {
-        return !!fs
-            .readFileSync("../images/sizes.txt")
+        var o = !!fs
+            .readFileSync("./images/sizes.txt")
             .toString()
             .split("\r\n")
             .find((l) => {
                 return l.split(" ")[0] == n;
             });
+        return o;
     },
 };
 
@@ -37,8 +38,10 @@ function laugh(msg, client) {
         "farquaad" :
         msg.content.substring("!laugh ".length).split(" ")[0];
     if (image == "attachment" && msg.attachments.first()) {
-        var id = flapslib.ai.uuidv4();
-        flapslib.download(msg.attachments.first().url, "images/cache/" + id, () => {
+        console.log("[laugh] Laugh attachment");
+        var id = uuidv4();
+        download(msg.attachments.first().url, "images/cache/" + id, () => {
+            console.log("[laugh] Downloaded attachment");
             image = "cache/" + id;
             var data = [
                 "cache/" + id,
@@ -50,6 +53,8 @@ function laugh(msg, client) {
                 "D",
                 "D",
             ];
+            console.log("[laugh] data");
+            console.log(data);
             var c = canvas.createCanvas(parseInt(data[1]), parseInt(data[2]));
             var ctx = c.getContext("2d");
             var text = msg.content.split(" ").slice(2).join(" ");
@@ -58,119 +63,179 @@ function laugh(msg, client) {
             ctx.strokeStyle = "black";
             ctx.textAlign = "center";
 
-            canvas.loadImage(__dirname + "./../images\\" + image).then(async(i) => {
-                ctx.font = "normal normal bolder" + data[3] + "px Impact";
-                ctx.lineWidth = parseInt(data[3]) / 30;
-                var text1Pos = [0, 0];
-                var text2Pos = [0, 0];
-                if (data[4] == "D") {
-                    text1Pos[0] = parseInt(data[1]) / 2;
-                } else {
-                    text1Pos[0] = parseInt(data[4]);
-                }
-                if (data[5] == "D") {
-                    text1Pos[1] = parseInt(data[3]);
-                } else if (data[5] == "B") {
-                    text1Pos[1] = parseInt(data[2]) - 10;
-                } else {
-                    text1Pos[1] = parseInt(data[5]);
-                }
-                if (data[6] == "D") {
-                    text2Pos[0] = parseInt(data[1]) / 2;
-                } else {
-                    text2Pos[0] = parseInt(data[6]);
-                }
-                if (data[7] == "D") {
-                    text2Pos[1] = parseInt(data[2]) - 10;
-                } else if (data[7] == "T") {
-                    text2Pos[1] = parseInt(data[3]);
-                } else {
-                    text2Pos[1] = parseInt(data[7]);
-                }
-                ctx.drawImage(i, 0, 0, parseInt(data[1]), parseInt(data[2]));
-                if (text.includes(":")) {
-                    text = [text.split(":")[0], text.split(":")[1]];
-                } else {
-                    text = [text, ""];
-                }
-                ctx.fillText(text[0], text1Pos[0], text1Pos[1]);
-                ctx.strokeText(text[0], text1Pos[0], text1Pos[1]);
-                ctx.fillText(text[1], text2Pos[0], text2Pos[1]);
-                ctx.strokeText(text[1], text2Pos[0], text2Pos[1]);
+            canvas
+                .loadImage(__dirname + "./../images\\" + image)
+                .then(async(i) => {
+                    ctx.font = "normal normal bolder" + data[3] + "px Impact";
+                    ctx.lineWidth = parseInt(data[3]) / 30;
+                    var text1Pos = [0, 0];
+                    var text2Pos = [0, 0];
+                    if (data[4] == "D") {
+                        text1Pos[0] = parseInt(data[1]) / 2;
+                    } else {
+                        text1Pos[0] = parseInt(data[4]);
+                    }
+                    if (data[5] == "D") {
+                        text1Pos[1] = parseInt(data[3]);
+                    } else if (data[5] == "B") {
+                        text1Pos[1] = parseInt(data[2]) - 10;
+                    } else {
+                        text1Pos[1] = parseInt(data[5]);
+                    }
+                    if (data[6] == "D") {
+                        text2Pos[0] = parseInt(data[1]) / 2;
+                    } else {
+                        text2Pos[0] = parseInt(data[6]);
+                    }
+                    if (data[7] == "D") {
+                        text2Pos[1] = parseInt(data[2]) - 10;
+                    } else if (data[7] == "T") {
+                        text2Pos[1] = parseInt(data[3]);
+                    } else {
+                        text2Pos[1] = parseInt(data[7]);
+                    }
+                    ctx.drawImage(
+                        i,
+                        0,
+                        0,
+                        parseInt(data[1]),
+                        parseInt(data[2])
+                    );
+                    if (text.includes(":")) {
+                        text = [text.split(":")[0], text.split(":")[1]];
+                    } else {
+                        text = [text, ""];
+                    }
+                    ctx.fillText(text[0], text1Pos[0], text1Pos[1]);
+                    ctx.strokeText(text[0], text1Pos[0], text1Pos[1]);
+                    ctx.fillText(text[1], text2Pos[0], text2Pos[1]);
+                    ctx.strokeText(text[1], text2Pos[0], text2Pos[1]);
 
-                sendCanvas(c, msg, client, "jamesphotoframe");
-            });
+                    console.log("[laugh] Sending canvas");
+                    sendCanvas(c, msg, client, "jamesphotoframe");
+                });
         });
     } else {
         var text;
+        console.log("[laugh] random checks and shit");
         if (
             memeMaking.imageExists(
                 msg.content.substring("!laugh ".length).split(" ")[0]
             )
         ) {
+            console.log("[laugh] pos1");
             text =
                 msg.content.substring("!laugh ".length).length == 0 ?
                 "" :
-                msg.content.substring("!laugh ".length + image.length + 1);
+                msg.content.substring(
+                    "!laugh ".length + image.length + 1
+                );
         } else {
+            console.log("[laugh] pos2");
             image = "farquaad";
             text =
                 msg.content.substring("!laugh ".length).length == 0 ?
                 "" :
                 msg.content.substring("!laugh ".length);
         }
-        var data = memeMaking.getImageData(image);
-        var c = canvas.createCanvas(parseInt(data[1]), parseInt(data[2]));
-        var ctx = c.getContext("2d");
+        console.log("[laugh] mm keep going");
+        memeMaking.getImageData(image).then((data) => {
+            console.log(parseInt(data[1]), parseInt(data[2]));
+            var c = canvas.createCanvas(parseInt(data[1]), parseInt(data[2]));
+            var ctx = c.getContext("2d");
 
-        ctx.fillStyle = "white";
-        ctx.strokeStyle = "black";
-        ctx.textAlign = "center";
+            ctx.fillStyle = "white";
+            ctx.strokeStyle = "black";
+            ctx.textAlign = "center";
 
-        canvas
-            .loadImage(__dirname + "./../images\\" + image + ".jpg")
-            .then(async(i) => {
-                ctx.font = "normal normal bolder" + data[3] + "px Impact";
-                ctx.lineWidth = parseInt(data[3]) / 30;
-                var text1Pos = [0, 0];
-                var text2Pos = [0, 0];
-                if (data[4] == "D") {
-                    text1Pos[0] = parseInt(data[1]) / 2;
-                } else {
-                    text1Pos[0] = parseInt(data[4]);
-                }
-                if (data[5] == "D") {
-                    text1Pos[1] = parseInt(data[3]);
-                } else if (data[5] == "B") {
-                    text1Pos[1] = parseInt(data[2]) - 10;
-                } else {
-                    text1Pos[1] = parseInt(data[5]);
-                }
-                if (data[6] == "D") {
-                    text2Pos[0] = parseInt(data[1]) / 2;
-                } else {
-                    text2Pos[0] = parseInt(data[6]);
-                }
-                if (data[7] == "D") {
-                    text2Pos[1] = parseInt(data[2]) - 10;
-                } else if (data[7] == "T") {
-                    text2Pos[1] = parseInt(data[3]);
-                } else {
-                    text2Pos[1] = parseInt(data[7]);
-                }
-                ctx.drawImage(i, 0, 0, parseInt(data[1]), parseInt(data[2]));
-                if (text.includes(":")) {
-                    text = [text.split(":")[0], text.split(":")[1]];
-                } else {
-                    text = [text, ""];
-                }
-                ctx.fillText(text[0], text1Pos[0], text1Pos[1]);
-                ctx.strokeText(text[0], text1Pos[0], text1Pos[1]);
-                ctx.fillText(text[1], text2Pos[0], text2Pos[1]);
-                ctx.strokeText(text[1], text2Pos[0], text2Pos[1]);
+            canvas
+                .loadImage(__dirname + "./../images\\" + image + ".jpg")
+                .then(async(i) => {
+                    ctx.font = "normal normal bolder" + data[3] + "px Impact";
+                    ctx.lineWidth = parseInt(data[3]) / 30;
+                    var text1Pos = [0, 0];
+                    var text2Pos = [0, 0];
+                    if (data[4] == "D") {
+                        text1Pos[0] = parseInt(data[1]) / 2;
+                    } else {
+                        text1Pos[0] = parseInt(data[4]);
+                    }
+                    if (data[5] == "D") {
+                        text1Pos[1] = parseInt(data[3]);
+                    } else if (data[5] == "B") {
+                        text1Pos[1] = parseInt(data[2]) - 10;
+                    } else {
+                        text1Pos[1] = parseInt(data[5]);
+                    }
+                    if (data[6] == "D") {
+                        text2Pos[0] = parseInt(data[1]) / 2;
+                    } else {
+                        text2Pos[0] = parseInt(data[6]);
+                    }
+                    if (data[7] == "D") {
+                        text2Pos[1] = parseInt(data[2]) - 10;
+                    } else if (data[7] == "T") {
+                        text2Pos[1] = parseInt(data[3]);
+                    } else {
+                        text2Pos[1] = parseInt(data[7]);
+                    }
+                    ctx.drawImage(
+                        i,
+                        0,
+                        0,
+                        parseInt(data[1]),
+                        parseInt(data[2])
+                    );
+                    if (text.includes(":")) {
+                        text = [text.split(":")[0], text.split(":")[1]];
+                    } else {
+                        text = [text, ""];
+                    }
+                    ctx.fillText(text[0], text1Pos[0], text1Pos[1]);
+                    ctx.strokeText(text[0], text1Pos[0], text1Pos[1]);
+                    ctx.fillText(text[1], text2Pos[0], text2Pos[1]);
+                    ctx.strokeText(text[1], text2Pos[0], text2Pos[1]);
 
-                sendCanvas(c, msg, client, "jamesphotoframe");
-            });
+                    console.log("[laugh] sending canvas");
+                    sendCanvas(c, msg, client, "jamesphotoframe");
+                });
+        });
+    }
+}
+
+function todo(ctx, text, w, h, fontSize) {
+    var max_width = w;
+    var lines = new Array();
+    var width = 0,
+        i,
+        j;
+    var result;
+
+    // Start calculation
+    while (text.length) {
+        for (
+            i = text.length; ctx.measureText(text.substr(0, i)).width > max_width; i--
+        );
+
+        result = text.substr(0, i);
+
+        if (i !== text.length)
+            for (
+                j = 0; result.indexOf(" ", j) !== -1; j = result.indexOf(" ", j) + 1
+            );
+
+        lines.push(result.substr(0, j || result.length));
+        width = Math.max(width, ctx.measureText(lines[lines.length - 1]).width);
+        text = text.substr(lines[lines.length - 1].length, text.length);
+    }
+
+    var textH = h / 2;
+    textH -= (lines.length * fontSize + (fontSize + 5)) / 2;
+    textH += fontSize / 2;
+
+    for (i = 0, j = lines.length; i < j; ++i) {
+        ctx.fillText(lines[i], w / 2, textH + fontSize + (fontSize + 5) * i);
+        ctx.strokeText(lines[i], w / 2, textH + fontSize + (fontSize + 5) * i);
     }
 }
 
@@ -191,11 +256,10 @@ function homodog(msg, client) {
                 ctx.fillStyle = "white";
                 ctx.strokeStyle = "black";
                 ctx.textAlign = "center";
-                ctx.font = "normal normal bolder " + h / 9.5 + "px Homodog";
-                ctx.lineWidth = h / 340;
+                ctx.font = "normal normal bolder " + h / 7 + "px Homodog";
+                ctx.lineWidth = h / 240;
 
-                ctx.fillText(text, w / 2, h / 2);
-                ctx.strokeText(text, w / 2, h / 2);
+                todo(ctx, text, w, h, h / 7);
 
                 sendCanvas(c, msg, client, "jamesphotoframe");
             });
@@ -209,7 +273,7 @@ function homodog(msg, client) {
             );
         });
     } else {
-        doThing("homophobicdog.png", 680, 680);
+        doThing("homophobicdog.png", 1024, 1024);
     }
 }
 
@@ -218,29 +282,32 @@ function flip(msg, client) {
         console.log(msg.attachments.first());
         var request = require("request").defaults({ encoding: null });
 
-        request.get(msg.attachments.first().url, function(error, response, body) {
-            if (!error && response.statusCode == 200) {
-                //data = "data:" + response.headers["content-type"] + ";base64," + Buffer.from(body).toString('base64');
-                var imageStream = Buffer.from(body, "base64");
-                var imgID = uuidv4().replace(/-/g, "_") + ".jpg";
-                fs.writeFileSync("../images/cache/" + imgID, imageStream);
-                var w = msg.attachments.first().width;
-                var h = msg.attachments.first().height;
-                var c = canvas.createCanvas(w, h);
-                var ctx = c.getContext("2d");
-                canvas
-                    .loadImage(__dirname + "./../images\\cache\\" + imgID)
-                    .then(async(photo) => {
-                        ctx.translate(w, 0);
-                        ctx.scale(-1, 1);
-                        ctx.drawImage(photo, 0, 10, w, h);
+        request.get(
+            msg.attachments.first().url,
+            function(error, response, body) {
+                if (!error && response.statusCode == 200) {
+                    //data = "data:" + response.headers["content-type"] + ";base64," + Buffer.from(body).toString('base64');
+                    var imageStream = Buffer.from(body, "base64");
+                    var imgID = uuidv4().replace(/-/g, "_") + ".jpg";
+                    fs.writeFileSync("../images/cache/" + imgID, imageStream);
+                    var w = msg.attachments.first().width;
+                    var h = msg.attachments.first().height;
+                    var c = canvas.createCanvas(w, h);
+                    var ctx = c.getContext("2d");
+                    canvas
+                        .loadImage(__dirname + "./../images\\cache\\" + imgID)
+                        .then(async(photo) => {
+                            ctx.translate(w, 0);
+                            ctx.scale(-1, 1);
+                            ctx.drawImage(photo, 0, 10, w, h);
 
-                        sendCanvas(c, msg, client, "jamesphotoframe");
-                    });
-            } else {
-                sendWebhook("jamesphotoframe", error, true, msg.channel);
+                            sendCanvas(c, msg, client, "jamesphotoframe");
+                        });
+                } else {
+                    sendWebhook("jamesphotoframe", error, true, msg.channel);
+                }
             }
-        });
+        );
     } else {
         sendWebhook(
             "jamesphotoframe",
@@ -326,39 +393,54 @@ function unfunnyTest(msg, client) {
         console.log(msg.attachments.first());
         var request = require("request").defaults({ encoding: null });
 
-        request.get(msg.attachments.first().url, function(error, response, body) {
-            if (!error && response.statusCode == 200) {
-                //data = "data:" + response.headers["content-type"] + ";base64," + Buffer.from(body).toString('base64');
-                var imageStream = Buffer.from(body, "base64");
-                var imgID = uuidv4().replace(/-/g, "_") + ".jpg";
-                var imgID2 = uuidv4().replace(/-/g, "_") + ".png";
-                fs.writeFileSync("../images/cache/" + imgID, imageStream);
-                //sendWebhook("flaps", imageStream.toString("base64").substring(0, 1000), true, msg.channel);
-                var w = msg.attachments.first().width;
-                var h = msg.attachments.first().height;
-                var c = canvas.createCanvas(w, h);
-                var ctx = c.getContext("2d");
-                canvas
-                    .loadImage(path.join("..", "images/cache/", imgID))
-                    .then(async(photo) => {
-                        ctx.drawImage(photo, 0, 0);
-                        var imgs = ["saul", "gman", "homophobicdog", "iron", "killnow"];
-                        unfunnyToImg(
-                            ctx,
-                            await canvas.loadImage(
-                                pj(imgs[Math.floor(Math.random() * imgs.length)] + ".png")
-                            ),
-                            msg.content.split(" ")[1] ?
-                            parseInt(msg.content.split(" ")[1]) :
-                            5
-                        );
+        request.get(
+            msg.attachments.first().url,
+            function(error, response, body) {
+                if (!error && response.statusCode == 200) {
+                    //data = "data:" + response.headers["content-type"] + ";base64," + Buffer.from(body).toString('base64');
+                    var imageStream = Buffer.from(body, "base64");
+                    var imgID = uuidv4().replace(/-/g, "_") + ".jpg";
+                    var imgID2 = uuidv4().replace(/-/g, "_") + ".png";
+                    fs.writeFileSync("../images/cache/" + imgID, imageStream);
+                    //sendWebhook("flaps", imageStream.toString("base64").substring(0, 1000), true, msg.channel);
+                    var w = msg.attachments.first().width;
+                    var h = msg.attachments.first().height;
+                    var c = canvas.createCanvas(w, h);
+                    var ctx = c.getContext("2d");
+                    canvas
+                        .loadImage(path.join("..", "images/cache/", imgID))
+                        .then(async(photo) => {
+                            ctx.drawImage(photo, 0, 0);
+                            var imgs = [
+                                "saul",
+                                "gman",
+                                "homophobicdog",
+                                "iron",
+                                "killnow",
+                            ];
+                            unfunnyToImg(
+                                ctx,
+                                await canvas.loadImage(
+                                    pj(
+                                        imgs[
+                                            Math.floor(
+                                                Math.random() * imgs.length
+                                            )
+                                        ] + ".png"
+                                    )
+                                ),
+                                msg.content.split(" ")[1] ?
+                                parseInt(msg.content.split(" ")[1]) :
+                                5
+                            );
 
-                        sendCanvas(c, msg, client, "jamesphotoframe");
-                    });
-            } else {
-                sendWebhook("jamesphotoframe", error, true, msg.channel);
+                            sendCanvas(c, msg, client, "jamesphotoframe");
+                        });
+                } else {
+                    sendWebhook("jamesphotoframe", error, true, msg.channel);
+                }
             }
-        });
+        );
     } else {
         sendWebhook(
             "jamesphotoframe",
@@ -374,42 +456,52 @@ function sb(msg, client) {
         console.log(msg.attachments.first());
         var request = require("request").defaults({ encoding: null });
 
-        request.get(msg.attachments.first().url, function(error, response, body) {
-            if (!error && response.statusCode == 200) {
-                //data = "data:" + response.headers["content-type"] + ";base64," + Buffer.from(body).toString('base64');
-                var imageStream = Buffer.from(body, "base64");
-                var imgID = uuidv4().replace(/-/g, "_") + ".jpg";
-                var imgID2 = uuidv4().replace(/-/g, "_") + ".png";
-                fs.writeFileSync("../images/cache/" + imgID, imageStream);
-                //sendWebhook("flaps", imageStream.toString("base64").substring(0, 1000), true, msg.channel);
-                var w = msg.attachments.first().width;
-                var h = msg.attachments.first().height;
-                var c = canvas.createCanvas(w, h + 10);
-                var ctx = c.getContext("2d");
-                canvas
-                    .loadImage(path.join("..", "images/cache/", imgID))
-                    .then(async(photo) => {
-                        canvas.loadImage(pj("speech.png")).then(async(speechbubble) => {
-                            var sbHeight = w * (17 / 22);
-                            ctx.drawImage(photo, 0, 10, w, h);
-                            if (msg.content.includes("flip")) {
-                                ctx.translate(w, 0);
-                                ctx.scale(-1, 1);
-                            }
-                            ctx.drawImage(
-                                speechbubble,
-                                0, -(sbHeight - sbHeight / 3),
-                                w,
-                                sbHeight
-                            );
+        request.get(
+            msg.attachments.first().url,
+            function(error, response, body) {
+                if (!error && response.statusCode == 200) {
+                    //data = "data:" + response.headers["content-type"] + ";base64," + Buffer.from(body).toString('base64');
+                    var imageStream = Buffer.from(body, "base64");
+                    var imgID = uuidv4().replace(/-/g, "_") + ".jpg";
+                    var imgID2 = uuidv4().replace(/-/g, "_") + ".png";
+                    fs.writeFileSync("../images/cache/" + imgID, imageStream);
+                    //sendWebhook("flaps", imageStream.toString("base64").substring(0, 1000), true, msg.channel);
+                    var w = msg.attachments.first().width;
+                    var h = msg.attachments.first().height;
+                    var c = canvas.createCanvas(w, h + 10);
+                    var ctx = c.getContext("2d");
+                    canvas
+                        .loadImage(path.join("..", "images/cache/", imgID))
+                        .then(async(photo) => {
+                            canvas
+                                .loadImage(pj("speech.png"))
+                                .then(async(speechbubble) => {
+                                    var sbHeight = w * (17 / 22);
+                                    ctx.drawImage(photo, 0, 10, w, h);
+                                    if (msg.content.includes("flip")) {
+                                        ctx.translate(w, 0);
+                                        ctx.scale(-1, 1);
+                                    }
+                                    ctx.drawImage(
+                                        speechbubble,
+                                        0, -(sbHeight - sbHeight / 3),
+                                        w,
+                                        sbHeight
+                                    );
 
-                            sendCanvas(c, msg, client, "jamesphotoframe");
+                                    sendCanvas(
+                                        c,
+                                        msg,
+                                        client,
+                                        "jamesphotoframe"
+                                    );
+                                });
                         });
-                    });
-            } else {
-                sendWebhook("jamesphotoframe", error, true, msg.channel);
+                } else {
+                    sendWebhook("jamesphotoframe", error, true, msg.channel);
+                }
             }
-        });
+        );
     } else {
         sendWebhook(
             "jamesphotoframe",
@@ -425,29 +517,50 @@ function frame(msg, client) {
         console.log(msg.attachments.first());
         var request = require("request").defaults({ encoding: null });
 
-        request.get(msg.attachments.first().url, function(error, response, body) {
-            if (!error && response.statusCode == 200) {
-                //data = "data:" + response.headers["content-type"] + ";base64," + Buffer.from(body).toString('base64');
-                var imageStream = Buffer.from(body, "base64");
-                var imgID = uuidv4().replace(/-/g, "_") + ".jpg";
-                fs.writeFileSync("../images/cache/" + imgID, imageStream);
-                //sendWebhook("flaps", imageStream.toString("base64").substring(0, 1000), true, msg.channel);
-                var c = canvas.createCanvas(1413 - 130, 1031 - 140);
-                var ctx = c.getContext("2d");
-                canvas.loadImage("./../images/cache/" + imgID).then(async(photo) => {
+        request.get(
+            msg.attachments.first().url,
+            function(error, response, body) {
+                if (!error && response.statusCode == 200) {
+                    //data = "data:" + response.headers["content-type"] + ";base64," + Buffer.from(body).toString('base64');
+                    var imageStream = Buffer.from(body, "base64");
+                    var imgID = uuidv4().replace(/-/g, "_") + ".jpg";
+                    fs.writeFileSync("../images/cache/" + imgID, imageStream);
+                    //sendWebhook("flaps", imageStream.toString("base64").substring(0, 1000), true, msg.channel);
+                    var c = canvas.createCanvas(1413 - 130, 1031 - 140);
+                    var ctx = c.getContext("2d");
                     canvas
-                        .loadImage(path.join(__dirname, "..", "images", "frame.png"))
-                        .then(async(frame) => {
-                            ctx.drawImage(photo, 72, 73, 1125, 729);
-                            ctx.drawImage(frame, -130 / 2, -140 / 2, 1413, 1031);
+                        .loadImage("./../images/cache/" + imgID)
+                        .then(async(photo) => {
+                            canvas
+                                .loadImage(
+                                    path.join(
+                                        __dirname,
+                                        "..",
+                                        "images",
+                                        "frame.png"
+                                    )
+                                )
+                                .then(async(frame) => {
+                                    ctx.drawImage(photo, 72, 73, 1125, 729);
+                                    ctx.drawImage(
+                                        frame, -130 / 2, -140 / 2,
+                                        1413,
+                                        1031
+                                    );
 
-                            sendCanvas(c, msg, client, "jamesphotoframe");
+                                    sendCanvas(
+                                        c,
+                                        msg,
+                                        client,
+                                        "jamesphotoframe"
+                                    );
+                                });
                         });
-                });
-            } else {
-                sendWebhook("jamesphotoframe", error, true, msg.channel);
+                } else {
+                    sendWebhook("jamesphotoframe", error, true, msg.channel);
+                }
             }
-        });
+        );
     } else {
         sendWebhook(
             "jamesphotoframe",
@@ -483,17 +596,33 @@ function frame2(msg, client) {
                     var c = canvas.createCanvas(w + fsize * 2, h + fsize * 2);
                     var ctx = c.getContext("2d");
 
-                    var frame_tl = await canvas.loadImage(pj("framecorner_topleft.png")),
-                        frame_tr = await canvas.loadImage(pj("framecorner_topright.png")),
+                    var frame_tl = await canvas.loadImage(
+                            pj("framecorner_topleft.png")
+                        ),
+                        frame_tr = await canvas.loadImage(
+                            pj("framecorner_topright.png")
+                        ),
                         frame_br = await canvas.loadImage(
                             pj("framecorner_bottomright.png")
                         ),
-                        frame_bl = await canvas.loadImage(pj("framecorner_bottomleft.png")),
-                        frame_l = await canvas.loadImage(pj("frameside_left.png")),
-                        frame_r = await canvas.loadImage(pj("frameside_right.png")),
-                        frame_t = await canvas.loadImage(pj("frameside_top.png")),
-                        frame_b = await canvas.loadImage(pj("frameside_bottom.png")),
-                        img = await canvas.loadImage("./../images/cache/" + imgID);
+                        frame_bl = await canvas.loadImage(
+                            pj("framecorner_bottomleft.png")
+                        ),
+                        frame_l = await canvas.loadImage(
+                            pj("frameside_left.png")
+                        ),
+                        frame_r = await canvas.loadImage(
+                            pj("frameside_right.png")
+                        ),
+                        frame_t = await canvas.loadImage(
+                            pj("frameside_top.png")
+                        ),
+                        frame_b = await canvas.loadImage(
+                            pj("frameside_bottom.png")
+                        ),
+                        img = await canvas.loadImage(
+                            "./../images/cache/" + imgID
+                        );
 
                     ctx.drawImage(frame_tl, 0, 0, fsize, fsize);
                     ctx.drawImage(frame_t, fsize, 0, w, fsize);
@@ -527,36 +656,59 @@ function dalle2watermark(msg, client) {
         console.log(msg.attachments.first());
         var request = require("request").defaults({ encoding: null });
 
-        request.get(msg.attachments.first().url, function(error, response, body) {
-            if (!error && response.statusCode == 200) {
-                //data = "data:" + response.headers["content-type"] + ";base64," + Buffer.from(body).toString('base64');
-                var imageStream = Buffer.from(body, "base64");
-                var imgID = uuidv4().replace(/-/g, "_") + ".jpg";
-                var imgID2 = uuidv4().replace(/-/g, "_") + ".png";
-                var w = msg.attachments.first().width;
-                var h = msg.attachments.first().height;
-                fs.writeFileSync("../images/cache/" + imgID, imageStream);
-                //sendWebhook("flaps", imageStream.toString("base64").substring(0, 1000), true, msg.channel);
-                var c = canvas.createCanvas(w, h);
-                var ctx = c.getContext("2d");
-                canvas.loadImage("./../images/cache/" + imgID).then(async(photo) => {
+        request.get(
+            msg.attachments.first().url,
+            function(error, response, body) {
+                if (!error && response.statusCode == 200) {
+                    //data = "data:" + response.headers["content-type"] + ";base64," + Buffer.from(body).toString('base64');
+                    var imageStream = Buffer.from(body, "base64");
+                    var imgID = uuidv4().replace(/-/g, "_") + ".jpg";
+                    var imgID2 = uuidv4().replace(/-/g, "_") + ".png";
+                    var w = msg.attachments.first().width;
+                    var h = msg.attachments.first().height;
+                    fs.writeFileSync("../images/cache/" + imgID, imageStream);
+                    //sendWebhook("flaps", imageStream.toString("base64").substring(0, 1000), true, msg.channel);
+                    var c = canvas.createCanvas(w, h);
+                    var ctx = c.getContext("2d");
                     canvas
-                        .loadImage(path.join(__dirname, "..", "images", "dalle2.png"))
-                        .then(async(wm) => {
-                            ctx.drawImage(photo, 0, 0, w, h);
-                            var dalle = {
-                                w: w * (80 / 1024),
-                                h: w * (16 / 1024),
-                            };
-                            ctx.drawImage(wm, w - dalle.w, h - dalle.h, dalle.w, dalle.h);
+                        .loadImage("./../images/cache/" + imgID)
+                        .then(async(photo) => {
+                            canvas
+                                .loadImage(
+                                    path.join(
+                                        __dirname,
+                                        "..",
+                                        "images",
+                                        "dalle2.png"
+                                    )
+                                )
+                                .then(async(wm) => {
+                                    ctx.drawImage(photo, 0, 0, w, h);
+                                    var dalle = {
+                                        w: w * (80 / 1024),
+                                        h: w * (16 / 1024),
+                                    };
+                                    ctx.drawImage(
+                                        wm,
+                                        w - dalle.w,
+                                        h - dalle.h,
+                                        dalle.w,
+                                        dalle.h
+                                    );
 
-                            sendCanvas(c, msg, client, "jamesphotoframe");
+                                    sendCanvas(
+                                        c,
+                                        msg,
+                                        client,
+                                        "jamesphotoframe"
+                                    );
+                                });
                         });
-                });
-            } else {
-                sendWebhook("jamesphotoframe", error, true, msg.channel);
+                } else {
+                    sendWebhook("jamesphotoframe", error, true, msg.channel);
+                }
             }
-        });
+        );
     } else {
         sendWebhook(
             "jamesphotoframe",
@@ -572,28 +724,99 @@ function animethink(msg, client) {
         console.log(msg.attachments.first());
         var request = require("request").defaults({ encoding: null });
 
-        request.get(msg.attachments.first().url, function(error, response, body) {
-            if (!error && response.statusCode == 200) {
-                //data = "data:" + response.headers["content-type"] + ";base64," + Buffer.from(body).toString('base64');
-                var imageStream = Buffer.from(body, "base64");
-                var imgID = uuidv4().replace(/-/g, "_") + ".jpg";
-                fs.writeFileSync("../images/cache/" + imgID, imageStream);
-                //sendWebhook("flaps", imageStream.toString("base64").substring(0, 1000), true, msg.channel);
-                var c = canvas.createCanvas(499, 442);
-                var ctx = c.getContext("2d");
-                canvas.loadImage("./../images/cache/" + imgID).then(async(photo) => {
+        request.get(
+            msg.attachments.first().url,
+            function(error, response, body) {
+                if (!error && response.statusCode == 200) {
+                    //data = "data:" + response.headers["content-type"] + ";base64," + Buffer.from(body).toString('base64');
+                    var imageStream = Buffer.from(body, "base64");
+                    var imgID = uuidv4().replace(/-/g, "_") + ".jpg";
+                    fs.writeFileSync("../images/cache/" + imgID, imageStream);
+                    //sendWebhook("flaps", imageStream.toString("base64").substring(0, 1000), true, msg.channel);
+                    var c = canvas.createCanvas(499, 442);
+                    var ctx = c.getContext("2d");
                     canvas
-                        .loadImage(path.join(__dirname, "..", "images", "animethink.png"))
-                        .then(async(think) => {
-                            ctx.drawImage(photo, 0, 0, 499, 241);
-                            ctx.drawImage(think, 0, 0, 499, 442);
-                            sendCanvas(c, msg, client, "jamesphotoframe");
+                        .loadImage("./../images/cache/" + imgID)
+                        .then(async(photo) => {
+                            canvas
+                                .loadImage(
+                                    path.join(
+                                        __dirname,
+                                        "..",
+                                        "images",
+                                        "animethink.png"
+                                    )
+                                )
+                                .then(async(think) => {
+                                    ctx.drawImage(photo, 0, 0, 499, 241);
+                                    ctx.drawImage(think, 0, 0, 499, 442);
+                                    sendCanvas(
+                                        c,
+                                        msg,
+                                        client,
+                                        "jamesphotoframe"
+                                    );
+                                });
                         });
-                });
-            } else {
-                sendWebhook("jamesphotoframe", error, true, msg.channel);
+                } else {
+                    sendWebhook("jamesphotoframe", error, true, msg.channel);
+                }
             }
-        });
+        );
+    } else {
+        sendWebhook(
+            "jamesphotoframe",
+            "i cant frame nothing you dummy",
+            false,
+            msg.channel
+        );
+    }
+}
+
+function animethink2(msg, client) {
+    if (msg.attachments.size > 0) {
+        console.log(msg.attachments.first());
+        var request = require("request").defaults({ encoding: null });
+
+        request.get(
+            msg.attachments.first().url,
+            function(error, response, body) {
+                if (!error && response.statusCode == 200) {
+                    //data = "data:" + response.headers["content-type"] + ";base64," + Buffer.from(body).toString('base64');
+                    var imageStream = Buffer.from(body, "base64");
+                    var imgID = uuidv4().replace(/-/g, "_") + ".jpg";
+                    fs.writeFileSync("../images/cache/" + imgID, imageStream);
+                    //sendWebhook("flaps", imageStream.toString("base64").substring(0, 1000), true, msg.channel);
+                    var c = canvas.createCanvas(499, 442);
+                    var ctx = c.getContext("2d");
+                    canvas
+                        .loadImage("./../images/cache/" + imgID)
+                        .then(async(photo) => {
+                            canvas
+                                .loadImage(
+                                    path.join(
+                                        __dirname,
+                                        "..",
+                                        "images",
+                                        "anime2.png"
+                                    )
+                                )
+                                .then(async(think) => {
+                                    ctx.drawImage(photo, 244, 0, 252, 230);
+                                    ctx.drawImage(think, 0, 0, 498, 482);
+                                    sendCanvas(
+                                        c,
+                                        msg,
+                                        client,
+                                        "jamesphotoframe"
+                                    );
+                                });
+                        });
+                } else {
+                    sendWebhook("jamesphotoframe", error, true, msg.channel);
+                }
+            }
+        );
     } else {
         sendWebhook(
             "jamesphotoframe",
@@ -622,7 +845,10 @@ async function weezer(msg, client) {
     while (currentIndex > 0) {
         randomIndex = Math.floor(Math.random() * currentIndex);
         currentIndex--;
-        [xs[currentIndex], xs[randomIndex]] = [xs[randomIndex], xs[currentIndex]];
+        [xs[currentIndex], xs[randomIndex]] = [
+            xs[randomIndex],
+            xs[currentIndex],
+        ];
     }
     var randomImage = weezes[Math.floor(Math.random() * weezes.length)];
 
@@ -672,7 +898,9 @@ async function weezer(msg, client) {
             [w - tw, h - 5],
         ];
         var chosenPlace =
-            possibleTextPlaces[Math.floor(Math.random() * possibleTextPlaces.length)];
+            possibleTextPlaces[
+                Math.floor(Math.random() * possibleTextPlaces.length)
+            ];
         if (takenIndexes.includes(possibleTextPlaces.indexOf(chosenPlace))) {
             y++;
             continue;
@@ -725,9 +953,9 @@ async function sendCanvas(c, msg, client, botname) {
         }, ],
     });
 
-    setTimeout(() => {
+    /* setTimeout(() => {
         fs.unlinkSync("../images/cache/" + imgID2);
-    }, 10000);
+    }, 10000); */
 
     sendWebhook(botname, message.attachments.first().url, false, msg.channel);
 }
@@ -769,7 +997,8 @@ function carbs(msg, client, custom = false) {
             ctx.lineWidth = (h * fontScaleFactor) / 25;
             ctx.strokeStyle = "black";
             ctx.textAlign = "center";
-            ctx.font = "normal normal bolder" + h * fontScaleFactor + "px Impact";
+            ctx.font =
+                "normal normal bolder" + h * fontScaleFactor + "px Impact";
             if (test)
                 card =
                 "TEST AIFISDHFAJEAFHAIJDFHNSEIFOUHADJIFNBASIEFUHSI CUM CUM CUM CUM CUM CUM CUM CUM CUM CUM";
@@ -800,8 +1029,11 @@ function watermark(msg, client) {
                         var redditwidth = w / 4;
                         var redditheight = redditwidth;
                         for (let i = 0; i < amount; i++) {
-                            var x = Math.floor(Math.random() * w) - redditwidth / 2;
-                            var y = Math.floor(Math.random() * h) - redditheight / 2;
+                            var x =
+                                Math.floor(Math.random() * w) - redditwidth / 2;
+                            var y =
+                                Math.floor(Math.random() * h) -
+                                redditheight / 2;
                             var alpha = Math.random();
                             var scaleRandomizer = Math.random() + 0.5;
                             ctx.globalAlpha = alpha;
@@ -831,6 +1063,7 @@ module.exports = {
     carbs: carbs,
     watermark: watermark,
     animethink: animethink,
+    animethink2: animethink2,
     dalle2watermark: dalle2watermark,
     frame2: frame2,
     unfunnyTest: unfunnyTest,

@@ -59,6 +59,7 @@ const {
     dalle2watermark,
     frame2,
     unfunnyTest,
+    animethink2,
 } = require("./flapslib/canvas");
 const { createCanvas } = require("canvas");
 const { Canvas } = require("canvas");
@@ -171,6 +172,9 @@ function getR34Comments(postId) {
                     .slice(1)
                     .map((c) => {
                         return decodeEntities(c.trim().split("\n")[0]);
+                    })
+                    .filter((c) => {
+                        return !c.includes("~");
                     })
                     .join("\n");
                 if (!comments) return res("[No comments on this post]");
@@ -426,6 +430,12 @@ client.on("messageCreate", async(msg) => {
                     msg.react("👎");
                 }
             }
+            if (messageFlags.includes("hello"))
+                msg.react(
+                    client.emojis.cache.find(
+                        (emoji) => emoji.name === "828274359076126760"
+                    )
+                );
         }
         var commandArgs = msg.content.split(" ");
         var commandArgString = commandArgs.slice(1).join(" ");
@@ -2207,6 +2217,9 @@ fbi files on ${commandArgString}: ${
                 case "!animethink":
                     animethink(msg, client);
                     break;
+                case "!animethink2":
+                    animethink2(msg, client);
+                    break;
                 case "!describe":
                     console.log("GHNGNNHNHNH");
                     describe(msg);
@@ -3110,7 +3123,7 @@ setInterval(() => {
     if (
         d.getMinutes() == 39 &&
         d.getSeconds() < 1 &&
-        (Math.random() < 0.25 || fs.readFileSync("scal_allowtime.txt") == "yes")
+        fs.readFileSync("scal_allowtime.txt") == "yes"
     ) {
         fs.writeFileSync("scal_allowtime.txt", "no");
         sendWebhook(
