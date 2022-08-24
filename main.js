@@ -2363,7 +2363,6 @@ fbi files on ${commandArgString}: ${
                     break;
                 case "!vs":
                     {
-                        console.log("🤓");
                         versus(client, msg);
                         break;
                     }
