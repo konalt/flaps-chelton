@@ -3077,9 +3077,7 @@ fbi files on ${commandArgString}: ${
                     break;
             }
             if (toDelete) {
-                setTimeout(() => {
-                    msg.delete();
-                }, 1000);
+                msg.delete();
             }
         }
     } catch (err) {
