@@ -7,6 +7,7 @@ const client = new Discord.Client({
     partials: ["MESSAGE", "CHANNEL", "REACTION", "GUILD_MEMBER", "USER"],
     intents: ["GUILDS", "GUILD_MESSAGES", "GUILD_VOICE_STATES"],
 });
+const versus = require("./versus/run");
 const flapslib = require("./flapslib/index");
 const WomboDreamApi = require("wombo-dream-api");
 //! FIX THIS!!!!!!
@@ -2360,6 +2361,12 @@ fbi files on ${commandArgString}: ${
                         flapslib.ai.autocompleteText(text, msg.channel);
                     }
                     break;
+                case "!vs":
+                    {
+                        console.log("🤓");
+                        versus(client, msg);
+                        break;
+                    }
                 case "!r34comments":
                 case "!r34commentsvideo":
                 case "!r34video":

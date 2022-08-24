@@ -1009,48 +1009,66 @@ function carbs(msg, client, custom = false) {
 }
 
 function watermark(msg, client) {
-    var id = uuidv4() + ".png";
-    if (!msg.attachments.first()) return;
-    flapslib.download(msg.attachments.first().url, "images/cache/" + id, () => {
-        var w = msg.attachments.first().width,
-            h = msg.attachments.first().height;
-        var c = canvas.createCanvas(w, h);
-        var ctx = c.getContext("2d");
-        canvas
-            .loadImage(__dirname + "./../images\\cache\\" + id)
-            .then(async(photo) => {
-                canvas
-                    .loadImage(__dirname + "./../images\\redditwatermark.png")
-                    .then(async(reddit) => {
-                        ctx.drawImage(photo, 0, 0, w, h);
+    if (msg.attachments.size > 0) {
+        console.log(msg.attachments.first());
+        var request = require("request").defaults({ encoding: null });
 
-                        //var amount = Math.floor(Math.random() * 100);
-                        var amount = 75;
-                        var redditwidth = w / 4;
-                        var redditheight = redditwidth;
-                        for (let i = 0; i < amount; i++) {
-                            var x =
-                                Math.floor(Math.random() * w) - redditwidth / 2;
-                            var y =
-                                Math.floor(Math.random() * h) -
-                                redditheight / 2;
-                            var alpha = Math.random();
-                            var scaleRandomizer = Math.random() + 0.5;
-                            ctx.globalAlpha = alpha;
-                            ctx.drawImage(
-                                reddit,
-                                x,
-                                y,
-                                redditwidth * scaleRandomizer,
-                                redditheight * scaleRandomizer
-                            );
-                            ctx.globalAlpha = 1;
-                        }
+        request.get(
+            msg.attachments.first().url,
+            function(error, response, body) {
+                if (!error && response.statusCode == 200) {
+                    //data = "data:" + response.headers["content-type"] + ";base64," + Buffer.from(body).toString('base64');
+                    var imageStream = Buffer.from(body, "base64");
+                    var imgID = uuidv4().replace(/-/g, "_") + ".jpg";
+                    var imgID2 = uuidv4().replace(/-/g, "_") + ".png";
+                    var w = msg.attachments.first().width;
+                    var h = msg.attachments.first().height;
+                    fs.writeFileSync("../images/cache/" + imgID, imageStream);
+                    var c = canvas.createCanvas(w, h);
+                    var ctx = c.getContext("2d");
+                    canvas
+                        .loadImage("./../images/cache/" + imgID)
+                        .then(async(photo) => {
+                            canvas
+                                .loadImage(
+                                    __dirname +
+                                    "./../images\\redditwatermark.png"
+                                )
+                                .then(async(reddit) => {
+                                    ctx.drawImage(photo, 0, 0, w, h);
 
-                        sendCanvas(c, msg, client, "reddit");
-                    });
-            });
-    });
+                                    //var amount = Math.floor(Math.random() * 100);
+                                    var amount = 75;
+                                    var redditwidth = w / 4;
+                                    var redditheight = redditwidth;
+                                    for (let i = 0; i < amount; i++) {
+                                        var x =
+                                            Math.floor(Math.random() * w) -
+                                            redditwidth / 2;
+                                        var y =
+                                            Math.floor(Math.random() * h) -
+                                            redditheight / 2;
+                                        var alpha = Math.random();
+                                        var scaleRandomizer =
+                                            Math.random() + 0.5;
+                                        ctx.globalAlpha = alpha;
+                                        ctx.drawImage(
+                                            reddit,
+                                            x,
+                                            y,
+                                            redditwidth * scaleRandomizer,
+                                            redditheight * scaleRandomizer
+                                        );
+                                        ctx.globalAlpha = 1;
+                                    }
+
+                                    sendCanvas(c, msg, client, "reddit");
+                                });
+                        });
+                }
+            }
+        );
+    }
 }
 
 module.exports = {
