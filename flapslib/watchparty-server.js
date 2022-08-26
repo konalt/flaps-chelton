@@ -10,7 +10,9 @@ function init(client) {
 
     const options = {
         key: fs.readFileSync("C:/Certbot/live/konalt.us.to-0002/privkey.pem"),
-        cert: fs.readFileSync("C:/Certbot/live/konalt.us.to-0002/fullchain.pem"),
+        cert: fs.readFileSync(
+            "C:/Certbot/live/konalt.us.to-0002/fullchain.pem"
+        ),
     };
 
     app_rest.use(express.urlencoded({ extended: true }));
@@ -79,8 +81,12 @@ function init(client) {
             res.status(404).send({ wentToNext: false, wp: null });
         } else {
             if (currentWps[req.params.id].queue.length == 0)
-                return res.send({ wentToNext: false, wp: currentWps[req.params.id] });
-            currentWps[req.params.id].videoId = currentWps[req.params.id].queue[0];
+                return res.send({
+                    wentToNext: false,
+                    wp: currentWps[req.params.id],
+                });
+            currentWps[req.params.id].videoId =
+                currentWps[req.params.id].queue[0];
             currentWps[req.params.id].currentTime = 0;
             currentWps[req.params.id].startTime = Date.now();
             currentWps[req.params.id].queue =
@@ -150,10 +156,29 @@ function init(client) {
         if (user.startsWith("<")) user = user.substring(1);
         if (users[user]) {
             res.send(
-                users[user][0] == "__FlapsNick__" ? "flaps chelton" : users[user][0]
+                users[user][0] == "__FlapsNick__" ?
+                "flaps chelton" :
+                users[user][0]
             );
         } else {
             res.send("FlapsAPIUnknownUser");
+        }
+    });
+    app_rest.get("/flaps_api/userdata_json/:x/:y", (req, res) => {
+        var user = req.params.x;
+        if (user.startsWith("<")) user = user.substring(1);
+        if (users[user]) {
+            res.send({
+                name: users[user][0] == "__FlapsNick__" ?
+                    "flaps chelton" :
+                    users[user][0],
+                text: req.params.y.replace(/\.space\./g, " "),
+            });
+        } else {
+            res.send({
+                name: "FlapsAPIUnknownUser",
+                text: req.params.y.replace(/\.space\./g, " "),
+            });
         }
     });
 
