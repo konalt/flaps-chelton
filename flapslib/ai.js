@@ -19,7 +19,10 @@ const { resolve } = require("path");
 
 function uuidv4() {
     return ([1e7] + -1e3 + -4e3 + -8e3 + -1e11).replace(/[018]/g, (c) =>
-        (c ^ (getRandomValues(new Uint8Array(1))[0] & (15 >> (c / 4)))).toString(16)
+        (
+            c ^
+            (getRandomValues(new Uint8Array(1))[0] & (15 >> (c / 4)))
+        ).toString(16)
     );
 }
 
@@ -66,7 +69,9 @@ async function autocompleteText(text, msgChannel, removeOriginalText = false) {
             await aiPageData.page.evaluate((t) => {
                 document.querySelector(".model-input-text-input").value = t;
             }, text);
-            await aiPageData.page.click(".model-input-row > button:nth-child(2)");
+            await aiPageData.page.click(
+                ".model-input-row > button:nth-child(2)"
+            );
 
             var originalHTMLContent = await aiPageData.page.evaluate(() => {
                 return document.querySelector(".try-it-result-area").innerHTML;
@@ -75,10 +80,13 @@ async function autocompleteText(text, msgChannel, removeOriginalText = false) {
                 waitCounts++;
                 var a = await aiPageData.page.evaluate((original) => {
                     if (
-                        original == document.querySelector(".try-it-result-area").innerHTML
+                        original ==
+                        document.querySelector(".try-it-result-area").innerHTML
                     ) {
                         return false;
-                    } else return document.querySelector(".try-it-result-area").innerHTML;
+                    } else
+                        return document.querySelector(".try-it-result-area")
+                            .innerHTML;
                 }, originalHTMLContent);
                 console.log("Waiting...");
                 if (a !== false) {
@@ -147,11 +155,13 @@ async function gpt3complete_new(text, msgChannel, removeOriginalText = false) {
                         "#root > div.route-container > div > div.pg-root.page-body.full-width.flush > div > div.pg-body > div.pg-left > div.pg-content-footer > div.pg-footer-left > button.btn.btn-sm.btn-filled.btn-primary.pg-submit-btn"
                     );
 
-                    var originalHTMLContent = await aiPageData.page.evaluate(() => {
-                        return document.querySelector(
-                            "#root > div.route-container > div > div.pg-root.page-body.full-width.flush > div > div.pg-body > div.pg-left > div.pg-content-body > div > div > div > div > div > div.DraftEditor-editorContainer > div > div > div > div > span"
-                        ).innerHTML;
-                    });
+                    var originalHTMLContent = await aiPageData.page.evaluate(
+                        () => {
+                            return document.querySelector(
+                                "#root > div.route-container > div > div.pg-root.page-body.full-width.flush > div > div.pg-body > div.pg-left > div.pg-content-body > div > div > div > div > div > div.DraftEditor-editorContainer > div > div > div > div > span"
+                            ).innerHTML;
+                        }
+                    );
                     waitInterval = setInterval(async() => {
                         waitCounts++;
                         var a = await aiPageData.page.evaluate((original) => {
@@ -280,7 +290,9 @@ async function armstrong(msgChannel) {
             await aiPageData.page.evaluate((t) => {
                 document.querySelector(".model-input-text-input").value = t;
             }, text);
-            await aiPageData.page.click(".model-input-row > button:nth-child(2)");
+            await aiPageData.page.click(
+                ".model-input-row > button:nth-child(2)"
+            );
 
             var originalHTMLContent = await aiPageData.page.evaluate(() => {
                 return document.querySelector(".try-it-result-area").innerHTML;
@@ -289,10 +301,13 @@ async function armstrong(msgChannel) {
                 waitCounts++;
                 var a = await aiPageData.page.evaluate((original) => {
                     if (
-                        original == document.querySelector(".try-it-result-area").innerHTML
+                        original ==
+                        document.querySelector(".try-it-result-area").innerHTML
                     ) {
                         return false;
-                    } else return document.querySelector(".try-it-result-area").innerHTML;
+                    } else
+                        return document.querySelector(".try-it-result-area")
+                            .innerHTML;
                 }, originalHTMLContent);
                 console.log("Waiting...");
                 if (a !== false) {
@@ -400,17 +415,28 @@ async function threeDimensionalTextLayer2(
             clearInterval(waitInterval);
             waitCounts = 0;
             var imgID2 = uuidv4().replace(/-/gi, "");
-            var imagePath = path.join(__dirname, "../images/cache/", imgID2 + ".jpg");
+            var imagePath = path.join(
+                __dirname,
+                "../images/cache/",
+                imgID2 + ".jpg"
+            );
             await aiPageData.page.screenshot({ path: imagePath });
-            var message = await client.channels.cache.get("956316856422137856").send({
-                files: [{
-                    attachment: imagePath,
-                }, ],
-            });
+            var message = await client.channels.cache
+                .get("956316856422137856")
+                .send({
+                    files: [{
+                        attachment: imagePath,
+                    }, ],
+                });
             setTimeout(() => {
                 fs.unlinkSync(imagePath);
             }, 10000);
-            sendWebhook("deepai", message.attachments.first().url, false, msgChannel);
+            sendWebhook(
+                "deepai",
+                message.attachments.first().url,
+                false,
+                msgChannel
+            );
         }
         if (waitCounts == 20) {
             waitCounts = 0;
@@ -444,15 +470,22 @@ async function googleTrends(queries, msgChannel, client) {
         if (element) {
             clearInterval(waitInterval);
             await element.screenshot({ path: imagePath });
-            var message = await client.channels.cache.get("956316856422137856").send({
-                files: [{
-                    attachment: imagePath,
-                }, ],
-            });
+            var message = await client.channels.cache
+                .get("956316856422137856")
+                .send({
+                    files: [{
+                        attachment: imagePath,
+                    }, ],
+                });
             setTimeout(() => {
                 fs.unlinkSync(imagePath);
             }, 10000);
-            sendWebhook("flaps", message.attachments.first().url, false, msgChannel);
+            sendWebhook(
+                "flaps",
+                message.attachments.first().url,
+                false,
+                msgChannel
+            );
         }
     }, 1000);
 }
@@ -468,7 +501,11 @@ async function person(msgChannel, client) {
             );
         }
         var imgID2 = uuidv4().replace(/-/gi, "");
-        var imagePath = path.join(__dirname, "../images/cache/", imgID2 + ".jpg");
+        var imagePath = path.join(
+            __dirname,
+            "../images/cache/",
+            imgID2 + ".jpg"
+        );
         fs.writeFileSync(imagePath, "");
         download(
             "https://thispersondoesnotexist.com/image",
@@ -528,7 +565,8 @@ async function threeDimensionalText(text, msgChannel, msg, client) {
                             msg.attachments.first() ?
                             imgID2 +
                             msg.attachments.first().url.split(".")[
-                                msg.attachments.first().url.split(".").length - 1
+                                msg.attachments.first().url.split(".")
+                                .length - 1
                             ] :
                             null,
                             client
@@ -562,7 +600,9 @@ async function generateImage(text, msgChannel, client) {
             await aiPageData.page.evaluate((t) => {
                 document.querySelector(".model-input-text-input").value = t;
             }, text);
-            await aiPageData.page.click(".model-input-row > button:nth-child(2)");
+            await aiPageData.page.click(
+                ".model-input-row > button:nth-child(2)"
+            );
 
             var originalHTMLContent = await aiPageData.page.evaluate(() => {
                 return document.querySelector(".try-it-result-area").innerHTML;
@@ -571,10 +611,13 @@ async function generateImage(text, msgChannel, client) {
                 waitCounts++;
                 var a = await aiPageData.page.evaluate((original) => {
                     if (
-                        original == document.querySelector(".try-it-result-area").innerHTML
+                        original ==
+                        document.querySelector(".try-it-result-area").innerHTML
                     ) {
                         return false;
-                    } else return document.querySelector(".try-it-result-area").innerHTML;
+                    } else
+                        return document.querySelector(".try-it-result-area")
+                            .innerHTML;
                 }, originalHTMLContent);
                 console.log("Waiting...");
                 if (a !== false) {
@@ -596,7 +639,13 @@ async function generateImage(text, msgChannel, client) {
                     );
                     fs.writeFileSync(imagePath, "");
                     download(a2, imagePath, async(err) => {
-                        if (err) return sendWebhook("deepai", err, false, msgChannel);
+                        if (err)
+                            return sendWebhook(
+                                "deepai",
+                                err,
+                                false,
+                                msgChannel
+                            );
                         /**
                          * @type {Discord.Message}
                          */
@@ -672,10 +721,13 @@ async function upscaleImage(msg, msgChannel, client) {
                 waitCounts++;
                 var a = await aiPageData.page.evaluate((original) => {
                     if (
-                        original == document.querySelector(".try-it-result-area").innerHTML
+                        original ==
+                        document.querySelector(".try-it-result-area").innerHTML
                     ) {
                         return false;
-                    } else return document.querySelector(".try-it-result-area").innerHTML;
+                    } else
+                        return document.querySelector(".try-it-result-area")
+                            .innerHTML;
                 }, originalHTMLContent);
                 console.log("Waiting...");
                 if (a !== false) {
@@ -697,7 +749,13 @@ async function upscaleImage(msg, msgChannel, client) {
                     );
                     fs.writeFileSync(imagePath, "");
                     download(a2, imagePath, async(err) => {
-                        if (err) return sendWebhook("deepai", err, false, msgChannel);
+                        if (err)
+                            return sendWebhook(
+                                "deepai",
+                                err,
+                                false,
+                                msgChannel
+                            );
                         /**
                          * @type {Discord.Message}
                          */
@@ -756,7 +814,9 @@ async function tti(text, msgChannel, client) {
             await aiPageData.page.evaluate((t) => {
                 document.querySelector(".model-input-text-input").value = t;
             }, text);
-            await aiPageData.page.click(".model-input-row > button:nth-child(2)");
+            await aiPageData.page.click(
+                ".model-input-row > button:nth-child(2)"
+            );
 
             var originalHTMLContent = await aiPageData.page.evaluate(() => {
                 return document.querySelector(".try-it-result-area").innerHTML;
@@ -765,10 +825,13 @@ async function tti(text, msgChannel, client) {
                 waitCounts++;
                 var a = await aiPageData.page.evaluate((original) => {
                     if (
-                        original == document.querySelector(".try-it-result-area").innerHTML
+                        original ==
+                        document.querySelector(".try-it-result-area").innerHTML
                     ) {
                         return false;
-                    } else return document.querySelector(".try-it-result-area").innerHTML;
+                    } else
+                        return document.querySelector(".try-it-result-area")
+                            .innerHTML;
                 }, originalHTMLContent);
                 console.log("Waiting...");
                 if (a !== false) {
@@ -790,7 +853,13 @@ async function tti(text, msgChannel, client) {
                     );
                     fs.writeFileSync(imagePath, "");
                     download(a2, imagePath, async(err) => {
-                        if (err) return sendWebhook("deepai", err, false, msgChannel);
+                        if (err)
+                            return sendWebhook(
+                                "deepai",
+                                err,
+                                false,
+                                msgChannel
+                            );
                         /**
                          * @type {Discord.Message}
                          */
@@ -853,7 +922,17 @@ function dalle(prompt, isSecondReq = false) {
             .then((r) => r.text())
             .then((r) => {
                 var out = {
-                    images: [null, null, null, null, null, null, null, null, null],
+                    images: [
+                        null,
+                        null,
+                        null,
+                        null,
+                        null,
+                        null,
+                        null,
+                        null,
+                        null,
+                    ],
                     prompt: prompt,
                     image: true,
                 };
@@ -905,7 +984,8 @@ function setSanity(n) {
 
 // ! change when i pay them
 // * WOOOOOOOOOOOO
-var isEmpty = false;
+// ! Fuck we ran out again
+var isEmpty = true;
 
 async function question(question, channel) {
     var monsoonData = fs.readFileSync("./monsoon.txt").toString();
@@ -1000,21 +1080,32 @@ function describe(message) {
             });
         })
         .then((r) => {
-            data = "data:" + r[1] + ";base64," + Buffer.from(r[0]).toString("base64");
-            fetch("https://hf.space/embed/OFA-Sys/OFA-Image_Caption/api/predict/", {
-                    body: JSON.stringify({
-                        data: [data],
-                        example_id: null,
-                        session_hash: "xdj84bh71fd",
-                    }),
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                })
+            data =
+                "data:" +
+                r[1] +
+                ";base64," +
+                Buffer.from(r[0]).toString("base64");
+            fetch(
+                    "https://hf.space/embed/OFA-Sys/OFA-Image_Caption/api/predict/", {
+                        body: JSON.stringify({
+                            data: [data],
+                            example_id: null,
+                            session_hash: "xdj84bh71fd",
+                        }),
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                        },
+                    }
+                )
                 .then((r) => r.json())
                 .then((r2) => {
-                    sendWebhook("scott", "that's " + r2.data[0], false, message.channel);
+                    sendWebhook(
+                        "scott",
+                        "that's " + r2.data[0],
+                        false,
+                        message.channel
+                    );
                 });
         });
 }
@@ -1039,7 +1130,11 @@ function questionImage(question, message) {
             });
         })
         .then((r) => {
-            data = "data:" + r[1] + ";base64," + Buffer.from(r[0]).toString("base64");
+            data =
+                "data:" +
+                r[1] +
+                ";base64," +
+                Buffer.from(r[0]).toString("base64");
             fetch(
                     "https://hf.space/embed/OFA-Sys/OFA-Visual_Question_Answering/api/predict/", {
                         body: JSON.stringify({
@@ -1077,7 +1172,9 @@ function questionFree(question, msg) {
             sendWebhook(
                 "jonathan",
                 a[0].generated_text ?
-                a[0].generated_text.substring(("Q: " + question + "\nA:").length) :
+                a[0].generated_text.substring(
+                    ("Q: " + question + "\nA:").length
+                ) :
                 "no response, probably rate limited",
                 false,
                 msg.channel
@@ -1112,14 +1209,16 @@ function sendToChatbot(text, cb) {
                     clearInterval(chatbotWaitingIntervals[r.hash]);
                     cb("Loop detected");
                 }
-                fetch("https://hf.space/embed/carblacac/chatbot/api/queue/status/", {
-                        credentials: "omit",
-                        headers: {
-                            "Content-Type": "application/json",
-                        },
-                        body: '{"hash":"' + r.hash + '"}',
-                        method: "POST",
-                    })
+                fetch(
+                        "https://hf.space/embed/carblacac/chatbot/api/queue/status/", {
+                            credentials: "omit",
+                            headers: {
+                                "Content-Type": "application/json",
+                            },
+                            body: '{"hash":"' + r.hash + '"}',
+                            method: "POST",
+                        }
+                    )
                     .then((r2) => r2.json())
                     .then((r2) => {
                         console.log(r2);
@@ -1234,37 +1333,41 @@ async function monsoonChatEvent(channel) {
             var input_str = "A conversation. I am 'monsoo mgr'.\n";
             lastMessages.forEach((message) => {
                 input_str += `${message.author.username}: ${
-          message.content ? message.content : "Here's an image for you all!"
-        }\n`;
+                    message.content
+                        ? message.content
+                        : "Here's an image for you all!"
+                }\n`;
             });
             input_str += "monsoo mgr:";
             monsoonPre = fs.readFileSync("./monsoon.txt");
-            fetch("https://api.openai.com/v1/engines/text-davinci-002/completions", {
-                    credentials: "include",
-                    headers: {
-                        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:101.0) Gecko/20100101 Firefox/101.0",
-                        Accept: "application/json",
-                        "Accept-Language": "en-US,en;q=0.5",
-                        "Content-Type": "application/json",
-                        Authorization: "Bearer " + openAIKey,
-                        "OpenAI-Organization": "org-XNVpf1DuEbdIFPiGaW4USR6v",
-                        "Sec-Fetch-Dest": "empty",
-                        "Sec-Fetch-Mode": "cors",
-                        "Sec-Fetch-Site": "same-site",
-                    },
-                    referrer: "https://beta.openai.com/",
-                    body: JSON.stringify({
-                        prompt: input_str,
-                        max_tokens: 256,
-                        temperature: 0.7,
-                        top_p: 1,
-                        frequency_penalty: 0,
-                        presence_penalty: 0,
-                        best_of: 1,
-                    }),
-                    method: "POST",
-                    mode: "cors",
-                })
+            fetch(
+                    "https://api.openai.com/v1/engines/text-davinci-002/completions", {
+                        credentials: "include",
+                        headers: {
+                            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:101.0) Gecko/20100101 Firefox/101.0",
+                            Accept: "application/json",
+                            "Accept-Language": "en-US,en;q=0.5",
+                            "Content-Type": "application/json",
+                            Authorization: "Bearer " + openAIKey,
+                            "OpenAI-Organization": "org-XNVpf1DuEbdIFPiGaW4USR6v",
+                            "Sec-Fetch-Dest": "empty",
+                            "Sec-Fetch-Mode": "cors",
+                            "Sec-Fetch-Site": "same-site",
+                        },
+                        referrer: "https://beta.openai.com/",
+                        body: JSON.stringify({
+                            prompt: input_str,
+                            max_tokens: 256,
+                            temperature: 0.7,
+                            top_p: 1,
+                            frequency_penalty: 0,
+                            presence_penalty: 0,
+                            best_of: 1,
+                        }),
+                        method: "POST",
+                        mode: "cors",
+                    }
+                )
                 .then((r) => r.json())
                 .then((r) => {
                     sendWebhook(
@@ -1354,7 +1457,12 @@ function elQuestion(question, channel) {
             console.log("done");
             console.log(r);
             if (!data[0].generated_text)
-                return sendWebhook("monsoon", JSON.stringify(data[0]), false, channel);
+                return sendWebhook(
+                    "monsoon",
+                    JSON.stringify(data[0]),
+                    false,
+                    channel
+                );
             sendWebhook(
                 "monsoon",
                 data[0].generated_text.split("\n")[0],
