@@ -318,6 +318,142 @@ function flip(msg, client) {
     }
 }
 
+function getAngleArbitrary(x, y, x2, y2) {
+    let gameY = y2;
+    let gameX = x2;
+    let mouseY = y;
+    let mouseX = x;
+    let theta = 0;
+
+    if (mouseX > gameX) {
+        theta =
+            (Math.atan((gameY - mouseY) / (gameX - mouseX)) * 180) / Math.PI;
+    } else if (mouseX < gameX) {
+        theta =
+            180 +
+            (Math.atan((gameY - mouseY) / (gameX - mouseX)) * 180) / Math.PI;
+    } else if (mouseX == gameX) {
+        if (mouseY > gameY) {
+            theta = 90;
+        } else {
+            theta = 270;
+        }
+    }
+
+    return Math.round(theta);
+}
+
+function spotted(msg, client) {
+    if (msg.attachments.first(2)[1]) {
+        var request = require("request").defaults({ encoding: null });
+
+        var atts = msg.attachments.first(2);
+        request.get(atts[0].url, function(error, response, body) {
+            if (!error && response.statusCode == 200) {
+                //data = "data:" + response.headers["content-type"] + ";base64," + Buffer.from(body).toString('base64');
+                var imageStream = Buffer.from(body, "base64");
+                var imgID = uuidv4().replace(/-/g, "_") + ".jpg";
+                fs.writeFileSync("../images/cache/" + imgID, imageStream);
+                request.get(atts[1].url, function(error, response, body) {
+                    if (!error && response.statusCode == 200) {
+                        //data = "data:" + response.headers["content-type"] + ";base64," + Buffer.from(body).toString('base64');
+                        var imageStream2 = Buffer.from(body, "base64");
+                        var imgID2 = uuidv4().replace(/-/g, "_") + ".jpg";
+                        fs.writeFileSync(
+                            "../images/cache/" + imgID2,
+                            imageStream2
+                        );
+                        var w = atts[0].width;
+                        var h = atts[0].height;
+                        var c = canvas.createCanvas(w, h);
+                        var ctx = c.getContext("2d");
+                        canvas
+                            .loadImage("./../images\\cache\\" + imgID)
+                            .then(async(photo1) => {
+                                canvas
+                                    .loadImage("./../images\\cache\\" + imgID2)
+                                    .then(async(photo2) => {
+                                        ctx.drawImage(photo1, 0, 0, w, h);
+                                        var positions = [
+                                            [w / 8, w / 8],
+                                            [w - w / 8, w / 8],
+                                            [w / 8, h - w / 8],
+                                            [w - w / 8, h - w / 8],
+                                        ];
+                                        var pos1 =
+                                            positions[
+                                                Math.floor(
+                                                    Math.random() *
+                                                    positions.length
+                                                )
+                                            ];
+                                        var ang = getAngleArbitrary(
+                                            pos1[0],
+                                            pos1[1],
+                                            w / 2,
+                                            h / 2
+                                        );
+                                        ctx.drawImage(
+                                            photo2,
+                                            pos1[0] - w / 8,
+                                            pos1[1] - w / 8,
+                                            w / 4,
+                                            w / 4
+                                        );
+                                        ctx.beginPath();
+                                        ctx.arc(
+                                            pos1[0],
+                                            pos1[1],
+                                            w / 8,
+                                            0,
+                                            2 * Math.PI
+                                        );
+                                        ctx.strokeStyle = "red";
+                                        ctx.lineWidth = w / 8 / 16;
+                                        ctx.stroke();
+                                        ctx.translate(pos1[0], pos1[1]);
+                                        ctx.rotate((ang * Math.PI) / 180);
+                                        ctx.translate(-pos1[0], -pos1[1]);
+                                        ctx.beginPath();
+                                        ctx.moveTo(pos1[0], pos1[1] + w / 8);
+                                        ctx.lineTo(
+                                            pos1[0],
+                                            pos1[1] + w / 8 + w / 2
+                                        );
+                                        ctx.stroke();
+                                        ctx.setTransform(1, 0, 0, 1, 0, 0);
+
+                                        sendCanvas(
+                                            c,
+                                            msg,
+                                            client,
+                                            "jamesphotoframe"
+                                        );
+                                    });
+                            });
+                    } else {
+                        sendWebhook(
+                            "jamesphotoframe",
+                            error,
+                            true,
+                            msg.channel
+                        );
+                    }
+                });
+            } else {
+                sendWebhook("jamesphotoframe", error, true, msg.channel);
+            }
+        });
+    } else {
+        sendWebhook(
+            "jamesphotoframe",
+            "i cant put a speech bubble on nothing you dummy",
+            false,
+            msg.channel
+        );
+    }
+}
+
 function valueInRange(val, min, max) {
     return val >= min && val <= max;
 }
@@ -1085,4 +1221,5 @@ module.exports = {
     dalle2watermark: dalle2watermark,
     frame2: frame2,
     unfunnyTest: unfunnyTest,
+    spotted: spotted,
 };

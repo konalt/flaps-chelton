@@ -61,6 +61,7 @@ const {
     frame2,
     unfunnyTest,
     animethink2,
+    spotted,
 } = require("./flapslib/canvas");
 const { createCanvas } = require("canvas");
 const { Canvas } = require("canvas");
@@ -1989,6 +1990,9 @@ fbi files on ${commandArgString}: ${
                     break;
                 case "!flip":
                     flip(msg, client);
+                    break;
+                case "!spotted":
+                    spotted(msg, client);
                     break;
                 case "!homodog":
                     homodog(msg, client);
