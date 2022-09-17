@@ -163,11 +163,16 @@ async function todo(client, msg) {
                                 att[1].url.split(".").length - 1
                             ],
                         ];
+                        var isLong = msg.content.startsWith("!vs2");
                         var segmentLengths = [70, 80];
+                        if (isLong) {
+                            segmentLengths = [70];
+                        }
                         var audio = Math.floor(
                             Math.random() * segmentLengths.length
                         );
                         segmentLength = 60000 / segmentLengths[audio] / 1000;
+                        if (isLong) audio = 2;
                         var names = msg.content
                             .split(" ")
                             .slice(1)
@@ -185,8 +190,61 @@ async function todo(client, msg) {
                             "Weaponry",
                             "Diplomacy",
                             "Comedy",
-                            "Po que",
+                            "Bonus",
                         ];
+                        if (isLong) {
+                            stats = [
+                                "Speed",
+                                "Agility",
+                                "Strength",
+                                "Size",
+                                "Weaponry",
+                                "Diplomacy",
+                                "Comedy",
+                                "Warfare",
+                                "Power",
+                                "Straight",
+                                "Disgust",
+                                "Buffness",
+                                "Royal",
+                                "Cute",
+                                "Has Simps",
+                                "Scary",
+                                "Willpower",
+                                "Gamer",
+                                "Bitches",
+                                "Streetsmart",
+                                "Booksmart",
+                                "Meth Cook",
+                                "Legal",
+                                "Lawyer",
+                                "Hot",
+                                "Nose Size",
+                                "Annoying",
+                                "Shitty",
+                                "Age",
+                                "Width",
+                                "Height",
+                                "Intel",
+                                "Race",
+                                "Politics",
+                                "Hand Size",
+                                "Funo Hate",
+                                "Landlubber",
+                                "Coolness",
+                                "Depth",
+                                "Health",
+                                "Chadness",
+                                "Non-brit",
+                                "Music",
+                                "Education",
+                                "Heists",
+                                "TF2 Level",
+                                "Based",
+                                "Cringe",
+                                "Smart",
+                            ];
+                        }
                         var scores = [0, 0];
                         for (let i = 0; i < stats.length; i++) {
                             const stat = stats[i];
@@ -227,7 +285,7 @@ async function todo(client, msg) {
                             } else {
                                 lobster = true;
                                 await createScoreVideo(
-                                    "versus/lober",
+                                    "versus/lober.png",
                                     "versus/" + vi++, {
                                         curScore: "lober",
                                     }
