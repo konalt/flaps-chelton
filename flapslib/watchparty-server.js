@@ -36,7 +36,7 @@ function init(client) {
             currentTime: 0,
             startTime: Date.now(),
             queue: [],
-            paused: false,
+            paused: true,
         };
         res.send({
             id: id,
@@ -52,7 +52,7 @@ function init(client) {
             "restman",
             req.body.content,
             false,
-            client.channels.cache.find((c) => c.name == "gruk-cave-wall")
+            client.channels.cache.find((c) => c.name == "dave")
         );
         res.send("done");
     });
@@ -184,9 +184,9 @@ function init(client) {
 
     setInterval(() => {
         Object.entries(currentWps).forEach((wp) => {
-            if (!wp[1].paused) wp[1].currentTime += 1000;
+            if (!wp[1].paused) wp[1].currentTime += 500;
         });
-    }, 1000);
+    }, 500);
 
     console.log("WatchParty: server listening");
 }

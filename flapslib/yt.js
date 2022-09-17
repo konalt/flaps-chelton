@@ -34,7 +34,7 @@ function downloadYoutube(
         url.includes("youtube.com/watch?v=") ?
         url.split("=")[1] :
         getFirstResultID(url);
-    if (id === "kemivUKb4f4") {
+    if (id === "kemivUKb4f4" || id === "NNv2RHR62Rs") {
         return sendWebhook(
             "flaps",
             "https://newgrounds.com/portal/view/805579",

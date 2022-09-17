@@ -94,6 +94,11 @@ async function autocompleteText(text, msgChannel, removeOriginalText = false) {
                         '<div style="width: 100%; height: 100%; overflow: auto; display: flex; align-items: center; flex-direction: column;"><pre style="white-space: pre-wrap; margin: 0px;">'
                         .length
                     );
+                    if (a2.includes("Model demos are currently paused"))
+                        return sendWebhook(
+                            "deepai",
+                            "Model demos are currently paused for free users."
+                        );
                     a2 = a2.substring(0, a2.length - "</pre></div>".length);
                     a2 = decodeEntities(a2);
                     if (removeOriginalText) a2 = a2.substring(text.length + 6);
@@ -748,6 +753,11 @@ async function upscaleImage(msg, msgChannel, client) {
                         imgID2 + ".jpg"
                     );
                     fs.writeFileSync(imagePath, "");
+                    if (a2.includes("Model demos are currently paused"))
+                        return sendWebhook(
+                            "deepai",
+                            "Model demos are currently paused for free users."
+                        );
                     download(a2, imagePath, async(err) => {
                         if (err)
                             return sendWebhook(
@@ -852,6 +862,11 @@ async function tti(text, msgChannel, client) {
                         imgID2 + ".jpg"
                     );
                     fs.writeFileSync(imagePath, "");
+                    if (a2.includes("Model demos are currently paused"))
+                        return sendWebhook(
+                            "deepai",
+                            "Model demos are currently paused for free users."
+                        );
                     download(a2, imagePath, async(err) => {
                         if (err)
                             return sendWebhook(
