@@ -44,7 +44,7 @@ function downloadYoutube(
     }
     if (!url.startsWith("http")) {
         url = "https://youtube.com/watch?v=" + id;
-        sendWebhook("flaps", url, true, msgChannel);
+        sendWebhook("flaps", url, msgChannel);
     }
     if (fs.existsSync("./audio/yt/" + id + ".mp3")) {
         attachRecorder(player, "yt/" + id);
@@ -57,11 +57,10 @@ function downloadYoutube(
         );
         ytProcess.stdout.on("data", (data) => {
             //fs.appendFileSync("./audio/yt/log.txt", data.toString());
-            if (verbose)
-                sendWebhook("flaps", data.toString(), true, msgChannel);
+            if (verbose) sendWebhook("flaps", data.toString(), msgChannel);
         });
         ytProcess.stderr.on("data", (data) => {
-            sendWebhook("flaps", data.toString(), true, msgChannel);
+            sendWebhook("flaps", data.toString(), msgChannel);
         });
         ytProcess.on("close", (code) => {
             if (code == 1) {
@@ -88,7 +87,7 @@ async function downloadYoutubeToMP3(url, msgChannel, verbose = false, client) {
         getFirstResultID(url);
     if (!url.startsWith("http")) {
         url = "https://youtube.com/watch?v=" + id;
-        sendWebhook("flaps", url, true, msgChannel);
+        sendWebhook("flaps", url, msgChannel);
     }
     if (fs.existsSync("./audio/yt/" + id + ".mp4")) {
         var filePath = path.join(__dirname, "../audio/yt/", id + ".mp3");
@@ -99,7 +98,7 @@ async function downloadYoutubeToMP3(url, msgChannel, verbose = false, client) {
                     attachment: filePath,
                 }, ],
             });
-        sendWebhook("flaps", message.attachments.first().url, true, msgChannel);
+        sendWebhook("flaps", message.attachments.first().url, msgChannel);
     } else {
         var filePath = path.join(__dirname, "../audio/yt/", id + ".mp3");
         var ytProcess = cp.spawn(
@@ -108,11 +107,10 @@ async function downloadYoutubeToMP3(url, msgChannel, verbose = false, client) {
         );
         ytProcess.stdout.on("data", (data) => {
             //fs.appendFileSync("./audio/yt/log.txt", data.toString());
-            if (verbose)
-                sendWebhook("flaps", data.toString(), true, msgChannel);
+            if (verbose) sendWebhook("flaps", data.toString(), msgChannel);
         });
         ytProcess.stderr.on("data", (data) => {
-            sendWebhook("flaps", data.toString(), true, msgChannel);
+            sendWebhook("flaps", data.toString(), msgChannel);
         });
         ytProcess.on("close", async(code) => {
             if (code == 1) {
@@ -152,7 +150,7 @@ function startWatchParty(url, msgChannel) {
         getFirstResultID(url);
     if (!url.startsWith("http")) {
         url = "https://youtube.com/watch?v=" + id;
-        sendWebhook("flaps", url, true, msgChannel);
+        sendWebhook("flaps", url, msgChannel);
     }
     if (
         fs.existsSync(
@@ -189,11 +187,10 @@ function startWatchParty(url, msgChannel) {
         );
         ytProcess.stdout.on("data", (data) => {
             //fs.appendFileSync("./audio/yt/log.txt", data.toString());
-            if (verbose)
-                sendWebhook("flaps", data.toString(), true, msgChannel);
+            if (verbose) sendWebhook("flaps", data.toString(), msgChannel);
         });
         ytProcess.stderr.on("data", (data) => {
-            sendWebhook("flaps", data.toString(), true, msgChannel);
+            sendWebhook("flaps", data.toString(), msgChannel);
         });
         ytProcess.on("close", async(code) => {
             if (code == 1) {
@@ -242,7 +239,7 @@ function wpAddToQueue(url, wpId, msgChannel) {
         getFirstResultID(url);
     if (!url.startsWith("http")) {
         url = "https://youtube.com/watch?v=" + id;
-        sendWebhook("flaps", url, true, msgChannel);
+        sendWebhook("flaps", url, msgChannel);
     }
     if (
         fs.existsSync(
@@ -259,7 +256,7 @@ function wpAddToQueue(url, wpId, msgChannel) {
             .then((r) => r.json())
             .then((response) => {
                 console.log(response);
-                sendWebhook("flaps", `added to da queue`, true, msgChannel);
+                sendWebhook("flaps", `added to da queue`, msgChannel);
             });
     } else {
         var filePath =
@@ -274,11 +271,10 @@ function wpAddToQueue(url, wpId, msgChannel) {
         );
         ytProcess.stdout.on("data", (data) => {
             //fs.appendFileSync("./audio/yt/log.txt", data.toString());
-            if (verbose)
-                sendWebhook("flaps", data.toString(), true, msgChannel);
+            if (verbose) sendWebhook("flaps", data.toString(), msgChannel);
         });
         ytProcess.stderr.on("data", (data) => {
-            sendWebhook("flaps", data.toString(), true, msgChannel);
+            sendWebhook("flaps", data.toString(), msgChannel);
         });
         ytProcess.on("close", async(code) => {
             if (code == 1) {
@@ -321,7 +317,7 @@ function wpAddToQueueFile(url, wpId, msgChannel) {
     var id = uuidv4().replace(/-/gi, "");
     if (!url.startsWith("http")) {
         url = "https://youtube.com/watch?v=" + id;
-        sendWebhook("flaps", url, true, msgChannel);
+        sendWebhook("flaps", url, msgChannel);
     }
     if (
         fs.existsSync(
@@ -338,7 +334,7 @@ function wpAddToQueueFile(url, wpId, msgChannel) {
             .then((r) => r.json())
             .then((response) => {
                 console.log(response);
-                sendWebhook("flaps", `added to da queue`, true, msgChannel);
+                sendWebhook("flaps", `added to da queue`, msgChannel);
             });
     } else {
         var filePath =
@@ -353,11 +349,10 @@ function wpAddToQueueFile(url, wpId, msgChannel) {
         );
         ytProcess.stdout.on("data", (data) => {
             //fs.appendFileSync("./audio/yt/log.txt", data.toString());
-            if (verbose)
-                sendWebhook("flaps", data.toString(), true, msgChannel);
+            if (verbose) sendWebhook("flaps", data.toString(), msgChannel);
         });
         ytProcess.stderr.on("data", (data) => {
-            sendWebhook("flaps", data.toString(), true, msgChannel);
+            sendWebhook("flaps", data.toString(), msgChannel);
         });
         ytProcess.on("close", async(code) => {
             if (code == 1) {

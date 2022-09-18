@@ -105,7 +105,7 @@ async function autocompleteText(text, msgChannel, removeOriginalText = false) {
                     //console.log(a2);
                     clearInterval(waitInterval);
                     waitCounts = 0;
-                    sendWebhook("deepai", a2, false, msgChannel);
+                    sendWebhook("deepai", a2, msgChannel);
                 }
                 if (waitCounts == 20) {
                     waitCounts = 0;
@@ -185,7 +185,7 @@ async function gpt3complete_new(text, msgChannel, removeOriginalText = false) {
                         console.log("Waiting...");
                         if (a !== false) {
                             waitCounts = 0;
-                            sendWebhook("deepai", a, false, msgChannel);
+                            sendWebhook("deepai", a, msgChannel);
                         }
                         if (waitCounts == 20) {
                             waitCounts = 0;
@@ -234,7 +234,7 @@ async function markov(text, msgChannel) {
         text
     );
     var a = m.generateText(1000);
-    sendWebhook("deepai", a, false, msgChannel);
+    sendWebhook("deepai", a, msgChannel);
 }
 async function markov2(text, acc, msgChannel) {
     try {
@@ -270,7 +270,7 @@ async function markov2(text, acc, msgChannel) {
                     content = content.substring(0, 1500);
                 }
                 console.log(content);
-                sendWebhook("deepai", content, false, msgChannel);
+                sendWebhook("deepai", content, msgChannel);
             });
     } catch (e) {
         console.log("aw");
@@ -325,7 +325,7 @@ async function armstrong(msgChannel) {
                     //console.log(a2);
                     clearInterval(waitInterval);
                     waitCounts = 0;
-                    sendWebhook("deepai", a2, false, msgChannel);
+                    sendWebhook("deepai", a2, msgChannel);
                 }
                 if (waitCounts == 20) {
                     waitCounts = 0;
@@ -382,7 +382,7 @@ async function armstrong2(accuracy, msgChannel) {
                     content = content.substring(0, 1500);
                 }
                 console.log(content);
-                sendWebhook("armstrong", content, false, msgChannel);
+                sendWebhook("armstrong", content, msgChannel);
             });
     } catch (e) {
         console.log("aw");

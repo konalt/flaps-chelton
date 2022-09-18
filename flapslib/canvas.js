@@ -304,7 +304,7 @@ function flip(msg, client) {
                             sendCanvas(c, msg, client, "jamesphotoframe");
                         });
                 } else {
-                    sendWebhook("jamesphotoframe", error, true, msg.channel);
+                    sendWebhook("jamesphotoframe", error, msg.channel);
                 }
             }
         );
@@ -441,7 +441,7 @@ function spotted(msg, client) {
                     }
                 });
             } else {
-                sendWebhook("jamesphotoframe", error, true, msg.channel);
+                sendWebhook("jamesphotoframe", error, msg.channel);
             }
         });
     } else {
@@ -538,7 +538,7 @@ function unfunnyTest(msg, client) {
                     var imgID = uuidv4().replace(/-/g, "_") + ".jpg";
                     var imgID2 = uuidv4().replace(/-/g, "_") + ".png";
                     fs.writeFileSync("../images/cache/" + imgID, imageStream);
-                    //sendWebhook("flaps", imageStream.toString("base64").substring(0, 1000), true, msg.channel);
+                    //sendWebhook("flaps", imageStream.toString("base64").substring(0, 1000), msg.channel);
                     var w = msg.attachments.first().width;
                     var h = msg.attachments.first().height;
                     var c = canvas.createCanvas(w, h);
@@ -573,7 +573,7 @@ function unfunnyTest(msg, client) {
                             sendCanvas(c, msg, client, "jamesphotoframe");
                         });
                 } else {
-                    sendWebhook("jamesphotoframe", error, true, msg.channel);
+                    sendWebhook("jamesphotoframe", error, msg.channel);
                 }
             }
         );
@@ -601,7 +601,7 @@ function sb(msg, client) {
                     var imgID = uuidv4().replace(/-/g, "_") + ".jpg";
                     var imgID2 = uuidv4().replace(/-/g, "_") + ".png";
                     fs.writeFileSync("../images/cache/" + imgID, imageStream);
-                    //sendWebhook("flaps", imageStream.toString("base64").substring(0, 1000), true, msg.channel);
+                    //sendWebhook("flaps", imageStream.toString("base64").substring(0, 1000), msg.channel);
                     var w = msg.attachments.first().width;
                     var h = msg.attachments.first().height;
                     var c = canvas.createCanvas(w, h + 10);
@@ -634,7 +634,7 @@ function sb(msg, client) {
                                 });
                         });
                 } else {
-                    sendWebhook("jamesphotoframe", error, true, msg.channel);
+                    sendWebhook("jamesphotoframe", error, msg.channel);
                 }
             }
         );
@@ -661,7 +661,7 @@ function frame(msg, client) {
                     var imageStream = Buffer.from(body, "base64");
                     var imgID = uuidv4().replace(/-/g, "_") + ".jpg";
                     fs.writeFileSync("../images/cache/" + imgID, imageStream);
-                    //sendWebhook("flaps", imageStream.toString("base64").substring(0, 1000), true, msg.channel);
+                    //sendWebhook("flaps", imageStream.toString("base64").substring(0, 1000), msg.channel);
                     var c = canvas.createCanvas(1413 - 130, 1031 - 140);
                     var ctx = c.getContext("2d");
                     canvas
@@ -693,7 +693,7 @@ function frame(msg, client) {
                                 });
                         });
                 } else {
-                    sendWebhook("jamesphotoframe", error, true, msg.channel);
+                    sendWebhook("jamesphotoframe", error, msg.channel);
                 }
             }
         );
@@ -727,7 +727,7 @@ function frame2(msg, client) {
                     var w = msg.attachments.first().width;
                     var h = msg.attachments.first().height;
                     fs.writeFileSync("../images/cache/" + imgID, imageStream);
-                    //sendWebhook("flaps", imageStream.toString("base64").substring(0, 1000), true, msg.channel);
+                    //sendWebhook("flaps", imageStream.toString("base64").substring(0, 1000), msg.channel);
                     var fsize = 90;
                     var c = canvas.createCanvas(w + fsize * 2, h + fsize * 2);
                     var ctx = c.getContext("2d");
@@ -773,7 +773,7 @@ function frame2(msg, client) {
 
                     sendCanvas(c, msg, client, "jamesphotoframe");
                 } else {
-                    sendWebhook("jamesphotoframe", error, true, msg.channel);
+                    sendWebhook("jamesphotoframe", error, msg.channel);
                 }
             }
         );
@@ -803,7 +803,7 @@ function dalle2watermark(msg, client) {
                     var w = msg.attachments.first().width;
                     var h = msg.attachments.first().height;
                     fs.writeFileSync("../images/cache/" + imgID, imageStream);
-                    //sendWebhook("flaps", imageStream.toString("base64").substring(0, 1000), true, msg.channel);
+                    //sendWebhook("flaps", imageStream.toString("base64").substring(0, 1000), msg.channel);
                     var c = canvas.createCanvas(w, h);
                     var ctx = c.getContext("2d");
                     canvas
@@ -841,7 +841,7 @@ function dalle2watermark(msg, client) {
                                 });
                         });
                 } else {
-                    sendWebhook("jamesphotoframe", error, true, msg.channel);
+                    sendWebhook("jamesphotoframe", error, msg.channel);
                 }
             }
         );
@@ -868,7 +868,7 @@ function animethink(msg, client) {
                     var imageStream = Buffer.from(body, "base64");
                     var imgID = uuidv4().replace(/-/g, "_") + ".jpg";
                     fs.writeFileSync("../images/cache/" + imgID, imageStream);
-                    //sendWebhook("flaps", imageStream.toString("base64").substring(0, 1000), true, msg.channel);
+                    //sendWebhook("flaps", imageStream.toString("base64").substring(0, 1000), msg.channel);
                     var c = canvas.createCanvas(499, 442);
                     var ctx = c.getContext("2d");
                     canvas
@@ -895,7 +895,7 @@ function animethink(msg, client) {
                                 });
                         });
                 } else {
-                    sendWebhook("jamesphotoframe", error, true, msg.channel);
+                    sendWebhook("jamesphotoframe", error, msg.channel);
                 }
             }
         );
@@ -922,7 +922,7 @@ function animethink2(msg, client) {
                     var imageStream = Buffer.from(body, "base64");
                     var imgID = uuidv4().replace(/-/g, "_") + ".jpg";
                     fs.writeFileSync("../images/cache/" + imgID, imageStream);
-                    //sendWebhook("flaps", imageStream.toString("base64").substring(0, 1000), true, msg.channel);
+                    //sendWebhook("flaps", imageStream.toString("base64").substring(0, 1000), msg.channel);
                     var c = canvas.createCanvas(499, 442);
                     var ctx = c.getContext("2d");
                     canvas
@@ -949,7 +949,7 @@ function animethink2(msg, client) {
                                 });
                         });
                 } else {
-                    sendWebhook("jamesphotoframe", error, true, msg.channel);
+                    sendWebhook("jamesphotoframe", error, msg.channel);
                 }
             }
         );
@@ -1066,7 +1066,7 @@ async function weezer(msg, client) {
         fs.unlinkSync("../images/cache/" + imgID2);
     }, 10000);
 
-    sendWebhook("custom", message.attachments.first().url, false, msg.channel, {
+    sendWebhook("custom", message.attachments.first().url, msg.channel, {
         username: "weezer",
         avatar: message.attachments.first().url,
         content: message.attachments.first().url,
@@ -1093,7 +1093,7 @@ async function sendCanvas(c, msg, client, botname) {
         fs.unlinkSync("../images/cache/" + imgID2);
     }, 10000); */
 
-    sendWebhook(botname, message.attachments.first().url, false, msg.channel);
+    sendWebhook(botname, message.attachments.first().url, msg.channel);
 }
 
 function carbs(msg, client, custom = false) {

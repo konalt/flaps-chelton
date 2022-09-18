@@ -328,7 +328,7 @@ async function todo(client, msg) {
             }
         );
     } else {
-        sendWebhook("flaps", "i need 2 images and 2 names", false, msg.channel);
+        sendWebhook("flaps", "i need 2 images and 2 names", msg.channel);
     }
 }
 module.exports = todo;

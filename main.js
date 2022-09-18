@@ -43,6 +43,7 @@ const {
     editWebhookMsg,
     sendWebhookFile,
     users,
+    sendWebhookButton,
 } = require("./flapslib/webhooks");
 const { cahWhiteCard } = require("./flapslib/cardsagainsthumanity");
 const { loadImage } = require("canvas");
@@ -1081,7 +1082,7 @@ client.on("messageCreate", async(msg) => {
                                     })
                                     .join("\n");
                             }
-                            sendWebhook("runcling", y, false, msg.channel);
+                            sendWebhook("runcling", y, msg.channel);
                         });
                     }
                     break;
@@ -1190,7 +1191,7 @@ client.on("messageCreate", async(msg) => {
                         var seconds = Math.round(delta % 60);
 
                         var str = `${days}d ${hours}h ${minutes}m ${seconds}s`;
-                        sendWebhook("flaps", str, false, msg.channel);
+                        sendWebhook("flaps", str, msg.channel);
                     }
                     break;
                 case "!coinflip":
@@ -1346,7 +1347,7 @@ client.on("messageCreate", async(msg) => {
                     break;
                 case "!riggedcoinflip":
                     {
-                        sendWebhook("flaps", "heads", false, msg.channel);
+                        sendWebhook("flaps", "heads", msg.channel);
                     }
                     break;
                 case "!geq":
@@ -2342,7 +2343,7 @@ fbi files on ${commandArgString}: ${
                     {
                         var white = cahWhiteCard();
                         white = white.substring(2, white.length - 2);
-                        sendWebhook("flaps", white, false, msg.channel);
+                        sendWebhook("flaps", white, msg.channel);
                     }
                     break;
                 case "!watermark":
@@ -2717,7 +2718,7 @@ fbi files on ${commandArgString}: ${
                     );
                     break;
                 case "!yougoodslime":
-                    sendWebhook("flaps", "im ok slime!", false, msg.channel);
+                    sendWebhook("flaps", "im ok slime!", msg.channel);
                     break;
                 case "!flapslength":
                     {
@@ -2890,7 +2891,7 @@ fbi files on ${commandArgString}: ${
                             msg.channel
                         );
                         var translated = await doTranslate(t, n);
-                        sendWebhook("flaps", translated, false, msg.channel);
+                        sendWebhook("flaps", translated, msg.channel);
                         break;
                     }
                 case "!translate2":
@@ -2904,7 +2905,7 @@ fbi files on ${commandArgString}: ${
                             msg.channel
                         );
                         var o = await doTranslateSending(t, n);
-                        sendWebhook("flaps", o, false, msg.channel);
+                        sendWebhook("flaps", o, msg.channel);
                         break;
                     }
                 case "!funnycat":
@@ -3010,18 +3011,42 @@ fbi files on ${commandArgString}: ${
                             sendWebhook(
                                 "flaps",
                                 "yer canvas has been created!!!",
-                                false,
                                 msg.channel
                             );
                         }
                         break;
                     }
-                case "!tca":
+                case "!buttontest":
                     {
-                        sendWebhook(
+                        sendWebhookButton(
                             "flaps",
-                            "<:swagger4:983694508392857600>",
-                            false,
+                            "Button test shit", [{
+                                    type: 2,
+                                    label: "Test button 1",
+                                    id: "cheltontest1",
+                                    style: 1,
+                                    cb: (i) => {
+                                        sendWebhook(
+                                            "flaps",
+                                            "royal republic button 1",
+                                            i.channel
+                                        );
+                                    },
+                                },
+                                {
+                                    type: 2,
+                                    label: "Test button 2",
+                                    id: "cheltontest2",
+                                    style: 2,
+                                    cb: (i) => {
+                                        sendWebhook(
+                                            "flaps",
+                                            "royal republic button 2!!>??!",
+                                            i.channel
+                                        );
+                                    },
+                                },
+                            ],
                             msg.channel
                         );
                         break;
@@ -3029,7 +3054,7 @@ fbi files on ${commandArgString}: ${
                 case "!c":
                     {
                         sendToChatbot(commandArgString, (text) => {
-                            sendWebhook("sammy", text, false, msg.channel);
+                            sendWebhook("sammy", text, msg.channel);
                         });
                         break;
                     }
@@ -3044,7 +3069,7 @@ fbi files on ${commandArgString}: ${
                         that looks like a nice meatball
                         not that a poor man would know
                         ha ha`;
-                    sendWebhook("southerner", str, false, msg.channel);
+                    sendWebhook("southerner", str, msg.channel);
                     break;
                 case "!question":
                     question(commandArgString, msg.channel);
@@ -3165,6 +3190,34 @@ setInterval(() => {
         );
     }
 }, 1000);
+
+/**
+ *
+ * @param {Discord.ButtonInteraction} i
+ */
+function respondToInteraction(i) {
+    fetch(
+        "https://discord.com/api/v10/interactions/" +
+        i.id +
+        "/" +
+        i.token +
+        "/callback", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                type: 6,
+            }),
+        }
+    );
+    if (flapslib.webhooks.buttonCallbacks[i.customId])
+        flapslib.webhooks.buttonCallbacks[i.customId](i);
+}
+
+client.on("interactionCreate", (i) => {
+    respondToInteraction(i);
+});
 
 fs.readFile("./token.txt", (err, data) => {
     if (err) {
