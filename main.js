@@ -352,12 +352,18 @@ async function scalFunnyVideo(msg) {
     var filesize =
         fs.statSync("E:/MBG/the Videos/" + chosenFile).size / (1024 * 1024);
     if (filesize > 8) {
-        sendWebhook(
+        sendWebhookButton(
             "scal",
             "mm.. too big. its " +
             Math.round(filesize) +
-            " inche-- i mean megabytes. megabytes.",
-            false,
+            " inche-- i mean megabytes. megabytes.", [{
+                type: 1,
+                label: "get another",
+                id: "scal_video_tryagain",
+                cb: (i) => {
+                    scalFunnyVideo(i.message);
+                },
+            }, ],
             msg.channel
         );
     } else {
@@ -369,10 +375,17 @@ async function scalFunnyVideo(msg) {
                 }, ],
             });
 
-        sendWebhook(
+        sendWebhookButton(
             "scal",
             message.attachments.first().url,
-            false,
+            false, [{
+                type: 1,
+                label: "get another",
+                id: "scal_video_tryagain",
+                cb: (i) => {
+                    scalFunnyVideo(i.message);
+                },
+            }, ],
             msg.channel
         );
     }
