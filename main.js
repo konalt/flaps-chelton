@@ -363,6 +363,7 @@ async function scalFunnyVideo(msg) {
                 cb: (i) => {
                     scalFunnyVideo(i.message);
                 },
+                disableAfter: true,
             }, ],
             msg.channel
         );
@@ -377,14 +378,15 @@ async function scalFunnyVideo(msg) {
 
         sendWebhookButton(
             "scal",
-            message.attachments.first().url,
-            false, [{
-                type: 1,
+            message.attachments.first().url, [{
+                type: 2,
+                style: 1,
                 label: "get another",
                 id: "scal_video_tryagain",
                 cb: (i) => {
                     scalFunnyVideo(i.message);
                 },
+                disableAfter: true,
             }, ],
             msg.channel
         );
@@ -3224,8 +3226,9 @@ function respondToInteraction(i) {
             }),
         }
     );
-    if (flapslib.webhooks.buttonCallbacks[i.customId])
+    if (flapslib.webhooks.buttonCallbacks[i.customId]) {
         flapslib.webhooks.buttonCallbacks[i.customId](i);
+    }
 }
 
 client.on("interactionCreate", (i) => {
