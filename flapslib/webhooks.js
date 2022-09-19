@@ -53,8 +53,7 @@ function sendWebhook(
             }
             custom = true;
         } else {
-            if (users[id][2] && !disableCustom)
-                content = eval(users[id][2])(content);
+            if (users[id][2]) content = eval(users[id][2])(content);
         }
         var dave = fs.readFileSync("./dave.txt").toString() == "yes";
         msgChannel
@@ -82,9 +81,10 @@ function sendWebhook(
                             reason: "flap chelton needed a webhook for the channel.",
                         })
                         .then((hook2) => {
-                            trySend(hook2.url, data)
-                                .then(() => {
-                                    resolve();
+                            trySend(hook2.url + "?wait=true", data)
+                                .then((d) => d.json())
+                                .then((d) => {
+                                    resolve(d.id);
                                 })
                                 .catch(() => {
                                     resolve("ALL_WAIT");
@@ -92,9 +92,10 @@ function sendWebhook(
                         })
                         .catch(console.error);
                 } else {
-                    trySend(hook.url, data)
-                        .then(() => {
-                            resolve();
+                    trySend(hook.url + "?wait=true", data)
+                        .then((d) => d.json())
+                        .then((d) => {
+                            resolve(d.id);
                         })
                         .catch(() => {
                             resolve("ALL_WAIT");
@@ -113,9 +114,9 @@ function trySend(url, data) {
             headers: { "Content-Type": "application/json" },
         }).then((r) => {
             if (r.status == 429) {
-                rej();
+                rej(r);
             }
-            res();
+            res(r);
         });
     });
 }
@@ -141,6 +142,31 @@ function editWebhookMsg(msgid, msgChannel, content) {
             .catch(console.error);
     });
 }
+
+function editWebhookFile(msgid, msgChannel, path, pretext = "") {
+    if (multipartUpload) {} else {
+        client.channels.cache
+            .get("956316856422137856")
+            .send({
+                files: [{
+                    attachment: path,
+                }, ],
+            })
+            .catch((e) => {
+                sendWebhook(id, "Send error: " + e, msgChannel);
+            })
+            .then((message) => {
+                if (!message) {
+                    return;
+                }
+                editWebhookMsg(
+                    msgid,
+                    msgChannel,
+                    pretext + "\n" + message.attachments.first().url
+                );
+            });
+    }
+}
 /**
  * @type {Discord.Client}
  */
@@ -150,28 +176,69 @@ function setClient(c) {
     client = c;
 }
 
-async function sendWebhookFile(id, filename, noDelete = false, msgChannel) {
-    client.channels.cache
-        .get("956316856422137856")
-        .send({
-            files: [{
-                attachment: filename,
-            }, ],
-        })
-        .catch((e) => {
-            sendWebhook(id, "Send error: " + e, msgChannel);
-        })
-        .then((message) => {
-            if (!message) {
-                return sendWebhook(
+var multipartUpload = false;
+
+async function sendWebhookFile(id, filename, msgChannel) {
+    if (multipartUpload) {} else {
+        client.channels.cache
+            .get("956316856422137856")
+            .send({
+                files: [{
+                    attachment: filename,
+                }, ],
+            })
+            .catch((e) => {
+                sendWebhook(id, "Send error: " + e, msgChannel);
+            })
+            .then((message) => {
+                if (!message) {
+                    return;
+                }
+                sendWebhook(id, message.attachments.first().url, msgChannel);
+            });
+    }
+}
+
+async function sendWebhookFileButton(id, filename, buttons, msgChannel) {
+    if (multipartUpload) {} else {
+        client.channels.cache
+            .get("956316856422137856")
+            .send({
+                files: [{
+                    attachment: filename,
+                }, ],
+            })
+            .catch((e) => {
+                sendWebhook(id, "Send error: " + e, msgChannel);
+            })
+            .then((message) => {
+                if (!message) {
+                    return;
+                }
+                var content = message.attachments.first().url;
+                buttons = buttons.map((btn) => {
+                    btn.custom_id =
+                        btn.id +
+                        "_" +
+                        Math.floor(Math.random() * 4096).toString(16);
+                    btn.id = undefined;
+                    delete btn.id;
+                    return btn;
+                });
+                buttons.forEach((button) => {
+                    buttonCallbacks[button.custom_id] = button.cb || (() => {});
+                });
+                sendWebhook(id, content, msgChannel, {}, null, [
+                    { type: 1, components: buttons },
+                ]);
+                sendWebhook(
                     id,
-                    "Send error: message undefined",
-                    false,
-                    msgChannel
+                    message.attachments.first().url,
+                    msgChannel, {},
+                    null, [{ type: 1, components: buttons }]
                 );
-            }
-            sendWebhook(id, message.attachments.first().url, msgChannel);
-        });
+            });
+    }
 }
 
 var buttonCallbacks = {};
@@ -194,14 +261,7 @@ function sendWebhookButton(id, content, buttons, msgChannel) {
 
 function sendWebhookFileNew(id, content, path, msgChannel) {}
 
-function sendWebhookEmbed(
-    id,
-    embed,
-    disableCustom = false,
-    msgChannel,
-    customData = {},
-    msg
-) {
+function sendWebhookEmbed(id, embed, msgChannel, customData = {}, msg) {
     return new Promise((resolve, _reject) => {
         try {
             msgChannel
@@ -299,4 +359,5 @@ module.exports = {
     setClient: setClient,
     sendWebhookButton: sendWebhookButton,
     buttonCallbacks: buttonCallbacks,
+    editWebhookFile: editWebhookFile,
 };

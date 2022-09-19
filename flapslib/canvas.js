@@ -1,5 +1,5 @@
 const { uuidv4 } = require("./ai");
-const { sendWebhook } = require("./webhooks");
+const { sendWebhook, sendWebhookFile } = require("./webhooks");
 const fs = require("fs");
 const canvas = require("canvas");
 const path = require("path");
@@ -1080,6 +1080,8 @@ async function sendCanvas(c, msg, client, botname) {
         "base64"
     );
     fs.writeFileSync("../images/cache/" + imgID2, imageStream2);
+    sendWebhookFile(botname, "../images\\cache\\" + imgID2, msg.channel);
+    return;
     /**
      * @type {Discord.Message}
      */

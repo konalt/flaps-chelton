@@ -1,12 +1,19 @@
 const puppeteer = require("puppeteer");
 const download = require("./download");
-const { sendWebhook } = require("./webhooks");
+const {
+    sendWebhook,
+    sendWebhookFile,
+    editWebhookMsg,
+    editWebhookFile,
+} = require("./webhooks");
 const fs = require("fs");
 const path = require("path");
 const fetch = require("node-fetch");
 const { sentence } = require("txtgen/dist/cjs/txtgen");
 const MarkovTextGenerator = require("markov-text-generator").default;
+const WomboDreamApi = require("wombo-dream-api");
 const { randomBytes } = require("crypto");
+var dream = WomboDreamApi.buildDefaultInstance();
 
 var lastRequests = {};
 var waitInterval = 0;
@@ -50,6 +57,58 @@ async function init() {
 
 function decodeEntities(encodedString) {
     return encodedString.replace(/&amp;/gi, "&").replace(/&nbsp;/gi, " ");
+}
+
+function doDream(msg) {
+    var commandArgs = msg.content.split(" ");
+    var commandArgString = commandArgs.slice(1).join(" ");
+    var lastState = "pending 0";
+    sendWebhook(
+        "wombo",
+        "Dreaming: " + commandArgString + "...\n0%",
+        msg.channel
+    ).then((msgid) => {
+        dream
+            .generatePicture(commandArgString, 32, (task) => {
+                console.log(task.state, "stage", task.photo_url_list.length);
+                if (
+                    lastState !=
+                    task.state + " " + task.photo_url_list.length
+                ) {
+                    lastState = task.state + " " + task.photo_url_list.length;
+                    var maxLen = 16 + 1;
+                    var curLen = task.photo_url_list.length;
+                    var percent = Math.floor((curLen / maxLen) * 100);
+                    var text =
+                        "Dreaming: " +
+                        commandArgString +
+                        "...\n" +
+                        percent +
+                        "%";
+                    editWebhookMsg(msgid, msg.channel, text);
+                }
+            })
+            .then((task) => {
+                var id = uuidv4() + ".jpg";
+                download(task.result.final, "images/cache/" + id, async() => {
+                    editWebhookFile(
+                        msgid,
+                        msg.channel,
+                        "images/cache/" + id,
+                        commandArgString
+                    );
+                });
+            })
+            .catch(() => {
+                editWebhookMsg(
+                    msgid,
+                    msg.channel,
+                    client.emojis.cache
+                    .find((emoji) => emoji.name === "literally1984")
+                    .toString()
+                );
+            });
+    });
 }
 
 async function autocompleteText(text, msgChannel, removeOriginalText = false) {
@@ -1521,6 +1580,7 @@ module.exports = {
     sendToChatbot: sendToChatbot,
     ruQuestion: ruQuestion,
     questionPromise: questionPromise,
+    doDream: doDream,
 };
 
 init();

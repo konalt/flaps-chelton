@@ -70,7 +70,8 @@ async function addText(name, text, msg) {
                 });
         });
 }
-async function simpleMemeCaption(name, text, msg, client) {
+async function simpleMemeCaption(name, text, msg, client, url) {
+    if (!url) url = msg.attachments.first().url;
     if (parseInt(msg.content.split(" ")[1])) {
         text = text.split(" ").slice(1).join(" ");
     }
@@ -81,7 +82,7 @@ async function simpleMemeCaption(name, text, msg, client) {
         text[1] = "";
     }
     var id = uuidv4().replace(/-/gi, "");
-    var ext = "." + msg.attachments.first().url.split(".").pop();
+    var ext = "." + url.split(".").pop();
     var subtitleFileData = `1
 00:00:00,000 --> 00:50:00,000
 ${text[0]}`;
