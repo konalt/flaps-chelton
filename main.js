@@ -1282,33 +1282,6 @@ async function onMessage(msg) {
                         sendWebhook("flaps", str, msg.channel);
                     }
                     break;
-                case "!sd":
-                    // stable diffusion
-                    fetch(
-                            "https://grpc.stability.ai/gooseai.GenerationService/Generate", {
-                                credentials: "include",
-                                headers: {
-                                    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:105.0) Gecko/20100101 Firefox/105.0",
-                                    Accept: "*/*",
-                                    "Accept-Language": "en-US,en;q=0.5",
-                                    authorization: "Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IjlhUWoxMnpIUXdkN0VwY1h1dVhMeCJ9.eyJpc3MiOiJodHRwczovL3N0YWJpbGl0eWFpLnVzLmF1dGgwLmNvbS8iLCJzdWIiOiJhdXRoMHw2MzBhYzViMTQwZTBmYTc2ZjdkNmU4ZmEiLCJhdWQiOlsiaHR0cHM6Ly9zdGFiaWxpdHlhaS51cy5hdXRoMC5jb20vYXBpL3YyLyIsImh0dHBzOi8vc3RhYmlsaXR5YWkudXMuYXV0aDAuY29tL3VzZXJpbmZvIl0sImlhdCI6MTY2MzgzMzE1MiwiZXhwIjoxNjYzOTE5NTUyLCJhenAiOiJLdllaSktTaG1Vb09qWHBjbFFsS1lVeHVjQVZlc2xITiIsInNjb3BlIjoib3BlbmlkIHByb2ZpbGUgZW1haWwifQ.gZ9LdsXOrGLDmeghJsZHsY1KuUbOXaHxCr2VcyZU4QPNS67ZOLVGSfmeiS6iL5fuJm15qz8bo_ZZhkNH71yfTC1VDaw4yZ0tnD-bd9yCuVbTEVRWepddv_O6RmEOgpHUdDu7J3Nok7rvVo9Zp6HjgThubbgrFxIa9dFbS8TQDCrNhsvuN6prS9hDTt8Ys30NbfjBaIFSPFepjVEvpcOCR3ExaMMtdlW-alshAiXTvlCXKIs1JLyFnERXsVnYzPaSp8xyKPA3kT1SLRa4lVzkMzXFOz3w7QUTAQr98g8bymHeQd-iW2dz-IzazhpxxizykVoTTG_vse-kNBxuSAvJaA",
-                                    "content-type": "application/grpc-web+proto",
-                                    "x-grpc-web": "1",
-                                    "Sec-Fetch-Dest": "empty",
-                                    "Sec-Fetch-Mode": "cors",
-                                    "Sec-Fetch-Site": "cross-site",
-                                },
-                                referrer: "https://beta.dreamstudio.ai/",
-                                body: '\u0000\u0000\u0000\u0000Q\n\u0015stable-diffusion-v1-5\u0018\u0001"\u0016\u0012\u0014A common wood pigeon*\u001c\b\u0004\u0010\u0004\u001a\u0001\u0000 \u0001(22\u0002\b\u0007:\t\u0012\u0005-\u0000\u0000à@\u001a\u0000:\u0000',
-                                method: "POST",
-                                mode: "cors",
-                            }
-                        )
-                        .then((r) => r.arrayBuffer())
-                        .then((ab) => {
-                            fs.writeFileSync("./temp-sd.bin", Buffer.from(ab));
-                        });
-                    break;
                 case "!coinflip":
                     sendWebhook(
                         "flaps",
