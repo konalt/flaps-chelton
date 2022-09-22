@@ -163,6 +163,15 @@ async function squash(name, msg) {
             }
         });
 }
+async function compress(name, msg) {
+    var id = uuidv4().replace(/-/gi, "");
+    var ext = "." + msg.attachments.first().url.split(".").pop();
+    video
+        .compress("images/cache/" + name + ext, "images/cache/" + id + ext)
+        .then(() => {
+            sendWebhookFile("ffmpeg", "images/cache/" + id + ext, msg.channel);
+        });
+}
 async function stretch(name, msg) {
     var id = uuidv4().replace(/-/gi, "");
     var ext = "." + msg.attachments.first().url.split(".").pop();
@@ -584,4 +593,5 @@ module.exports = {
     setClient: setClient,
     mimeNod: mimeNod,
     gifAudio: gifAudio,
+    compress,
 };

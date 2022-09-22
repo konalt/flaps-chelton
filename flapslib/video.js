@@ -8,20 +8,28 @@ var ffmpegVerbose = false;
 
 async function ffmpeg(args) {
     return new Promise((resolve, reject) => {
+        var startTime = Date.now();
+        console.log("[ffmpeg] Starting FFMpeg instance");
+        console.log(
+            "[ffmpeg] FFMpeg Verbose: " + (ffmpegVerbose ? "YES" : "NO")
+        );
         var ffmpegInstance = cp.spawn(
             "ffmpeg",
             ((ffmpegVerbose ? "" : "-v warning ") + args).split(" "), {
                 shell: true,
             }
         );
+        console.log("[ffmpeg] PID: %d", ffmpegInstance.pid);
         ffmpegInstance.stdout.on("data", (c) => {
-            stdout.write(c);
+            stdout.write("[ffmpeg] " + c);
         });
         ffmpegInstance.stderr.on("data", (c) => {
-            stdout.write(c);
+            stdout.write("[ffmpeg] " + c);
         });
         ffmpegInstance.on("exit", (code) => {
-            console.log("EXIT " + code);
+            if (code == 0) console.log("[ffmpeg] Completed OK");
+            if (code == 1) console.log("[ffmpeg] Failed!");
+            console.log("[ffmpeg] Took %d ms", Date.now() - startTime);
             resolve();
         });
     });
@@ -98,6 +106,19 @@ async function trim(input, output, options) {
         } ${path.join(__dirname, "..", output)}`
     );
 }
+async function compress(input, output) {
+    return ffmpeg(
+        `-y -i ${path.join(
+            __dirname,
+            "..",
+            input
+        )} -vf "scale=trunc(iw/2)*2:trunc(ih/2)*2" -b:a 8k -crf 51 ${path.join(
+            __dirname,
+            "..",
+            output
+        )}`
+    );
+}
 async function videoGif(input, output, options) {
     return ffmpeg(
         `-y -i ${path.join(
@@ -124,7 +145,6 @@ async function stitch(inputs, output) {
         )}`
     );
 }
-
 async function imageAudio(input, output) {
     return ffmpeg(
         `-y -loop 1 -i ${path.join(
@@ -245,7 +265,6 @@ async function videoAudio(input, output) {
         )}`
     );
 }
-
 async function geq(input, output, options) {
     return ffmpeg(
         `-y ${
@@ -257,7 +276,6 @@ async function geq(input, output, options) {
         }" ${path.join(__dirname, "..", output)}`
     );
 }
-
 async function complexFFmpeg(input, output, options) {
     return ffmpeg(
         `-y ${
@@ -285,4 +303,5 @@ module.exports = {
     baitSwitch: baitSwitch,
     mimeNod: mimeNod,
     gifAudio: gifAudio,
+    compress: compress,
 };
