@@ -39,7 +39,7 @@ function sendWebhook(
                 msgChannel
             );
         }
-        if (msgChannel === false) {
+        if (!msgChannel) {
             msgChannel = customData;
             customData = msg;
             msg = comps;
@@ -178,7 +178,7 @@ function setClient(c) {
 
 var multipartUpload = false;
 
-async function sendWebhookFile(id, filename, msgChannel) {
+async function sendWebhookFile(id, filename, msgChannel, cd) {
     if (multipartUpload) {} else {
         client.channels.cache
             .get("956316856422137856")
@@ -194,7 +194,12 @@ async function sendWebhookFile(id, filename, msgChannel) {
                 if (!message) {
                     return;
                 }
-                sendWebhook(id, message.attachments.first().url, msgChannel);
+                sendWebhook(
+                    id,
+                    message.attachments.first().url,
+                    msgChannel,
+                    cd
+                );
             });
     }
 }
