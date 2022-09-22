@@ -4,11 +4,16 @@ const path = require("path");
 const { stdout } = require("process");
 const { uuidv4 } = require("./ai");
 
+var ffmpegVerbose = false;
+
 async function ffmpeg(args) {
     return new Promise((resolve, reject) => {
-        var ffmpegInstance = cp.spawn("ffmpeg", args.split(" "), {
-            shell: true,
-        });
+        var ffmpegInstance = cp.spawn(
+            "ffmpeg",
+            ((ffmpegVerbose ? "" : "-v warning ") + args).split(" "), {
+                shell: true,
+            }
+        );
         ffmpegInstance.stdout.on("data", (c) => {
             stdout.write(c);
         });
