@@ -70,6 +70,21 @@ async function addText(name, text, msg) {
                 });
         });
 }
+async function caption2(name, text, msg) {
+    var att = msg.attachments.first();
+    var url = att.url;
+    var id = uuidv4().replace(/-/gi, "");
+    var ext = "." + url.split(".").pop();
+    video
+        .caption2("images/cache/" + name + ext, "images/cache/" + id + ext, {
+            w: att.width,
+            h: att.height,
+            text: text,
+        })
+        .then(() => {
+            sendWebhookFile("ffmpeg", "images/cache/" + id + ext, msg.channel);
+        });
+}
 async function simpleMemeCaption(name, text, msg, client, url) {
     if (!url) url = msg.attachments.first().url;
     if (parseInt(msg.content.split(" ")[1])) {
@@ -593,5 +608,6 @@ module.exports = {
     setClient: setClient,
     mimeNod: mimeNod,
     gifAudio: gifAudio,
-    compress,
+    compress: compress,
+    caption2: caption2,
 };

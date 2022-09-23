@@ -5,6 +5,7 @@ const canvas = require("canvas");
 const path = require("path");
 const download = require("./download");
 const { cahWhiteCard } = require("./cardsagainsthumanity");
+const { createCanvas } = require("canvas");
 
 var memeMaking = {
     getImageData: async function(n) {
@@ -1098,6 +1099,14 @@ async function sendCanvas(c, msg, client, botname) {
     sendWebhook(botname, message.attachments.first().url, msg.channel);
 }
 
+function getTextWidth(font, fontsize, text) {
+    var c = createCanvas(1, 1);
+    var ctx = c.getContext("2d");
+    ctx.font = fontsize + "px " + font;
+    var w = ctx.measureText(text).width;
+    return w;
+}
+
 function carbs(msg, client, custom = false) {
     var w = 960,
         h = 540,
@@ -1224,4 +1233,5 @@ module.exports = {
     frame2: frame2,
     unfunnyTest: unfunnyTest,
     spotted: spotted,
+    getTextWidth: getTextWidth,
 };

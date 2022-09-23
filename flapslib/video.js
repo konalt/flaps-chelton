@@ -3,6 +3,7 @@ const fs = require("fs");
 const path = require("path");
 const { stdout } = require("process");
 const { uuidv4 } = require("./ai");
+const { getTextWidth } = require("./canvas");
 
 var ffmpegVerbose = false;
 
@@ -54,7 +55,53 @@ async function addText(input, output, options) {
         )}`
     );
 }
-
+async function caption2(input, output, options) {
+    var videoHeight = options.h;
+    var videoWidth = options.w;
+    var text = options.text;
+    var fontSize = videoHeight * 0.1;
+    var textArr = text.split(" ");
+    var lines = [];
+    var currentLine = "";
+    textArr.forEach((word) => {
+        var textWidth = getTextWidth(
+            "Futura",
+            fontSize,
+            currentLine + " " + word
+        );
+        console.log(textWidth);
+        if (textWidth > videoWidth) {
+            lines.push([textWidth, `${currentLine}`]);
+            currentLine = "";
+        }
+        currentLine += " " + word;
+    });
+    lines.push([getTextWidth("Futura", fontSize, currentLine), currentLine]);
+    lines = lines.map((l) => [l[0], l[1].trim()]);
+    var barHeight = lines.length * fontSize + fontSize;
+    var filter = `[0:v]pad=width=${videoWidth}:height=${
+        videoHeight + barHeight
+    }:x=0:y=${barHeight}:color=white,`;
+    lines.forEach((line, index) => {
+        filter += `drawtext=fontfile=futura.otf:fontsize=${fontSize}:text='${
+            line[1]
+        }':x=(w-text_w)/2:y=${fontSize / 2 + index * (fontSize + 5)},`;
+    });
+    if (filter.endsWith(",")) filter = filter.substring(0, filter.length - 1);
+    filter +=
+        ",split[s0][s1];[s0]palettegen=reserve_transparent=1[p];[s1][p]paletteuse[out_v]";
+    return ffmpeg(
+        `-y -i ${path.join(
+            __dirname,
+            "..",
+            input
+        )} -filter_complex "${filter}" -map "[out_v]" -map "0:a?" ${path.join(
+            __dirname,
+            "..",
+            output
+        )}`
+    );
+}
 async function simpleMemeCaption(input, output, options) {
     return ffmpeg(
         `-y -i ${path.join(
@@ -112,7 +159,7 @@ async function compress(input, output) {
             __dirname,
             "..",
             input
-        )} -vf "scale=trunc(iw/2)*2:trunc(ih/2)*2" -b:a 8k -crf 51 ${path.join(
+        )} -vf "scale=trunc(iw/2)*2:trunc(ih/2)*2,framerate=15" -b:a 8k -crf 51 ${path.join(
             __dirname,
             "..",
             output
@@ -304,4 +351,5 @@ module.exports = {
     mimeNod: mimeNod,
     gifAudio: gifAudio,
     compress: compress,
+    caption2: caption2,
 };
