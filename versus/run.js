@@ -14,7 +14,7 @@ async function ffmpeg(args) {
             if (!c
                 .toString()
                 .match(
-                    /\[swscaler @ [0-9a-f]+\] \[swscaler @ [0-9a-f]+\] deprecated pixel format used, make sure you did set range correctly/g
+                    /(\[swscaler @ [0-9a-f]+\])+ deprecated pixel format used, make sure you did set range correctly/g
                 )
             )
                 stdout.write(c);
@@ -23,7 +23,7 @@ async function ffmpeg(args) {
             if (!c
                 .toString()
                 .match(
-                    /\[swscaler @ [0-9a-f]+\] \[swscaler @ [0-9a-f]+\] deprecated pixel format used, make sure you did set range correctly/g
+                    /(\[swscaler @ [0-9a-f]+\])+ deprecated pixel format used, make sure you did set range correctly/g
                 )
             )
                 stdout.write(c);
@@ -99,7 +99,7 @@ function addAudio(input, output, lobster, length) {
             lobster ? length - segmentLength : length
         }${
             lobster ? "[tmp];[tmp][2:a]concat=n=2:v=0:a=1[aout]" : "[aout]"
-        };[0:v]scale=400:800[vout]" -map "[aout]" -map "[vout]" -shortest -r 25 ${output}.mp4`
+        };[0:v]scale=400:800[vout]" -map "[aout]" -map "[vout]" -r 25 ${output}.mp4`
     );
 }
 
@@ -178,6 +178,7 @@ async function todo(client, msg) {
                             .slice(1)
                             .join(" ")
                             .split(":");
+                        var forceWin = names[2];
                         var vi = 0;
 
                         await createBothVideo(inputs, "versus/" + vi++, names);
@@ -251,7 +252,11 @@ async function todo(client, msg) {
                             await createStatVideo(inputs, "versus/" + vi++, {
                                 stat: stat,
                             });
-                            var chosenSide = Math.floor(Math.random() * 2);
+                            console.log(forceWin);
+                            var chosenSide =
+                                forceWin == 0 || forceWin == 1 ?
+                                parseInt(forceWin) :
+                                Math.floor(Math.random() * 2);
                             console.log("Side" + chosenSide);
                             scores[chosenSide]++;
                             await createScoreVideo(

@@ -39,34 +39,12 @@ async function addText(name, text, msg) {
                     x: gifData[4],
                     y: gifData[5],
                 })
-                .then(async() => {
-                    try {
-                        console.log(id, id2);
-                        var message = await client.channels.cache
-                            .get("956316856422137856")
-                            .send({
-                                files: [{
-                                    attachment: "images/cache/" + id2,
-                                }, ],
-                            });
-
-                        setTimeout(() => {
-                            fs.unlinkSync("images/cache/" + id);
-                            fs.unlinkSync("images/cache/" + id2);
-                        }, 10000);
-
-                        sendWebhook(
-                            "ffmpeg",
-                            message.attachments.first().url,
-                            msg.channel
-                        );
-                    } catch {
-                        sendWebhook(
-                            "ffmpeg",
-                            "oops, looks like the vido too bigge.",
-                            msg.channel
-                        );
-                    }
+                .then(() => {
+                    sendWebhookFile(
+                        "ffmpeg",
+                        "images/cache/" + id,
+                        msg.channel
+                    );
                 });
         });
 }
@@ -115,33 +93,8 @@ ${text[1]}`;
                     parseInt(msg.content.split(" ")[1]),
             }
         )
-        .then(async() => {
-            try {
-                var message = await client.channels.cache
-                    .get("956316856422137856")
-                    .send({
-                        files: [{
-                            attachment: "images/cache/" + id + ext,
-                        }, ],
-                    });
-
-                setTimeout(() => {
-                    fs.unlinkSync("images/cache/" + id + ext);
-                    fs.unlinkSync("images/cache/" + name + ext);
-                }, 10000);
-
-                sendWebhook(
-                    "ffmpeg",
-                    message.attachments.first().url,
-                    msg.channel
-                );
-            } catch {
-                sendWebhook(
-                    "ffmpeg",
-                    "oops, looks like the vido too bigge.",
-                    msg.channel
-                );
-            }
+        .then(() => {
+            sendWebhookFile("ffmpeg", "images/cache/" + id + ext, msg.channel);
         });
 }
 async function squash(name, msg) {
@@ -149,33 +102,8 @@ async function squash(name, msg) {
     var ext = "." + msg.attachments.first().url.split(".").pop();
     video
         .squash("images/cache/" + name + ext, "images/cache/" + id + ext)
-        .then(async() => {
-            try {
-                var message = await client.channels.cache
-                    .get("956316856422137856")
-                    .send({
-                        files: [{
-                            attachment: "images/cache/" + id + ext,
-                        }, ],
-                    });
-
-                setTimeout(() => {
-                    fs.unlinkSync("images/cache/" + id + ext);
-                    fs.unlinkSync("images/cache/" + name + ext);
-                }, 10000);
-
-                sendWebhook(
-                    "ffmpeg",
-                    message.attachments.first().url,
-                    msg.channel
-                );
-            } catch {
-                sendWebhook(
-                    "ffmpeg",
-                    "oops, looks like the vido too bigge.",
-                    msg.channel
-                );
-            }
+        .then(() => {
+            sendWebhookFile("ffmpeg", "images/cache/" + id + ext, msg.channel);
         });
 }
 async function compress(name, msg) {
@@ -192,36 +120,11 @@ async function stretch(name, msg) {
     var ext = "." + msg.attachments.first().url.split(".").pop();
     video
         .stretch("images/cache/" + name + ext, "images/cache/" + id + ext)
-        .then(async() => {
-            try {
-                var message = await client.channels.cache
-                    .get("956316856422137856")
-                    .send({
-                        files: [{
-                            attachment: "images/cache/" + id + ext,
-                        }, ],
-                    });
-
-                setTimeout(() => {
-                    fs.unlinkSync("images/cache/" + id + ext);
-                    fs.unlinkSync("images/cache/" + name + ext);
-                }, 10000);
-
-                sendWebhook(
-                    "ffmpeg",
-                    message.attachments.first().url,
-                    msg.channel
-                );
-            } catch {
-                sendWebhook(
-                    "ffmpeg",
-                    "oops, looks like the vido too bigge.",
-                    msg.channel
-                );
-            }
+        .then(() => {
+            sendWebhookFile("ffmpeg", "images/cache/" + id + ext, msg.channel);
         });
 }
-async function trim(name, times, msg, client) {
+async function trim(name, times, msg) {
     var id = uuidv4().replace(/-/gi, "");
     var ext = "." + msg.attachments.first().url.split(".").pop();
     video
@@ -229,33 +132,8 @@ async function trim(name, times, msg, client) {
             start: times[0],
             end: times[1],
         })
-        .then(async() => {
-            try {
-                var message = await client.channels.cache
-                    .get("956316856422137856")
-                    .send({
-                        files: [{
-                            attachment: "images/cache/" + id + ext,
-                        }, ],
-                    });
-
-                setTimeout(() => {
-                    fs.unlinkSync("images/cache/" + id + ext);
-                    fs.unlinkSync("images/cache/" + name + ext);
-                }, 10000);
-
-                sendWebhook(
-                    "ffmpeg",
-                    message.attachments.first().url,
-                    msg.channel
-                );
-            } catch {
-                sendWebhook(
-                    "ffmpeg",
-                    "oops, looks like the vido too bigge.",
-                    msg.channel
-                );
-            }
+        .then(() => {
+            sendWebhookFile("ffmpeg", "images/cache/" + id + ext, msg.channel);
         });
 }
 
@@ -269,102 +147,25 @@ async function videoGif(name, msg) {
     var ext = "." + msg.attachments.first().url.split(".").pop();
     video
         .videoGif("images/cache/" + name + ext, "images/cache/" + id + ".gif")
-        .then(async() => {
-            try {
-                var message = await client.channels.cache
-                    .get("956316856422137856")
-                    .send({
-                        files: [{
-                            attachment: "images/cache/" + id + ".gif",
-                        }, ],
-                    });
-
-                setTimeout(() => {
-                    fs.unlinkSync("images/cache/" + id + ".gif");
-                    fs.unlinkSync("images/cache/" + name + ext);
-                }, 10000);
-
-                sendWebhook(
-                    "ffmpeg",
-                    message.attachments.first().url,
-                    msg.channel
-                );
-            } catch {
-                sendWebhook(
-                    "ffmpeg",
-                    "oops, looks like the vido too bigge.",
-                    msg.channel
-                );
-            }
+        .then(() => {
+            sendWebhookFile(
+                "ffmpeg",
+                "images/cache/" + id + ".gif",
+                msg.channel
+            );
         });
 }
-async function imageAudio(name, msg, client) {
+async function imageAudio(name, msg) {
     var id = uuidv4().replace(/-/gi, "");
-    video
-        .imageAudio("images/cache/" + name, "images/cache/" + id)
-        .then(async() => {
-            try {
-                var message = await client.channels.cache
-                    .get("956316856422137856")
-                    .send({
-                        files: [{
-                            attachment: "images/cache/" + id + ".mp4",
-                        }, ],
-                    });
-
-                setTimeout(() => {
-                    fs.unlinkSync("images/cache/" + id + ".mp4");
-                    fs.unlinkSync("images/cache/" + name + ".png");
-                    fs.unlinkSync("images/cache/" + name + ".mp3");
-                }, 10000);
-
-                sendWebhook(
-                    "ffmpeg",
-                    message.attachments.first().url,
-                    msg.channel
-                );
-            } catch {
-                sendWebhook(
-                    "ffmpeg",
-                    "oops, looks like the vido too bigge.",
-                    msg.channel
-                );
-            }
-        });
+    video.imageAudio("images/cache/" + name, "images/cache/" + id).then(() => {
+        sendWebhookFile("ffmpeg", "images/cache/" + id + ".mp4", msg.channel);
+    });
 }
-async function gifAudio(name, msg, client) {
+async function gifAudio(name, msg) {
     var id = uuidv4().replace(/-/gi, "");
-    video
-        .gifAudio("images/cache/" + name, "images/cache/" + id)
-        .then(async() => {
-            try {
-                var message = await client.channels.cache
-                    .get("956316856422137856")
-                    .send({
-                        files: [{
-                            attachment: "images/cache/" + id + ".mp4",
-                        }, ],
-                    });
-
-                setTimeout(() => {
-                    fs.unlinkSync("images/cache/" + id + ".mp4");
-                    fs.unlinkSync("images/cache/" + name + ".gif");
-                    fs.unlinkSync("images/cache/" + name + ".mp3");
-                }, 10000);
-
-                sendWebhook(
-                    "ffmpeg",
-                    message.attachments.first().url,
-                    msg.channel
-                );
-            } catch {
-                sendWebhook(
-                    "ffmpeg",
-                    "oops, looks like the vido too bigge.",
-                    msg.channel
-                );
-            }
-        });
+    video.gifAudio("images/cache/" + name, "images/cache/" + id).then(() => {
+        sendWebhookFile("ffmpeg", "images/cache/" + id + ".mp4", msg.channel);
+    });
 }
 async function videoAudio(name, msg) {
     var id = uuidv4().replace(/-/gi, "");
@@ -408,66 +209,24 @@ async function armstrongify(name, msg, duration, client) {
             videoLength: duration,
             isVideo: ext == ".mp4",
         })
-        .then(async() => {
-            try {
-                var message = await client.channels.cache
-                    .get("956316856422137856")
-                    .send({
-                        files: [{
-                            attachment: "images/cache/" + id + ".mp4",
-                        }, ],
-                    });
-
-                setTimeout(() => {
-                    fs.unlinkSync("images/cache/" + id + ".mp4");
-                }, 10000);
-
-                sendWebhook(
-                    "armstrong",
-                    message.attachments.first().url,
-                    true,
-                    msg.channel
-                );
-            } catch {
-                sendWebhook(
-                    "armstrong",
-                    "LISTEN, JACK. I FUCKING HATE ERRORS.",
-                    msg.channel
-                );
-            }
+        .then(() => {
+            sendWebhookFile(
+                "ffmpeg",
+                "images/cache/" + id + ".mp4",
+                msg.channel
+            );
         });
 }
 async function baitSwitch(name, msg, client, opt = {}) {
     var id = uuidv4().replace(/-/gi, "");
     video
         .baitSwitch("images/cache/" + name, "images/cache/" + id, opt)
-        .then(async() => {
-            try {
-                var message = await client.channels.cache
-                    .get("956316856422137856")
-                    .send({
-                        files: [{
-                            attachment: "images/cache/" + id + ".mp4",
-                        }, ],
-                    });
-
-                setTimeout(() => {
-                    fs.unlinkSync("images/cache/" + id + ".mp4");
-                }, 10000);
-
-                sendWebhook(
-                    "ffmpeg",
-                    message.attachments.first().url,
-                    true,
-                    msg.channel
-                );
-            } catch {
-                sendWebhook(
-                    "ffmpeg",
-                    "LISTEN, JACK. I FUCKING HATE ERRORS.",
-                    msg.channel
-                );
-            }
+        .then(() => {
+            sendWebhookFile(
+                "ffmpeg",
+                "images/cache/" + id + ".mp4",
+                msg.channel
+            );
         });
 }
 async function stitch(names, msg) {
@@ -477,32 +236,12 @@ async function stitch(names, msg) {
             ["images/cache/" + names[0], "images/cache/" + names[1]],
             "images/cache/" + id
         )
-        .then(async() => {
-            try {
-                var message = await client.channels.cache
-                    .get("956316856422137856")
-                    .send({
-                        files: [{
-                            attachment: "images/cache/" + id + ".mp4",
-                        }, ],
-                    });
-
-                setTimeout(() => {
-                    fs.unlinkSync("images/cache/" + id + ".mp4");
-                }, 10000);
-
-                sendWebhook(
-                    "ffmpeg",
-                    message.attachments.first().url,
-                    msg.channel
-                );
-            } catch {
-                sendWebhook(
-                    "ffmpeg",
-                    "oops, looks like the vido too bigge.",
-                    msg.channel
-                );
-            }
+        .then(() => {
+            sendWebhookFile(
+                "ffmpeg",
+                "images/cache/" + id + ".mp4",
+                msg.channel
+            );
         });
 }
 async function geq(name, msg) {

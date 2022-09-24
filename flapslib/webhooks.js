@@ -2,6 +2,7 @@ const fetch = require("node-fetch");
 const fs = require("fs");
 const owoify = require("owoify-js").default;
 const Discord = require("discord.js");
+const path = require("path");
 
 var users = {};
 
@@ -179,28 +180,59 @@ function setClient(c) {
 var multipartUpload = false;
 
 async function sendWebhookFile(id, filename, msgChannel, cd) {
-    if (multipartUpload) {} else {
-        client.channels.cache
-            .get("956316856422137856")
-            .send({
-                files: [{
-                    attachment: filename,
-                }, ],
-            })
-            .catch((e) => {
-                sendWebhook(id, "Send error: " + e, msgChannel);
-            })
-            .then((message) => {
-                if (!message) {
-                    return;
+    if (!multipartUpload) {
+        var stats = fs.statSync(filename);
+        var fileSize = stats.size / (1024 * 1024);
+        console.log(fileSize);
+        if (fileSize) {
+            console.log(
+                "[konalt-upload] File larger than 8MB, sending to konalt"
+            );
+            var fn = path.basename(filename);
+            var konalt_path = "E:/MBG/2Site/sites/konalt/flaps/bigfile/" + fn;
+            fs.copyFile(filename, konalt_path, (err) => {
+                if (err) {
+                    sendWebhook(id, "Send error: " + err, msgChannel);
+                } else {
+                    console.log("[konalt-upload] copy successful");
+                    var konaltURL = "https://konalt.us.to/flaps/bigfile/" + fn;
+                    sendWebhook(
+                        id,
+                        "The resulting file was larger than 8MB, so it was uploaded to an external server.\n" +
+                        konaltURL,
+                        msgChannel
+                    );
                 }
-                sendWebhook(
-                    id,
-                    message.attachments.first().url,
-                    msgChannel,
-                    cd
-                );
             });
+        } else {
+            client.channels.cache
+                .get("956316856422137856")
+                .send({
+                    files: [{
+                        attachment: filename,
+                    }, ],
+                })
+                .catch((e) => {
+                    sendWebhook(id, "Send error: " + e, msgChannel);
+                })
+                .then((message) => {
+                    if (!message) {
+                        return;
+                    }
+                    sendWebhook(
+                        id,
+                        message.attachments.first().url,
+                        msgChannel,
+                        cd
+                    );
+                });
+        }
+    } else {
+        sendWebhook(
+            id,
+            "Send error: Multipart form uploads are enabled, which are not implemented yet.\nSet multipartUpload to false",
+            msgChannel
+        );
     }
 }
 
