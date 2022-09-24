@@ -183,8 +183,7 @@ async function sendWebhookFile(id, filename, msgChannel, cd) {
     if (!multipartUpload) {
         var stats = fs.statSync(filename);
         var fileSize = stats.size / (1024 * 1024);
-        console.log(fileSize);
-        if (fileSize) {
+        if (fileSize > 8) {
             console.log(
                 "[konalt-upload] File larger than 8MB, sending to konalt"
             );

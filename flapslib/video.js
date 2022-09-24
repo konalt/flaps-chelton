@@ -16,9 +16,12 @@ async function ffmpeg(args) {
         console.log(
             "[ffmpeg] FFMpeg Verbose: " + (ffmpegVerbose ? "YES" : "NO")
         );
-        var ffmpegInstance = cp.spawn("ffmpeg", args.split(" "), {
-            shell: true,
-        });
+        var ffmpegInstance = cp.spawn(
+            "ffmpeg",
+            ((ffmpegVerbose ? "" : "-v warning ") + args).split(" "), {
+                shell: true,
+            }
+        );
         console.log("[ffmpeg] PID: %d", ffmpegInstance.pid);
         ffmpegInstance.stdout.on("data", (c) => {
             if (ffmpegVerbose) stdout.write("[ffmpeg] " + c);
@@ -76,7 +79,22 @@ async function caption2(input, output, options) {
         currentLine += " " + word;
     });
     lines.push([getTextWidth("Futura", fontSize, currentLine), currentLine]);
-    lines = lines.map((l) => [l[0], l[1].trim()]);
+    var emojiRegex =
+        /([\uE000-\uF8FF]|\uD83C[\uDF00-\uDFFF]|\uD83D[\uDC00-\uDDFF])/g;
+
+    if (text.match(emojiRegex)) {
+        console.log(
+            "[caption-emoji] Emojis found: " + text.match(emojiRegex).join(",")
+        );
+    }
+    lines = lines.map((l) => [
+        l[0],
+        l[1]
+        .replace(/\\/g, "\\\\\\\\")
+        .replace(/'/g, "\u2019")
+        .replace(/%/g, "\\\\\\%")
+        .replace(/:/g, "\\\\\\:"),
+    ]);
     var barHeight = lines.length * fontSize + fontSize;
     var filter = `[0:v]pad=width=${videoWidth}:height=${
         videoHeight + barHeight
@@ -89,7 +107,7 @@ async function caption2(input, output, options) {
     if (filter.endsWith(",")) filter = filter.substring(0, filter.length - 1);
     if (input.endsWith("gif")) {
         filter +=
-            ",split[s0][s1];[s0]palettegen=reserve_transparent=1[p];[s1][p]paletteuse[out_v]";
+            "[eff];[eff]split[s0][s1];[s0]palettegen=reserve_transparent=1[p];[s1][p]paletteuse[out_v]";
     } else {
         filter += "[out_v]";
     }
