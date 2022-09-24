@@ -88,14 +88,18 @@ async function caption2(input, output, options) {
         }':x=(w-text_w)/2:y=${fontSize / 2 + index * (fontSize + 5)},`;
     });
     if (filter.endsWith(",")) filter = filter.substring(0, filter.length - 1);
-    filter +=
-        ",split[s0][s1];[s0]palettegen=reserve_transparent=1[p];[s1][p]paletteuse[out_v]";
+    if (input.endsWith("gif")) {
+        filter +=
+            ",split[s0][s1];[s0]palettegen=reserve_transparent=1[p];[s1][p]paletteuse[out_v]";
+    } else {
+        filter += "[out_v]";
+    }
     return ffmpeg(
         `-y -i ${path.join(
             __dirname,
             "..",
             input
-        )} -filter_complex "${filter}" -map "[out_v]" -map "0:a?" ${path.join(
+        )} -filter_complex "${filter}" -map "[out_v]" -map "0:a?" -preset superfast ${path.join(
             __dirname,
             "..",
             output
