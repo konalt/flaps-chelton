@@ -1635,7 +1635,7 @@ async function onMessage(msg) {
                                         id,
                                         commandArgString,
                                         msg,
-                                        url
+                                        msg.attachments.first().url
                                     );
                                 }
                             );
