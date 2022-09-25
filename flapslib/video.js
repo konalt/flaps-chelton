@@ -62,7 +62,7 @@ async function caption2(input, output, options) {
     var videoWidth = options.w;
     var text = options.text;
     var fontSize = videoHeight * 0.1;
-    var textArr = text.split(" ");
+    var textArr = text.split(/[ \n]/g);
     var lines = [];
     var currentLine = "";
     textArr.forEach((word) => {
@@ -93,7 +93,8 @@ async function caption2(input, output, options) {
         .replace(/\\/g, "\\\\\\\\")
         .replace(/'/g, "\u2019")
         .replace(/%/g, "\\\\\\%")
-        .replace(/:/g, "\\\\\\:"),
+        .replace(/:/g, "\\\\\\:")
+        .replace(/\n/g, "\\n"),
     ]);
     var barHeight = lines.length * fontSize + fontSize;
     var filter = `[0:v]pad=width=${videoWidth}:height=${
