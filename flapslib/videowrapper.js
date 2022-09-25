@@ -48,9 +48,9 @@ async function addText(name, text, msg) {
                 });
         });
 }
-async function caption2(name, text, msg) {
+async function caption2(name, text, msg, url) {
     var att = msg.attachments.first();
-    var url = att.url;
+    url = att ? att.url : url;
     var id = uuidv4().replace(/-/gi, "");
     var ext = "." + url.split(".").pop();
     video

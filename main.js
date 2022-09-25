@@ -1607,7 +1607,6 @@ async function onMessage(msg) {
                                                 id,
                                                 commandArgString,
                                                 ref,
-                                                client,
                                                 url
                                             );
                                         }
@@ -1636,7 +1635,7 @@ async function onMessage(msg) {
                                         id,
                                         commandArgString,
                                         msg,
-                                        client
+                                        url
                                     );
                                 }
                             );
