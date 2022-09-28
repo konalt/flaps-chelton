@@ -71,6 +71,7 @@ const { doTranslate, doTranslateSending } = require("./flapslib/translator");
 const { randomRedditImage } = require("./flapslib/fetchapis");
 const { OpenAIApi } = require("openai");
 const { Configuration } = require("openai");
+const { compress } = require("./flapslib/videowrapper");
 const owoify = require("owoify-js").default;
 var dream = WomboDreamApi.buildDefaultInstance();
 
@@ -2724,26 +2725,6 @@ fbi files on ${commandArgString}: ${
                                             videoURL,
                                             "images/cache/" + id,
                                             async(err) => {
-                                                var message =
-                                                    await client.channels.cache
-                                                    .get(
-                                                        "956316856422137856"
-                                                    )
-                                                    .send({
-                                                        files: [{
-                                                            attachment: __dirname +
-                                                                "\\images\\cache\\" +
-                                                                id,
-                                                        }, ],
-                                                    });
-
-                                                setTimeout(() => {
-                                                    fs.unlinkSync(
-                                                        "./images/cache/" +
-                                                        id
-                                                    );
-                                                }, 10000);
-
                                                 getR34Comments(
                                                     item[0].split("?")[1]
                                                 ).then((comments) => {
@@ -2751,16 +2732,32 @@ fbi files on ${commandArgString}: ${
                                                             "comments"
                                                         ))
                                                         comments = "";
-                                                    sendWebhook(
+                                                    sendWebhookFile(
                                                         "runcling",
+                                                        __dirname +
+                                                        "\\images\\cache\\" +
+                                                        id,
+                                                        msg.channel, {},
                                                         comments +
                                                         "\n" +
-                                                        isVideoStr +
-                                                        "\n" +
-                                                        message.attachments.first()
-                                                        .url,
-                                                        false,
-                                                        msg.channel
+                                                        isVideoStr,
+                                                        () => {
+                                                            // this has to be the WORST FUCKING HACK
+                                                            compress(
+                                                                id.split(
+                                                                    "."
+                                                                )[0], {
+                                                                    attachments: {
+                                                                        first: () => {
+                                                                            return {
+                                                                                url: id,
+                                                                            };
+                                                                        },
+                                                                    },
+                                                                    channel: msg.channel,
+                                                                }
+                                                            );
+                                                        }
                                                     );
                                                 });
                                             }

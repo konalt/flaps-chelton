@@ -179,30 +179,44 @@ function setClient(c) {
 
 var multipartUpload = false;
 
-async function sendWebhookFile(id, filename, msgChannel, cd) {
+async function sendWebhookFile(
+    id,
+    filename,
+    msgChannel,
+    cd,
+    pre = "",
+    failcb = null
+) {
     if (!multipartUpload) {
         var stats = fs.statSync(filename);
         var fileSize = stats.size / (1024 * 1024);
         if (fileSize > 8) {
-            console.log(
-                "[konalt-upload] File larger than 8MB, sending to konalt"
-            );
-            var fn = path.basename(filename);
-            var konalt_path = "E:/MBG/2Site/sites/konalt/flaps/bigfile/" + fn;
-            fs.copyFile(filename, konalt_path, (err) => {
-                if (err) {
-                    sendWebhook(id, "Send error: " + err, msgChannel);
-                } else {
-                    console.log("[konalt-upload] copy successful");
-                    var konaltURL = "https://konalt.us.to/flaps/bigfile/" + fn;
-                    sendWebhook(
-                        id,
-                        "The resulting file was larger than 8MB, so it was uploaded to an external server.\n" +
-                        konaltURL,
-                        msgChannel
-                    );
-                }
-            });
+            if (failcb) {
+                failcb();
+            } else {
+                console.log(
+                    "[konalt-upload] File larger than 8MB, sending to konalt"
+                );
+                var fn = path.basename(filename);
+                var konalt_path =
+                    "E:/MBG/2Site/sites/konalt/flaps/bigfile/" + fn;
+                fs.copyFile(filename, konalt_path, (err) => {
+                    if (err) {
+                        sendWebhook(id, "Send error: " + err, msgChannel);
+                    } else {
+                        console.log("[konalt-upload] copy successful");
+                        var konaltURL =
+                            "https://konalt.us.to/flaps/bigfile/" + fn;
+                        sendWebhook(
+                            id,
+                            pre +
+                            "\nThe resulting file was larger than 8MB, so it was uploaded to an external server.\n" +
+                            konaltURL,
+                            msgChannel
+                        );
+                    }
+                });
+            }
         } else {
             client.channels.cache
                 .get("956316856422137856")
@@ -220,7 +234,7 @@ async function sendWebhookFile(id, filename, msgChannel, cd) {
                     }
                     sendWebhook(
                         id,
-                        message.attachments.first().url,
+                        pre + "\n" + message.attachments.first().url,
                         msgChannel,
                         cd
                     );
