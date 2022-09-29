@@ -3362,14 +3362,6 @@ setInterval(() => {
             client.channels.cache.get("882743320554643476")
         );
     }
-    if (d.getHours() == 17 && d.getMinutes() == 45 && d.getSeconds() < 1) {
-        sendWebhook(
-            "neo",
-            "heh",
-            false,
-            client.channels.cache.get("882743320554643476")
-        );
-    }
     if (
         d.getMinutes() == 39 &&
         d.getSeconds() < 1 &&
