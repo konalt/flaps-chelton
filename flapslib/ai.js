@@ -103,9 +103,7 @@ function doDream(msg) {
                 editWebhookMsg(
                     msgid,
                     msg.channel,
-                    client.emojis.cache
-                    .find((emoji) => emoji.name === "literally1984")
-                    .toString()
+                    "<:literally1984:942504581466824734>"
                 );
             });
     });
