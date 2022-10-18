@@ -97,7 +97,7 @@ async function caption2(input, output, options) {
         .replace(/:/g, "\\\\\\:")
         .replace(/\n/g, "\\n"),
     ]);
-    var barHeight = lines.length * fontSize + fontSize;
+    var barHeight = (lines.length + 1) * fontSize + lines.length * 5;
     var filter = `[0:v]pad=width=${videoWidth}:height=${
         videoHeight + barHeight
     }:x=0:y=${barHeight}:color=white,`;
