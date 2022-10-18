@@ -61,6 +61,7 @@ async function caption2(input, output, options) {
     var videoHeight = options.h;
     var videoWidth = options.w;
     var text = options.text;
+    text = text.replace(/"/g, "'");
     var fontSize = videoHeight * 0.1;
     var textArr = text.split(/[ \n]/g);
     var lines = [];
