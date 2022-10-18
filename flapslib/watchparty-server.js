@@ -1,5 +1,6 @@
 const { sendWebhook, users } = require("./webhooks");
 const fetch = require("node-fetch");
+const { resolveSoa } = require("dns");
 
 function init(client) {
     const fs = require("fs");
@@ -162,6 +163,25 @@ function init(client) {
             );
         } else {
             res.send("FlapsAPIUnknownUser");
+        }
+    });
+    app_rest.get("/bigfile/:name", (req, res) => {
+        try {
+            if (
+                fs.existsSync(
+                    "E:/MBG/2Site/sites/konalt/flaps/bigfile/" + req.params.name
+                )
+            ) {
+                res.sendFile(
+                    "E:/MBG/2Site/sites/konalt/flaps/bigfile/" + req.params.name
+                );
+            } else {
+                res.status(404).send("404 File Not Found");
+            }
+        } catch (e) {
+            res.status(500).send(
+                "500 Internal Server Error\nStack Trace:" + e.toString()
+            );
         }
     });
     app_rest.get("/flaps_api/userdata_json/:x/:y", (req, res) => {

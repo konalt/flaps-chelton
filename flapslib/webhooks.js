@@ -206,7 +206,7 @@ async function sendWebhookFile(
                     } else {
                         console.log("[konalt-upload] copy successful");
                         var konaltURL =
-                            "https://konalt.us.to/flaps/bigfile/" + fn;
+                            "https://konalt.us.to:4930/bigfile/" + fn;
                         sendWebhook(
                             id,
                             pre +
