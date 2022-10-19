@@ -223,16 +223,16 @@ async function stitch(inputs, output) {
         )}`
     );
 }
-async function imageAudio(input, output) {
+async function imageAudio(input, output, rev, exts) {
     return ffmpeg(
         `-y -loop 1 -i ${path.join(
             __dirname,
             "..",
-            input + ".png"
+            input + (!rev ? "-0." + exts[0] : "-1." + exts[1])
         )} -i ${path.join(
             __dirname,
             "..",
-            input + ".mp3"
+            input + (rev ? "-0." + exts[0] : "-1." + exts[1])
         )} -vf "pad=ceil(iw/2)*2:ceil(ih/2)*2" -c:v libx264 -tune stillimage -c:a aac -b:a 192k -pix_fmt yuv420p -shortest -preset ${h264Preset} ${path.join(
             __dirname,
             "..",
@@ -330,12 +330,16 @@ async function armstrongify(input, output, options) {
         } ${path.join(__dirname, "..", output + ".mp4")}`
     );
 }
-async function videoAudio(input, output) {
+async function videoAudio(input, output, rev, exts) {
     return ffmpeg(
-        `-y -i ${path.join(__dirname, "..", input + ".mp4")} -i ${path.join(
+        `-y -i ${path.join(
             __dirname,
             "..",
-            input + ".mp3"
+            input + (!rev ? "-0." + exts[0] : "-1." + exts[1])
+        )} -i ${path.join(
+            __dirname,
+            "..",
+            input + (rev ? "-0." + exts[0] : "-1." + exts[1])
         )} -map 0:v -map 1:a -c:v copy -shortest -preset ${h264Preset} ${path.join(
             __dirname,
             "..",

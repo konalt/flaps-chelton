@@ -188,6 +188,14 @@ async function sendWebhookFile(
     failcb = null
 ) {
     if (!multipartUpload) {
+        if (!fs.existsSync(filename)) {
+            return sendWebhook(
+                id,
+                "Error: File does not exist.\n" + filename,
+                msg.channel,
+                cd
+            );
+        }
         var stats = fs.statSync(filename);
         var fileSize = stats.size / (1024 * 1024);
         if (fileSize > 8) {

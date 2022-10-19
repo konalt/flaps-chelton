@@ -1322,6 +1322,144 @@ async function onMessage(msg) {
                         );
                     }
                     break;
+                case "!combine":
+                    {
+                        var atts = msg.attachments.first(2);
+                        var images = ["png", "jpg", "webp", "jpeg"];
+                        var videos = ["mp4", "mkv"];
+                        var audios = ["mp3", "webm"];
+                        if (atts[1]) {
+                            var exts = [
+                                atts[0].url
+                                .split(".")[
+                                    atts[0].url.split(".").length - 1
+                                ].toLowerCase(),
+                                atts[1].url
+                                .split(".")[
+                                    atts[1].url.split(".").length - 1
+                                ].toLowerCase(),
+                            ];
+                            var id = uuidv4().replace(/-/g, "");
+                            download(
+                                atts[0].url,
+                                "./images/cache/" + id + "-0." + exts[0],
+                                () => {
+                                    download(
+                                        atts[1].url,
+                                        "./images/cache/" + id + "-1." + exts[1],
+                                        () => {
+                                            var mode = ["unknown", "unknown"];
+                                            if (images.includes(exts[0])) {
+                                                mode[0] = "image";
+                                            } else if (videos.includes(exts[0])) {
+                                                mode[0] = "video";
+                                            } else if (audios.includes(exts[0])) {
+                                                mode[0] = "audio";
+                                            }
+                                            if (images.includes(exts[1])) {
+                                                mode[1] = "image";
+                                            } else if (videos.includes(exts[1])) {
+                                                mode[1] = "video";
+                                            } else if (audios.includes(exts[1])) {
+                                                mode[1] = "audio";
+                                            }
+
+                                            switch (mode[0]) {
+                                                case "image":
+                                                    switch (mode[1]) {
+                                                        case "image":
+                                                            // Stitch images together.
+                                                            break;
+                                                        case "video":
+                                                            flapslib.videowrapper.imageAudio(
+                                                                id,
+                                                                msg,
+                                                                exts,
+                                                                false
+                                                            );
+                                                            break;
+                                                        case "audio":
+                                                            flapslib.videowrapper.imageAudio(
+                                                                id,
+                                                                msg,
+                                                                exts,
+                                                                false
+                                                            );
+                                                            break;
+                                                    }
+                                                    break;
+                                                case "video":
+                                                    switch (mode[1]) {
+                                                        case "image":
+                                                            flapslib.videowrapper.imageAudio(
+                                                                id,
+                                                                msg,
+                                                                exts,
+                                                                true
+                                                            );
+                                                            break;
+                                                        case "video":
+                                                            flapslib.videowrapper.stitch(
+                                                                [
+                                                                    id +
+                                                                    "-0." +
+                                                                    exts[0],
+                                                                    id +
+                                                                    "-1." +
+                                                                    exts[1],
+                                                                ],
+                                                                msg,
+                                                                exts,
+                                                                false
+                                                            );
+                                                            break;
+                                                        case "audio":
+                                                            flapslib.videowrapper.videoAudio(
+                                                                id,
+                                                                msg,
+                                                                exts,
+                                                                false
+                                                            );
+                                                            break;
+                                                    }
+                                                    break;
+                                                case "audio":
+                                                    switch (mode[1]) {
+                                                        case "image":
+                                                            flapslib.videowrapper.imageAudio(
+                                                                id,
+                                                                msg,
+                                                                exts,
+                                                                true
+                                                            );
+                                                            break;
+                                                        case "video":
+                                                            flapslib.videowrapper.videoAudio(
+                                                                id,
+                                                                msg,
+                                                                exts,
+                                                                true
+                                                            );
+                                                            break;
+                                                        case "audio":
+                                                            // Stitch audio together.
+                                                            break;
+                                                    }
+                                                    break;
+                                            }
+                                        }
+                                    );
+                                }
+                            );
+                        } else {
+                            sendWebhook(
+                                "ffmpeg",
+                                "i need AT LEAST. TWO File .for this tow rok .. nngh",
+                                msg.channel
+                            );
+                        }
+                        break;
+                    }
                 case "!imageaudio":
                     {
                         if (msg.attachments.first(2)[1]) {
