@@ -5,7 +5,8 @@ const canvas = require("canvas");
 const path = require("path");
 const download = require("./download");
 const { cahWhiteCard } = require("./cardsagainsthumanity");
-const { createCanvas } = require("canvas");
+const { createCanvas, Image } = require("canvas");
+const { loadImage } = require("canvas");
 
 var memeMaking = {
     getImageData: async function(n) {
@@ -1218,6 +1219,71 @@ function watermark(msg, client) {
     }
 }
 
+function dog(msg, client) {
+    var blue = "rgba(65,156,229,255)";
+    var bluetransparent = "rgba(65,156,229,0)";
+    var white = "rgba(255,255,255,255)";
+    var fac = 0.5;
+    if (msg.attachments.first()) {
+        var att = msg.attachments.first();
+        download(att.url, "dataurl", (err, data) => {
+            loadImage(data).then((img) => {
+                var c = canvas.createCanvas(att.width, att.height);
+                var ctx = c.getContext("2d");
+                ctx.drawImage(img, 0, 0);
+                var imageData = ctx.getImageData(0, 0, att.width, att.height);
+                var d = imageData.data;
+                for (var i = 0; i < d.length; i += 4) {
+                    var med = (d[i] + d[i + 1] + d[i + 2]) / 3;
+                    d[i] = d[i + 1] = d[i + 2] = med;
+                }
+                ctx.putImageData(imageData, 0, 0);
+                var grad2 = ctx.createRadialGradient(
+                    att.width / 2,
+                    att.height / 2,
+                    att.width / 1.2,
+                    att.width / 2,
+                    att.height / 2,
+                    att.width / 10
+                );
+                grad2.addColorStop(1, "transparent");
+                grad2.addColorStop(0, "black");
+                ctx.fillStyle = grad2;
+                ctx.fillRect(0, 0, att.width, att.height);
+                var grad = ctx.createLinearGradient(
+                    0,
+                    att.height,
+                    0,
+                    att.height * fac
+                );
+                grad.addColorStop(1, bluetransparent);
+                grad.addColorStop(0, blue);
+                ctx.fillStyle = grad;
+                ctx.fillRect(
+                    0,
+                    att.height * fac,
+                    att.width,
+                    att.height * (1 - fac)
+                );
+                ctx.fillStyle = white;
+                var fontFac = 0.15;
+                var fontSize = Math.floor(att.height * fontFac);
+                ctx.font = fontSize + "px Fuckedup";
+                ctx.textAlign = "center";
+                ctx.lineWidth = fontSize * 0.2;
+                var text = "this dog is";
+                ctx.strokeText(
+                    text,
+                    att.width / 2,
+                    att.height * fac + fontSize
+                );
+                ctx.fillText(text, att.width / 2, att.height * fac + fontSize);
+                sendCanvas(c, msg, client, "dog");
+            });
+        });
+    }
+}
+
 module.exports = {
     laugh: laugh,
     homodog: homodog,
@@ -1234,4 +1300,5 @@ module.exports = {
     unfunnyTest: unfunnyTest,
     spotted: spotted,
     getTextWidth: getTextWidth,
+    dog: dog,
 };
