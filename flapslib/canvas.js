@@ -205,7 +205,7 @@ function laugh(msg, client) {
     }
 }
 
-function todo(ctx, text, w, h, fontSize) {
+function todo(ctx, text, w, h, fontSize, cx, cy) {
     var max_width = w;
     var lines = new Array();
     var width = 0,
@@ -231,13 +231,13 @@ function todo(ctx, text, w, h, fontSize) {
         text = text.substr(lines[lines.length - 1].length, text.length);
     }
 
-    var textH = h / 2;
+    var textH = cy;
     textH -= (lines.length * fontSize + (fontSize + 5)) / 2;
     textH += fontSize / 2;
 
     for (i = 0, j = lines.length; i < j; ++i) {
-        ctx.fillText(lines[i], w / 2, textH + fontSize + (fontSize + 5) * i);
-        ctx.strokeText(lines[i], w / 2, textH + fontSize + (fontSize + 5) * i);
+        ctx.fillText(lines[i], cx, textH + fontSize + (fontSize + 5) * i);
+        ctx.strokeText(lines[i], cx, textH + fontSize + (fontSize + 5) * i);
     }
 }
 
@@ -261,7 +261,7 @@ function homodog(msg, client) {
                 ctx.font = "normal normal bolder " + h / 7 + "px Homodog";
                 ctx.lineWidth = h / 240;
 
-                todo(ctx, text, w, h, h / 7);
+                todo(ctx, text, w, h, h / 7, w / 2, h / 2);
 
                 sendCanvas(c, msg, client, "jamesphotoframe");
             });
@@ -1284,6 +1284,52 @@ function dog(msg, client) {
     }
 }
 
+async function robertDowneyJunior(msg, client) {
+    var text = msg.content.split(" ").slice(1).join(" ");
+    if (msg.attachments.first()) {
+        var att = msg.attachments.first();
+        var w = att.width;
+        var h = att.height * 1.5;
+        var rdjSize = att.height * 0.45;
+        var rdj = await loadImage(__dirname + "./../images\\rdj.png");
+        download(att.url, "dataurl", (err, data) => {
+            loadImage(data).then((img) => {
+                var c = canvas.createCanvas(w, h);
+                var ctx = c.getContext("2d");
+                ctx.fillStyle = "white";
+                ctx.fillRect(0, 0, w, h);
+                ctx.drawImage(img, 0, 0);
+                ctx.drawImage(
+                    rdj,
+                    att.height * 0.025,
+                    att.height * 1.025,
+                    rdjSize,
+                    rdjSize
+                );
+                ctx.font = h * 0.5 * 0.2 + "px sans-serif";
+                ctx.fillStyle = "black";
+                ctx.strokeStyle = "transparent";
+                ctx.lineWidth = h * 0.5 * 0.2 * 0.1;
+                ctx.textAlign = "center";
+                ctx.fillText(
+                    text,
+                    att.height * 0.05 + rdjSize,
+                    att.height * 1.025 + rdjSize / 2
+                );
+                /* todo(
+                    ctx,
+                    text,
+                    w,
+                    h,
+                    h * 0.5 * 0.2,
+                    (att.width - (att.height * 0.05 + rdjSize)) / 2
+                ); */
+                sendCanvas(c, msg, client, "stuff");
+            });
+        });
+    }
+}
+
 module.exports = {
     laugh: laugh,
     homodog: homodog,
@@ -1301,4 +1347,5 @@ module.exports = {
     spotted: spotted,
     getTextWidth: getTextWidth,
     dog: dog,
+    robertDowneyJunior: robertDowneyJunior,
 };

@@ -5,6 +5,7 @@ const {
     sendWebhookFile,
     editWebhookMsg,
     editWebhookFile,
+    sendWebhookAttachment,
 } = require("./webhooks");
 const fs = require("fs");
 const path = require("path");
@@ -1036,6 +1037,7 @@ function dalle(prompt, isSecondReq = false) {
 }
 
 const { Configuration, OpenAIApi } = require("openai");
+const { MessageAttachment } = require("discord.js");
 
 const configuration = new Configuration({
     apiKey: fs.readFileSync("./openai.txt"),
@@ -1550,6 +1552,40 @@ function switchMode(channel) {
     sendWebhook("monsoon", "done. try it out!\n" + monsoonPre, false, channel);
 }
 
+function dalle2(msg) {
+    var prompt = msg.content.split(" ").slice(1).join(" ");
+    fetch("https://playgroundai.com/api/models", {
+            credentials: "include",
+            headers: {
+                "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:105.0) Gecko/20100101 Firefox/105.0",
+                Accept: "application/json, text/plain, */*",
+                "Accept-Language": "en-US,en;q=0.5",
+                "Content-Type": "application/json",
+                "Sec-Fetch-Dest": "empty",
+                "Sec-Fetch-Mode": "cors",
+                "Sec-Fetch-Site": "same-origin",
+                "Sec-GPC": "1",
+                cookie: "__Host-next-auth.csrf-token=c8d3a607739739825d6fa1081dfb809d401a64c82deb50876463af4ceb37eb44%7C519bfa588e6a9894457bbba73c99d619f1f7e419c8b96e45536ac83823cae7c6; __Secure-next-auth.callback-url=https%3A%2F%2Fplaygroundai.com%2Flogin; __Secure-next-auth.session-token=0c5b26b8-afb1-46b9-95fb-2005fcdc21ab; __stripe_mid=eab45840-f815-4248-8e8c-f1e3cac51f656eb597; __stripe_sid=dabcf354-888e-4fa7-80f5-1302142499f628ae02",
+            },
+            referrer: "https://playgroundai.com/api/models",
+            body: '{"num_images":1,"width":512,"height":512,"prompt":"' +
+                prompt +
+                '","modelType":"dalle-2","isPrivate":true,"batchId":"HgIRsj6uES","generateVariants":false}',
+            method: "POST",
+            mode: "cors",
+        })
+        .then((res) => res.json())
+        .then((res) => {
+            if (!res.images) {
+                return sendWebhook("flaps", JSON.stringify(res), msg.channel);
+            }
+            download(res.images[0].url, "dataurl", (err, data) => {
+                var att = new MessageAttachment(data, "image.png");
+                sendWebhookAttachment("flaps", att, msg.channel);
+            });
+        });
+}
+
 module.exports = {
     generateImage: generateImage,
     autocompleteText: autocompleteText,
@@ -1579,6 +1615,7 @@ module.exports = {
     ruQuestion: ruQuestion,
     questionPromise: questionPromise,
     doDream: doDream,
+    dalle2: dalle2,
 };
 
 init();

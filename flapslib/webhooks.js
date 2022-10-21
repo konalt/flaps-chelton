@@ -257,6 +257,24 @@ async function sendWebhookFile(
     }
 }
 
+async function sendWebhookAttachment(id, att, msgChannel) {
+    client.channels.cache
+        .get("956316856422137856")
+        .send({
+            files: [att],
+            content: "Cheltify",
+        })
+        .catch((e) => {
+            sendWebhook(id, "Send error: " + e, msgChannel);
+        })
+        .then((message) => {
+            if (!message) {
+                return;
+            }
+            sendWebhook(id, message.attachments.first().url, msgChannel);
+        });
+}
+
 async function sendWebhookFileButton(id, filename, buttons, msgChannel) {
     if (multipartUpload) {} else {
         client.channels.cache
@@ -418,4 +436,5 @@ module.exports = {
     sendWebhookButton: sendWebhookButton,
     buttonCallbacks: buttonCallbacks,
     editWebhookFile: editWebhookFile,
+    sendWebhookAttachment: sendWebhookAttachment,
 };

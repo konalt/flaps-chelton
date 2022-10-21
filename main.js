@@ -37,6 +37,7 @@ const {
     questionFree,
     sendToChatbot,
     ruQuestion,
+    dalle2,
 } = require("./flapslib/ai");
 const {
     sendWebhook,
@@ -64,6 +65,7 @@ const {
     animethink2,
     spotted,
     dog,
+    robertDowneyJunior,
 } = require("./flapslib/canvas");
 const { createCanvas } = require("canvas");
 const { Canvas } = require("canvas");
@@ -2308,13 +2310,20 @@ fbi files on ${commandArgString}: ${
                         }
                     }
                     break;
+                case "!dalle2":
+                    dalle2(msg);
+                    break;
                 case "!flip":
                     flip(msg, client);
                     break;
                 case "!spotted":
                     spotted(msg, client);
                     break;
+                case "!rdj":
+                    robertDowneyJunior(msg, client);
+                    break;
                 case "!fuckedup":
+                case "!dog":
                     dog(msg, client);
                     break;
                 case "!homodog":
