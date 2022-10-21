@@ -63,6 +63,7 @@ const {
     unfunnyTest,
     animethink2,
     spotted,
+    dog,
 } = require("./flapslib/canvas");
 const { createCanvas } = require("canvas");
 const { Canvas } = require("canvas");
@@ -236,6 +237,7 @@ var serverVCs = {
     "760524739239477340": "874341836796362752",
 };
 
+canvas.registerFont("dog.otf", { family: "Fuckedup" });
 canvas.registerFont("homodog.otf", { family: "Homodog" });
 canvas.registerFont("weezer.otf", { family: "Weezer" });
 canvas.registerFont("futura.otf", { family: "Futura", weight: 400 });
@@ -2311,6 +2313,9 @@ fbi files on ${commandArgString}: ${
                     break;
                 case "!spotted":
                     spotted(msg, client);
+                    break;
+                case "!fuckedup":
+                    dog(msg, client);
                     break;
                 case "!homodog":
                     homodog(msg, client);
