@@ -1555,7 +1555,7 @@ function switchMode(channel) {
 }
 
 function dalle2(msg) {
-    var prompt = msg.content.split(" ").slice(1).join(" ");
+    var prompt = msg.content.split(" ").slice(1).join(" ").replace(/"/g, '\\"');
     fetch("https://playgroundai.com/api/models", {
             credentials: "include",
             headers: {
@@ -1577,10 +1577,12 @@ function dalle2(msg) {
             mode: "cors",
         })
         .then((res) => res.text())
-        .then(async(res) => {
+        .then(async(res2) => {
             try {
+                var res = JSON.parse(res2);
                 if (!res.images) {
-                    return sendWebhook("flaps", res, msg.channel);
+                    console.log("no images for some reason");
+                    return sendWebhook("flaps", res2, msg.channel);
                 }
                 var imgs = [
                     await downloadPromise(res.images[0].url, "dataurl"),
@@ -1593,8 +1595,11 @@ function dalle2(msg) {
                     sendWebhookAttachment("flaps", att, msg.channel);
                 });
             } catch {
-                sendWebhook("flaps", res, msg.channel);
+                sendWebhook("flaps", res2, msg.channel);
             }
+        })
+        .catch((err) => {
+            sendWebhook("flaps", err.toString(), msg.channel);
         });
 }
 
