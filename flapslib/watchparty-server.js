@@ -147,15 +147,26 @@ function init(client) {
                 res.send(r[0] ? r[0].label : "wowie!! no porn!!!");
             });
     });
-    app_rest.get("/flaps_api/question/:x", (req, res) => {
-        questionPromise(req.params.x.replace(/_sps_/g, " ")).then((data) => {
-            res.send(data);
+    app_rest.post("/flaps_api/question", (req, res) => {
+        if (!req.body.question) {
+            return res
+                .status(400)
+                .contentType("text/plain")
+                .send("400 Bad Request");
+        }
+        questionPromise(req.body.question).then((data) => {
+            res.contentType("text/plain").send(data);
         });
     });
-    app_rest.get("/flaps_api/dalle2/:x", (req, res) => {
-        dalle2Promise(req.params.x.replace(/_sps_/g, " ")).then((data) => {
-            res.setHeader("Content-Type", "image/png");
-            res.send(data);
+    app_rest.post("/flaps_api/dalle2", (req, res) => {
+        if (!req.body.prompt) {
+            return res
+                .status(400)
+                .contentType("text/plain")
+                .send("400 Bad Request");
+        }
+        dalle2Promise(req.body.prompt).then((data) => {
+            res.contentType("image/png").send(data);
         });
     });
     app_rest.get("/flaps_api/userdata/:x", (req, res) => {
