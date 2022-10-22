@@ -1,4 +1,3 @@
-const { uuidv4 } = require("./ai");
 const { sendWebhook, sendWebhookFile } = require("./webhooks");
 const fs = require("fs");
 const canvas = require("canvas");
@@ -7,6 +6,15 @@ const download = require("./download");
 const { cahWhiteCard } = require("./cardsagainsthumanity");
 const { createCanvas, Image } = require("canvas");
 const { loadImage } = require("canvas");
+
+function uuidv4() {
+    return ([1e7] + -1e3 + -4e3 + -8e3 + -1e11).replace(/[018]/g, (c) =>
+        (
+            c ^
+            (getRandomValues(new Uint8Array(1))[0] & (15 >> (c / 4)))
+        ).toString(16)
+    );
+}
 
 var memeMaking = {
     getImageData: async function(n) {
@@ -1330,6 +1338,40 @@ async function robertDowneyJunior(msg, client) {
     }
 }
 
+async function createCollage(buffers, imgSize) {
+    return new Promise((resolve, reject) => {
+        var proms = buffers.map((buf) => {
+            return new Promise((resolve, reject) => {
+                loadImage(buf).then((img) => {
+                    resolve(img);
+                });
+            });
+        });
+        Promise.all(proms).then((imgs) => {
+            var w = imgSize * (imgs.length / 2);
+            var h = imgSize * (imgs.length / 2);
+            var c = createCanvas(w, h);
+            var ctx = c.getContext("2d");
+            var i = 0;
+            for (let y = 0; y < imgs.length / 2; y++) {
+                for (let x = 0; x < imgs.length / 2; x++) {
+                    if (imgs[i]) {
+                        ctx.drawImage(
+                            imgs[i],
+                            x * imgSize,
+                            y * imgSize,
+                            imgSize,
+                            imgSize
+                        );
+                        i++;
+                    }
+                }
+            }
+            resolve(c.toBuffer("image/png"));
+        });
+    });
+}
+
 module.exports = {
     laugh: laugh,
     homodog: homodog,
@@ -1348,4 +1390,5 @@ module.exports = {
     getTextWidth: getTextWidth,
     dog: dog,
     robertDowneyJunior: robertDowneyJunior,
+    createCollage: createCollage,
 };

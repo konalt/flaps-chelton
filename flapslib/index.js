@@ -10,6 +10,7 @@ const translator = require("./translator");
 const moviereview = require("./moviereview");
 const videowrapper = require("./videowrapper");
 const watchparty = require("./watchparty-server");
+const downloadPromise = require("./download-promise");
 const { cah, cahWhiteCard } = require("./cardsagainsthumanity");
 const { makesweet, reverseMakesweet } = require("./mkswt");
 
@@ -29,5 +30,6 @@ module.exports = {
     makesweet: makesweet,
     reverseMakesweet: reverseMakesweet,
     canvas: canvas,
-    translator: translator
-}
+    translator: translator,
+    downloadPromise: downloadPromise,
+};
