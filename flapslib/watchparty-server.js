@@ -6,7 +6,7 @@ function init(client) {
     const fs = require("fs");
     const express = require("express");
     const https = require("https");
-    const { uuidv4, questionPromise } = require("./ai");
+    const { uuidv4, questionPromise, dalle2Promise } = require("./ai");
     var app_rest = express();
 
     const options = {
@@ -149,6 +149,12 @@ function init(client) {
     });
     app_rest.get("/flaps_api/question/:x", (req, res) => {
         questionPromise(req.params.x.replace(/_sps_/g, " ")).then((data) => {
+            res.send(data);
+        });
+    });
+    app_rest.get("/flaps_api/dalle2/:x", (req, res) => {
+        dalle2Promise(req.params.x.replace(/_sps_/g, " ")).then((data) => {
+            res.setHeader("Content-Type", "image/png");
             res.send(data);
         });
     });
