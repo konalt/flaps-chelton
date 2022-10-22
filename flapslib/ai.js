@@ -1576,21 +1576,25 @@ function dalle2(msg) {
             method: "POST",
             mode: "cors",
         })
-        .then((res) => res.json())
+        .then((res) => res.text())
         .then(async(res) => {
-            if (!res.images) {
-                return sendWebhook("flaps", JSON.stringify(res), msg.channel);
+            try {
+                if (!res.images) {
+                    return sendWebhook("flaps", res, msg.channel);
+                }
+                var imgs = [
+                    await downloadPromise(res.images[0].url, "dataurl"),
+                    await downloadPromise(res.images[1].url, "dataurl"),
+                    await downloadPromise(res.images[2].url, "dataurl"),
+                    await downloadPromise(res.images[3].url, "dataurl"),
+                ];
+                createCollage(imgs, 512).then((collage) => {
+                    var att = new MessageAttachment(collage, "img.png");
+                    sendWebhookAttachment("flaps", att, msg.channel);
+                });
+            } catch {
+                sendWebhook("flaps", res, msg.channel);
             }
-            var imgs = [
-                await downloadPromise(res.images[0].url, "dataurl"),
-                await downloadPromise(res.images[1].url, "dataurl"),
-                await downloadPromise(res.images[2].url, "dataurl"),
-                await downloadPromise(res.images[3].url, "dataurl"),
-            ];
-            createCollage(imgs, 512).then((collage) => {
-                var att = new MessageAttachment(collage, "img.png");
-                sendWebhookAttachment("flaps", att, msg.channel);
-            });
         });
 }
 
