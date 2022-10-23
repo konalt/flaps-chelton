@@ -45,6 +45,11 @@ textarea {
     -o-border-radius: 3px;
 }
 
+input:focus,
+textarea:focus {
+    outline: none;
+}
+
 img#out {
     margin-top: 5px;
     width: 512px;
@@ -78,4 +83,9 @@ img#out {
 
 a {
     font-size: large;
+}
+
+.code {
+    font-size: smaller;
+    font-family: monospace;
 }

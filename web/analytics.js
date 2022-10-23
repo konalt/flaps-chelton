@@ -64,6 +64,7 @@ setInterval(() => {
         .get("https://konalt.us.to:4930/flaps_api/analytics")
         .then((res) => {
             $("#uptime").text(time(res.data.uptime));
+            $("#errors").val(res.data.errors.join("\n"));
             update(
                 res.data.stats.map((x) => [
                     Math.floor(x.cpu * 100),

@@ -30,7 +30,7 @@ function addMessage(msg) {
 
 function addError(err) {
     console.error(err);
-    analytics.errors.push(err.toString());
+    analytics.errors.push(err.stack);
 }
 
 function getAnalytics() {
