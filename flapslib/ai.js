@@ -25,15 +25,6 @@ var aiPageData = {};
 const getRandomValues = require("get-random-values");
 const { resolve } = require("path");
 
-function uuidv4() {
-    return ([1e7] + -1e3 + -4e3 + -8e3 + -1e11).replace(/[018]/g, (c) =>
-        (
-            c ^
-            (getRandomValues(new Uint8Array(1))[0] & (15 >> (c / 4)))
-        ).toString(16)
-    );
-}
-
 function textgen(channel) {
     sendWebhook("deepai", sentence(), false, channel);
 }
@@ -1052,6 +1043,7 @@ const { Configuration, OpenAIApi } = require("openai");
 const { MessageAttachment } = require("discord.js");
 const downloadPromise = require("./download-promise");
 const { createCollage } = require("./canvas");
+const { uuidv4 } = require("./util");
 
 const configuration = new Configuration({
     apiKey: fs.readFileSync("./openai.txt"),
