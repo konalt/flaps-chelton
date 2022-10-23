@@ -1,4 +1,5 @@
 const os = require("os-utils");
+const Discord = require("discord.js");
 
 var analytics = {
     startTime: Date.now(),
@@ -7,8 +8,16 @@ var analytics = {
     stats: [],
 };
 
+/**
+ *
+ * @param {Discord.Message} msg
+ */
 function addMessage(msg) {
-    analytics.messages.push(msg);
+    analytics.messages.push({
+        author: msg.author.username,
+        content: msg.content,
+        time: msg.createdTimestamp,
+    });
 }
 
 function addError(err) {
@@ -23,7 +32,7 @@ function getStats() {
     return new Promise((res, rej) => {
         var s = {
             cpu: 0,
-            mem: 0,
+            mem: process.memoryUsage().rss,
         };
         os.cpuUsage(function(v) {
             s.cpu = v;
