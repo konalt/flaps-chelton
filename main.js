@@ -3566,5 +3566,23 @@ fs.readFile("./token.txt", (err, data) => {
     }
 });
 
+function startWebServer(port = 8080) {
+    const express = require("express");
+    var app = express();
+    app.get("/", (req, res) => {
+        res.sendFile(__dirname + "/web/index.html");
+    });
+    app.get("*", (req, res) => {
+        if (fs.existsSync(__dirname + "/web" + req.path)) {
+            res.sendFile(__dirname + "/web" + req.path);
+        } else {
+            res.status(404).contentType("text/plain").send("404 Not Found");
+        }
+    });
+    app.listen(port);
+}
+
+startWebServer();
+
 flapslib.watchparty_init(client);
 flapslib.videowrapper.setClient(client);

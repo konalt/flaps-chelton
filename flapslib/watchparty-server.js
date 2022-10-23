@@ -20,6 +20,7 @@ function init(client) {
     app_rest.use(express.json({ extended: true }));
     app_rest.use((req, res, next) => {
         res.set("Access-Control-Allow-Origin", "*");
+        res.set("Access-Control-Allow-Headers", "*");
         res.set("Server", "FlapsWP");
         res.set("X-Konalt-Request-ID", "Unknown");
         res.set("Connection", "Keep-Alive");

@@ -1571,7 +1571,7 @@ function dalle2Promise(prompt) {
                 },
                 referrer: "https://playgroundai.com/api/models",
                 body: '{"num_images":4,"width":512,"height":512,"prompt":"' +
-                    prompt +
+                    prompt.replace(/"/g, '\\"') +
                     '","modelType":"dalle-2","isPrivate":true,"batchId":"HgIRsj6uES","generateVariants":false}',
                 method: "POST",
                 mode: "cors",

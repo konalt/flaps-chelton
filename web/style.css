@@ -1,0 +1,76 @@
+body,
+html {
+    padding: 5px;
+    background-color: #ddd;
+}
+
+h1 {
+    margin: 5px auto;
+}
+
+hr {
+    margin: 10px 0px;
+    border-color: #333;
+}
+
+input[type='text'] {
+    width: 350px;
+}
+
+input[type='text'].wide {
+    width: 512px;
+}
+
+input[type='submit'] {
+    font-size: x-large;
+}
+
+input {
+    font-size: x-large;
+    padding: 2px 4px;
+    margin: 5px 0;
+}
+
+textarea {
+    margin-top: 5px;
+    font-size: large;
+    background-color: white;
+    cursor: not-allowed;
+    border: 1px solid #999;
+    border-radius: 3px;
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
+    -ms-border-radius: 3px;
+    -o-border-radius: 3px;
+}
+
+img#out {
+    margin-top: 5px;
+    width: 512px;
+    height: 512px;
+    border-radius: 5px;
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    -ms-border-radius: 5px;
+    -o-border-radius: 5px;
+}
+
+.loader {
+    margin-top: 5px;
+    border: 16px solid #f3f3f3;
+    border-top: 16px solid #333;
+    border-radius: 50%;
+    width: 512px;
+    height: 512px;
+    animation: spin 1s linear infinite;
+    -webkit-animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
