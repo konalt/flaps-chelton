@@ -17,36 +17,121 @@ function dalle2() {
     var t = $("#prompt").val();
     $("#loader").show();
     $("#out").hide();
+    $("#maker").hide();
+    $("#genbtn").attr("disabled", "disabled");
+    imgToMask();
+    var maskURL = canvas2.toDataURL("image/png");
     readFile($("#img")[0], (imgURL) => {
-        readFile($("#mask")[0], (maskURL) => {
-            axios
-                .post(
-                    "https://konalt.us.to:4930/flaps_api/inpaint", {
-                        prompt: t,
-                        img: imgURL,
-                        mask: maskURL,
-                    }, {
-                        responseType: "blob",
-                    }
-                )
-                .then((res) => {
-                    var blob = new Blob([res.data], { type: "image/png" });
-                    $("#out").attr("src", URL.createObjectURL(blob));
-                    $("#out").show();
-                    $("#loader").hide();
-                })
-                .catch((err) => {
-                    console.error(err);
-                    //document.write(err);
-                });
-        });
+        axios
+            .post(
+                "https://konalt.us.to:4930/flaps_api/inpaint", {
+                    prompt: t,
+                    img: imgURL,
+                    mask: maskURL,
+                }, {
+                    responseType: "blob",
+                }
+            )
+            .then((res) => {
+                var blob = new Blob([res.data], { type: "image/png" });
+                $("#out").attr("src", URL.createObjectURL(blob));
+                $("#out").show();
+                $("#loader").hide();
+            })
+            .catch((err) => {
+                console.error(err);
+                //document.write(err);
+            });
     });
 }
+
+$("#genbtn").attr("disabled", "disabled");
 
 $("#dalle2form").submit(function(e) {
     e.preventDefault();
     dalle2();
 });
 
-$("#out").hide();
+function loadImage(url, cb) {
+    var img = new Image();
+    img.onload = () => {
+        cb(img);
+    };
+    img.src = url;
+}
+
+$("#img").change(function(e) {
+    e.preventDefault();
+    readFile($("#img")[0], (url) => {
+        canvasInit(url);
+    });
+});
+
 $("#loader").hide();
+$("#out").hide();
+$("#maker").hide();
+$("#maker2").hide();
+
+var canvas2 = document.getElementById("maker2");
+/**
+ * @type {CanvasRenderingContext2D} ctx
+ */
+var ctx2 = canvas2.getContext("2d");
+
+var canvas = document.getElementById("maker");
+/**
+ * @type {CanvasRenderingContext2D} ctx
+ */
+var ctx = canvas.getContext("2d");
+
+function imgToMask() {
+    var imageData = ctx.getImageData(0, 0, 512, 512);
+    var d = imageData.data;
+    for (var i = 0; i < d.length; i += 4) {
+        var pix = [d[i], d[i + 1], d[i + 2], d[i + 3]];
+        pix[0] = 255;
+        pix[1] = 255;
+        pix[2] = 255;
+        [d[i], d[i + 1], d[i + 2], d[i + 3]] = pix;
+    }
+    ctx2.putImageData(imageData, 0, 0);
+}
+
+function canvasInit(url) {
+    loadImage(url, (img) => {
+        ctx.drawImage(img, 0, 0, 512, 512);
+        var isMouseHeld = false;
+        var x = 0;
+        var y = 0;
+
+        function circClear(x, y, r) {
+            ctx.globalCompositeOperation = "destination-out";
+            ctx.fillStyle = "black";
+            ctx.beginPath();
+            ctx.arc(x, y, r, 0, 2 * Math.PI);
+            ctx.fill();
+        }
+
+        canvas.addEventListener(
+            "mousedown",
+            (e) => ((isMouseHeld = true), (x = e.offsetX), (y = e.offsetY))
+        );
+        canvas.addEventListener(
+            "mouseup",
+            (e) => ((isMouseHeld = false), (x = e.offsetX), (y = e.offsetY))
+        );
+        canvas.addEventListener(
+            "mousemove",
+            (e) => ((x = e.offsetX), (y = e.offsetY))
+        );
+        document.addEventListener("keydown", (e) => imgToMask());
+
+        function update() {
+            if (isMouseHeld) circClear(x, y, 32);
+            requestAnimationFrame(update);
+        }
+        update();
+        $("#maker").show();
+        $("#genbtn").removeAttr("disabled");
+    });
+}

@@ -100,3 +100,11 @@ a {
     font-size: smaller;
     font-family: monospace;
 }
+
+canvas#maker {
+    background-color: #333;
+}
+
+input[type="submit"]:disabled {
+    cursor: not-allowed;
+}
