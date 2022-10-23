@@ -303,7 +303,7 @@ client.on("ready", async() => {
     });
 });
 
-Error.stackTraceLimit = 50;
+Error.stackTraceLimit = 10;
 
 var commands = {
     "<": "Sends a message as a webhook user. Get a list with !userlist",
@@ -863,7 +863,6 @@ async function onMessage(msg) {
                                     "flapserrors",
                                     "fuck you. eval didnt work.\n" +
                                     e.toString(),
-                                    true,
                                     msg.channel
                                 );
                             }
