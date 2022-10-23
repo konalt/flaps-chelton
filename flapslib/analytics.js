@@ -8,6 +8,12 @@ var analytics = {
     stats: [],
 };
 
+analytics.stats.fill({
+    cpu: 0,
+    mem: 0,
+    time: "N/A",
+});
+
 var start = Date.now();
 
 /**
@@ -35,7 +41,7 @@ function getStats() {
     return new Promise((res, rej) => {
         var s = {
             cpu: 0,
-            mem: process.memoryUsage().rss / 1024 / 1024 / 16384,
+            mem: process.memoryUsage.rss() / 1024 / 1024 / os.totalmem(),
             time: Date.now(),
         };
         os.cpuUsage(function(v) {

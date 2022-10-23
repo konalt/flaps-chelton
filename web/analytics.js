@@ -53,6 +53,7 @@ function update(data) {
 }
 
 function time(t) {
+    if (t == "N/A") return "N/A";
     return new Date(t).toISOString().slice(11, 19);
 }
 
