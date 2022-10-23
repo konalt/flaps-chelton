@@ -23,7 +23,8 @@ function addMessage(msg) {
 }
 
 function addError(err) {
-    analytics.errors.push(err);
+    console.error(err);
+    analytics.errors.push(err.toString());
 }
 
 function getAnalytics() {
