@@ -15,6 +15,7 @@ hr {
 
 input[type='text'] {
     width: 350px;
+    margin-right: 5px;
 }
 
 input[type='text'].wide {
@@ -73,4 +74,8 @@ img#out {
     100% {
         transform: rotate(360deg);
     }
+}
+
+a {
+    font-size: large;
 }

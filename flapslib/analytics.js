@@ -2,11 +2,13 @@ const os = require("os-utils");
 const Discord = require("discord.js");
 
 var analytics = {
-    startTime: Date.now(),
+    uptime: 0,
     errors: [],
     messages: [],
     stats: [],
 };
+
+var start = Date.now();
 
 /**
  *
@@ -32,7 +34,8 @@ function getStats() {
     return new Promise((res, rej) => {
         var s = {
             cpu: 0,
-            mem: process.memoryUsage().rss,
+            mem: process.memoryUsage().rss / 1024 / 1024 / 16384,
+            time: Date.now(),
         };
         os.cpuUsage(function(v) {
             s.cpu = v;
@@ -42,6 +45,7 @@ function getStats() {
 }
 
 setInterval(() => {
+    analytics.uptime = Date.now() - start;
     getStats().then((stats) => {
         if (analytics.stats.length == 20) analytics.stats.shift();
         analytics.stats.push(stats);
