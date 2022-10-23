@@ -165,6 +165,17 @@ function init(client) {
             res.contentType("text/plain").send(data);
         });
     });
+    app_rest.post("/flaps_api/inpaint", (req, res) => {
+        if (!req.body.prompt || !req.body.mask || !req.body.img) {
+            return res
+                .status(400)
+                .contentType("text/plain")
+                .send("400 Bad Request");
+        }
+        dalle2InpaintPromise(req.body).then((data) => {
+            res.contentType("image/png").send(data);
+        });
+    });
     app_rest.post("/flaps_api/dalle2", (req, res) => {
         if (!req.body.prompt) {
             return res
