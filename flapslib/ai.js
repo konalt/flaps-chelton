@@ -101,6 +101,7 @@ function doDream(msg) {
                 });
             })
             .catch(() => {
+                addError(new Error("Wombo Dream Task Failed"));
                 editWebhookMsg(
                     msgid,
                     msg.channel,
@@ -178,6 +179,7 @@ async function autocompleteText(text, msgChannel, removeOriginalText = false) {
             }, 1000);
         })();
     } catch (e) {
+        addError(e);
         console.log("aw");
         console.log(e);
     }
@@ -260,6 +262,7 @@ async function gpt3complete_new(text, msgChannel, removeOriginalText = false) {
             }, 1000);
         })();
     } catch (e) {
+        addError(e);
         console.log("aw");
         console.log(e);
     }
@@ -331,6 +334,7 @@ async function markov2(text, acc, msgChannel) {
                 sendWebhook("deepai", content, msgChannel);
             });
     } catch (e) {
+        addError(e);
         console.log("aw");
         console.log(e);
     }
@@ -398,6 +402,7 @@ async function armstrong(msgChannel) {
             }, 1000);
         })();
     } catch (e) {
+        addError(e);
         console.log("aw");
         console.log(e);
     }
@@ -443,6 +448,7 @@ async function armstrong2(accuracy, msgChannel) {
                 sendWebhook("armstrong", content, msgChannel);
             });
     } catch (e) {
+        addError(e);
         console.log("aw");
         console.log(e);
     }
@@ -595,6 +601,7 @@ async function person(msgChannel, client) {
             }
         );
     } catch (e) {
+        addError(e);
         console.log("aw");
         console.log(e);
     }
@@ -641,6 +648,7 @@ async function threeDimensionalText(text, msgChannel, msg, client) {
             }
         })();
     } catch (e) {
+        addError(e);
         console.log("aw");
         console.log(e);
     }
@@ -745,6 +753,7 @@ async function generateImage(text, msgChannel, client) {
             }, 1000);
         })();
     } catch (e) {
+        addError(e);
         console.log("aw");
         console.log(e);
     }
@@ -860,6 +869,7 @@ async function upscaleImage(msg, msgChannel, client) {
             }, 1000);
         })();
     } catch (e) {
+        addError(e);
         console.log("aw");
         console.log(e);
     }
@@ -969,6 +979,7 @@ async function tti(text, msgChannel, client) {
             }, 1000);
         })();
     } catch (e) {
+        addError(e);
         console.log("aw");
         console.log(e);
     }
@@ -1019,6 +1030,7 @@ function dalle(prompt, isSecondReq = false) {
                     console.log("some internal server error shit");
                     if (isSecondReq) {
                         console.log("SR: Error");
+                        addError(e);
                         out.prompt = r.replace(/<[/A-z0-9 =!]+>/g, "");
                         out.image = false;
                     } else {
@@ -1455,7 +1467,9 @@ async function monsoonChatEvent(channel) {
                     );
                 });
         })
-        .catch(console.error);
+        .catch(() => {
+            addError(e);
+        });
 }
 
 async function gpt3complete(question, channel) {
@@ -1594,10 +1608,12 @@ function dalle2Promise(prompt) {
                         resl(collage);
                     });
                 } catch {
+                    addError(new Error(res2));
                     rej(res2);
                 }
             })
             .catch((err) => {
+                addError(err);
                 rej(err.toString());
             });
     });
@@ -1644,10 +1660,12 @@ function dalle2(msg) {
                     sendWebhookAttachment("flaps", att, msg.channel);
                 });
             } catch {
+                addError(new Error(res2));
                 sendWebhook("flaps", res2, msg.channel);
             }
         })
         .catch((err) => {
+            addError(err);
             sendWebhook("flaps", err.toString(), msg.channel);
         });
 }

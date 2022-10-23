@@ -5,14 +5,15 @@ const steam = require("./steam");
 const canvas = require("./canvas");
 const webhooks = require("./webhooks");
 const download = require("./download");
+const analytics = require("./analytics");
 const fetchapis = require("./fetchapis");
 const translator = require("./translator");
 const moviereview = require("./moviereview");
 const videowrapper = require("./videowrapper");
 const watchparty = require("./watchparty-server");
 const downloadPromise = require("./download-promise");
-const { cah, cahWhiteCard } = require("./cardsagainsthumanity");
 const { makesweet, reverseMakesweet } = require("./mkswt");
+const { cah, cahWhiteCard } = require("./cardsagainsthumanity");
 
 module.exports = {
     yt: yt,
@@ -32,4 +33,5 @@ module.exports = {
     canvas: canvas,
     translator: translator,
     downloadPromise: downloadPromise,
+    analytics: analytics,
 };

@@ -75,6 +75,7 @@ const { randomRedditImage } = require("./flapslib/fetchapis");
 const { OpenAIApi } = require("openai");
 const { Configuration } = require("openai");
 const { compress } = require("./flapslib/videowrapper");
+const { addMessage, addError } = require("./flapslib/analytics");
 const owoify = require("owoify-js").default;
 var dream = WomboDreamApi.buildDefaultInstance();
 
@@ -212,6 +213,7 @@ async function connectToChannel(channels) {
             entersState(c, VoiceConnectionStatus.Ready, 30000);
             ret.push(c);
         } catch (error) {
+            addError(error);
             c.destroy();
             throw error;
         }
@@ -261,6 +263,7 @@ client.on("ready", async() => {
 
     players.forEach((player) => {
         player.on("error", (err) => {
+            addError(err);
             try {
                 sendWebhook("flapserrors", err, false, errChannel);
             } catch {
@@ -273,7 +276,8 @@ client.on("ready", async() => {
         con.on("error", (err) => {
             try {
                 sendWebhook("flapserrors", err, false, errChannel);
-            } catch {
+            } catch (e) {
+                addError(e);
                 console.log("ERAR ! !", err);
             }
         });
@@ -444,6 +448,7 @@ async function onMessage(msg) {
         console.log(
             `${msg.author.username}#${msg.author.discriminator}: ${msg.content}`
         );
+        addMessage(msg);
         if (msg.content.includes("copper") && !msg.author.bot) {
             msg.channel.send("copper you say?");
         }
@@ -853,6 +858,7 @@ async function onMessage(msg) {
                             try {
                                 eval(commandArgString);
                             } catch (e) {
+                                addError(e);
                                 flapslib.webhooks.sendWebhook(
                                     "flapserrors",
                                     "fuck you. eval didnt work.\n" +
@@ -1217,6 +1223,7 @@ async function onMessage(msg) {
                                         try {
                                             res([r, JSON.parse(r)]);
                                         } catch (e) {
+                                            addError(e);
                                             res([r, [{ label: e }]]);
                                         }
                                     });
@@ -1250,6 +1257,7 @@ async function onMessage(msg) {
                                     }
                                 })
                                 .catch((e) => {
+                                    addError(e);
                                     console.log(e);
                                 });
                         });
@@ -3159,6 +3167,7 @@ fbi files on ${commandArgString}: ${
                                     );
                                 });
                         } catch (e) {
+                            addError(e);
                             console.log("aw");
                             console.log(e);
                         }
@@ -3468,6 +3477,7 @@ fbi files on ${commandArgString}: ${
             }
         }
     } catch (err) {
+        addError(err);
         flapslib.webhooks.sendWebhook(
             "flapserrors",
             "Oooops! Looks like flaps broke.\n<@445968175381610496>, here's the scoop:\n" +

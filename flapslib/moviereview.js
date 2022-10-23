@@ -47,6 +47,7 @@ async function morbiusReview(msgChannel) {
                 }
             });
     } catch (e) {
+        addError(e);
         console.log("aw");
         console.log(e);
     }

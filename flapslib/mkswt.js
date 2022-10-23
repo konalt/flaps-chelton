@@ -175,6 +175,7 @@ async function makesweet(text, filename, msgChannel, client, send = true) {
                 }, 1000);
             })();
         } catch (e) {
+            addError(e);
             console.log("aw");
             console.log(e);
         }

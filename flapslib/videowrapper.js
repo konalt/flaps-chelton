@@ -256,19 +256,7 @@ async function geq(name, msg) {
             }
         )
         .then(async() => {
-            try {
-                sendWebhookFile(
-                    "ffmpeg",
-                    "images/cache/" + id + ext,
-                    msgChannel
-                );
-            } catch {
-                sendWebhook(
-                    "ffmpeg",
-                    "oops, looks like the vido too bigge.",
-                    msg.channel
-                );
-            }
+            sendWebhookFile("ffmpeg", "images/cache/" + id + ext, msgChannel);
         });
 }
 
@@ -308,15 +296,7 @@ async function mimeNod(bpm, msg) {
     var id = uuidv4().replace(/-/gi, "");
     var ext = ".gif";
     video.mimeNod("images/cache/" + id + ext, bpm).then(async() => {
-        try {
-            sendWebhookFile("ffmpeg", "images/cache/" + id + ext, msg.channel);
-        } catch {
-            sendWebhook(
-                "ffmpeg",
-                "oops, looks like the vido too bigge.",
-                msg.channel
-            );
-        }
+        sendWebhookFile("ffmpeg", "images/cache/" + id + ext, msg.channel);
     });
 }
 

@@ -28,6 +28,7 @@ async function roulette(msgChannel) {
     fetch("https://a.4cdn.org/" + board + "/threads.json")
         .then((r) => r.json())
         .catch((err) => {
+            addError(err);
             sendWebhook("4chanroulette", "Error:\n" + err, msgChannel);
         })
         .then((r) => {
@@ -192,6 +193,7 @@ async function roulette(msgChannel) {
                                     );
                                 })
                                 .catch((err) => {
+                                    addError(err);
                                     sendWebhook(
                                         "4chanroulette",
                                         "Error:\n" + err,
@@ -201,6 +203,7 @@ async function roulette(msgChannel) {
                                 });
                         })
                         .catch((err) => {
+                            addError(err);
                             sendWebhook(
                                 "4chanroulette",
                                 "Error:\n" + err,
@@ -209,10 +212,12 @@ async function roulette(msgChannel) {
                         });
                 })
                 .catch((err) => {
+                    addError(err);
                     sendWebhook("4chanroulette", "Error:\n" + err, msgChannel);
                 });
         })
         .catch((err) => {
+            addError(err);
             sendWebhook("4chanroulette", "Error:\n" + err, msgChannel);
         });
 }

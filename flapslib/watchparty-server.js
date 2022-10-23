@@ -1,6 +1,7 @@
 const { sendWebhook, users } = require("./webhooks");
 const fetch = require("node-fetch");
 const { resolveSoa } = require("dns");
+const { getAnalytics } = require("./analytics");
 
 function init(client) {
     const fs = require("fs");
@@ -148,6 +149,11 @@ function init(client) {
                 res.send(r[0] ? r[0].label : "wowie!! no porn!!!");
             });
     });
+    app_rest.get("/flaps_api/analytics", (req, res) => {
+        res.contentType("application/json").send(
+            JSON.stringify(getAnalytics())
+        );
+    });
     app_rest.post("/flaps_api/question", (req, res) => {
         if (!req.body.question) {
             return res
@@ -197,6 +203,7 @@ function init(client) {
                 res.status(404).send("404 File Not Found");
             }
         } catch (e) {
+            addError(e);
             res.status(500).send(
                 "500 Internal Server Error\nStack Trace:" + e.toString()
             );
