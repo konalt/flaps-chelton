@@ -26,6 +26,17 @@ input[type='submit'] {
     font-size: x-large;
 }
 
+input[type='file'] {
+    font-size: medium;
+    margin: 0 -5px;
+}
+
+label {
+    margin: 5px 0;
+    font-size: x-large;
+    font-weight: normal;
+}
+
 input {
     font-size: x-large;
     padding: 2px 4px;

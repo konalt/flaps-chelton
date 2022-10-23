@@ -1042,7 +1042,7 @@ function dalle(prompt, isSecondReq = false) {
 const { Configuration, OpenAIApi } = require("openai");
 const { MessageAttachment } = require("discord.js");
 const downloadPromise = require("./download-promise");
-const { createCollage } = require("./canvas");
+const { createCollage, make512x512 } = require("./canvas");
 const { uuidv4 } = require("./util");
 
 const configuration = new Configuration({

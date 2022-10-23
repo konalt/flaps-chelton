@@ -2,12 +2,18 @@ const { sendWebhook, users } = require("./webhooks");
 const fetch = require("node-fetch");
 const { resolveSoa } = require("dns");
 const { getAnalytics } = require("./analytics");
+const { make512x512 } = require("./canvas");
 
 function init(client) {
     const fs = require("fs");
     const express = require("express");
     const https = require("https");
-    const { uuidv4, questionPromise, dalle2Promise } = require("./ai");
+    const {
+        uuidv4,
+        questionPromise,
+        dalle2Promise,
+        dalle2InpaintPromise,
+    } = require("./ai");
     var app_rest = express();
 
     const options = {
@@ -18,7 +24,7 @@ function init(client) {
     };
 
     app_rest.use(express.urlencoded({ extended: true }));
-    app_rest.use(express.json({ extended: true }));
+    app_rest.use(express.json({ extended: true, limit: "50mb" }));
     app_rest.use((req, res, next) => {
         res.set("Access-Control-Allow-Origin", "*");
         res.set("Access-Control-Allow-Headers", "*");
@@ -29,7 +35,6 @@ function init(client) {
     });
 
     var currentWps = {};
-
     app_rest.post("/start", (req, res) => {
         if (!req.body.videoId)
             return res.send({ id: "FlapsChelton.Error.NoVideoIDProvided" });
