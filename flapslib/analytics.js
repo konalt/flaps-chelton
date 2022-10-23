@@ -5,7 +5,7 @@ var analytics = {
     uptime: 0,
     errors: [],
     messages: [],
-    stats: [],
+    stats: new Array(20),
 };
 
 analytics.stats.fill({
@@ -41,7 +41,7 @@ function getStats() {
     return new Promise((res, rej) => {
         var s = {
             cpu: 0,
-            mem: process.memoryUsage.rss() / 1024 / 1024 / os.totalmem(),
+            mem: process.memoryUsage().heapUsed / 1024 / 1024 / os.totalmem(),
             time: Date.now(),
         };
         os.cpuUsage(function(v) {

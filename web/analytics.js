@@ -1,4 +1,6 @@
-function t(date) {
+function t(datetime) {
+    if (datetime == "N/A") return "N/A";
+    var date = new Date(datetime);
     return `${date.getHours().toString().padStart(2, "0")}:${date
         .getMinutes()
         .toString()
@@ -36,7 +38,7 @@ var chart = new Chart("chart", {
 
 function update(data) {
     chart.data = {
-        labels: data.map((x) => t(new Date(x[1]))),
+        labels: data.map((x) => t(x[1])),
         datasets: [{
                 data: data.map((x) => x[0]),
                 borderColor: "red",
@@ -66,7 +68,7 @@ setInterval(() => {
                 res.data.stats.map((x) => [
                     Math.floor(x.cpu * 100),
                     x.time,
-                    Math.floor(x.mem * 100),
+                    Math.floor(x.mem * 1000),
                 ])
             );
         })
