@@ -192,7 +192,7 @@ async function sendWebhookFile(
             return sendWebhook(
                 id,
                 "Error: File does not exist.\n" + filename,
-                msg.channel,
+                msgChannel,
                 cd
             );
         }
