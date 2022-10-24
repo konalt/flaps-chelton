@@ -21,28 +21,26 @@ function dalle2() {
     $("#genbtn").attr("disabled", "disabled");
     imgToMask();
     var maskURL = canvas2.toDataURL("image/png");
-    readFile($("#img")[0], (imgURL) => {
-        axios
-            .post(
-                "https://konalt.us.to:4930/flaps_api/inpaint", {
-                    prompt: t,
-                    img: imgURL,
-                    mask: maskURL,
-                }, {
-                    responseType: "blob",
-                }
-            )
-            .then((res) => {
-                var blob = new Blob([res.data], { type: "image/png" });
-                $("#out").attr("src", URL.createObjectURL(blob));
-                $("#out").show();
-                $("#loader").hide();
-            })
-            .catch((err) => {
-                console.error(err);
-                //document.write(err);
-            });
-    });
+    axios
+        .post(
+            "https://konalt.us.to:4930/flaps_api/inpaint", {
+                prompt: t,
+                img: imgURL,
+                mask: maskURL,
+            }, {
+                responseType: "blob",
+            }
+        )
+        .then((res) => {
+            var blob = new Blob([res.data], { type: "image/png" });
+            $("#out").attr("src", URL.createObjectURL(blob));
+            $("#out").show();
+            $("#loader").hide();
+        })
+        .catch((err) => {
+            console.error(err);
+            //document.write(err);
+        });
 }
 
 $("#genbtn").attr("disabled", "disabled");
@@ -148,7 +146,10 @@ function imgToMask() {
     ctx2.putImageData(imageData, 0, 0);
 }
 
+var imgURL = "";
+
 function canvasInit(url) {
+    imgURL = url;
     loadImage(url, (img) => {
         ctx.drawImage(img, 0, 0, 512, 512);
 
@@ -156,3 +157,22 @@ function canvasInit(url) {
         $("#genbtn").removeAttr("disabled");
     });
 }
+
+window.addEventListener("paste", function(event) {
+    var items = (event.clipboardData || event.originalEvent.clipboardData)
+        .items;
+    for (index in items) {
+        var item = items[index];
+        if (item.kind === "file") {
+            var blob = item.getAsFile();
+            var reader = new FileReader();
+            $("#loader").hide();
+            $("#out").hide();
+            $("canvas.maker").hide();
+            reader.onload = function(event) {
+                canvasInit(event.target.result);
+            };
+            reader.readAsDataURL(blob);
+        }
+    }
+});
