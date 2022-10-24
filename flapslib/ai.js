@@ -1044,6 +1044,7 @@ const { MessageAttachment } = require("discord.js");
 const downloadPromise = require("./download-promise");
 const { createCollage, make512x512 } = require("./canvas");
 const { uuidv4 } = require("./util");
+const { addError } = require("./analytics");
 
 const configuration = new Configuration({
     apiKey: fs.readFileSync("./openai.txt"),
