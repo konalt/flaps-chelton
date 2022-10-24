@@ -17,7 +17,7 @@ function dalle2() {
     var t = $("#prompt").val();
     $("#loader").show();
     $("#out").hide();
-    $("#maker").hide();
+    $("canvas.maker").hide();
     $("#genbtn").attr("disabled", "disabled");
     imgToMask();
     var maskURL = canvas2.toDataURL("image/png");
@@ -62,6 +62,9 @@ function loadImage(url, cb) {
 
 $("#img").change(function(e) {
     e.preventDefault();
+    $("#loader").hide();
+    $("#out").hide();
+    $("canvas.maker").hide();
     readFile($("#img")[0], (url) => {
         canvasInit(url);
     });
@@ -69,8 +72,14 @@ $("#img").change(function(e) {
 
 $("#loader").hide();
 $("#out").hide();
-$("#maker").hide();
+$("canvas.maker").hide();
 $("#maker2").hide();
+
+var canvas = document.getElementById("maker");
+/**
+ * @type {CanvasRenderingContext2D} ctx
+ */
+var ctx = canvas.getContext("2d");
 
 var canvas2 = document.getElementById("maker2");
 /**
@@ -78,11 +87,53 @@ var canvas2 = document.getElementById("maker2");
  */
 var ctx2 = canvas2.getContext("2d");
 
-var canvas = document.getElementById("maker");
+var canvas3 = document.getElementById("maker3");
 /**
  * @type {CanvasRenderingContext2D} ctx
  */
-var ctx = canvas.getContext("2d");
+var ctx3 = canvas3.getContext("2d");
+
+function circClear(x, y, r) {
+    ctx.globalCompositeOperation = "destination-out";
+    ctx.fillStyle = "black";
+    ctx.beginPath();
+    ctx.arc(x, y, r, 0, 2 * Math.PI);
+    ctx.fill();
+    ctx.globalCompositeOperation = "source-over";
+}
+
+function circ(x, y, r) {
+    ctx3.beginPath();
+    ctx3.arc(x, y, r, 0, 2 * Math.PI);
+    ctx3.strokeStyle = "black";
+    ctx3.lineWidth = 3;
+    ctx3.stroke();
+    ctx3.strokeStyle = "white";
+    ctx3.lineWidth = 1;
+    ctx3.stroke();
+}
+var isMouseHeld = false;
+var x = 0;
+var y = 0;
+
+canvas.addEventListener(
+    "mousedown",
+    (e) => ((isMouseHeld = true), (x = e.offsetX), (y = e.offsetY))
+);
+canvas.addEventListener(
+    "mouseup",
+    (e) => ((isMouseHeld = false), (x = e.offsetX), (y = e.offsetY))
+);
+document.addEventListener("mouseup", (e) => (isMouseHeld = false));
+canvas.addEventListener("mousemove", (e) => ((x = e.offsetX), (y = e.offsetY)));
+
+function update() {
+    if (isMouseHeld) circClear(x, y, 32);
+    ctx3.clearRect(0, 0, 512, 512);
+    circ(x, y, 32);
+    requestAnimationFrame(update);
+}
+update();
 
 function imgToMask() {
     var imageData = ctx.getImageData(0, 0, 512, 512);
@@ -100,38 +151,8 @@ function imgToMask() {
 function canvasInit(url) {
     loadImage(url, (img) => {
         ctx.drawImage(img, 0, 0, 512, 512);
-        var isMouseHeld = false;
-        var x = 0;
-        var y = 0;
 
-        function circClear(x, y, r) {
-            ctx.globalCompositeOperation = "destination-out";
-            ctx.fillStyle = "black";
-            ctx.beginPath();
-            ctx.arc(x, y, r, 0, 2 * Math.PI);
-            ctx.fill();
-        }
-
-        canvas.addEventListener(
-            "mousedown",
-            (e) => ((isMouseHeld = true), (x = e.offsetX), (y = e.offsetY))
-        );
-        canvas.addEventListener(
-            "mouseup",
-            (e) => ((isMouseHeld = false), (x = e.offsetX), (y = e.offsetY))
-        );
-        canvas.addEventListener(
-            "mousemove",
-            (e) => ((x = e.offsetX), (y = e.offsetY))
-        );
-        document.addEventListener("keydown", (e) => imgToMask());
-
-        function update() {
-            if (isMouseHeld) circClear(x, y, 32);
-            requestAnimationFrame(update);
-        }
-        update();
-        $("#maker").show();
+        $("canvas.maker").show();
         $("#genbtn").removeAttr("disabled");
     });
 }

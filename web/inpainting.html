@@ -20,13 +20,16 @@
         <input type="text" id="prompt" class="wide" placeholder="Prompt..." autocomplete="off" />
         <br />
         <label for="img">Source Image</label>
-        <input type="file" name="img" id="img" />
+        <input type="file" name="img" id="img" accept="image/png,image/jpeg" />
         <!-- <label for="mask">Mask Image</label>
         <input type="file" name="mask" id="mask" /> -->
         <input type="submit" value="Generate" id="genbtn" />
     </form>
     <div id="loader" class="loader"></div>
-    <canvas id="maker" width="512" height="512" style="background-size: 100% 100%; width: 512px; height: 512px"></canvas>
+    <div class="wrapper">
+        <canvas id="maker" width="512" height="512" class="maker" style="background-size: 100% 100%; width: 512px; height: 512px"></canvas>
+        <canvas id="maker3" width="512" height="512" class="maker" style="background-size: 100% 100%; width: 512px; height: 512px"></canvas>
+    </div>
     <canvas id="maker2" width="512" height="512" style="background-size: 100% 100%; width: 512px; height: 512px"></canvas>
     <img id="out" />
     <script src="inpainting.js"></script>

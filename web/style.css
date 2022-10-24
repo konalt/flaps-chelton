@@ -105,6 +105,17 @@ canvas#maker {
     background-color: #333;
 }
 
+div.wrapper {
+    position: relative;
+}
+
+canvas#maker3 {
+    position: absolute;
+    top: 0;
+    left: 0;
+    pointer-events: none;
+}
+
 input[type="submit"]:disabled {
     cursor: not-allowed;
 }
