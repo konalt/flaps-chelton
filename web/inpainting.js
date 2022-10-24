@@ -16,6 +16,7 @@ function readFile(input, cb) {
 function dalle2() {
     var t = $("#prompt").val();
     $("#loader").show();
+    $("#err").hide();
     $("#out").hide();
     $("canvas.maker").hide();
     $("#genbtn").attr("disabled", "disabled");
@@ -38,8 +39,12 @@ function dalle2() {
             $("#loader").hide();
         })
         .catch((err) => {
-            console.error(err);
-            //document.write(err);
+            console.error(err.response);
+            err.response.data.text().then((t) => {
+                $("#loader").hide();
+                $("#err").text(t);
+                $("#err").show();
+            });
         });
 }
 
@@ -72,6 +77,7 @@ $("#loader").hide();
 $("#out").hide();
 $("canvas.maker").hide();
 $("#maker2").hide();
+$("#err").hide();
 
 var canvas = document.getElementById("maker");
 /**
