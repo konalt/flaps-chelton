@@ -177,9 +177,13 @@ function init(client) {
                 .contentType("text/plain")
                 .send("400 Bad Request");
         }
-        dalle2InpaintPromise(req.body).then((data) => {
-            res.contentType("image/png").send(data);
-        });
+        dalle2InpaintPromise(req.body)
+            .then((data) => {
+                res.contentType("image/png").send(data);
+            })
+            .catch((err) => {
+                res.status(500).contentType("text/plain").send(err);
+            });
     });
     app_rest.post("/flaps_api/dalle2", (req, res) => {
         if (!req.body.prompt) {
