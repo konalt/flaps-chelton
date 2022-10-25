@@ -192,9 +192,13 @@ function init(client) {
                 .contentType("text/plain")
                 .send("400 Bad Request");
         }
-        dalle2Promise(req.body.prompt).then((data) => {
-            res.contentType("image/png").send(data);
-        });
+        dalle2Promise(req.body.prompt)
+            .then((data) => {
+                res.contentType("image/png").send(data);
+            })
+            .catch((err) => {
+                res.status(500).contentType("text/plain").send(err);
+            });
     });
     app_rest.get("/flaps_api/userdata/:x", (req, res) => {
         var user = req.params.x;

@@ -1,6 +1,7 @@
 function dalle2() {
     var t = $("#prompt").val();
     $("#loader").show();
+    $("#err").hide();
     $("#out").hide();
     axios
         .post(
@@ -17,8 +18,12 @@ function dalle2() {
             $("#loader").hide();
         })
         .catch((err) => {
-            console.error(err);
-            document.write(err);
+            console.error(err.response);
+            err.response.data.text().then((t) => {
+                $("#loader").hide();
+                $("#err").text(t);
+                $("#err").show();
+            });
         });
 }
 
@@ -27,5 +32,6 @@ $("#dalle2form").submit(function(e) {
     dalle2();
 });
 
+$("#err").hide();
 $("#out").hide();
 $("#loader").hide();
