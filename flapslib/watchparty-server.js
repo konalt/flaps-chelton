@@ -256,8 +256,6 @@ function init(client) {
             if (!wp[1].paused) wp[1].currentTime += 500;
         });
     }, 500);
-
-    console.log("WatchParty: server listening");
 }
 
 module.exports = init;

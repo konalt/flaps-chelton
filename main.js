@@ -249,7 +249,7 @@ canvas.registerFont("futura.otf", { family: "Futura", weight: 400 });
 var errChannel;
 
 client.on("ready", async() => {
-    console.log(`Logged in as ${client.user.tag}`);
+    console.log(`[flaps] Started chelton`);
 
     const connections = await connectToChannel(
         Object.values(serverVCs).map((x) => {
@@ -285,7 +285,6 @@ client.on("ready", async() => {
 
     fs.readFile("./saved_status.txt", (_err, data) => {
         data = data.toString();
-        console.log(data);
         var type = data.split(" ")[0].toUpperCase();
         var name = data.split(" ").slice(1).join(" ");
         client.user.setPresence({
