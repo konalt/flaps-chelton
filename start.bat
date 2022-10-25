@@ -1,3 +1,3 @@
 @echo off
-nodemon main.js
+nodemon wrapper.js
 pause>nul
