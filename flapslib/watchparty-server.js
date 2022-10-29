@@ -1,4 +1,4 @@
-const { sendWebhook, users } = require("./webhooks");
+const { sendWebhook, users, updateUsers } = require("./webhooks");
 const fetch = require("node-fetch");
 const { resolveSoa } = require("dns");
 const { getAnalytics } = require("./analytics");
@@ -212,6 +212,10 @@ function init(client) {
         } else {
             res.send("FlapsAPIUnknownUser");
         }
+    });
+    app_rest.get("/flaps_api/all_users", (req, res) => {
+        updateUsers();
+        res.send(JSON.stringify(users));
     });
     app_rest.get("/bigfile/:name", (req, res) => {
         try {
