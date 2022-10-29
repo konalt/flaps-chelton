@@ -41,7 +41,7 @@ locke--Locke (murkywanker insider)--951532680242167838
 jamesphotoframe--james the photo framer (now selling speech bubbles)--956565518683340800
 rals--Ralsei--963900513051639868
 flapserrors--Flaps Chelton® Error Handling™©--966053990427156650
-<:owl:964880176355897374>--owl--https://media.discordapp.net/attachments/882743320554643476/966101495823102032/owl2.png--(x) => {return "<:owl:964880176355897374>";}
+owl--owl--https://media.discordapp.net/attachments/882743320554643476/966101495823102032/owl2.png--(x) => {return "<:owl:964880176355897374>";}
 armstrong--OMELETTE LOVER--https://cdn.discordapp.com/attachments/882743320554643476/969722937361985536/unknown.png--(x) => {return x.toUpperCase()}
 ffmpeg--majik vido editor bot--https://media.discordapp.net/attachments/882743320554643476/970338503126818926/unknown.png
 balkan--hairy balkan man--https://media.discordapp.net/attachments/882743320554643476/970684762253566003/unknown.png
