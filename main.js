@@ -809,6 +809,15 @@ async function onMessage(msg) {
                         randomRedditImage("justfuckmyshitup", "haircut", msg);
                         break;
                     }
+                case "!whereisthenearestelephant":
+                    {
+                        sendWebhook(
+                            "flaps",
+                            "https://media.discordapp.net/attachments/838732607344214019/1035853597293948999/unknown.png",
+                            msg.channel
+                        );
+                        break;
+                    }
                 case "!walmart":
                     {
                         randomRedditImage("peopleofwalmart", "walmart", msg);
