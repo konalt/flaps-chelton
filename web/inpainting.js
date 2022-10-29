@@ -42,8 +42,7 @@ function dalle2() {
             console.error(err.response);
             err.response.data.text().then((t) => {
                 $("#loader").hide();
-                $("#err").text(t);
-                $("#err").show();
+                flaps.showError(t);
             });
         });
 }
@@ -77,7 +76,6 @@ $("#loader").hide();
 $("#out").hide();
 $("canvas.maker").hide();
 $("#maker2").hide();
-$("#err").hide();
 
 var canvas = document.getElementById("maker");
 /**

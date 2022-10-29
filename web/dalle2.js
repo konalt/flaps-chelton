@@ -21,8 +21,7 @@ function dalle2() {
             console.error(err.response);
             err.response.data.text().then((t) => {
                 $("#loader").hide();
-                $("#err").text(t);
-                $("#err").show();
+                flaps.showError(t);
             });
         });
 }
@@ -32,6 +31,5 @@ $("#dalle2form").submit(function(e) {
     dalle2();
 });
 
-$("#err").hide();
 $("#out").hide();
 $("#loader").hide();
