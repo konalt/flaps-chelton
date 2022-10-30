@@ -300,6 +300,29 @@ async function sendWebhookFile(
     }
 }
 
+function sendWebhookBuffer(id, buf, txt, msgChannel) {
+    var form = new FormData();
+    form.append("file0", buf, "file");
+    form.append(
+        "payload_json",
+        JSON.stringify({
+            content: txt ? txt : "",
+            username: dave ?
+                "dave " + Math.floor(Math.random() * 200).toString() :
+                users[id][0] == "__FlapsNick__" ?
+                msgChannel.guild.me.nickname || client.user.username :
+                users[id][0],
+            avatar_url: users[id][1],
+        })
+    );
+    getWebhook(msgChannel).then((url) => {
+        fetch(url, {
+            method: "POST",
+            body: form,
+        });
+    });
+}
+
 async function sendWebhookAttachment(id, att, msgChannel) {
     client.channels.cache
         .get("956316856422137856")
@@ -481,4 +504,5 @@ module.exports = {
     buttonCallbacks: buttonCallbacks,
     editWebhookFile: editWebhookFile,
     sendWebhookAttachment: sendWebhookAttachment,
+    sendWebhookBuffer: sendWebhookBuffer,
 };
