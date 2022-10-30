@@ -1,5 +1,6 @@
 const fetch = require("node-fetch");
 const fs = require("fs");
+const FormData = require("form-data");
 const owoify = require("owoify-js").default;
 const Discord = require("discord.js");
 const path = require("path");
@@ -17,6 +18,8 @@ updateUsers();
  * @param {Discord.Message} msg
  * @returns {Promise}
  */
+
+var dave = fs.readFileSync("./dave.txt").toString() == "yes";
 
 function sendWebhook(
     id,
@@ -56,7 +59,7 @@ function sendWebhook(
         } else {
             if (users[id][2]) content = eval(users[id][2])(content);
         }
-        var dave = fs.readFileSync("./dave.txt").toString() == "yes";
+
         msgChannel
             .fetchWebhooks()
             .then((hooks) => {
@@ -101,6 +104,32 @@ function sendWebhook(
                         .catch(() => {
                             resolve("ALL_WAIT");
                         });
+                }
+            })
+            .catch(console.error);
+    });
+}
+
+function getWebhook(msgChannel) {
+    return new Promise((resolve, reject) => {
+        msgChannel
+            .fetchWebhooks()
+            .then((hooks) => {
+                var hook = hooks.find(
+                    (h) => h.name == "FlapsCheltonWebhook_" + msgChannel.id
+                );
+                if (!hook) {
+                    msgChannel
+                        .createWebhook("FlapsCheltonWebhook_" + msgChannel.id, {
+                            avatar: "https://media.discordapp.net/attachments/882743320554643476/966013228641566760/numb.PNG",
+                            reason: "flap chelton needed a webhook for the channel.",
+                        })
+                        .then((hook2) => {
+                            resolve(hook2.url);
+                        })
+                        .catch(console.error);
+                } else {
+                    resolve(hook.url);
                 }
             })
             .catch(console.error);
@@ -177,7 +206,7 @@ function setClient(c) {
     client = c;
 }
 
-var multipartUpload = false;
+var multipartUpload = true;
 
 async function sendWebhookFile(
     id,
@@ -187,44 +216,64 @@ async function sendWebhookFile(
     pre = "",
     failcb = null
 ) {
-    if (!multipartUpload) {
-        if (!fs.existsSync(filename)) {
-            return sendWebhook(
-                id,
-                "Error: File does not exist.\n" + filename,
-                msgChannel,
-                cd
+    if (!fs.existsSync(filename)) {
+        return sendWebhook(
+            id,
+            "Error: File does not exist.\n" + filename,
+            msgChannel,
+            cd
+        );
+    }
+    updateUsers();
+    var stats = fs.statSync(filename);
+    var fileSize = stats.size / (1024 * 1024);
+    if (fileSize > 8) {
+        if (failcb) {
+            failcb();
+        } else {
+            console.log(
+                "[konalt-upload] File larger than 8MB, sending to konalt"
             );
+            var fn = path.basename(filename);
+            var konalt_path = "E:/MBG/2Site/sites/konalt/flaps/bigfile/" + fn;
+            fs.copyFile(filename, konalt_path, (err) => {
+                if (err) {
+                    sendWebhook(id, "Send error: " + err, msgChannel);
+                } else {
+                    console.log("[konalt-upload] copy successful");
+                    var konaltURL = "https://konalt.us.to:4930/bigfile/" + fn;
+                    sendWebhook(
+                        id,
+                        pre +
+                        "\nThe resulting file was larger than 8MB, so it was uploaded to an external server.\n" +
+                        konaltURL,
+                        msgChannel
+                    );
+                }
+            });
         }
-        var stats = fs.statSync(filename);
-        var fileSize = stats.size / (1024 * 1024);
-        if (fileSize > 8) {
-            if (failcb) {
-                failcb();
-            } else {
-                console.log(
-                    "[konalt-upload] File larger than 8MB, sending to konalt"
-                );
-                var fn = path.basename(filename);
-                var konalt_path =
-                    "E:/MBG/2Site/sites/konalt/flaps/bigfile/" + fn;
-                fs.copyFile(filename, konalt_path, (err) => {
-                    if (err) {
-                        sendWebhook(id, "Send error: " + err, msgChannel);
-                    } else {
-                        console.log("[konalt-upload] copy successful");
-                        var konaltURL =
-                            "https://konalt.us.to:4930/bigfile/" + fn;
-                        sendWebhook(
-                            id,
-                            pre +
-                            "\nThe resulting file was larger than 8MB, so it was uploaded to an external server.\n" +
-                            konaltURL,
-                            msgChannel
-                        );
-                    }
+    } else {
+        if (multipartUpload) {
+            var form = new FormData();
+            form.append("file0", fs.readFileSync(filename), filename);
+            form.append(
+                "payload_json",
+                JSON.stringify({
+                    content: pre ? pre : "",
+                    username: dave ?
+                        "dave " + Math.floor(Math.random() * 200).toString() :
+                        users[id][0] == "__FlapsNick__" ?
+                        msgChannel.guild.me.nickname || client.user.username :
+                        users[id][0],
+                    avatar_url: users[id][1],
+                })
+            );
+            getWebhook(msgChannel).then((url) => {
+                fetch(url, {
+                    method: "POST",
+                    body: form,
                 });
-            }
+            });
         } else {
             client.channels.cache
                 .get("956316856422137856")
@@ -248,12 +297,6 @@ async function sendWebhookFile(
                     );
                 });
         }
-    } else {
-        sendWebhook(
-            id,
-            "Send error: Multipart form uploads are enabled, which are not implemented yet.\nSet multipartUpload to false",
-            msgChannel
-        );
     }
 }
 
@@ -400,6 +443,7 @@ function sendWebhookEmbed(id, embed, msgChannel, customData = {}, msg) {
 }
 
 function updateUsers() {
+    dave = fs.readFileSync("./dave.txt").toString() == "yes";
     var usersArray = fs
         .readFileSync("./flaps_users.txt", "utf8")
         .toString()
