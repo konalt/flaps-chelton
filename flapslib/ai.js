@@ -1182,12 +1182,21 @@ function describe(message) {
                 )
                 .then((r) => r.json())
                 .then((r2) => {
-                    sendWebhook(
-                        "scott",
-                        "that's " + r2.data[0],
-                        false,
-                        message.channel
-                    );
+                    if (!r2.data) {
+                        sendWebhook(
+                            "scott",
+                            JSON.stringify(r2),
+                            false,
+                            message.channel
+                        );
+                    } else {
+                        sendWebhook(
+                            "scott",
+                            "that's " + r2.data[0],
+                            false,
+                            message.channel
+                        );
+                    }
                 });
         });
 }
