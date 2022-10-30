@@ -1705,7 +1705,7 @@ async function onMessage(msg) {
                                     msg.channel, {},
                                     msg
                                 );
-                            var id = flapslib.ai.uuidv4().replace(/-/gi, "");
+                            var id = uuidv4().replace(/-/gi, "");
                             flapslib.download(
                                 msg.attachments.first().url,
                                 "images/cache/" + id + ext,
@@ -1783,7 +1783,7 @@ async function onMessage(msg) {
                                     msg.channel, {},
                                     msg
                                 );
-                            var id = flapslib.ai.uuidv4().replace(/-/gi, "");
+                            var id = uuidv4().replace(/-/gi, "");
                             flapslib.download(
                                 msg.attachments.first().url,
                                 "images/cache/" + id + ext,
@@ -1818,7 +1818,7 @@ async function onMessage(msg) {
                                 msg.channel, {},
                                 msg
                             );
-                            var id = flapslib.ai.uuidv4().replace(/-/gi, "");
+                            var id = uuidv4().replace(/-/gi, "");
                             var ext =
                                 "." +
                                 msg.attachments.first().url.split(".").pop();
@@ -1854,7 +1854,7 @@ async function onMessage(msg) {
                                 msg.channel, {},
                                 msg
                             );
-                            var id = flapslib.ai.uuidv4().replace(/-/gi, "");
+                            var id = uuidv4().replace(/-/gi, "");
                             var ext =
                                 "." +
                                 msg.attachments.first().url.split(".").pop();
@@ -1890,7 +1890,7 @@ async function onMessage(msg) {
                                 msg.channel, {},
                                 msg
                             );
-                            var id = flapslib.ai.uuidv4().replace(/-/gi, "");
+                            var id = uuidv4().replace(/-/gi, "");
                             var ext =
                                 "." +
                                 msg.attachments.first().url.split(".").pop();
@@ -1899,6 +1899,42 @@ async function onMessage(msg) {
                                 "images/cache/" + id + ext,
                                 () => {
                                     flapslib.videowrapper.videoGif(
+                                        id,
+                                        msg,
+                                        client
+                                    );
+                                }
+                            );
+                        }
+                    }
+                    break;
+                case "!reverse":
+                    {
+                        if (!msg.attachments.first()) {
+                            flapslib.webhooks.sendWebhook(
+                                "ffmpeg",
+                                "[<@489894082500493349>](https://konalt.us.to/files/videos/memes/findel.mp4)",
+                                false,
+                                msg.channel, {},
+                                msg
+                            );
+                        } else {
+                            flapslib.webhooks.sendWebhook(
+                                "ffmpeg",
+                                "got it bro. this might take a while tho",
+                                false,
+                                msg.channel, {},
+                                msg
+                            );
+                            var id = uuidv4().replace(/-/gi, "");
+                            var ext =
+                                "." +
+                                msg.attachments.first().url.split(".").pop();
+                            flapslib.download(
+                                msg.attachments.first().url,
+                                "images/cache/" + id + ext,
+                                () => {
+                                    flapslib.videowrapper.reverse(
                                         id,
                                         msg,
                                         client
@@ -1926,7 +1962,7 @@ async function onMessage(msg) {
                                 msg.channel, {},
                                 msg
                             );
-                            var id = flapslib.ai.uuidv4().replace(/-/gi, "");
+                            var id = uuidv4().replace(/-/gi, "");
                             var ext =
                                 "." +
                                 msg.attachments.first().url.split(".").pop();
@@ -1962,7 +1998,7 @@ async function onMessage(msg) {
                                 msg.channel, {},
                                 msg
                             );
-                            var id = flapslib.ai.uuidv4().replace(/-/gi, "");
+                            var id = uuidv4().replace(/-/gi, "");
                             var ext =
                                 "." +
                                 msg.attachments.first().url.split(".").pop();

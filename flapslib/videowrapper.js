@@ -115,6 +115,15 @@ async function compress(name, msg) {
             sendWebhookFile("ffmpeg", "images/cache/" + id + ext, msg.channel);
         });
 }
+async function reverse(name, msg) {
+    var id = uuidv4().replace(/-/gi, "");
+    var ext = "." + msg.attachments.first().url.split(".").pop();
+    video
+        .reverse("images/cache/" + name + ext, "images/cache/" + id + ext)
+        .then(() => {
+            sendWebhookFile("ffmpeg", "images/cache/" + id + ext, msg.channel);
+        });
+}
 async function stretch(name, msg) {
     var id = uuidv4().replace(/-/gi, "");
     var ext = "." + msg.attachments.first().url.split(".").pop();
@@ -319,4 +328,5 @@ module.exports = {
     gifAudio: gifAudio,
     compress: compress,
     caption2: caption2,
+    reverse: reverse,
 };

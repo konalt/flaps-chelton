@@ -199,6 +199,19 @@ async function compress(input, output) {
         )}`
     );
 }
+async function reverse(input, output) {
+    return ffmpeg(
+        `-y -i ${path.join(
+            __dirname,
+            "..",
+            input
+        )} -vf reverse -af areverse -preset ${h264Preset} ${path.join(
+            __dirname,
+            "..",
+            output
+        )}`
+    );
+}
 async function videoGif(input, output, options) {
     return ffmpeg(
         `-y -i ${path.join(
@@ -389,4 +402,5 @@ module.exports = {
     gifAudio: gifAudio,
     compress: compress,
     caption2: caption2,
+    reverse: reverse,
 };
