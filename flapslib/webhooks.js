@@ -300,9 +300,9 @@ async function sendWebhookFile(
     }
 }
 
-function sendWebhookBuffer(id, buf, txt, msgChannel) {
+function sendWebhookBuffer(id, buf, txt, msgChannel, filename = "file.bin") {
     var form = new FormData();
-    form.append("file0", buf, "file");
+    form.append("file0", buf, filename);
     form.append(
         "payload_json",
         JSON.stringify({

@@ -6,6 +6,7 @@ const {
     editWebhookMsg,
     editWebhookFile,
     sendWebhookAttachment,
+    sendWebhookBuffer,
 } = require("./webhooks");
 const fs = require("fs");
 const path = require("path");
@@ -1720,8 +1721,15 @@ function dalle2(msg) {
     var prompt = msg.content.split(" ").slice(1).join(" ").replace(/"/g, '\\"');
     var big = msg.content.split(" ")[0] == "!dalle2big";
     dalle2Promise(prompt, big).then((img) => {
-        var att = new MessageAttachment(img, "img.png");
-        sendWebhookAttachment("dalle2", att, msg.channel);
+        sendWebhookBuffer(
+            "dalle2",
+            img,
+            '"' + prompt + '"',
+            msg.channel,
+            "dalle2.png"
+        );
+        /* var att = new MessageAttachment(img, "img.png");
+        sendWebhookAttachment("dalle2", att, msg.channel); */
     });
 }
 
