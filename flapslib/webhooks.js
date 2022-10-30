@@ -275,6 +275,21 @@ async function sendWebhookFile(
                         r.text().then((data) => {
                             sendWebhook("flapserrors", data, msgChannel);
                         });
+                    } else {
+                        client.channels.cache
+                            .get("956316856422137856")
+                            .send({
+                                files: [{
+                                    attachment: filename,
+                                }, ],
+                            })
+                            .catch((e) => {
+                                sendWebhook(
+                                    id,
+                                    "Flaps log error: " + e,
+                                    msgChannel
+                                );
+                            });
                     }
                 });
             });
