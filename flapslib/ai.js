@@ -1141,9 +1141,7 @@ async function questionPromise(question) {
 }
 
 function describe(message) {
-    console.log("line 940");
     if (!message.attachments.first()) {
-        console.log("line 942");
         return sendWebhook(
             "scott",
             "i cant describe nothing",
@@ -1151,7 +1149,6 @@ function describe(message) {
             message.channel
         );
     }
-    console.log("949");
     fetch(message.attachments.first().url)
         .then((r) => {
             return new Promise((r2, _r) => {
