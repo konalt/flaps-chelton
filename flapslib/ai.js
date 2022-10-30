@@ -1720,17 +1720,21 @@ function dalle2Promise(prompt, big = false) {
 function dalle2(msg) {
     var prompt = msg.content.split(" ").slice(1).join(" ").replace(/"/g, '\\"');
     var big = msg.content.split(" ")[0] == "!dalle2big";
-    dalle2Promise(prompt, big).then((img) => {
-        sendWebhookBuffer(
-            "dalle2",
-            img,
-            '"' + prompt + '"',
-            msg.channel,
-            "dalle2.png"
-        );
-        /* var att = new MessageAttachment(img, "img.png");
+    dalle2Promise(prompt, big)
+        .then((img) => {
+            sendWebhookBuffer(
+                "dalle2",
+                img,
+                '"' + prompt + '"',
+                msg.channel,
+                "dalle2.png"
+            );
+            /* var att = new MessageAttachment(img, "img.png");
         sendWebhookAttachment("dalle2", att, msg.channel); */
-    });
+        })
+        .catch((data) => {
+            sendWebhook("dalle2", "Error: " + data, msg.channel);
+        });
 }
 
 module.exports = {
