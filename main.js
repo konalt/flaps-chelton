@@ -3169,6 +3169,36 @@ fbi files on ${commandArgString}: ${
                         });
                     }
                     break;
+                case "!randomline":
+                    {
+                        var lines = fs
+                            .readFileSync("./main.js")
+                            .toString()
+                            .split("\r\n")
+                            .map((x, i) => ["main.js", i, x]);
+                        fs.readdir("./flapslib", (err, files) => {
+                            files.forEach((file) => {
+                                var l = fs
+                                    .readFileSync("./flapslib/" + file)
+                                    .toString()
+                                    .split("\r\n")
+                                    .map((x, i) => [file, i, x]);
+                                l.forEach((line) => {
+                                    lines.push(line);
+                                });
+                            });
+                            lines = lines.map((l) => [l[0], l[1], l[2].trim()]);
+                            lines = lines.filter((l) => l[2]);
+                            var line =
+                                lines[Math.floor(Math.random() * lines.length)];
+                            sendWebhook(
+                                "flaps",
+                                `i have chosen line ${line[1]} of ${line[0]}, which is as follows:\n\`${line[2]}\``,
+                                msg.channel
+                            );
+                        });
+                    }
+                    break;
                 case "!petit":
                     {
                         try {
