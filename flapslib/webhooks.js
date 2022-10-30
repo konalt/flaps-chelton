@@ -260,18 +260,22 @@ async function sendWebhookFile(
                 "payload_json",
                 JSON.stringify({
                     content: pre ? pre : "",
-                    username: dave ?
-                        "dave " + Math.floor(Math.random() * 200).toString() :
-                        users[id][0] == "__FlapsNick__" ?
-                        msgChannel.guild.me.nickname || client.user.username :
-                        users[id][0],
-                    avatar_url: users[id][1],
+                    username: users[id] ? users[id][0] : "?",
+                    avatar_url: users[id] ?
+                        users[id][1] :
+                        "https://post.medicalnewstoday.com/wp-content/uploads/sites/3/2020/02/322868_1100-800x825.jpg",
                 })
             );
             getWebhook(msgChannel).then((url) => {
                 fetch(url, {
                     method: "POST",
                     body: form,
+                }).then((r) => {
+                    if (!r.status.toString().startsWith(2)) {
+                        r.text().then((data) => {
+                            sendWebhook("flapserrors", data, msgChannel);
+                        });
+                    }
                 });
             });
         } else {
