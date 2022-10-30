@@ -1682,13 +1682,20 @@ function dalle2Promise(prompt, big = false) {
                 method: "POST",
                 mode: "cors",
             })
-            .then((res) => res.text())
-            .then(async(res2) => {
+            .then((resp) => {
+                return new Promise((res, rej) => {
+                    resp.text().then((d) => {
+                        res([d, resp.status]);
+                    });
+                });
+            })
+            .then(async(res3) => {
                 try {
+                    var res2 = res3[0];
                     var res = JSON.parse(res2);
                     if (!res.images) {
                         console.log("no images for some reason");
-                        rej(res2);
+                        rej(res2.join(" - "));
                     }
                     if (big) {
                         resl(
@@ -1706,8 +1713,8 @@ function dalle2Promise(prompt, big = false) {
                         });
                     }
                 } catch {
-                    addError(new Error(res2));
-                    rej(res2);
+                    addError(new Error(res2.join(" - ")));
+                    rej(res2.join(" - "));
                 }
             })
             .catch((err) => {
