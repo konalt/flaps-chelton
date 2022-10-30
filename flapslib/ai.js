@@ -1706,53 +1706,10 @@ function dalle2Promise(prompt) {
 
 function dalle2(msg) {
     var prompt = msg.content.split(" ").slice(1).join(" ").replace(/"/g, '\\"');
-    fetch("https://playgroundai.com/api/models", {
-            credentials: "include",
-            headers: {
-                "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:105.0) Gecko/20100101 Firefox/105.0",
-                Accept: "application/json, text/plain, */*",
-                "Accept-Language": "en-US,en;q=0.5",
-                "Content-Type": "application/json",
-                "Sec-Fetch-Dest": "empty",
-                "Sec-Fetch-Mode": "cors",
-                "Sec-Fetch-Site": "same-origin",
-                "Sec-GPC": "1",
-                cookie: cookie,
-            },
-            referrer: "https://playgroundai.com/api/models",
-            body: '{"num_images":4,"width":512,"height":512,"prompt":"' +
-                prompt +
-                '","modelType":"dalle-2","isPrivate":true,"batchId":"HgIRsj6uES","generateVariants":false}',
-            method: "POST",
-            mode: "cors",
-        })
-        .then((res) => res.text())
-        .then(async(res2) => {
-            try {
-                var res = JSON.parse(res2);
-                if (!res.images) {
-                    console.log("no images for some reason");
-                    return sendWebhook("flaps", res2, msg.channel);
-                }
-                var imgs = [
-                    await downloadPromise(res.images[0].url, "dataurl"),
-                    await downloadPromise(res.images[1].url, "dataurl"),
-                    await downloadPromise(res.images[2].url, "dataurl"),
-                    await downloadPromise(res.images[3].url, "dataurl"),
-                ];
-                createCollage(imgs, 512).then((collage) => {
-                    var att = new MessageAttachment(collage, "img.png");
-                    sendWebhookAttachment("flaps", att, msg.channel);
-                });
-            } catch {
-                addError(new Error(res2));
-                sendWebhook("flaps", res2, msg.channel);
-            }
-        })
-        .catch((err) => {
-            addError(err);
-            sendWebhook("flaps", err.toString(), msg.channel);
-        });
+    dalle2Promise(prompt).then((img) => {
+        var att = new MessageAttachment(img, "img.png");
+        sendWebhookAttachment("dalle2", att, msg.channel);
+    });
 }
 
 module.exports = {
