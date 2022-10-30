@@ -1087,7 +1087,7 @@ async function question(question, channel) {
         question.toLowerCase().includes("fr") &&
         question.toLowerCase().includes("on god")
     ) {
-        return sendWebhook(monsoonPre[1], "No, probably not", false, channel);
+        return sendWebhook(monsoonPre[1], "No, probably not", channel);
     }
     const response = await openai.createCompletion({
         model: model,
