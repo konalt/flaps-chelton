@@ -1689,15 +1689,21 @@ function dalle2Promise(prompt, big = false) {
                         console.log("no images for some reason");
                         rej(res2);
                     }
-                    var imgs = [
-                        await downloadPromise(res.images[0].url, "dataurl"),
-                        await downloadPromise(res.images[1].url, "dataurl"),
-                        await downloadPromise(res.images[2].url, "dataurl"),
-                        await downloadPromise(res.images[3].url, "dataurl"),
-                    ];
-                    createCollage(imgs, 512).then((collage) => {
-                        resl(collage);
-                    });
+                    if (big) {
+                        resl(
+                            await downloadPromise(res.images[0].url, "dataurl")
+                        );
+                    } else {
+                        var imgs = [
+                            await downloadPromise(res.images[0].url, "dataurl"),
+                            await downloadPromise(res.images[1].url, "dataurl"),
+                            await downloadPromise(res.images[2].url, "dataurl"),
+                            await downloadPromise(res.images[3].url, "dataurl"),
+                        ];
+                        createCollage(imgs, 512).then((collage) => {
+                            resl(collage);
+                        });
+                    }
                 } catch {
                     addError(new Error(res2));
                     rej(res2);
@@ -1712,7 +1718,8 @@ function dalle2Promise(prompt, big = false) {
 
 function dalle2(msg) {
     var prompt = msg.content.split(" ").slice(1).join(" ").replace(/"/g, '\\"');
-    dalle2Promise(prompt).then((img) => {
+    var big = msg.content.split(" ")[0] == "!dalle2big";
+    dalle2Promise(prompt, big).then((img) => {
         var att = new MessageAttachment(img, "img.png");
         sendWebhookAttachment("dalle2", att, msg.channel);
     });

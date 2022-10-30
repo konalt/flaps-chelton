@@ -2326,6 +2326,7 @@ fbi files on ${commandArgString}: ${
                     }
                     break;
                 case "!dalle2":
+                case "!dalle2big":
                     dalle2(msg);
                     break;
                 case "!flip":
