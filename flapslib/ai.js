@@ -1653,7 +1653,7 @@ function dalle2InpaintPromise(data) {
     });
 }
 
-function dalle2Promise(prompt) {
+function dalle2Promise(prompt, big = false) {
     return new Promise((resl, rej) => {
         fetch("https://playgroundai.com/api/models", {
                 credentials: "include",
@@ -1669,7 +1669,13 @@ function dalle2Promise(prompt) {
                     cookie: cookie,
                 },
                 referrer: "https://playgroundai.com/api/models",
-                body: '{"num_images":4,"width":512,"height":512,"prompt":"' +
+                body: '{"num_images":' +
+                    (big ? 1 : 4) +
+                    ',"width":' +
+                    (big ? 1024 : 512) +
+                    ',"height":' +
+                    (big ? 1024 : 512) +
+                    ',"prompt":"' +
                     prompt.replace(/"/g, '\\"') +
                     '","modelType":"dalle-2","isPrivate":true,"batchId":"HgIRsj6uES","generateVariants":false}',
                 method: "POST",
