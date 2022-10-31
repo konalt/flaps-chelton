@@ -1656,6 +1656,17 @@ function dalle2InpaintPromise(data) {
 
 function dalle2Promise(prompt, big = false) {
     return new Promise((resl, rej) => {
+        var size = big ? 1024 : 512;
+        var body = {
+            num_images: big ? 1 : 4,
+            width: size,
+            height: size,
+            prompt: prompt,
+            modelType: "dalle-2",
+            isPrivate: true,
+            batchId: "HgIRsj6uES",
+            generateVariants: false,
+        };
         fetch("https://playgroundai.com/api/models", {
                 credentials: "include",
                 headers: {
@@ -1670,15 +1681,7 @@ function dalle2Promise(prompt, big = false) {
                     cookie: cookie,
                 },
                 referrer: "https://playgroundai.com/api/models",
-                body: '{"num_images":' +
-                    (big ? 1 : 4) +
-                    ',"width":' +
-                    (big ? 1024 : 512) +
-                    ',"height":' +
-                    (big ? 1024 : 512) +
-                    ',"prompt":"' +
-                    prompt.replace(/"/g, '\\"') +
-                    '","modelType":"dalle-2","isPrivate":true,"batchId":"HgIRsj6uES","generateVariants":false}',
+                body: JSON.stringify(body),
                 method: "POST",
                 mode: "cors",
             })
