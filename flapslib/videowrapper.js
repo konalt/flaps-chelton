@@ -48,13 +48,11 @@ async function addText(name, text, msg) {
                 });
         });
 }
-async function caption2(name, text, msg, url) {
-    var att = msg.attachments.first();
-    url = att ? att.url : url;
+async function caption2(name, text, msg, att) {
     var id = uuidv4().replace(/-/gi, "");
-    var ext = "." + url.split(".").pop();
+    var ext = "." + name.split(".").pop();
     video
-        .caption2("images/cache/" + name + ext, "images/cache/" + id + ext, {
+        .caption2("images/cache/" + name, "images/cache/" + id + ext, {
             w: att.width,
             h: att.height,
             text: text,
