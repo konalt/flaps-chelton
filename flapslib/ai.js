@@ -1695,7 +1695,7 @@ function dalle2Promise(prompt, big = false) {
                     var res = JSON.parse(res2);
                     if (!res.images) {
                         console.log("no images for some reason");
-                        rej(res2.join(" - "));
+                        rej(res3.join(" - "));
                     }
                     if (big) {
                         resl(
