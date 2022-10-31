@@ -1714,7 +1714,7 @@ function dalle2Promise(prompt, big = false) {
                     }
                 } catch {
                     addError(new Error(res3.join(" - ")));
-                    rej(res2.join(" - "));
+                    rej(res3.join(" - "));
                 }
             })
             .catch((err) => {
