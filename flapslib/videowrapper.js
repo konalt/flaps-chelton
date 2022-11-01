@@ -94,7 +94,7 @@ ${text[1]}`;
 }
 async function squash(name, msg) {
     var id = uuidv4().replace(/-/gi, "");
-    var ext = "." + msg.attachments.first().url.split(".").pop();
+    var ext = "." + name.split(".").pop();
     video
         .squash("images/cache/" + name, "images/cache/" + id + ext)
         .then(() => {
@@ -103,7 +103,7 @@ async function squash(name, msg) {
 }
 async function compress(name, msg) {
     var id = uuidv4().replace(/-/gi, "");
-    var ext = "." + msg.attachments.first().url.split(".").pop();
+    var ext = "." + name.split(".").pop();
     video
         .compress("images/cache/" + name, "images/cache/" + id + ext)
         .then(() => {
@@ -112,7 +112,7 @@ async function compress(name, msg) {
 }
 async function reverse(name, msg) {
     var id = uuidv4().replace(/-/gi, "");
-    var ext = "." + msg.attachments.first().url.split(".").pop();
+    var ext = "." + name.split(".").pop();
     video
         .reverse("images/cache/" + name, "images/cache/" + id + ext)
         .then(() => {
@@ -121,7 +121,7 @@ async function reverse(name, msg) {
 }
 async function stretch(name, msg) {
     var id = uuidv4().replace(/-/gi, "");
-    var ext = "." + msg.attachments.first().url.split(".").pop();
+    var ext = "." + name.split(".").pop();
     video
         .stretch("images/cache/" + name, "images/cache/" + id + ext)
         .then(() => {
@@ -130,7 +130,7 @@ async function stretch(name, msg) {
 }
 async function trim(name, times, msg) {
     var id = uuidv4().replace(/-/gi, "");
-    var ext = "." + msg.attachments.first().url.split(".").pop();
+    var ext = "." + name.split(".").pop();
     video
         .trim("images/cache/" + name, "images/cache/" + id + ext, {
             start: times[0],
@@ -241,7 +241,7 @@ async function geq(name, msg) {
     var id = uuidv4().replace(/-/gi, "");
     var ext = ".mp4";
     if (msg.attachments.first()) {
-        ext = "." + msg.attachments.first().url.split(".").pop();
+        ext = "." + name.split(".").pop();
     }
     video
         .geq(
@@ -265,7 +265,7 @@ async function complexFFmpeg(name, msg) {
     var id = uuidv4().replace(/-/gi, "");
     var ext = ".mp4";
     if (msg.attachments.first()) {
-        ext = "." + msg.attachments.first().url.split(".").pop();
+        ext = "." + name.split(".").pop();
     }
     video
         .complexFFmpeg(

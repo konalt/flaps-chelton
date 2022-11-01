@@ -469,40 +469,35 @@ function getTypes(atts) {
 
 function getSourcesWithAttachments(msg, types) {
     return new Promise((resolve, reject) => {
+        function l2(msg) {
+            var atts = msg.attachments.first(types.length);
+            var attTypes = getTypes(atts);
+            if (!atts[0]) {
+                reject("No source found");
+            } else if (!typesMatch(attTypes, types)) {
+                reject("Does not match type: " + types.join(","));
+            } else {
+                var ids = atts.map(() => uuidv4().replace(/-/gi, ""));
+                var exts = atts.map((att) => "." + att.url.split(".").pop());
+                var proms = atts.map((att, i) =>
+                    downloadPromise(att.url, "images/cache/" + ids[i] + exts[i])
+                );
+                Promise.all(proms).then(() => {
+                    resolve(atts.map((att, i) => [att, ids[i] + exts[i]]));
+                });
+            }
+        }
         var atts = msg.attachments.first(types.length);
-        var attTypes = getTypes(atts);
-        if (!atts[0]) {
+        if (!msg.attachments.first()) {
             if (!msg.reference) {
                 reject("No source found");
             } else {
                 msg.fetchReference().then((ref) => {
-                    var att = ref.attachments.first();
-                    if (!att) {
-                        reject("No source found");
-                    } else {
-                        var id = uuidv4().replace(/-/gi, "");
-                        var ext = "." + att.url.split(".").pop();
-                        flapslib.download(
-                            att.url,
-                            "images/cache/" + id + ext,
-                            () => {
-                                resolve([att, id + ext]);
-                            }
-                        );
-                    }
+                    l2(ref);
                 });
             }
-        } else if (!typesMatch(attTypes, types)) {
-            reject("Does not match type:" + types.join(","));
         } else {
-            var ids = atts.map(() => uuidv4().replace(/-/gi, ""));
-            var exts = atts.map((att) => "." + att.url.split(".").pop());
-            var proms = atts.map((att, i) =>
-                downloadPromise(att.url, "images/cache/" + ids[i] + exts[i])
-            );
-            Promise.all(proms).then(() => {
-                resolve(atts.map((att, i) => [att, ids[i] + exts[i]]));
-            });
+            l2(msg);
         }
     });
 }
