@@ -1662,10 +1662,14 @@ function dalle2Promise(prompt, big = false) {
             width: size,
             height: size,
             prompt: prompt,
-            modelType: "dalle-2",
+            modelType: "stable-diffusion",
             isPrivate: true,
             batchId: "HgIRsj6uES",
             generateVariants: false,
+            cfg_scale: 8,
+            steps: 25,
+            seed: Math.floor(Math.random() * 1e7),
+            sampler: 0,
         };
         fetch("https://playgroundai.com/api/models", {
                 credentials: "include",
