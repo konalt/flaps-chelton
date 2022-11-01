@@ -97,10 +97,11 @@ async function caption2(input, output, options) {
         .replace(/:/g, "\\\\\\:")
         .replace(/\n/g, "\\n"),
     ]);
-    var barHeight = (lines.length + 1) * fontSize + lines.length * 5;
+    var barHeight =
+        2 * Math.round(((lines.length + 1) * fontSize + lines.length * 5) / 2);
     var filter = `[0:v]pad=width=${videoWidth}:height=${
-        2 * Math.round((videoHeight + barHeight) / 2)
-    }:x=0:y=${(2 * Math.round(barHeight)) / 2}:color=white,`;
+        videoHeight + barHeight
+    }:x=0:y=${barHeight}:color=white,`;
     lines.forEach((line, index) => {
         filter += `drawtext=fontfile=futura.otf:fontsize=${fontSize}:text='${
             line[1]

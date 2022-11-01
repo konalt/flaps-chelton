@@ -1847,74 +1847,32 @@ async function onMessage(msg) {
                     break;
                 case "!videogif":
                     {
-                        if (!msg.attachments.first()) {
-                            flapslib.webhooks.sendWebhook(
-                                "ffmpeg",
-                                "(die)[https://konalt.us.to/files/videos/memes/dep.mp4]",
-                                false,
-                                msg.channel, {},
-                                msg
+                        getSources(msg, ["video"])
+                        .then((ids) => {
+                            flapslib.videowrapper.videoGif(
+                                ids[0],
+                                msg,
+                                client
                             );
-                        } else {
-                            flapslib.webhooks.sendWebhook(
-                                "ffmpeg",
-                                "got it bro. this might take a while tho",
-                                false,
-                                msg.channel, {},
-                                msg
-                            );
-                            var id = uuidv4().replace(/-/gi, "");
-                            var ext =
-                                "." +
-                                msg.attachments.first().url.split(".").pop();
-                            flapslib.download(
-                                msg.attachments.first().url,
-                                "images/cache/" + id + ext,
-                                () => {
-                                    flapslib.videowrapper.videoGif(
-                                        id,
-                                        msg,
-                                        client
-                                    );
-                                }
-                            );
-                        }
+                        })
+                        .catch((reason) => {
+                            sendWebhook("ffmpeg", reason, msg.channel);
+                        });
                     }
                     break;
                 case "!reverse":
                     {
-                        if (!msg.attachments.first()) {
-                            flapslib.webhooks.sendWebhook(
-                                "ffmpeg",
-                                "[<@489894082500493349>](https://konalt.us.to/files/videos/memes/findel.mp4)",
-                                false,
-                                msg.channel, {},
-                                msg
+                        getSources(msg, ["video/audio"])
+                        .then((ids) => {
+                            flapslib.videowrapper.reverse(
+                                ids[0],
+                                msg,
+                                client
                             );
-                        } else {
-                            flapslib.webhooks.sendWebhook(
-                                "ffmpeg",
-                                "got it bro. this might take a while tho",
-                                false,
-                                msg.channel, {},
-                                msg
-                            );
-                            var id = uuidv4().replace(/-/gi, "");
-                            var ext =
-                                "." +
-                                msg.attachments.first().url.split(".").pop();
-                            flapslib.download(
-                                msg.attachments.first().url,
-                                "images/cache/" + id + ext,
-                                () => {
-                                    flapslib.videowrapper.reverse(
-                                        id,
-                                        msg,
-                                        client
-                                    );
-                                }
-                            );
-                        }
+                        })
+                        .catch((reason) => {
+                            sendWebhook("ffmpeg", reason, msg.channel);
+                        });
                     }
                     break;
                 case "!compress":
