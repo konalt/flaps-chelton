@@ -97,12 +97,10 @@ async function caption2(input, output, options) {
         .replace(/:/g, "\\\\\\:")
         .replace(/\n/g, "\\n"),
     ]);
-    var barHeight = Math.floor(
-        (lines.length + 1) * fontSize + lines.length * 5
-    );
+    var barHeight = (lines.length + 1) * fontSize + lines.length * 5;
     var filter = `[0:v]pad=width=${videoWidth}:height=${
-        videoHeight + barHeight
-    }:x=0:y=${barHeight}:color=white,`;
+        2 * Math.round((videoHeight + barHeight) / 2)
+    }:x=0:y=${(2 * Math.round(barHeight)) / 2}:color=white,`;
     lines.forEach((line, index) => {
         filter += `drawtext=fontfile=futura.otf:fontsize=${fontSize}:text='${
             line[1]
@@ -115,6 +113,7 @@ async function caption2(input, output, options) {
     } else {
         filter += "[out_v]";
     }
+    console.log(filter);
     return ffmpeg(
         `-y -i ${path.join(
             __dirname,
