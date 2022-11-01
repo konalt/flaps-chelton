@@ -467,6 +467,36 @@ function getTypes(atts) {
     });
 }
 
+function getTypeMessage(inTypes, reqTypes) {
+    var maxWidthIn = inTypes.reduce((a, b) =>
+        a.length > b.length ? a : b
+    ).length;
+    if (maxWidthIn < "SUPPLIED".length) maxWidthIn = "SUPPLIED".length;
+    var maxWidthReq = reqTypes.reduce((a, b) =>
+        a.length > b.length ? a : b
+    ).length;
+    if (maxWidthReq < "REQUIRED".length) maxWidthReq = "REQUIRED".length;
+    var out = [
+        [
+            "REQUIRED".padEnd(maxWidthReq),
+            "SUPPLIED".padEnd(maxWidthIn),
+            "STATUS",
+        ]
+        .join(" | ")
+        .trim(), ["-".repeat(maxWidthIn + maxWidthReq + 3 + 3 + 6)],
+    ];
+
+    reqTypes.forEach((reqType, i) => {
+        var inType = inTypes[i];
+        var s = [];
+        s.push(reqType.padEnd(maxWidthReq, " "));
+        s.push(inType.padEnd(maxWidthIn, " "));
+        s.push(reqType.split("/").includes(inType) ? "OK" : "ERR");
+        out.push(s.join(" | ").trim());
+    });
+    return "```\n" + out.join("\n") + "\n```";
+}
+
 function getSourcesWithAttachments(msg, types) {
     return new Promise((resolve, reject) => {
         function l2(msg) {
@@ -475,7 +505,7 @@ function getSourcesWithAttachments(msg, types) {
             if (!atts[0]) {
                 reject("No source found");
             } else if (!typesMatch(attTypes, types)) {
-                reject("Does not match type: " + types.join(","));
+                reject("Type Error:\n" + getTypeMessage(attTypes, types));
             } else {
                 var ids = atts.map(() => uuidv4().replace(/-/gi, ""));
                 var exts = atts.map((att) => "." + att.url.split(".").pop());
