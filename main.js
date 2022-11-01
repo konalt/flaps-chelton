@@ -438,8 +438,13 @@ function getComparisonEmoji(a, b) {
     return "⏸️";
 }
 
-function arraysEqual(a1, a2) {
-    return JSON.stringify(a1) == JSON.stringify(a2);
+function typesMatch(inTypes, requiredTypes) {
+    var ok = true;
+    requiredTypes.forEach((type, i) => {
+        var typelist = type.split("/");
+        if (!typelist.includes(inTypes[i])) ok = false;
+    });
+    return ok;
 }
 
 var types = {
@@ -447,6 +452,8 @@ var types = {
     video: ["video/mp4", "video/x-matroska"],
     text: ["text/plain"],
     json: ["application/json"],
+    gif: ["image/gif"],
+    audio: ["audio/mp3"],
 };
 
 function getTypes(atts) {
@@ -485,7 +492,7 @@ function getSourcesWithAttachments(msg, types) {
                     }
                 });
             }
-        } else if (!arraysEqual(attTypes, types)) {
+        } else if (!typesMatch(attTypes, types)) {
             reject("Does not match type:" + types.join(","));
         } else {
             var ids = atts.map(() => uuidv4().replace(/-/gi, ""));
@@ -1799,23 +1806,26 @@ async function onMessage(msg) {
                     break;
                 case "!caption2":
                     {
-                        getSourcesWithAttachment(msg, ["video"]).then(
-                            ([att, id]) => {
-                                flapslib.videowrapper.caption2(
-                                    id,
-                                    commandArgString,
-                                    msg,
-                                    att
-                                );
-                            }
-                        );
+                        getSourcesWithAttachments(msg, ["video/image/gif"])
+                        .then((list) => {
+                            console.log(list);
+                            flapslib.videowrapper.caption2(
+                                list[0][1],
+                                commandArgString,
+                                msg,
+                                list[0][0]
+                            );
+                        })
+                        .catch((reason) => {
+                            sendWebhook("ffmpeg", reason, msg.channel);
+                        });
                     }
                     break;
                 case "!squash":
                     {
-                        getSources(msg, ["video"])
-                        .then((id) => {
-                            flapslib.videowrapper.squash(id, msg, client);
+                        getSources(msg, ["video/image/gif"])
+                        .then((ids) => {
+                            flapslib.videowrapper.squash(ids[0], msg);
                         })
                         .catch((reason) => {
                             sendWebhook("ffmpeg", reason, msg.channel);
@@ -1824,12 +1834,11 @@ async function onMessage(msg) {
                     break;
                 case "!trim":
                     {
-                        getSources(msg, ["video"])
-                        .then((id) => {
+                        getSources(msg, ["video/audio"])
+                        .then((ids) => {
                             flapslib.videowrapper.trim(
-                                id, [commandArgs[1], commandArgs[2]],
-                                msg,
-                                client
+                                ids[0], [commandArgs[1], commandArgs[2]],
+                                msg
                             );
                         })
                         .catch((reason) => {
