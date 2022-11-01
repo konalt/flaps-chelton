@@ -2635,7 +2635,7 @@ fbi files on ${commandArgString}: ${
                 case "!r34":
                     {
                         // Happy November!
-                        if (Math.random() < 0.999) {
+                        if (Math.random() < 0.5) {
                             return sendWebhook(
                                 "welldressed",
                                 "https://media.discordapp.net/attachments/956316856422137856/982985131151228928/88324f31a1fe4aa3a4568285e8771de6.png",
