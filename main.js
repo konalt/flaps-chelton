@@ -453,7 +453,7 @@ var types = {
     text: ["text/plain"],
     json: ["application/json"],
     gif: ["image/gif"],
-    audio: ["audio/mp3"],
+    audio: ["audio/mpeg", "audio/aac"],
 };
 
 function getTypes(atts) {
