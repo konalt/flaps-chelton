@@ -83,14 +83,11 @@ ${text[1]}`;
     fs.writeFileSync("./subs.srt", subtitleFileData);
     fs.writeFileSync("./subs_bottom.srt", subtitleFileData2);
     video
-        .simpleMemeCaption(
-            "images/cache/" + name + ext,
-            "images/cache/" + id + ext, {
-                fontSize: !parseInt(msg.content.split(" ")[1]) ?
-                    30 :
-                    parseInt(msg.content.split(" ")[1]),
-            }
-        )
+        .simpleMemeCaption("images/cache/" + name, "images/cache/" + id + ext, {
+            fontSize: !parseInt(msg.content.split(" ")[1]) ?
+                30 :
+                parseInt(msg.content.split(" ")[1]),
+        })
         .then(() => {
             sendWebhookFile("ffmpeg", "images/cache/" + id + ext, msg.channel);
         });
@@ -99,7 +96,7 @@ async function squash(name, msg) {
     var id = uuidv4().replace(/-/gi, "");
     var ext = "." + msg.attachments.first().url.split(".").pop();
     video
-        .squash("images/cache/" + name + ext, "images/cache/" + id + ext)
+        .squash("images/cache/" + name, "images/cache/" + id + ext)
         .then(() => {
             sendWebhookFile("ffmpeg", "images/cache/" + id + ext, msg.channel);
         });
@@ -108,7 +105,7 @@ async function compress(name, msg) {
     var id = uuidv4().replace(/-/gi, "");
     var ext = "." + msg.attachments.first().url.split(".").pop();
     video
-        .compress("images/cache/" + name + ext, "images/cache/" + id + ext)
+        .compress("images/cache/" + name, "images/cache/" + id + ext)
         .then(() => {
             sendWebhookFile("ffmpeg", "images/cache/" + id + ext, msg.channel);
         });
@@ -117,7 +114,7 @@ async function reverse(name, msg) {
     var id = uuidv4().replace(/-/gi, "");
     var ext = "." + msg.attachments.first().url.split(".").pop();
     video
-        .reverse("images/cache/" + name + ext, "images/cache/" + id + ext)
+        .reverse("images/cache/" + name, "images/cache/" + id + ext)
         .then(() => {
             sendWebhookFile("ffmpeg", "images/cache/" + id + ext, msg.channel);
         });
@@ -126,7 +123,7 @@ async function stretch(name, msg) {
     var id = uuidv4().replace(/-/gi, "");
     var ext = "." + msg.attachments.first().url.split(".").pop();
     video
-        .stretch("images/cache/" + name + ext, "images/cache/" + id + ext)
+        .stretch("images/cache/" + name, "images/cache/" + id + ext)
         .then(() => {
             sendWebhookFile("ffmpeg", "images/cache/" + id + ext, msg.channel);
         });
@@ -135,7 +132,7 @@ async function trim(name, times, msg) {
     var id = uuidv4().replace(/-/gi, "");
     var ext = "." + msg.attachments.first().url.split(".").pop();
     video
-        .trim("images/cache/" + name + ext, "images/cache/" + id + ext, {
+        .trim("images/cache/" + name, "images/cache/" + id + ext, {
             start: times[0],
             end: times[1],
         })
@@ -153,7 +150,7 @@ async function videoGif(name, msg) {
     var id = uuidv4().replace(/-/gi, "");
     var ext = "." + msg.attachments.first().url.split(".").pop();
     video
-        .videoGif("images/cache/" + name + ext, "images/cache/" + id + ".gif")
+        .videoGif("images/cache/" + name, "images/cache/" + id + ".gif")
         .then(() => {
             sendWebhookFile(
                 "ffmpeg",
@@ -249,9 +246,7 @@ async function geq(name, msg) {
     }
     video
         .geq(
-            name == "nullsrc" ?
-            "nullsrc=s=256x256" :
-            "images/cache/" + name + ext,
+            name == "nullsrc" ? "nullsrc=s=256x256" : "images/cache/" + name,
             "images/cache/" + id + ext, {
                 red: msg.content.split(" ").slice(1)[0],
                 green: msg.content.split(" ").slice(1).length > 1 ?
@@ -275,9 +270,7 @@ async function complexFFmpeg(name, msg) {
     }
     video
         .complexFFmpeg(
-            name == "nullsrc" ?
-            "nullsrc=s=256x256" :
-            "images/cache/" + name + ext,
+            name == "nullsrc" ? "nullsrc=s=256x256" : "images/cache/" + name,
             "images/cache/" + id + ext, {
                 args: msg.content.split(" ").slice(1).join(" "),
             }

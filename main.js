@@ -76,6 +76,7 @@ const { OpenAIApi } = require("openai");
 const { Configuration } = require("openai");
 const { compress } = require("./flapslib/videowrapper");
 const { addMessage, addError } = require("./flapslib/analytics");
+const { downloadPromise } = require("./flapslib/index");
 const owoify = require("owoify-js").default;
 var dream = WomboDreamApi.buildDefaultInstance();
 
@@ -437,10 +438,33 @@ function getComparisonEmoji(a, b) {
     return "⏸️";
 }
 
-function getSource(msg, type) {
+function arraysEqual(a1, a2) {
+    return JSON.stringify(a1) == JSON.stringify(a2);
+}
+
+var types = {
+    image: ["image/png", "image/jpeg", "image/webp"],
+    video: ["video/mp4", "video/x-matroska"],
+    text: ["text/plain"],
+    json: ["application/json"],
+};
+
+function getTypes(atts) {
+    return atts.map((att) => {
+        var ct = att.contentType;
+        var type = "unknown";
+        Object.entries(types).forEach((a) => {
+            if (a[1].includes(ct)) type = a[0];
+        });
+        return type;
+    });
+}
+
+function getSourcesWithAttachments(msg, types) {
     return new Promise((resolve, reject) => {
-        var att = msg.attachments.first();
-        if (!att) {
+        var atts = msg.attachments.first(types.length);
+        var attTypes = getTypes(atts);
+        if (!atts[0]) {
             if (!msg.reference) {
                 reject("No source found");
             } else {
@@ -461,13 +485,30 @@ function getSource(msg, type) {
                     }
                 });
             }
+        } else if (!arraysEqual(attTypes, types)) {
+            reject("Does not match type:" + types.join(","));
         } else {
-            var id = uuidv4().replace(/-/gi, "");
-            var ext = "." + att.url.split(".").pop();
-            flapslib.download(att.url, "images/cache/" + id + ext, () => {
-                resolve([att, id + ext]);
+            var ids = atts.map(() => uuidv4().replace(/-/gi, ""));
+            var exts = atts.map((att) => "." + att.url.split(".").pop());
+            var proms = atts.map((att, i) =>
+                downloadPromise(att.url, "images/cache/" + ids[i] + exts[i])
+            );
+            Promise.all(proms).then(() => {
+                resolve(atts.map((att, i) => [att, ids[i] + exts[i]]));
             });
         }
+    });
+}
+
+function getSources(msg, types) {
+    return new Promise((resolve, reject) => {
+        getSourcesWithAttachments(msg, types)
+            .then((data) => {
+                resolve(data.map((x) => x[1]));
+            })
+            .catch((r) => {
+                reject(r);
+            });
     });
 }
 
@@ -1758,86 +1799,42 @@ async function onMessage(msg) {
                     break;
                 case "!caption2":
                     {
-                        getSource(msg, "video").then(([att, id]) => {
-                            flapslib.videowrapper.caption2(
-                                id,
-                                commandArgString,
-                                msg,
-                                att
-                            );
-                        });
+                        getSourcesWithAttachment(msg, ["video"]).then(
+                            ([att, id]) => {
+                                flapslib.videowrapper.caption2(
+                                    id,
+                                    commandArgString,
+                                    msg,
+                                    att
+                                );
+                            }
+                        );
                     }
                     break;
                 case "!squash":
                     {
-                        if (!msg.attachments.first()) {
-                            flapslib.webhooks.sendWebhook(
-                                "ffmpeg",
-                                "(die)[https://konalt.us.to/files/videos/memes/dep.mp4]",
-                                false,
-                                msg.channel, {},
-                                msg
-                            );
-                        } else {
-                            flapslib.webhooks.sendWebhook(
-                                "ffmpeg",
-                                "got it bro. this might take a while tho",
-                                false,
-                                msg.channel, {},
-                                msg
-                            );
-                            var id = uuidv4().replace(/-/gi, "");
-                            var ext =
-                                "." +
-                                msg.attachments.first().url.split(".").pop();
-                            flapslib.download(
-                                msg.attachments.first().url,
-                                "images/cache/" + id + ext,
-                                () => {
-                                    flapslib.videowrapper.squash(
-                                        id,
-                                        msg,
-                                        client
-                                    );
-                                }
-                            );
-                        }
+                        getSources(msg, ["video"])
+                        .then((id) => {
+                            flapslib.videowrapper.squash(id, msg, client);
+                        })
+                        .catch((reason) => {
+                            sendWebhook("ffmpeg", reason, msg.channel);
+                        });
                     }
                     break;
                 case "!trim":
                     {
-                        if (!msg.attachments.first()) {
-                            flapslib.webhooks.sendWebhook(
-                                "ffmpeg",
-                                "(die)[https://konalt.us.to/files/videos/memes/dep.mp4]",
-                                false,
-                                msg.channel, {},
-                                msg
+                        getSources(msg, ["video"])
+                        .then((id) => {
+                            flapslib.videowrapper.trim(
+                                id, [commandArgs[1], commandArgs[2]],
+                                msg,
+                                client
                             );
-                        } else {
-                            flapslib.webhooks.sendWebhook(
-                                "ffmpeg",
-                                "got it bro. this might take a while tho",
-                                false,
-                                msg.channel, {},
-                                msg
-                            );
-                            var id = uuidv4().replace(/-/gi, "");
-                            var ext =
-                                "." +
-                                msg.attachments.first().url.split(".").pop();
-                            flapslib.download(
-                                msg.attachments.first().url,
-                                "images/cache/" + id + ext,
-                                () => {
-                                    flapslib.videowrapper.trim(
-                                        id, [commandArgs[1], commandArgs[2]],
-                                        msg,
-                                        client
-                                    );
-                                }
-                            );
-                        }
+                        })
+                        .catch((reason) => {
+                            sendWebhook("ffmpeg", reason, msg.channel);
+                        });
                     }
                     break;
                 case "!videogif":
