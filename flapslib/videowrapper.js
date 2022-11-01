@@ -148,7 +148,6 @@ function setClient(c) {
 }
 async function videoGif(name, msg) {
     var id = uuidv4().replace(/-/gi, "");
-    var ext = "." + msg.attachments.first().url.split(".").pop();
     video
         .videoGif("images/cache/" + name, "images/cache/" + id + ".gif")
         .then(() => {
