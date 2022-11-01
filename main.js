@@ -487,7 +487,6 @@ function getSourcesWithAttachments(msg, types) {
                 });
             }
         }
-        var atts = msg.attachments.first(types.length);
         if (!msg.attachments.first()) {
             if (!msg.reference) {
                 reject("No source found");
