@@ -1808,7 +1808,6 @@ async function onMessage(msg) {
                     {
                         getSourcesWithAttachments(msg, ["video/image/gif"])
                         .then((list) => {
-                            console.log(list);
                             flapslib.videowrapper.caption2(
                                 list[0][1],
                                 commandArgString,
