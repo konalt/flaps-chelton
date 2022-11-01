@@ -74,7 +74,7 @@ const { doTranslate, doTranslateSending } = require("./flapslib/translator");
 const { randomRedditImage } = require("./flapslib/fetchapis");
 const { OpenAIApi } = require("openai");
 const { Configuration } = require("openai");
-const { compress } = require("./flapslib/videowrapper");
+const { compress, armstrongify } = require("./flapslib/videowrapper");
 const { addMessage, addError } = require("./flapslib/analytics");
 const { downloadPromise } = require("./flapslib/index");
 const owoify = require("owoify-js").default;
@@ -1886,38 +1886,17 @@ async function onMessage(msg) {
                     break;
                 case "!stretch":
                     {
-                        if (!msg.attachments.first()) {
-                            flapslib.webhooks.sendWebhook(
-                                "ffmpeg",
-                                "[<@489894082500493349>](https://konalt.us.to/files/videos/memes/findel.mp4)",
-                                false,
-                                msg.channel, {},
-                                msg
+                        getSources(msg, ["video/audio"])
+                        .then((ids) => {
+                            flapslib.videowrapper.stretch(
+                                ids[0],
+                                msg,
+                                client
                             );
-                        } else {
-                            flapslib.webhooks.sendWebhook(
-                                "ffmpeg",
-                                "got it bro. this might take a while tho",
-                                false,
-                                msg.channel, {},
-                                msg
-                            );
-                            var id = uuidv4().replace(/-/gi, "");
-                            var ext =
-                                "." +
-                                msg.attachments.first().url.split(".").pop();
-                            flapslib.download(
-                                msg.attachments.first().url,
-                                "images/cache/" + id + ext,
-                                () => {
-                                    flapslib.videowrapper.stretch(
-                                        id,
-                                        msg,
-                                        client
-                                    );
-                                }
-                            );
-                        }
+                        })
+                        .catch((reason) => {
+                            sendWebhook("ffmpeg", reason, msg.channel);
+                        });
                     }
                     break;
                 case "!dream":
@@ -2100,39 +2079,13 @@ async function onMessage(msg) {
                     break;
                 case "!nohorny":
                     {
-                        var id = uuidv4().replace(/-/g, "");
-                        if (msg.attachments.first().url.endsWith(".mp4")) {
-                            download(
-                                msg.attachments.first().url,
-                                "./images/cache/" + id + ".mp4",
-                                () => {
-                                    getVideoDurationInSeconds(
-                                        "./images/cache/" + id + ".mp4"
-                                    ).then((duration) => {
-                                        console.log(duration);
-                                        flapslib.videowrapper.armstrongify(
-                                            id + ".mp4",
-                                            msg,
-                                            duration,
-                                            client
-                                        );
-                                    });
-                                }
-                            );
-                        } else {
-                            download(
-                                msg.attachments.first().url,
-                                "./images/cache/" + id + ".png",
-                                () => {
-                                    flapslib.videowrapper.armstrongify(
-                                        id + ".png",
-                                        msg,
-                                        1,
-                                        client
-                                    );
-                                }
-                            );
-                        }
+                        getSources(msg, ["image"])
+                        .then((ids) => {
+                            armstrongify(ids[0], msg, 1);
+                        })
+                        .catch((reason) => {
+                            sendWebhook("ffmpeg", reason, msg.channel);
+                        });
                     }
                     break;
                 case "!fbifiles":
