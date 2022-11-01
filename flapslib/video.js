@@ -50,7 +50,7 @@ async function addText(input, output, options) {
             options.fontsize
         }:box=1:boxcolor=black@0.5:boxborderw=5:x=${options.x}:y=${
             options.y
-        },split[s0][s1];[s0]palettegen=reserve_transparent=1[p];[s1][p]paletteuse" -preset ${h264Preset} ${path.join(
+        },split[s0][s1];[s0]palettegen=reserve_transparent=1[p];[s1][p]paletteuse" -preset:v ${h264Preset} ${path.join(
             __dirname,
             "..",
             output
@@ -120,7 +120,7 @@ async function caption2(input, output, options) {
             __dirname,
             "..",
             input
-        )} -filter_complex "${filter}" -map "[out_v]" -map "0:a?" -preset ${h264Preset} ${path.join(
+        )} -filter_complex "${filter}" -map "[out_v]" -map "0:a?" -preset:v ${h264Preset} ${path.join(
             __dirname,
             "..",
             output
@@ -141,7 +141,7 @@ async function simpleMemeCaption(input, output, options) {
             output.endsWith(".gif")
                 ? ",split[s0][s1];[s0]palettegen[p];[s1][p]paletteuse"
                 : ""
-        }" -q:v 3 -preset ${h264Preset} ${path.join(__dirname, "..", output)}`
+        }" -q:v 3 -preset:v ${h264Preset} ${path.join(__dirname, "..", output)}`
     );
 }
 async function squash(input, output) {
@@ -150,7 +150,7 @@ async function squash(input, output) {
             __dirname,
             "..",
             input
-        )} -vf "scale=iw:ih*.5" -preset ${h264Preset} ${path.join(
+        )} -vf "scale=iw:ih*.5" -preset:v ${h264Preset} ${path.join(
             __dirname,
             "..",
             output
@@ -163,7 +163,7 @@ async function stretch(input, output) {
             __dirname,
             "..",
             input
-        )} -vf "scale=iw*.5:ih" -preset ${h264Preset} ${path.join(
+        )} -vf "scale=iw*.5:ih" -preset:v ${h264Preset} ${path.join(
             __dirname,
             "..",
             output
@@ -172,7 +172,7 @@ async function stretch(input, output) {
 }
 async function setArmstrongSize(input, output) {
     return ffmpeg(
-        `-y -i ${input} -vf "scale=800:450,setsar=1:1,setpts=PTS-STARTPTS" -preset ${h264Preset} ${path.join(
+        `-y -i ${input} -vf "scale=800:450,setsar=1:1,setpts=PTS-STARTPTS" -preset:v ${h264Preset} ${path.join(
             __dirname,
             "..",
             output
@@ -183,7 +183,7 @@ async function trim(input, output, options) {
     return ffmpeg(
         `-y -i ${path.join(__dirname, "..", input)} -ss ${options.start} -to ${
             options.end
-        } -preset ${h264Preset} ${path.join(__dirname, "..", output)}`
+        } -preset:v ${h264Preset} ${path.join(__dirname, "..", output)}`
     );
 }
 async function compress(input, output) {
@@ -192,7 +192,7 @@ async function compress(input, output) {
             __dirname,
             "..",
             input
-        )} -vf "scale=trunc(iw/10/2)*2:trunc(ih/10/2)*2,framerate=5,scale=trunc(iw*10/2)*2:trunc(ih*10/2)*2" -b:a 5k -ac 1 -ar 16000 -c:a libopus -crf 51 -b:v 16k -preset ${h264Preset} ${path.join(
+        )} -vf "scale=trunc(iw/10/2)*2:trunc(ih/10/2)*2,framerate=5,scale=trunc(iw*10/2)*2:trunc(ih*10/2)*2" -b:a 5k -ac 1 -ar 16000 -c:a libmp3lame -crf:v 51 -b:v 16k -preset:v ${h264Preset} ${path.join(
             __dirname,
             "..",
             output
@@ -205,7 +205,7 @@ async function reverse(input, output) {
             __dirname,
             "..",
             input
-        )} -vf reverse -af areverse -preset ${h264Preset} ${path.join(
+        )} -vf reverse -af areverse -preset:v ${h264Preset} ${path.join(
             __dirname,
             "..",
             output
@@ -218,7 +218,7 @@ async function videoGif(input, output, options) {
             __dirname,
             "..",
             input
-        )} -vf "fps=24,scale=480:-1:flags=lanczos,split[s0][s1];[s0]palettegen[p];[s1][p]paletteuse" -loop 0 -preset ${h264Preset} ${path.join(
+        )} -vf "fps=24,scale=480:-1:flags=lanczos,split[s0][s1];[s0]palettegen[p];[s1][p]paletteuse" -loop 0 -preset:v ${h264Preset} ${path.join(
             __dirname,
             "..",
             output
@@ -231,7 +231,7 @@ async function stitch(inputs, output) {
             __dirname,
             "..",
             inputs[1]
-        )} -filter_complex "[0][1]scale2ref=iw:ih[intro][main];[intro]drawbox=t=fill[intro-bg];[0][intro-bg]scale2ref=iw:ih:force_original_aspect_ratio=decrease:flags=spline[intro][intro-bg];[intro-bg][intro]overlay=x='(W-w)/2':y='(H-h)/2'[intro-resized]; [intro-resized][0:a][main][1:a]concat=n=2:v=1:a=1:unsafe=1[v][a]" -map "[v]" -map "[a]" -c:v libx264 -preset ${h264Preset} ${path.join(
+        )} -filter_complex "[0][1]scale2ref=iw:ih[intro][main];[intro]drawbox=t=fill[intro-bg];[0][intro-bg]scale2ref=iw:ih:force_original_aspect_ratio=decrease:flags=spline[intro][intro-bg];[intro-bg][intro]overlay=x='(W-w)/2':y='(H-h)/2'[intro-resized]; [intro-resized][0:a][main][1:a]concat=n=2:v=1:a=1:unsafe=1[v][a]" -map "[v]" -map "[a]" -c:v libx264 -preset:v ${h264Preset} ${path.join(
             __dirname,
             "..",
             output + ".mp4"
@@ -248,7 +248,7 @@ async function imageAudio(input, output, rev, exts) {
             __dirname,
             "..",
             input + (rev ? "-0." + exts[0] : "-1." + exts[1])
-        )} -vf "pad=ceil(iw/2)*2:ceil(ih/2)*2" -c:v libx264 -tune stillimage -c:a aac -b:a 192k -pix_fmt yuv420p -shortest -preset ${h264Preset} ${path.join(
+        )} -vf "pad=ceil(iw/2)*2:ceil(ih/2)*2" -c:v libx264 -tune stillimage -c:a aac -b:a 192k -pix_fmt yuv420p -shortest -preset:v ${h264Preset} ${path.join(
             __dirname,
             "..",
             output + ".mp4"
@@ -265,7 +265,7 @@ async function gifAudio(input, output) {
             __dirname,
             "..",
             input + ".mp3"
-        )} -vf "pad=ceil(iw/2)*2:ceil(ih/2)*2" -c:v libx264 -shortest -preset ${h264Preset} ${path.join(
+        )} -vf "pad=ceil(iw/2)*2:ceil(ih/2)*2" -c:v libx264 -shortest -preset:v ${h264Preset} ${path.join(
             __dirname,
             "..",
             output + ".mp4"
@@ -286,7 +286,7 @@ async function baitSwitch(input, output, options = {}) {
             options.h
         }/2)*2,setsar=1:1[v0];[1:v]scale=ceil(${options.w}/2)*2:ceil(${
             options.h
-        }/2)*2,setsar=1:1[v1];[v0][v1]concat[vout]" -map "[vout]" -map "1:a" -vsync 2 -preset ${h264Preset} ${path.join(
+        }/2)*2,setsar=1:1[v1];[v0][v1]concat[vout]" -map "[vout]" -map "1:a" -vsync 2 -preset:v ${h264Preset} ${path.join(
             __dirname,
             "..",
             output + ".mp4"
@@ -300,7 +300,7 @@ async function mimeNod(output, bpm) {
             "..",
             "images",
             "nod%01d.png"
-        )} -r 15 -preset ${h264Preset} ${path.join(__dirname, "..", output)}`
+        )} -r 15 -preset:v ${h264Preset} ${path.join(__dirname, "..", output)}`
     );
 }
 async function armstrongify(input, output, options) {
@@ -340,7 +340,7 @@ async function armstrongify(input, output, options) {
                       options.videoLength
                   }[atrimb];[3:a]atrim=0:1[atrimc];[3:a]atrim=1:28[atrimd];[atrimb][atrimc]amix=inputs=2:duration=1[atrime];[atrima][atrime][atrimd]concat=n=3:v=0:a=1[aout]`
                 : "[3:a]anull[aout]"
-        }" -map "[vout]" -map "[aout]" -vsync 2 -c:v libx264 -preset ${h264Preset} -t ${
+        }" -map "[vout]" -map "[aout]" -vsync 2 -c:v libx264 -preset:v ${h264Preset} -t ${
             28 + options.videoLength - 1
         } ${path.join(__dirname, "..", output + ".mp4")}`
     );
@@ -355,7 +355,7 @@ async function videoAudio(input, output, rev, exts) {
             __dirname,
             "..",
             input + (rev ? "-0." + exts[0] : "-1." + exts[1])
-        )} -map 0:v -map 1:a -c:v copy -shortest -preset ${h264Preset} ${path.join(
+        )} -map 0:v -map 1:a -c:v copy -shortest -preset:v ${h264Preset} ${path.join(
             __dirname,
             "..",
             output + ".mp4"
@@ -370,7 +370,7 @@ async function geq(input, output, options) {
                 : "-i " + path.join(__dirname, "..", input)
         } -vf "geq=r=${options.red}:g=${options.green}:b=${
             options.blue
-        }" -preset ${h264Preset} ${path.join(__dirname, "..", output)}`
+        }" -preset:v ${h264Preset} ${path.join(__dirname, "..", output)}`
     );
 }
 async function complexFFmpeg(input, output, options) {
