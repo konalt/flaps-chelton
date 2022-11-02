@@ -1112,28 +1112,13 @@ async function weezer(msg, client) {
 }
 
 async function sendCanvas(c, msg, client, botname, type) {
-    var imgID2 = n(type);
+    var imgID2 = n(type) + ".png";
     var imageStream2 = Buffer.from(
         c.toDataURL("image/png").split(",")[1],
         "base64"
     );
     fs.writeFileSync("../images/cache/" + imgID2, imageStream2);
     sendWebhookFile(botname, "../images\\cache\\" + imgID2, msg.channel);
-    return;
-    /**
-     * @type {Discord.Message}
-     */
-    var message = await client.channels.cache.get("956316856422137856").send({
-        files: [{
-            attachment: "../images\\cache\\" + imgID2,
-        }, ],
-    });
-
-    /* setTimeout(() => {
-        fs.unlinkSync("../images/cache/" + imgID2);
-    }, 10000); */
-
-    sendWebhook(botname, message.attachments.first().url, msg.channel);
 }
 
 function getTextWidth(font, fontsize, text) {
