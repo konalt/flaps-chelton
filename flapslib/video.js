@@ -5,7 +5,7 @@ const { stdout } = require("process");
 const { uuidv4 } = require("./ai");
 const { getTextWidth } = require("./canvas");
 
-var ffmpegVerbose = false;
+var ffmpegVerbose = true;
 
 var h264Preset = "ultrafast";
 
@@ -212,6 +212,29 @@ async function reverse(input, output) {
         )}`
     );
 }
+
+function filter(arr) {
+    return '"' + arr.join(";") + '"';
+}
+async function theHorror(input, output) {
+    return ffmpeg(
+        [
+            "-y",
+            `-i ${path.join(__dirname, "..", "images", "horror.mp4")}`,
+            `-i ${path.join(__dirname, "..", input)}`,
+            "-filter_complex",
+            filter([
+                "[0:v]scale=318:240,colorkey=0x00FF00:0.2:0.2[ckout]",
+                "[1:v]scale=318:240[sout]",
+                "[sout][ckout]overlay[out]",
+            ]),
+            '-map "[out]"',
+            '-map "0:a:0"',
+            "-preset " + h264Preset,
+            output,
+        ].join(" ")
+    );
+}
 async function videoGif(input, output, options) {
     return ffmpeg(
         `-y -i ${path.join(
@@ -403,4 +426,5 @@ module.exports = {
     compress: compress,
     caption2: caption2,
     reverse: reverse,
+    theHorror: theHorror,
 };

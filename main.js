@@ -1914,6 +1914,21 @@ async function onMessage(msg) {
                         });
                     }
                     break;
+                case "!thehorror":
+                    {
+                        getSources(msg, ["image"])
+                        .then((ids) => {
+                            flapslib.videowrapper.theHorror(
+                                ids[0],
+                                msg,
+                                client
+                            );
+                        })
+                        .catch((reason) => {
+                            sendWebhook("ffmpeg", reason, msg.channel);
+                        });
+                    }
+                    break;
                 case "!stretch":
                     {
                         getSources(msg, ["video/audio"])
