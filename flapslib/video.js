@@ -264,6 +264,27 @@ async function theHorror(input, output) {
         ].join(" ")
     );
 }
+async function stewie(input, output) {
+    return ffmpeg(
+        [
+            "-y",
+            `-i ${path.join(__dirname, "..", "images", "stewie.mp4")}`,
+            `-i ${path.join(__dirname, "..", input)}`,
+            "-filter_complex",
+            filter([
+                "[0:v]scale=800:450,setsar=1:1,setpts=PTS-STARTPTS,colorkey=0x00FF00:0.2:0.2[ckout2]",
+                "[1:v]scale=800:450,setsar=1:1,setpts=PTS-STARTPTS[sout]",
+                "[sout][ckout2]overlay[oout]",
+                "[oout]setpts=0.66*PTS[vout]",
+                "[0:a]atempo=1.5[aout]",
+            ]),
+            '-map "[vout]"',
+            '-map "[aout]"',
+            "-preset " + h264Preset,
+            output,
+        ].join(" ")
+    );
+}
 async function videoGif(input, output, options) {
     return ffmpeg(
         `-y -i ${path.join(
@@ -457,4 +478,5 @@ module.exports = {
     reverse: reverse,
     theHorror: theHorror,
     parseScalingTable: parseScalingTable,
+    stewie: stewie,
 };

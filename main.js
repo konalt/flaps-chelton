@@ -1929,6 +1929,21 @@ async function onMessage(msg) {
                         });
                     }
                     break;
+                case "!stewie":
+                    {
+                        getSources(msg, ["image"])
+                        .then((ids) => {
+                            flapslib.videowrapper.stewie(
+                                ids[0],
+                                msg,
+                                client
+                            );
+                        })
+                        .catch((reason) => {
+                            sendWebhook("ffmpeg", reason, msg.channel);
+                        });
+                    }
+                    break;
                 case "!stretch":
                     {
                         getSources(msg, ["video/audio"])

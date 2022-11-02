@@ -128,6 +128,18 @@ async function theHorror(name, msg) {
             );
         });
 }
+async function stewie(name, msg) {
+    var id = n("Effect_Stewie");
+    video
+        .stewie("images/cache/" + name, "images/cache/" + id + ".mp4")
+        .then(() => {
+            sendWebhookFile(
+                "ffmpeg",
+                "images/cache/" + id + ".mp4",
+                msg.channel
+            );
+        });
+}
 async function reverse(name, msg) {
     var id = n("Effect_Reverse");
     var ext = "." + name.split(".").pop();
@@ -338,4 +350,5 @@ module.exports = {
     caption2: caption2,
     reverse: reverse,
     theHorror: theHorror,
+    stewie: stewie,
 };
