@@ -5,7 +5,7 @@ const { stdout } = require("process");
 const { uuidv4 } = require("./ai");
 const { getTextWidth } = require("./canvas");
 
-var ffmpegVerbose = true;
+var ffmpegVerbose = false;
 
 var h264Preset = "ultrafast";
 
