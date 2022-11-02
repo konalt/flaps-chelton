@@ -300,7 +300,7 @@ async function videoGif(input, output, options) {
 }
 async function stitch(inputs, output) {
     return ffmpeg(
-        `-y  -i ${path.join(__dirname, "..", inputs[0])} -i ${path.join(
+        `-y -i ${path.join(__dirname, "..", inputs[0])} -i ${path.join(
             __dirname,
             "..",
             inputs[1]
@@ -326,6 +326,17 @@ async function imageAudio(input, output, rev, exts) {
             "..",
             output + ".mp4"
         )}`
+    );
+}
+async function bassBoost(input, output) {
+    return ffmpeg(
+        [
+            "-y",
+            `-i ${path.join(__dirname, "..", input)}`,
+            "-af volume=15dB",
+            "-c:v copy",
+            output,
+        ].join(" ")
     );
 }
 async function gifAudio(input, output) {
@@ -479,4 +490,5 @@ module.exports = {
     theHorror: theHorror,
     parseScalingTable: parseScalingTable,
     stewie: stewie,
+    bassBoost: bassBoost,
 };
