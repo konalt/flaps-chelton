@@ -1696,36 +1696,13 @@ async function onMessage(msg) {
                     break;
                 case "!stitch":
                     {
-                        if (msg.attachments.first(2)[1]) {
-                            var id = uuidv4().replace(/-/g, "");
-                            var ext =
-                                "." +
-                                msg.attachments.first().url.split(".").pop();
-                            download(
-                                msg.attachments.first().url,
-                                "./images/cache/" + id + ext,
-                                () => {
-                                    var id1 = uuidv4().replace(/-/g, "");
-                                    var ext1 =
-                                        "." +
-                                        msg.attachments
-                                        .first()
-                                        .url.split(".")
-                                        .pop();
-                                    download(
-                                        msg.attachments.first(2)[1].url,
-                                        "./images/cache/" + id1 + ext1,
-                                        () => {
-                                            flapslib.videowrapper.stitch(
-                                                [id + ext, id1 + ext1],
-                                                msg,
-                                                client
-                                            );
-                                        }
-                                    );
-                                }
-                            );
-                        }
+                        getSources(msg, ["video", "video"])
+                        .then((ids) => {
+                            flapslib.videowrapper.stitch(ids, msg);
+                        })
+                        .catch((reason) => {
+                            sendWebhook("ffmpeg", reason, msg.channel);
+                        });
                     }
                     break;
                 case "!riggedcoinflip":
@@ -1781,81 +1758,18 @@ async function onMessage(msg) {
                     break;
                 case "!caption":
                     {
-                        if (!msg.attachments.first()) {
-                            if (!msg.reference) {
-                                flapslib.webhooks.sendWebhook(
-                                    "ffmpeg",
-                                    "i cant caption nothing you dummy",
-                                    false,
-                                    msg.channel, {},
-                                    msg
-                                );
-                            } else {
-                                msg.fetchReference().then((ref) => {
-                                    var url = "invalid";
-                                    if (!ref.attachments.first() &&
-                                        ref.content.startsWith("https://")
-                                    ) {
-                                        url = ref.content;
-                                    } else {
-                                        url = ref.attachments.first().url;
-                                    }
-                                    if (url == "invalid") return;
-                                    var ext = "." + url.split(".").pop();
-                                    if (ext != ".png" && ext != ".jpg")
-                                        flapslib.webhooks.sendWebhook(
-                                            "ffmpeg",
-                                            "got it bro. this might take a while tho",
-                                            false,
-                                            msg.channel, {},
-                                            msg
-                                        );
-                                    var id = flapslib.ai
-                                        .uuidv4()
-                                        .replace(/-/gi, "");
-                                    flapslib.download(
-                                        url,
-                                        "images/cache/" + id + ext,
-                                        () => {
-                                            console.log(id + ext);
-                                            flapslib.videowrapper.simpleMemeCaption(
-                                                id,
-                                                commandArgString,
-                                                ref,
-                                                client,
-                                                url
-                                            );
-                                        }
-                                    );
-                                });
-                            }
-                        } else {
-                            var ext =
-                                "." +
-                                msg.attachments.first().url.split(".").pop();
-                            if (ext != ".png" && ext != ".jpg")
-                                flapslib.webhooks.sendWebhook(
-                                    "ffmpeg",
-                                    "got it bro. this might take a while tho",
-                                    false,
-                                    msg.channel, {},
-                                    msg
-                                );
-                            var id = uuidv4().replace(/-/gi, "");
-                            flapslib.download(
-                                msg.attachments.first().url,
-                                "images/cache/" + id + ext,
-                                () => {
-                                    console.log(id + ext);
-                                    flapslib.videowrapper.simpleMemeCaption(
-                                        id,
-                                        commandArgString,
-                                        msg,
-                                        client
-                                    );
-                                }
+                        getSources(msg, ["video/image/gif"])
+                        .then((ids) => {
+                            flapslib.videowrapper.simpleMemeCaption(
+                                ids[0],
+                                commandArgString,
+                                msg,
+                                client
                             );
-                        }
+                        })
+                        .catch((reason) => {
+                            sendWebhook("ffmpeg", reason, msg.channel);
+                        });
                     }
                     break;
                 case "!caption2":
