@@ -38,6 +38,35 @@ async function ffmpeg(args) {
     });
 }
 
+var scalingTableHelpers = ["STR END XPS YPS WTH HGT"];
+
+function parseScalingTable(txt) {
+    var list = txt
+        .toString() // convert buffer to string
+        .split("\n") // remove newlines
+        .map((x) => x.trim().replace(/ +/g, " ")) // strip CR if windows, remove duplicate spaces
+        .filter((x) => !scalingTableHelpers.includes(x.toUpperCase())) // remove helper lines
+        .map((x) => x.split(" ").map((y) => parseInt(y))) // make array of numbers
+        .map((x) => ({
+            start: x[0],
+            end: x[1],
+            x: x[2],
+            y: x[3],
+            width: x[4],
+            height: x[5],
+        })); // make objects
+    console.log(list);
+    var filters = [];
+    list.forEach((dir, i) => {
+        filters.push(
+            `[0:v]scale=${dir.width}:${dir.height}[scalingtable_scaled_img_${i}]`
+        );
+        filters.push(`[0:v][1:v]overlay=${dir.x}:${dir.y}[st_${i}]`);
+    });
+    console.log(filter(filters));
+    return list;
+}
+
 async function addText(input, output, options) {
     return ffmpeg(
         `-y -i ${path.join(
@@ -427,4 +456,5 @@ module.exports = {
     caption2: caption2,
     reverse: reverse,
     theHorror: theHorror,
+    parseScalingTable: parseScalingTable,
 };
