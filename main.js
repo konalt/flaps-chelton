@@ -47,7 +47,6 @@ const {
     sendWebhookButton,
 } = require("./flapslib/webhooks");
 const { cahWhiteCard } = require("./flapslib/cardsagainsthumanity");
-const { loadImage } = require("canvas");
 const { Image } = require("canvas");
 const {
     laugh,
@@ -69,15 +68,15 @@ const {
 } = require("./flapslib/canvas");
 const { createCanvas } = require("canvas");
 const { Canvas } = require("canvas");
-const { AudioPlayerStatus } = require("@discordjs/voice");
 const { doTranslate, doTranslateSending } = require("./flapslib/translator");
 const { randomRedditImage } = require("./flapslib/fetchapis");
-const { OpenAIApi } = require("openai");
-const { Configuration } = require("openai");
 const { compress, armstrongify } = require("./flapslib/videowrapper");
 const { addMessage, addError } = require("./flapslib/analytics");
 const { downloadPromise } = require("./flapslib/index");
+const { tenorURLToGifURL } = require("./flapslib/util");
+const { MessageAttachment } = require("discord.js");
 const owoify = require("owoify-js").default;
+const sizeOf = require("buffer-image-size");
 var dream = WomboDreamApi.buildDefaultInstance();
 
 flapslib.webhooks.setClient(client);
@@ -503,7 +502,38 @@ function getSourcesWithAttachments(msg, types) {
             var atts = msg.attachments.first(types.length);
             var attTypes = getTypes(atts);
             if (!atts[0]) {
-                reject("No source found");
+                if (msg.content.startsWith("https://tenor.com/")) {
+                    if (typesMatch(["gif"], types)) {
+                        tenorURLToGifURL(msg.content).then((url) => {
+                            var id = uuidv4().replace(/-/gi, "");
+                            downloadPromise(
+                                url,
+                                "images/cache/" + id + ".gif"
+                            ).then(() => {
+                                var dimensions = sizeOf(
+                                    fs.readFileSync(
+                                        "images/cache/" + id + ".gif"
+                                    )
+                                );
+                                resolve([
+                                    [{
+                                            width: dimensions.width,
+                                            height: dimensions.height,
+                                        },
+                                        id + ".gif",
+                                    ],
+                                ]);
+                            });
+                        });
+                    } else {
+                        reject(
+                            "Type Error (Attempted Tenor):\n" +
+                            getTypeMessage(["gif"], types)
+                        );
+                    }
+                } else {
+                    reject("No source found");
+                }
             } else if (!typesMatch(attTypes, types)) {
                 reject("Type Error:\n" + getTypeMessage(attTypes, types));
             } else {
@@ -1832,6 +1862,7 @@ async function onMessage(msg) {
                     {
                         getSourcesWithAttachments(msg, ["video/image/gif"])
                         .then((list) => {
+                            console.log(list);
                             flapslib.videowrapper.caption2(
                                 list[0][1],
                                 commandArgString,
