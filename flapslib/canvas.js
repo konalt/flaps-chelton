@@ -8,6 +8,12 @@ const { createCanvas, Image } = require("canvas");
 const { loadImage } = require("canvas");
 const { uuidv4 } = require("./util");
 
+function n(type) {
+    return (
+        type + "_" + uuidv4().toUpperCase().replace(/-/gi, "").substring(0, 8)
+    );
+}
+
 var memeMaking = {
     getImageData: async function(n) {
         if (!this.imageExists(n)) {
@@ -199,7 +205,13 @@ function laugh(msg, client) {
                     ctx.strokeText(text[1], text2Pos[0], text2Pos[1]);
 
                     console.log("[laugh] sending canvas");
-                    sendCanvas(c, msg, client, "jamesphotoframe");
+                    sendCanvas(
+                        c,
+                        msg,
+                        client,
+                        "jamesphotoframe",
+                        "Canvas_Laugh"
+                    );
                 });
         });
     }
@@ -263,7 +275,7 @@ function homodog(msg, client) {
 
                 todo(ctx, text, w, h, h / 7, w / 2, h / 2);
 
-                sendCanvas(c, msg, client, "jamesphotoframe");
+                sendCanvas(c, msg, client, "jamesphotoframe", "Canvas_Homodog");
             });
     }
     if (msg.attachments.first()) {
@@ -303,7 +315,13 @@ function flip(msg, client) {
                             ctx.scale(-1, 1);
                             ctx.drawImage(photo, 0, 10, w, h);
 
-                            sendCanvas(c, msg, client, "jamesphotoframe");
+                            sendCanvas(
+                                c,
+                                msg,
+                                client,
+                                "jamesphotoframe",
+                                "Canvas_Flip"
+                            );
                         });
                 } else {
                     sendWebhook("jamesphotoframe", error, msg.channel);
@@ -429,7 +447,8 @@ function spotted(msg, client) {
                                             c,
                                             msg,
                                             client,
-                                            "jamesphotoframe"
+                                            "jamesphotoframe",
+                                            "Canvas_Spotted"
                                         );
                                     });
                             });
@@ -572,7 +591,13 @@ function unfunnyTest(msg, client) {
                                 5
                             );
 
-                            sendCanvas(c, msg, client, "jamesphotoframe");
+                            sendCanvas(
+                                c,
+                                msg,
+                                client,
+                                "jamesphotoframe",
+                                "Canvas_RemoveUnfunny"
+                            );
                         });
                 } else {
                     sendWebhook("jamesphotoframe", error, msg.channel);
@@ -631,7 +656,8 @@ function sb(msg, client) {
                                         c,
                                         msg,
                                         client,
-                                        "jamesphotoframe"
+                                        "jamesphotoframe",
+                                        "Canvas_Speechbubble"
                                     );
                                 });
                         });
@@ -690,7 +716,8 @@ function frame(msg, client) {
                                         c,
                                         msg,
                                         client,
-                                        "jamesphotoframe"
+                                        "jamesphotoframe",
+                                        "Canvas_Framephoto"
                                     );
                                 });
                         });
@@ -773,7 +800,13 @@ function frame2(msg, client) {
 
                     ctx.drawImage(img, fsize, fsize, w, h);
 
-                    sendCanvas(c, msg, client, "jamesphotoframe");
+                    sendCanvas(
+                        c,
+                        msg,
+                        client,
+                        "jamesphotoframe",
+                        "Canvas_Framephoto2"
+                    );
                 } else {
                     sendWebhook("jamesphotoframe", error, msg.channel);
                 }
@@ -838,7 +871,8 @@ function dalle2watermark(msg, client) {
                                         c,
                                         msg,
                                         client,
-                                        "jamesphotoframe"
+                                        "jamesphotoframe",
+                                        "Canvas_DALLE2_Watermark"
                                     );
                                 });
                         });
@@ -892,7 +926,8 @@ function animethink(msg, client) {
                                         c,
                                         msg,
                                         client,
-                                        "jamesphotoframe"
+                                        "jamesphotoframe",
+                                        "Canvas_Animethink"
                                     );
                                 });
                         });
@@ -946,7 +981,8 @@ function animethink2(msg, client) {
                                         c,
                                         msg,
                                         client,
-                                        "jamesphotoframe"
+                                        "jamesphotoframe",
+                                        "Canvas_AnimeThink2"
                                     );
                                 });
                         });
@@ -1075,8 +1111,8 @@ async function weezer(msg, client) {
     });
 }
 
-async function sendCanvas(c, msg, client, botname) {
-    var imgID2 = uuidv4() + ".png";
+async function sendCanvas(c, msg, client, botname, type) {
+    var imgID2 = n(type);
     var imageStream2 = Buffer.from(
         c.toDataURL("image/png").split(",")[1],
         "base64"
