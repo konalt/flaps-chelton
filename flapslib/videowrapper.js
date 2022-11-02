@@ -48,8 +48,14 @@ async function addText(name, text, msg) {
                 });
         });
 }
+
+function n(type) {
+    return (
+        type + "_" + uuidv4().toUpperCase().replace(/-/gi, "").substring(0, 8)
+    );
+}
 async function caption2(name, text, msg, att) {
-    var id = uuidv4().replace(/-/gi, "");
+    var id = n("Effect_Caption2");
     var ext = "." + name.split(".").pop();
     video
         .caption2("images/cache/" + name, "images/cache/" + id + ext, {
@@ -72,7 +78,7 @@ async function simpleMemeCaption(name, text, msg, client, url) {
     if (!text[1]) {
         text[1] = "";
     }
-    var id = uuidv4().replace(/-/gi, "");
+    var id = n("Effect_Caption");
     var ext = "." + url.split(".").pop();
     var subtitleFileData = `1
 00:00:00,000 --> 00:50:00,000
@@ -93,7 +99,7 @@ ${text[1]}`;
         });
 }
 async function squash(name, msg) {
-    var id = uuidv4().replace(/-/gi, "");
+    var id = n("Effect_Squash");
     var ext = "." + name.split(".").pop();
     video
         .squash("images/cache/" + name, "images/cache/" + id + ext)
@@ -102,7 +108,7 @@ async function squash(name, msg) {
         });
 }
 async function compress(name, msg) {
-    var id = uuidv4().replace(/-/gi, "");
+    var id = n("Effect_Compress");
     var ext = "." + name.split(".").pop();
     video
         .compress("images/cache/" + name, "images/cache/" + id + ext)
@@ -111,7 +117,7 @@ async function compress(name, msg) {
         });
 }
 async function theHorror(name, msg) {
-    var id = uuidv4().replace(/-/gi, "");
+    var id = n("Effect_TheHorror");
     video
         .theHorror("images/cache/" + name, "images/cache/" + id + ".mp4")
         .then(() => {
@@ -123,7 +129,7 @@ async function theHorror(name, msg) {
         });
 }
 async function reverse(name, msg) {
-    var id = uuidv4().replace(/-/gi, "");
+    var id = n("Effect_Reverse");
     var ext = "." + name.split(".").pop();
     video
         .reverse("images/cache/" + name, "images/cache/" + id + ext)
@@ -132,7 +138,7 @@ async function reverse(name, msg) {
         });
 }
 async function stretch(name, msg) {
-    var id = uuidv4().replace(/-/gi, "");
+    var id = n("Effect_Stretch");
     var ext = "." + name.split(".").pop();
     video
         .stretch("images/cache/" + name, "images/cache/" + id + ext)
@@ -141,7 +147,7 @@ async function stretch(name, msg) {
         });
 }
 async function trim(name, times, msg) {
-    var id = uuidv4().replace(/-/gi, "");
+    var id = n("Effect_Trim");
     var ext = "." + name.split(".").pop();
     video
         .trim("images/cache/" + name, "images/cache/" + id + ext, {
@@ -159,7 +165,7 @@ function setClient(c) {
     client = c;
 }
 async function videoGif(name, msg) {
-    var id = uuidv4().replace(/-/gi, "");
+    var id = n("Effect_VideoGif");
     video
         .videoGif("images/cache/" + name, "images/cache/" + id + ".gif")
         .then(() => {
@@ -171,7 +177,7 @@ async function videoGif(name, msg) {
         });
 }
 async function imageAudio(name, msg, exts, reverse) {
-    var id = uuidv4().replace(/-/gi, "");
+    var id = n("Effect_CImageAudio");
     video
         .imageAudio("images/cache/" + name, "images/cache/" + id, reverse, exts)
         .then(() => {
@@ -183,7 +189,7 @@ async function imageAudio(name, msg, exts, reverse) {
         });
 }
 async function gifAudio(name, msg, exts, reverse) {
-    var id = uuidv4().replace(/-/gi, "");
+    var id = n("Effect_CGifAudio");
     video
         .gifAudio("images/cache/" + name, "images/cache/" + id, reverse, exts)
         .then(() => {
@@ -195,7 +201,7 @@ async function gifAudio(name, msg, exts, reverse) {
         });
 }
 async function videoAudio(name, msg, exts, reverse) {
-    var id = uuidv4().replace(/-/gi, "");
+    var id = n("Effect_CVideoAudio");
     video
         .videoAudio("images/cache/" + name, "images/cache/" + id, reverse, exts)
         .then(async() => {
@@ -207,7 +213,7 @@ async function videoAudio(name, msg, exts, reverse) {
         });
 }
 async function armstrongify(name, msg, duration, client) {
-    var id = uuidv4().replace(/-/gi, "");
+    var id = n("Effect_Armstrong");
     var ext = name.endsWith(".mp4") ? ".mp4" : ".png";
     video
         .armstrongify("images/cache/" + name, "images/cache/" + id, {
@@ -223,7 +229,7 @@ async function armstrongify(name, msg, duration, client) {
         });
 }
 async function baitSwitch(name, msg, client, opt = {}) {
-    var id = uuidv4().replace(/-/gi, "");
+    var id = n("Effect_BaitSwitch");
     video
         .baitSwitch("images/cache/" + name, "images/cache/" + id, opt)
         .then(() => {
@@ -235,7 +241,7 @@ async function baitSwitch(name, msg, client, opt = {}) {
         });
 }
 async function stitch(names, msg) {
-    var id = uuidv4().replace(/-/gi, "");
+    var id = n("Effect_Stitch");
     video
         .stitch(
             ["images/cache/" + names[0], "images/cache/" + names[1]],
@@ -250,7 +256,7 @@ async function stitch(names, msg) {
         });
 }
 async function geq(name, msg) {
-    var id = uuidv4().replace(/-/gi, "");
+    var id = n("Effect_GEQ");
     var ext = ".mp4";
     if (msg.attachments.first()) {
         ext = "." + name.split(".").pop();
@@ -274,7 +280,7 @@ async function geq(name, msg) {
 }
 
 async function complexFFmpeg(name, msg) {
-    var id = uuidv4().replace(/-/gi, "");
+    var id = n("Effect_Complex");
     var ext = ".mp4";
     if (msg.attachments.first()) {
         ext = "." + name.split(".").pop();
@@ -304,7 +310,7 @@ async function complexFFmpeg(name, msg) {
 }
 
 async function mimeNod(bpm, msg) {
-    var id = uuidv4().replace(/-/gi, "");
+    var id = n("MimeNod");
     var ext = ".gif";
     video.mimeNod("images/cache/" + id + ext, bpm).then(async() => {
         sendWebhookFile("ffmpeg", "images/cache/" + id + ext, msg.channel);
