@@ -1473,14 +1473,13 @@ async function monsoonChatEvent(channel) {
 }
 
 async function gpt3complete(question, channel) {
-    monsoonPre = fs.readFileSync("./monsoon.txt");
     const response = await openai.createCompletion({
         model: model,
         prompt: question,
         temperature: 2,
         max_tokens: 100,
         top_p: 0.5,
-        frequency_penalty: 0,
+        frequency_penalty: 0.3,
         presence_penalty: 0,
     });
     sendWebhook(
