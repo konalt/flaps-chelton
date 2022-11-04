@@ -2,6 +2,7 @@ const cp = require("child_process");
 const fs = require("fs");
 const path = require("path");
 const { stdout } = require("process");
+const { Z_FIXED } = require("zlib");
 const { uuidv4 } = require("./ai");
 const { getTextWidth } = require("./canvas");
 
@@ -9,7 +10,7 @@ var ffmpegVerbose = false;
 
 var h264Preset = "ultrafast";
 
-async function ffmpeg(args, quiet = false) {
+async function ffmpeg(args, quiet = false, resolveStdout = false) {
     return new Promise((resolve, reject) => {
         var startTime = Date.now();
         if (!quiet) console.log("[ffmpeg] Starting FFMpeg instance");
@@ -24,9 +25,11 @@ async function ffmpeg(args, quiet = false) {
                 shell: true,
             }
         );
+        var b = "";
         if (!quiet) console.log("[ffmpeg] PID: %d", ffmpegInstance.pid);
         ffmpegInstance.stdout.on("data", (c) => {
             if (ffmpegVerbose && !quiet) stdout.write("[ffmpeg] " + c);
+            b += c;
         });
         ffmpegInstance.stderr.on("data", (c) => {
             if (!quiet) stdout.write("[ffmpeg] " + c);
@@ -36,7 +39,7 @@ async function ffmpeg(args, quiet = false) {
             if (code == 1 && !quiet) console.log("[ffmpeg] Failed!");
             if (!quiet)
                 console.log("[ffmpeg] Took %d ms", Date.now() - startTime);
-            resolve();
+            resolve(b);
         });
     });
 }
@@ -73,6 +76,7 @@ function parseScalingTable(
     input
 ) {
     return new Promise((resolve, reject) => {
+        var start = Date.now();
         var scale = 1;
         var ext = input.split(".").pop();
         var list = txt
@@ -92,36 +96,71 @@ function parseScalingTable(
         var promises = [];
         var cDir = list[0];
         var cDirInd = 0;
+        var lastIndGen = -1;
         console.log("Creating image sequence...");
         for (let frame_num = 0; frame_num < frame_count; frame_num++) {
             if (frame_num > cDir.end) {
                 cDir = list[cDirInd++];
             }
-            promises.push(
-                ffmpeg(
-                    `-i ${path.join(
-                        __dirname,
-                        "..",
-                        input
-                    )} -filter_complex "[0:v]scale=${cDir.width}:${
-                        cDir.height
-                    },pad=${v_width}:${v_height}:${cDir.x}:${
-                        cDir.y
-                    }[out]" -map "[out]" ${path.join(
-                        __dirname,
-                        "..",
-                        input +
-                            "." +
-                            frame_num.toString().padStart(3, "0") +
-                            "." +
-                            ext
-                    )}`,
-                    true
-                )
-            );
+            if (lastIndGen != cDirInd) {
+                promises.push(
+                    (() => {
+                        return new Promise((res, rej) => {
+                            ffmpeg(
+                                `-i ${path.join(
+                                    __dirname,
+                                    "..",
+                                    input
+                                )} -filter_complex "[0:v]scale=${cDir.width}:${
+                                    cDir.height
+                                },pad=${v_width}:${v_height}:${cDir.x}:${
+                                    cDir.y
+                                },setsar=1:1[out]" -map "[out]" ${path.join(
+                                    __dirname,
+                                    "..",
+                                    input +
+                                        "." +
+                                        frame_num.toString().padStart(3, "0") +
+                                        "." +
+                                        ext
+                                )}`,
+                                true
+                            ).then(() => {
+                                res();
+                            });
+                        });
+                    })()
+                );
+                lastIndGen = cDirInd;
+            }
         }
         Promise.all(promises).then(() => {
-            console.log("Created all images.");
+            console.log(
+                "Created all key images in " +
+                    (Date.now() - start) +
+                    "ms. Beginning copy process"
+            );
+            var curFile = path.join(
+                __dirname,
+                "..",
+                input + "." + "0".padStart(3, "0") + "." + ext
+            );
+            for (let frame_num = 0; frame_num < frame_count; frame_num++) {
+                var newFile = path.join(
+                    __dirname,
+                    "..",
+                    input +
+                        "." +
+                        frame_num.toString().padStart(3, "0") +
+                        "." +
+                        ext
+                );
+                if (!fs.existsSync(newFile)) {
+                    fs.copyFileSync(curFile, newFile);
+                } else {
+                    curFile = newFile;
+                }
+            }
             resolve();
         });
     });
@@ -308,23 +347,56 @@ function filter(arr) {
     return '"' + arr.join(";") + '"';
 }
 async function theHorror(input, output) {
-    return ffmpeg(
-        [
-            "-y",
-            `-i ${path.join(__dirname, "..", "images", "horror.mp4")}`,
-            `-i ${path.join(__dirname, "..", input)}`,
-            "-filter_complex",
-            filter([
-                "[0:v]scale=318:240,colorkey=0x00FF00:0.2:0.2[ckout]",
-                "[1:v]scale=318:240[sout]",
-                "[sout][ckout]overlay[out]",
-            ]),
-            '-map "[out]"',
-            '-map "0:a:0"',
-            "-preset " + h264Preset,
-            output,
-        ].join(" ")
-    );
+    return new Promise((resolve, reject) => {
+        getFrameCount(path.join(__dirname, "..", "images", "horror.mp4")).then(
+            (fc) => {
+                parseScalingTable(
+                    fs.readFileSync("./images/scalingtables/thehorror.stb"),
+                    "1:v",
+                    fc,
+                    318,
+                    240,
+                    input
+                ).then(() => {
+                    var fullFilter = [
+                        "[0:v]colorkey=0x00FF00:0.2:0.2[ckout2]",
+                        "[1:v][ckout2]overlay[oout]",
+                    ].join(";");
+                    fs.writeFileSync(
+                        path.join(__dirname, "..", input + ".script.txt"),
+                        fullFilter
+                    );
+                    ffmpeg(
+                        [
+                            "-y",
+                            `-i ${path.join(
+                                __dirname,
+                                "..",
+                                "images",
+                                "horror.mp4"
+                            )}`,
+                            `-framerate 30 -i ${path.join(
+                                __dirname,
+                                "..",
+                                input + ".%03d." + input.split(".").pop()
+                            )}`,
+                            "-filter_complex_script " +
+                                path.join(
+                                    __dirname,
+                                    "..",
+                                    input + ".script.txt"
+                                ),
+                            "-shortest",
+                            '-map "[oout]"',
+                            '-map "0:a:0"',
+                            "-preset " + h264Preset,
+                            output,
+                        ].join(" ")
+                    ).then(resolve);
+                });
+            }
+        );
+    });
 }
 async function getFrameCount(path) {
     return new Promise((res, rej) => {
