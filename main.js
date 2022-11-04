@@ -130,8 +130,8 @@ function attachRecorder(player, file, loop = false) {
                     "0",
                     "-i",
                     "./audio/" +
-                    file +
-                    (file.endsWith(".mp4") ? ".mp4" : ".mp3"),
+                        file +
+                        (file.endsWith(".mp4") ? ".mp4" : ".mp3"),
                     "-acodec",
                     "libopus",
                     "-f",
@@ -141,7 +141,8 @@ function attachRecorder(player, file, loop = false) {
                     "-ac",
                     "2",
                 ],
-            }), {
+            }),
+            {
                 inputType: StreamType.OggOpus,
             }
         )
@@ -159,10 +160,10 @@ function decodeEntities(encodedString) {
         gt: ">",
     };
     return encodedString
-        .replace(translate_re, function(match, entity) {
+        .replace(translate_re, function (match, entity) {
             return translate[entity];
         })
-        .replace(/&#(\d+);/gi, function(match, numStr) {
+        .replace(/&#(\d+);/gi, function (match, numStr) {
             var num = parseInt(numStr, 10);
             return String.fromCharCode(num);
         });
@@ -248,7 +249,7 @@ canvas.registerFont("futura.otf", { family: "Futura", weight: 400 });
 
 var errChannel;
 
-client.on("ready", async() => {
+client.on("ready", async () => {
     console.log(`[flaps] Started chelton`);
 
     const connections = await connectToChannel(
@@ -288,14 +289,16 @@ client.on("ready", async() => {
         var type = data.split(" ")[0].toUpperCase();
         var name = data.split(" ").slice(1).join(" ");
         client.user.setPresence({
-            activities: [{
-                name: name,
-                type: type,
-                url: "https://konalt.us.to",
-                timestamps: {
-                    start: Date.now(),
+            activities: [
+                {
+                    name: name,
+                    type: type,
+                    url: "https://konalt.us.to",
+                    timestamps: {
+                        start: Date.now(),
+                    },
                 },
-            }, ],
+            ],
             afk: false,
             status: "online",
         });
@@ -309,7 +312,8 @@ var commands = {
     "!restart": "shoots flaps in the back of the head",
     "!eval": "runs javascripe",
     "!audio": "plays audio in your server vc",
-    "!watchparty": "starts a watch party so you can watch youtube with frends!!!1",
+    "!watchparty":
+        "starts a watch party so you can watch youtube with frends!!!1",
     "!wpadd": "adds a video to the watch party queue",
     "!status": "changes flap statussy",
     "!yturl": "plays youtube video in voice chat",
@@ -325,15 +329,19 @@ var commands = {
     "!<:owl:964880176355897374>": "<:owl:964880176355897374>",
     "!3dtext": "generates some 3d text. you can add an image.",
     "!framephoto": "frames a photo.",
-    "!speechbubble": "adds a speech bubble to an image. do !speechbubbleflip to flip it.",
+    "!speechbubble":
+        "adds a speech bubble to an image. do !speechbubbleflip to flip it.",
     "!flip": "flips ~~chilton~~ an image horizontally",
-    "!laugh": "captions an image. do !laugh attachment for an attachment. a list is in flaps/images/sizes.txt",
+    "!laugh":
+        "captions an image. do !laugh attachment for an attachment. a list is in flaps/images/sizes.txt",
     "!person": "uses world class techmonoligies to generate a face.",
     "!complete": "uses world class techmonamologies to autocomplete some text.",
     "!basedmeter": "based meter",
-    "!degeneracy": "gets a random post from either /b/, /r9k/, /s4s/ or /vip/. nsfw very possible.",
+    "!degeneracy":
+        "gets a random post from either /b/, /r9k/, /s4s/ or /vip/. nsfw very possible.",
     "!flapslength": "size matters",
-    "!petit": "gets a random youtube video with no views from petittube.com. its not a porn site, jack.",
+    "!petit":
+        "gets a random youtube video with no views from petittube.com. its not a porn site, jack.",
     "!<:armstrong:962346935795208217>": "does nothing",
     "!help": "shows this",
     "!balkancuisine": "sends an image of balkan cuisine",
@@ -341,13 +349,20 @@ var commands = {
 };
 
 var descriptions = {
-    "489894082500493349": "a cold blooded killer, ready to strike whenever newports are on the line\nhttps://media.discordapp.net/attachments/910525327585992737/980522490856095825/4.PNG",
-    "445968175381610496": 'the creator of "Flaps Chelton", which is a discord bot designed to facilitate illegal activity.\nhttps://media.discordapp.net/attachments/910525327585992737/980524110952157254/unknown.png',
-    "794301103721414676": "SCP-1222 - Description: horny little runcling. really loves <:nice:979045005345849375>\nhttps://media.discordapp.net/attachments/910525327585992737/980522446572650617/unknown.png",
-    "976471678429311086": "'yeah i still would tho' 'agreed'\nhttps://media.discordapp.net/attachments/910525327585992737/980522944201629736/unknown.png",
-    "775778497707769927": "el polozhenie\nhttps://media.discordapp.net/attachments/910525327585992737/980523248120889344/unknown.png",
-    "741701565907206267": "Loves to make [[DEALS]]\nhttps://media.discordapp.net/attachments/910525327585992737/980524568416493668/unknown.png",
-    "547476998071517195": "we couldnt find a photo for this guy. we went to mcdonalds instead\nhttps://media.discordapp.net/attachments/910525327585992737/980523453042028574/mcdondil.PNG",
+    "489894082500493349":
+        "a cold blooded killer, ready to strike whenever newports are on the line\nhttps://media.discordapp.net/attachments/910525327585992737/980522490856095825/4.PNG",
+    "445968175381610496":
+        'the creator of "Flaps Chelton", which is a discord bot designed to facilitate illegal activity.\nhttps://media.discordapp.net/attachments/910525327585992737/980524110952157254/unknown.png',
+    "794301103721414676":
+        "SCP-1222 - Description: horny little runcling. really loves <:nice:979045005345849375>\nhttps://media.discordapp.net/attachments/910525327585992737/980522446572650617/unknown.png",
+    "976471678429311086":
+        "'yeah i still would tho' 'agreed'\nhttps://media.discordapp.net/attachments/910525327585992737/980522944201629736/unknown.png",
+    "775778497707769927":
+        "el polozhenie\nhttps://media.discordapp.net/attachments/910525327585992737/980523248120889344/unknown.png",
+    "741701565907206267":
+        "Loves to make [[DEALS]]\nhttps://media.discordapp.net/attachments/910525327585992737/980524568416493668/unknown.png",
+    "547476998071517195":
+        "we couldnt find a photo for this guy. we went to mcdonalds instead\nhttps://media.discordapp.net/attachments/910525327585992737/980523453042028574/mcdondil.PNG",
 };
 
 var used = [];
@@ -363,39 +378,47 @@ async function scalFunnyVideo(msg) {
         sendWebhookButton(
             "scal",
             "mm.. too big. its " +
-            Math.round(filesize) +
-            " inche-- i mean megabytes. megabytes.", [{
-                type: 1,
-                label: "get another",
-                id: "scal_video_tryagain",
-                cb: (i) => {
-                    scalFunnyVideo(i.message);
+                Math.round(filesize) +
+                " inche-- i mean megabytes. megabytes.",
+            [
+                {
+                    type: 1,
+                    label: "get another",
+                    id: "scal_video_tryagain",
+                    cb: (i) => {
+                        scalFunnyVideo(i.message);
+                    },
+                    disableAfter: true,
                 },
-                disableAfter: true,
-            }, ],
+            ],
             msg.channel
         );
     } else {
         var message = await client.channels.cache
             .get("956316856422137856")
             .send({
-                files: [{
-                    attachment: "E:/MBG/the Videos/" + chosenFile,
-                }, ],
+                files: [
+                    {
+                        attachment: "E:/MBG/the Videos/" + chosenFile,
+                    },
+                ],
             });
 
         sendWebhookButton(
             "scal",
-            message.attachments.first().url, [{
-                type: 2,
-                style: 1,
-                label: "get another",
-                id: "scal_video_tryagain",
-                cb: (i) => {
-                    scalFunnyVideo(i.message);
+            message.attachments.first().url,
+            [
+                {
+                    type: 2,
+                    style: 1,
+                    label: "get another",
+                    id: "scal_video_tryagain",
+                    cb: (i) => {
+                        scalFunnyVideo(i.message);
+                    },
+                    disableAfter: true,
                 },
-                disableAfter: true,
-            }, ],
+            ],
             msg.channel
         );
     }
@@ -481,8 +504,9 @@ function getTypeMessage(inTypes, reqTypes) {
             "SUPPLIED".padEnd(maxWidthIn),
             "STATUS",
         ]
-        .join(" | ")
-        .trim(), ["-".repeat(maxWidthIn + maxWidthReq + 3 + 3 + 6)],
+            .join(" | ")
+            .trim(),
+        ["-".repeat(maxWidthIn + maxWidthReq + 3 + 3 + 6)],
     ];
 
     reqTypes.forEach((reqType, i) => {
@@ -516,7 +540,8 @@ function getSourcesWithAttachments(msg, types) {
                                     )
                                 );
                                 resolve([
-                                    [{
+                                    [
+                                        {
                                             width: dimensions.width,
                                             height: dimensions.height,
                                         },
@@ -528,7 +553,7 @@ function getSourcesWithAttachments(msg, types) {
                     } else {
                         reject(
                             "Type Error (Attempted Tenor):\n" +
-                            getTypeMessage(["gif"], types)
+                                getTypeMessage(["gif"], types)
                         );
                     }
                 } else {
@@ -694,7 +719,7 @@ async function onMessage(msg) {
                 sendWebhook(
                     "flaps",
                     stickyBot +
-                    " is now your sticky. use !..unsticky to go back to normal",
+                        " is now your sticky. use !..unsticky to go back to normal",
                     false,
                     msg.channel
                 );
@@ -739,7 +764,7 @@ async function onMessage(msg) {
                                                 user,
                                                 content.substring(
                                                     content.split(" ")[0]
-                                                    .length + 1
+                                                        .length + 1
                                                 ),
                                                 false,
                                                 msg.channel
@@ -756,7 +781,7 @@ async function onMessage(msg) {
                 var user = Object.keys(flapslib.webhooks.users)[
                     Math.floor(
                         Math.random() *
-                        Object.keys(flapslib.webhooks.users).length
+                            Object.keys(flapslib.webhooks.users).length
                     )
                 ];
                 flapslib.webhooks
@@ -787,14 +812,16 @@ async function onMessage(msg) {
             } else if (commandArgs[0].substring(1) == "custom") {
                 console.log(
                     msg.content.includes("--u") &&
-                    msg.content.includes("--c") &&
-                    msg.content.includes("--a")
+                        msg.content.includes("--c") &&
+                        msg.content.includes("--a")
                 );
-                if (!(
+                if (
+                    !(
                         msg.content.includes("--u") &&
                         msg.content.includes("--c") &&
                         msg.content.includes("--a")
-                    )) {
+                    )
+                ) {
                     flapslib.webhooks.sendWebhook(
                         "flaps",
                         "custom must have --u, --c and --a",
@@ -808,21 +835,22 @@ async function onMessage(msg) {
                         "custom",
                         content.substring(content.split(" ")[0].length + 1),
                         false,
-                        msg.channel, {
+                        msg.channel,
+                        {
                             content: content
                                 .split(" ")
                                 .slice(
                                     content.split(" ").indexOf("--c") + 1,
-                                    (function() {
+                                    (function () {
                                         var r = 0;
                                         content
                                             .split(" ")
                                             .forEach((el, index) => {
                                                 if (
                                                     index >
-                                                    content
-                                                    .split(" ")
-                                                    .indexOf("--c") &&
+                                                        content
+                                                            .split(" ")
+                                                            .indexOf("--c") &&
                                                     el.startsWith("--")
                                                 ) {
                                                     r = index - 2;
@@ -839,16 +867,16 @@ async function onMessage(msg) {
                                 .split(" ")
                                 .slice(
                                     content.split(" ").indexOf("--a") + 1,
-                                    (function() {
+                                    (function () {
                                         var r = 0;
                                         content
                                             .split(" ")
                                             .forEach((el, index) => {
                                                 if (
                                                     index >
-                                                    content
-                                                    .split(" ")
-                                                    .indexOf("--a") &&
+                                                        content
+                                                            .split(" ")
+                                                            .indexOf("--a") &&
                                                     el.startsWith("--")
                                                 ) {
                                                     r = index;
@@ -865,16 +893,16 @@ async function onMessage(msg) {
                                 .split(" ")
                                 .slice(
                                     content.split(" ").indexOf("--u") + 1,
-                                    (function() {
+                                    (function () {
                                         var r = 0;
                                         content
                                             .split(" ")
                                             .forEach((el, index) => {
                                                 if (
                                                     index >
-                                                    content
-                                                    .split(" ")
-                                                    .indexOf("--u") &&
+                                                        content
+                                                            .split(" ")
+                                                            .indexOf("--u") &&
                                                     el.startsWith("--")
                                                 ) {
                                                     r = index;
@@ -894,9 +922,11 @@ async function onMessage(msg) {
                 msg.delete();
                 return;
             }
-            if (!Object.keys(flapslib.webhooks.users).includes(
+            if (
+                !Object.keys(flapslib.webhooks.users).includes(
                     commandArgs[0].substring(1)
-                ))
+                )
+            )
                 return;
             flapslib.webhooks
                 .sendWebhook(
@@ -910,74 +940,66 @@ async function onMessage(msg) {
                 });
         } else {
             switch (command) {
-                case "!insanity":
-                    {
-                        setSanity(parseFloat(commandArgs[1]));
-                        sendWebhook(
-                            "monsoon",
-                            "yep donezo fonezo",
-                            false,
-                            msg.channel
-                        );
-                        break;
-                    }
+                case "!insanity": {
+                    setSanity(parseFloat(commandArgs[1]));
+                    sendWebhook(
+                        "monsoon",
+                        "yep donezo fonezo",
+                        false,
+                        msg.channel
+                    );
+                    break;
+                }
                 case "!dalle2watermark":
                     dalle2watermark(msg, client);
                     break;
-                case "!react":
-                    {
-                        if (!msg.reference) {
-                            sendWebhook(
-                                "flaps",
-                                `reply to a message bub`,
-                                false,
-                                msg.channel
-                            );
-                        } else {
-                            msg.fetchReference().then((m) => {
-                                m.react(commandArgs[1]);
-                            });
-                        }
-                        break;
-                    }
-                case "!badhaircut":
-                    {
-                        randomRedditImage("justfuckmyshitup", "haircut", msg);
-                        break;
-                    }
-                case "!whereisthenearestelephant":
-                    {
+                case "!react": {
+                    if (!msg.reference) {
                         sendWebhook(
                             "flaps",
-                            "https://media.discordapp.net/attachments/838732607344214019/1035853597293948999/unknown.png",
+                            `reply to a message bub`,
+                            false,
                             msg.channel
                         );
-                        break;
+                    } else {
+                        msg.fetchReference().then((m) => {
+                            m.react(commandArgs[1]);
+                        });
                     }
-                case "!walmart":
-                    {
-                        randomRedditImage("peopleofwalmart", "walmart", msg);
-                        break;
-                    }
-                case "!unfunny":
-                    {
-                        unfunnyTest(msg, client);
-                        break;
-                    }
-                case "!meal":
-                    {
-                        randomRedditImage(
-                            ["StupidFood", "ShittyFoodPorn"][
-                                Math.floor(Math.random() * 2)
-                            ],
-                            "lamazzu",
-                            msg
-                        );
-                        break;
-                    }
-                case "!restart":
-                    {
-                        flapslib.webhooks
+                    break;
+                }
+                case "!badhaircut": {
+                    randomRedditImage("justfuckmyshitup", "haircut", msg);
+                    break;
+                }
+                case "!whereisthenearestelephant": {
+                    sendWebhook(
+                        "flaps",
+                        "https://media.discordapp.net/attachments/838732607344214019/1035853597293948999/unknown.png",
+                        msg.channel
+                    );
+                    break;
+                }
+                case "!walmart": {
+                    randomRedditImage("peopleofwalmart", "walmart", msg);
+                    break;
+                }
+                case "!unfunny": {
+                    unfunnyTest(msg, client);
+                    break;
+                }
+                case "!meal": {
+                    randomRedditImage(
+                        ["StupidFood", "ShittyFoodPorn"][
+                            Math.floor(Math.random() * 2)
+                        ],
+                        "lamazzu",
+                        msg
+                    );
+                    break;
+                }
+                case "!restart": {
+                    flapslib.webhooks
                         .sendWebhook(
                             "flaps",
                             "goodbye cruel world <a:woeisgone:797896105488678922>",
@@ -987,8 +1009,8 @@ async function onMessage(msg) {
                         .then(() => {
                             process.exit(0);
                         });
-                        break;
-                    }
+                    break;
+                }
                 case "!eval":
                     {
                         if (msg.author.id != "445968175381610496") {
@@ -1006,7 +1028,7 @@ async function onMessage(msg) {
                                 flapslib.webhooks.sendWebhook(
                                     "flapserrors",
                                     "fuck you. eval didnt work.\n" +
-                                    e.toString(),
+                                        e.toString(),
                                     msg.channel
                                 );
                             }
@@ -1029,8 +1051,8 @@ async function onMessage(msg) {
                             flapslib.webhooks.sendWebhook(
                                 "flaps",
                                 "that audio not real <a:woeisgone:959946980954636399>\naudios are:\n```ansi\n" +
-                                validAudio.join("\n") +
-                                "```",
+                                    validAudio.join("\n") +
+                                    "```",
                                 true,
                                 msg.channel
                             );
@@ -1094,17 +1116,17 @@ async function onMessage(msg) {
                         fetch(
                             "https://konalt.us.to:4930/pause/" + commandArgs[1]
                         )
-                        .then((r) => r.json())
-                        .then((response) => {
-                            sendWebhook(
-                                "flaps",
-                                response.wp.paused ?
-                                "paused da wath pary" :
-                                "unpaused tha wathc parcht",
-                                true,
-                                msg.channel
-                            );
-                        });
+                            .then((r) => r.json())
+                            .then((response) => {
+                                sendWebhook(
+                                    "flaps",
+                                    response.wp.paused
+                                        ? "paused da wath pary"
+                                        : "unpaused tha wathc parcht",
+                                    true,
+                                    msg.channel
+                                );
+                            });
                     }
                     break;
                 case "!status":
@@ -1125,27 +1147,29 @@ async function onMessage(msg) {
                             commandArgs[2] == "to"
                         )
                             activityName = activityName
-                            .split(" ")
-                            .slice(1)
-                            .join(" ");
+                                .split(" ")
+                                .slice(1)
+                                .join(" ");
                         if (types.includes(commandArgs[1].toUpperCase())) {
                             client.user.setPresence({
-                                activities: [{
-                                    name: activityName,
-                                    type: commandArgs[1].toUpperCase(),
-                                    url: "https://konalt.us.to",
-                                    timestamps: {
-                                        start: Date.now(),
+                                activities: [
+                                    {
+                                        name: activityName,
+                                        type: commandArgs[1].toUpperCase(),
+                                        url: "https://konalt.us.to",
+                                        timestamps: {
+                                            start: Date.now(),
+                                        },
                                     },
-                                }, ],
+                                ],
                                 afk: false,
                                 status: "online",
                             });
                             fs.writeFileSync(
                                 "./saved_status.txt",
                                 commandArgs[1].toUpperCase() +
-                                " " +
-                                msg.content.split(" ").slice(2).join(" ")
+                                    " " +
+                                    msg.content.split(" ").slice(2).join(" ")
                             );
                             flapslib.webhooks.sendWebhook(
                                 "flaps",
@@ -1157,8 +1181,8 @@ async function onMessage(msg) {
                             flapslib.webhooks.sendWebhook(
                                 "flaps",
                                 "first argument must be one of these:\n```\n" +
-                                types.join("\n") +
-                                "\n```",
+                                    types.join("\n") +
+                                    "\n```",
                                 false,
                                 msg.channel
                             );
@@ -1184,45 +1208,45 @@ async function onMessage(msg) {
                 case "!fornitesex":
                     {
                         fetch("https://www.reddit.com/r/fornitesex/about.json")
-                        .then((r) => {
-                            return r.json();
-                        })
-                        .then((r) => {
-                            sendWebhook(
-                                "flaps",
-                                `r/fornitesex has ${r.data.subscribers} members! wowie!!`,
-                                false,
-                                msg.channel
-                            );
-                        });
+                            .then((r) => {
+                                return r.json();
+                            })
+                            .then((r) => {
+                                sendWebhook(
+                                    "flaps",
+                                    `r/fornitesex has ${r.data.subscribers} members! wowie!!`,
+                                    false,
+                                    msg.channel
+                                );
+                            });
                     }
                     break;
                 case "!randompost":
                     {
                         fetch(
                             "https://www.reddit.com/" +
-                            commandArgs[1] +
-                            "/.json"
+                                commandArgs[1] +
+                                "/.json"
                         )
-                        .then((r) => {
-                            return r.json();
-                        })
-                        .then((r) => {
-                            var child =
-                                r.data.children[
-                                    Math.floor(
-                                        Math.random() *
-                                        r.data.children.length
-                                    )
-                                ];
-                            sendWebhook(
-                                "flaps",
-                                `https://www.reddit.com` +
-                                child.data.permalink,
-                                false,
-                                msg.channel
-                            );
-                        });
+                            .then((r) => {
+                                return r.json();
+                            })
+                            .then((r) => {
+                                var child =
+                                    r.data.children[
+                                        Math.floor(
+                                            Math.random() *
+                                                r.data.children.length
+                                        )
+                                    ];
+                                sendWebhook(
+                                    "flaps",
+                                    `https://www.reddit.com` +
+                                        child.data.permalink,
+                                    false,
+                                    msg.channel
+                                );
+                            });
                     }
                     break;
                 case "!armstrong":
@@ -1251,7 +1275,8 @@ async function onMessage(msg) {
                         }
                         fetch(
                             "https://rule34.xxx/public/autocomplete.php?q=" +
-                            x.replace(/'/g, "&#039;"), {
+                                x.replace(/'/g, "&#039;"),
+                            {
                                 credentials: "omit",
                                 headers: {
                                     "User-Agent": "FlapsChelton",
@@ -1266,67 +1291,67 @@ async function onMessage(msg) {
                                 mode: "cors",
                             }
                         )
-                        .then((r) => {
-                            return r.json();
-                        })
-                        .then((r) => {
-                            var y = "";
-                            if (!r[0]) {
-                                sendWebhook(
-                                    "runcling",
-                                    "holy fuck. you searched for something that even the horniest corner of the internet could not draw. good job dude.",
-                                    false,
-                                    msg.channel
-                                );
-                            } else {
-                                r = r.filter((z) =>
-                                    z.label
-                                    .replace(/&#039;/g, "'")
-                                    .startsWith(x)
-                                );
+                            .then((r) => {
+                                return r.json();
+                            })
+                            .then((r) => {
+                                var y = "";
                                 if (!r[0]) {
-                                    return sendWebhook(
+                                    sendWebhook(
                                         "runcling",
                                         "holy fuck. you searched for something that even the horniest corner of the internet could not draw. good job dude.",
                                         false,
                                         msg.channel
                                     );
-                                }
-                                var data = {};
-                                r.forEach((z) => {
-                                    data[z.value] = parseInt(
-                                        z.label.substring(
-                                            z.value.length + 2,
-                                            z.label.length - 1
-                                        )
-                                    );
-                                });
-                                console.log(data);
-                                y = r
-                                    .map((z) => {
-                                        return (
-                                            "**" +
-                                            x +
-                                            "**" +
-                                            z.label
+                                } else {
+                                    r = r.filter((z) =>
+                                        z.label
                                             .replace(/&#039;/g, "'")
-                                            .substring(x.length)
-                                            .replace(/_/g, "\\_") +
-                                            " " +
-                                            getComparisonEmoji(
-                                                data[z.value],
-                                                getStoredFunnyNumber(
-                                                    z.value
-                                                )
+                                            .startsWith(x)
+                                    );
+                                    if (!r[0]) {
+                                        return sendWebhook(
+                                            "runcling",
+                                            "holy fuck. you searched for something that even the horniest corner of the internet could not draw. good job dude.",
+                                            false,
+                                            msg.channel
+                                        );
+                                    }
+                                    var data = {};
+                                    r.forEach((z) => {
+                                        data[z.value] = parseInt(
+                                            z.label.substring(
+                                                z.value.length + 2,
+                                                z.label.length - 1
                                             )
                                         );
-                                    })
-                                    .join("\n");
-                                storeFunnyNumberData(data);
-                            }
+                                    });
+                                    console.log(data);
+                                    y = r
+                                        .map((z) => {
+                                            return (
+                                                "**" +
+                                                x +
+                                                "**" +
+                                                z.label
+                                                    .replace(/&#039;/g, "'")
+                                                    .substring(x.length)
+                                                    .replace(/_/g, "\\_") +
+                                                " " +
+                                                getComparisonEmoji(
+                                                    data[z.value],
+                                                    getStoredFunnyNumber(
+                                                        z.value
+                                                    )
+                                                )
+                                            );
+                                        })
+                                        .join("\n");
+                                    storeFunnyNumberData(data);
+                                }
 
-                            sendWebhook("runcling", y, msg.channel);
-                        });
+                                sendWebhook("runcling", y, msg.channel);
+                            });
                     }
                     break;
                 case "!funnynumbers":
@@ -1344,22 +1369,23 @@ async function onMessage(msg) {
                         chars.forEach((element) => {
                             var x = element.split(" ").join("_");
                             fetch(
-                                    "https://rule34.xxx/public/autocomplete.php?q=" +
-                                    x, {
-                                        credentials: "omit",
-                                        headers: {
-                                            "User-Agent": "FlapsChelton",
-                                            Accept: "*/*",
-                                            "Accept-Language": "en-US,en;q=0.5",
-                                            "Sec-Fetch-Dest": "empty",
-                                            "Sec-Fetch-Mode": "cors",
-                                            "Sec-Fetch-Site": "same-origin",
-                                        },
-                                        referrer: "https://rule34.xxx/",
-                                        method: "GET",
-                                        mode: "cors",
-                                    }
-                                )
+                                "https://rule34.xxx/public/autocomplete.php?q=" +
+                                    x,
+                                {
+                                    credentials: "omit",
+                                    headers: {
+                                        "User-Agent": "FlapsChelton",
+                                        Accept: "*/*",
+                                        "Accept-Language": "en-US,en;q=0.5",
+                                        "Sec-Fetch-Dest": "empty",
+                                        "Sec-Fetch-Mode": "cors",
+                                        "Sec-Fetch-Site": "same-origin",
+                                    },
+                                    referrer: "https://rule34.xxx/",
+                                    method: "GET",
+                                    mode: "cors",
+                                }
+                            )
                                 .then((r) => r.text())
                                 .then((r) => {
                                     return new Promise((res, rej) => {
@@ -1384,9 +1410,11 @@ async function onMessage(msg) {
                                     }
                                     var done = true;
                                     chars.forEach((element2) => {
-                                        if (!out.includes(
+                                        if (
+                                            !out.includes(
                                                 element2.replace(/_/g, "\\_")
-                                            )) {
+                                            )
+                                        ) {
                                             done = false;
                                         }
                                     });
@@ -1416,7 +1444,7 @@ async function onMessage(msg) {
                             return sendWebhook(
                                 "flaps",
                                 Math.floor(newTime / 1000 / 60 / 60) +
-                                " hours left.",
+                                    " hours left.",
                                 false,
                                 msg.channel
                             );
@@ -1477,144 +1505,145 @@ async function onMessage(msg) {
                         );
                     }
                     break;
-                case "!combine":
-                    {
-                        var atts = msg.attachments.first(2);
-                        var images = ["png", "jpg", "webp", "jpeg"];
-                        var videos = ["mp4", "mkv"];
-                        var audios = ["mp3", "webm"];
-                        if (atts[1]) {
-                            var exts = [
-                                atts[0].url
-                                .split(".")[
+                case "!combine": {
+                    var atts = msg.attachments.first(2);
+                    var images = ["png", "jpg", "webp", "jpeg"];
+                    var videos = ["mp4", "mkv"];
+                    var audios = ["mp3", "webm"];
+                    if (atts[1]) {
+                        var exts = [
+                            atts[0].url
+                                .split(".")
+                                [
                                     atts[0].url.split(".").length - 1
                                 ].toLowerCase(),
-                                atts[1].url
-                                .split(".")[
+                            atts[1].url
+                                .split(".")
+                                [
                                     atts[1].url.split(".").length - 1
                                 ].toLowerCase(),
-                            ];
-                            var id = uuidv4().replace(/-/g, "");
-                            download(
-                                atts[0].url,
-                                "./images/cache/" + id + "-0." + exts[0],
-                                () => {
-                                    download(
-                                        atts[1].url,
-                                        "./images/cache/" + id + "-1." + exts[1],
-                                        () => {
-                                            var mode = ["unknown", "unknown"];
-                                            if (images.includes(exts[0])) {
-                                                mode[0] = "image";
-                                            } else if (videos.includes(exts[0])) {
-                                                mode[0] = "video";
-                                            } else if (audios.includes(exts[0])) {
-                                                mode[0] = "audio";
-                                            }
-                                            if (images.includes(exts[1])) {
-                                                mode[1] = "image";
-                                            } else if (videos.includes(exts[1])) {
-                                                mode[1] = "video";
-                                            } else if (audios.includes(exts[1])) {
-                                                mode[1] = "audio";
-                                            }
+                        ];
+                        var id = uuidv4().replace(/-/g, "");
+                        download(
+                            atts[0].url,
+                            "./images/cache/" + id + "-0." + exts[0],
+                            () => {
+                                download(
+                                    atts[1].url,
+                                    "./images/cache/" + id + "-1." + exts[1],
+                                    () => {
+                                        var mode = ["unknown", "unknown"];
+                                        if (images.includes(exts[0])) {
+                                            mode[0] = "image";
+                                        } else if (videos.includes(exts[0])) {
+                                            mode[0] = "video";
+                                        } else if (audios.includes(exts[0])) {
+                                            mode[0] = "audio";
+                                        }
+                                        if (images.includes(exts[1])) {
+                                            mode[1] = "image";
+                                        } else if (videos.includes(exts[1])) {
+                                            mode[1] = "video";
+                                        } else if (audios.includes(exts[1])) {
+                                            mode[1] = "audio";
+                                        }
 
-                                            switch (mode[0]) {
-                                                case "image":
-                                                    switch (mode[1]) {
-                                                        case "image":
-                                                            // Stitch images together.
-                                                            break;
-                                                        case "video":
-                                                            flapslib.videowrapper.imageAudio(
-                                                                id,
-                                                                msg,
-                                                                exts,
-                                                                false
-                                                            );
-                                                            break;
-                                                        case "audio":
-                                                            flapslib.videowrapper.imageAudio(
-                                                                id,
-                                                                msg,
-                                                                exts,
-                                                                false
-                                                            );
-                                                            break;
-                                                    }
-                                                    break;
-                                                case "video":
-                                                    switch (mode[1]) {
-                                                        case "image":
-                                                            flapslib.videowrapper.imageAudio(
-                                                                id,
-                                                                msg,
-                                                                exts,
-                                                                true
-                                                            );
-                                                            break;
-                                                        case "video":
-                                                            flapslib.videowrapper.stitch(
-                                                                [
-                                                                    id +
+                                        switch (mode[0]) {
+                                            case "image":
+                                                switch (mode[1]) {
+                                                    case "image":
+                                                        // Stitch images together.
+                                                        break;
+                                                    case "video":
+                                                        flapslib.videowrapper.imageAudio(
+                                                            id,
+                                                            msg,
+                                                            exts,
+                                                            false
+                                                        );
+                                                        break;
+                                                    case "audio":
+                                                        flapslib.videowrapper.imageAudio(
+                                                            id,
+                                                            msg,
+                                                            exts,
+                                                            false
+                                                        );
+                                                        break;
+                                                }
+                                                break;
+                                            case "video":
+                                                switch (mode[1]) {
+                                                    case "image":
+                                                        flapslib.videowrapper.imageAudio(
+                                                            id,
+                                                            msg,
+                                                            exts,
+                                                            true
+                                                        );
+                                                        break;
+                                                    case "video":
+                                                        flapslib.videowrapper.stitch(
+                                                            [
+                                                                id +
                                                                     "-0." +
                                                                     exts[0],
-                                                                    id +
+                                                                id +
                                                                     "-1." +
                                                                     exts[1],
-                                                                ],
-                                                                msg,
-                                                                exts,
-                                                                false
-                                                            );
-                                                            break;
-                                                        case "audio":
-                                                            flapslib.videowrapper.videoAudio(
-                                                                id,
-                                                                msg,
-                                                                exts,
-                                                                false
-                                                            );
-                                                            break;
-                                                    }
-                                                    break;
-                                                case "audio":
-                                                    switch (mode[1]) {
-                                                        case "image":
-                                                            flapslib.videowrapper.imageAudio(
-                                                                id,
-                                                                msg,
-                                                                exts,
-                                                                true
-                                                            );
-                                                            break;
-                                                        case "video":
-                                                            flapslib.videowrapper.videoAudio(
-                                                                id,
-                                                                msg,
-                                                                exts,
-                                                                true
-                                                            );
-                                                            break;
-                                                        case "audio":
-                                                            // Stitch audio together.
-                                                            break;
-                                                    }
-                                                    break;
-                                            }
+                                                            ],
+                                                            msg,
+                                                            exts,
+                                                            false
+                                                        );
+                                                        break;
+                                                    case "audio":
+                                                        flapslib.videowrapper.videoAudio(
+                                                            id,
+                                                            msg,
+                                                            exts,
+                                                            false
+                                                        );
+                                                        break;
+                                                }
+                                                break;
+                                            case "audio":
+                                                switch (mode[1]) {
+                                                    case "image":
+                                                        flapslib.videowrapper.imageAudio(
+                                                            id,
+                                                            msg,
+                                                            exts,
+                                                            true
+                                                        );
+                                                        break;
+                                                    case "video":
+                                                        flapslib.videowrapper.videoAudio(
+                                                            id,
+                                                            msg,
+                                                            exts,
+                                                            true
+                                                        );
+                                                        break;
+                                                    case "audio":
+                                                        // Stitch audio together.
+                                                        break;
+                                                }
+                                                break;
                                         }
-                                    );
-                                }
-                            );
-                        } else {
-                            sendWebhook(
-                                "ffmpeg",
-                                "i need AT LEAST. TWO File .for this tow rok .. nngh",
-                                msg.channel
-                            );
-                        }
-                        break;
+                                    }
+                                );
+                            }
+                        );
+                    } else {
+                        sendWebhook(
+                            "ffmpeg",
+                            "i need AT LEAST. TWO File .for this tow rok .. nngh",
+                            msg.channel
+                        );
                     }
+                    break;
+                }
                 case "!imageaudio":
                     {
                         if (msg.attachments.first(2)[1]) {
@@ -1658,7 +1687,8 @@ async function onMessage(msg) {
                                             flapslib.videowrapper.baitSwitch(
                                                 id,
                                                 msg,
-                                                client, {
+                                                client,
+                                                {
                                                     w: b.width,
                                                     h: b.height,
                                                 }
@@ -1697,12 +1727,12 @@ async function onMessage(msg) {
                 case "!stitch":
                     {
                         getSources(msg, ["video", "video"])
-                        .then((ids) => {
-                            flapslib.videowrapper.stitch(ids, msg);
-                        })
-                        .catch((reason) => {
-                            sendWebhook("ffmpeg", reason, msg.channel);
-                        });
+                            .then((ids) => {
+                                flapslib.videowrapper.stitch(ids, msg);
+                            })
+                            .catch((reason) => {
+                                sendWebhook("ffmpeg", reason, msg.channel);
+                            });
                     }
                     break;
                 case "!riggedcoinflip":
@@ -1759,164 +1789,165 @@ async function onMessage(msg) {
                 case "!caption":
                     {
                         getSources(msg, ["video/image/gif"])
-                        .then((ids) => {
-                            flapslib.videowrapper.simpleMemeCaption(
-                                ids[0],
-                                commandArgString,
-                                msg,
-                                client
-                            );
-                        })
-                        .catch((reason) => {
-                            sendWebhook("ffmpeg", reason, msg.channel);
-                        });
+                            .then((ids) => {
+                                flapslib.videowrapper.simpleMemeCaption(
+                                    ids[0],
+                                    commandArgString,
+                                    msg,
+                                    client
+                                );
+                            })
+                            .catch((reason) => {
+                                sendWebhook("ffmpeg", reason, msg.channel);
+                            });
                     }
                     break;
                 case "!caption2":
                     {
                         getSourcesWithAttachments(msg, ["video/image/gif"])
-                        .then((list) => {
-                            console.log(list);
-                            flapslib.videowrapper.caption2(
-                                list[0][1],
-                                commandArgString,
-                                msg,
-                                list[0][0]
-                            );
-                        })
-                        .catch((reason) => {
-                            sendWebhook("ffmpeg", reason, msg.channel);
-                        });
+                            .then((list) => {
+                                console.log(list);
+                                flapslib.videowrapper.caption2(
+                                    list[0][1],
+                                    commandArgString,
+                                    msg,
+                                    list[0][0]
+                                );
+                            })
+                            .catch((reason) => {
+                                sendWebhook("ffmpeg", reason, msg.channel);
+                            });
                     }
                     break;
                 case "!squash":
                     {
                         getSources(msg, ["video/image/gif"])
-                        .then((ids) => {
-                            flapslib.videowrapper.squash(ids[0], msg);
-                        })
-                        .catch((reason) => {
-                            sendWebhook("ffmpeg", reason, msg.channel);
-                        });
+                            .then((ids) => {
+                                flapslib.videowrapper.squash(ids[0], msg);
+                            })
+                            .catch((reason) => {
+                                sendWebhook("ffmpeg", reason, msg.channel);
+                            });
                     }
                     break;
                 case "!trim":
                     {
                         getSources(msg, ["video/audio"])
-                        .then((ids) => {
-                            flapslib.videowrapper.trim(
-                                ids[0], [commandArgs[1], commandArgs[2]],
-                                msg
-                            );
-                        })
-                        .catch((reason) => {
-                            sendWebhook("ffmpeg", reason, msg.channel);
-                        });
+                            .then((ids) => {
+                                flapslib.videowrapper.trim(
+                                    ids[0],
+                                    [commandArgs[1], commandArgs[2]],
+                                    msg
+                                );
+                            })
+                            .catch((reason) => {
+                                sendWebhook("ffmpeg", reason, msg.channel);
+                            });
                     }
                     break;
                 case "!videogif":
                     {
                         getSources(msg, ["video"])
-                        .then((ids) => {
-                            flapslib.videowrapper.videoGif(
-                                ids[0],
-                                msg,
-                                client
-                            );
-                        })
-                        .catch((reason) => {
-                            sendWebhook("ffmpeg", reason, msg.channel);
-                        });
+                            .then((ids) => {
+                                flapslib.videowrapper.videoGif(
+                                    ids[0],
+                                    msg,
+                                    client
+                                );
+                            })
+                            .catch((reason) => {
+                                sendWebhook("ffmpeg", reason, msg.channel);
+                            });
                     }
                     break;
                 case "!reverse":
                     {
                         getSources(msg, ["video/audio"])
-                        .then((ids) => {
-                            flapslib.videowrapper.reverse(
-                                ids[0],
-                                msg,
-                                client
-                            );
-                        })
-                        .catch((reason) => {
-                            sendWebhook("ffmpeg", reason, msg.channel);
-                        });
+                            .then((ids) => {
+                                flapslib.videowrapper.reverse(
+                                    ids[0],
+                                    msg,
+                                    client
+                                );
+                            })
+                            .catch((reason) => {
+                                sendWebhook("ffmpeg", reason, msg.channel);
+                            });
                     }
                     break;
                 case "!compress":
                     {
                         getSources(msg, ["video/audio"])
-                        .then((ids) => {
-                            flapslib.videowrapper.compress(
-                                ids[0],
-                                msg,
-                                client
-                            );
-                        })
-                        .catch((reason) => {
-                            sendWebhook("ffmpeg", reason, msg.channel);
-                        });
+                            .then((ids) => {
+                                flapslib.videowrapper.compress(
+                                    ids[0],
+                                    msg,
+                                    client
+                                );
+                            })
+                            .catch((reason) => {
+                                sendWebhook("ffmpeg", reason, msg.channel);
+                            });
                     }
                     break;
                 case "!bassboost":
                     {
                         getSources(msg, ["video/audio"])
-                        .then((ids) => {
-                            flapslib.videowrapper.bassBoost(
-                                ids[0],
-                                msg,
-                                client
-                            );
-                        })
-                        .catch((reason) => {
-                            sendWebhook("ffmpeg", reason, msg.channel);
-                        });
+                            .then((ids) => {
+                                flapslib.videowrapper.bassBoost(
+                                    ids[0],
+                                    msg,
+                                    client
+                                );
+                            })
+                            .catch((reason) => {
+                                sendWebhook("ffmpeg", reason, msg.channel);
+                            });
                     }
                     break;
                 case "!thehorror":
                     {
                         getSources(msg, ["image"])
-                        .then((ids) => {
-                            flapslib.videowrapper.theHorror(
-                                ids[0],
-                                msg,
-                                client
-                            );
-                        })
-                        .catch((reason) => {
-                            sendWebhook("ffmpeg", reason, msg.channel);
-                        });
+                            .then((ids) => {
+                                flapslib.videowrapper.theHorror(
+                                    ids[0],
+                                    msg,
+                                    client
+                                );
+                            })
+                            .catch((reason) => {
+                                sendWebhook("ffmpeg", reason, msg.channel);
+                            });
                     }
                     break;
                 case "!stewie":
                     {
                         getSources(msg, ["image"])
-                        .then((ids) => {
-                            flapslib.videowrapper.stewie(
-                                ids[0],
-                                msg,
-                                client
-                            );
-                        })
-                        .catch((reason) => {
-                            sendWebhook("ffmpeg", reason, msg.channel);
-                        });
+                            .then((ids) => {
+                                flapslib.videowrapper.stewie(
+                                    ids[0],
+                                    msg,
+                                    client
+                                );
+                            })
+                            .catch((reason) => {
+                                sendWebhook("ffmpeg", reason, msg.channel);
+                            });
                     }
                     break;
                 case "!stretch":
                     {
                         getSources(msg, ["video/audio"])
-                        .then((ids) => {
-                            flapslib.videowrapper.stretch(
-                                ids[0],
-                                msg,
-                                client
-                            );
-                        })
-                        .catch((reason) => {
-                            sendWebhook("ffmpeg", reason, msg.channel);
-                        });
+                            .then((ids) => {
+                                flapslib.videowrapper.stretch(
+                                    ids[0],
+                                    msg,
+                                    client
+                                );
+                            })
+                            .catch((reason) => {
+                                sendWebhook("ffmpeg", reason, msg.channel);
+                            });
                     }
                     break;
                 case "!dream":
@@ -1988,8 +2019,8 @@ async function onMessage(msg) {
                             sendWebhook(
                                 "scal",
                                 "ohh my god thats such a fucking big file. i cant,,, upload.,,,, itt ohohohhnnggmggnhahdf. its " +
-                                Math.round(filesize) +
-                                " megabyte. fucking hell. thats what she said.",
+                                    Math.round(filesize) +
+                                    " megabyte. fucking hell. thats what she said.",
                                 false,
                                 msg.channel
                             );
@@ -1997,10 +2028,13 @@ async function onMessage(msg) {
                             var message = await client.channels.cache
                                 .get("956316856422137856")
                                 .send({
-                                    files: [{
-                                        attachment: "E:/MBG/StuffAndThings/38/" +
-                                            chosenFile,
-                                    }, ],
+                                    files: [
+                                        {
+                                            attachment:
+                                                "E:/MBG/StuffAndThings/38/" +
+                                                chosenFile,
+                                        },
+                                    ],
                                 });
 
                             sendWebhook(
@@ -2037,8 +2071,8 @@ async function onMessage(msg) {
                             sendWebhook(
                                 "millerwife",
                                 "*ugngnh* " +
-                                Math.round(filesize) +
-                                " megabyte~~~~~. ah.. uhn......",
+                                    Math.round(filesize) +
+                                    " megabyte~~~~~. ah.. uhn......",
                                 false,
                                 msg.channel
                             );
@@ -2046,10 +2080,13 @@ async function onMessage(msg) {
                             var message = await client.channels.cache
                                 .get("956316856422137856")
                                 .send({
-                                    files: [{
-                                        attachment: "E:/MBG/StuffAndThings/lormastur/" +
-                                            chosenFile,
-                                    }, ],
+                                    files: [
+                                        {
+                                            attachment:
+                                                "E:/MBG/StuffAndThings/lormastur/" +
+                                                chosenFile,
+                                        },
+                                    ],
                                 });
 
                             sendWebhook(
@@ -2066,7 +2103,8 @@ async function onMessage(msg) {
                         fetch("https://inspirobot.me/api?generate=true", {
                             credentials: "omit",
                             headers: {
-                                "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101 Firefox/102.0",
+                                "User-Agent":
+                                    "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101 Firefox/102.0",
                                 Accept: "*/*",
                                 "Accept-Language": "en-US,en;q=0.5",
                                 "X-Requested-With": "XMLHttpRequest",
@@ -2079,46 +2117,46 @@ async function onMessage(msg) {
                             method: "GET",
                             mode: "cors",
                         })
-                        .then((r) => r.text())
-                        .then((r) => {
-                            var id = uuidv4();
-                            download(
-                                r,
-                                "./images/cache/" + id + ".png",
-                                () => {
-                                    sendWebhookFile(
-                                        "deepai",
-                                        "./images/cache/" + id + ".png",
-                                        false,
-                                        msg.channel
-                                    );
-                                }
-                            );
-                        });
+                            .then((r) => r.text())
+                            .then((r) => {
+                                var id = uuidv4();
+                                download(
+                                    r,
+                                    "./images/cache/" + id + ".png",
+                                    () => {
+                                        sendWebhookFile(
+                                            "deepai",
+                                            "./images/cache/" + id + ".png",
+                                            false,
+                                            msg.channel
+                                        );
+                                    }
+                                );
+                            });
                     }
                     break;
                 case "!nohorny":
                     {
                         getSources(msg, ["image"])
-                        .then((ids) => {
-                            armstrongify(ids[0], msg, 1);
-                        })
-                        .catch((reason) => {
-                            sendWebhook("ffmpeg", reason, msg.channel);
-                        });
+                            .then((ids) => {
+                                armstrongify(ids[0], msg, 1);
+                            })
+                            .catch((reason) => {
+                                sendWebhook("ffmpeg", reason, msg.channel);
+                            });
                     }
                     break;
                 case "!fbifiles":
                     {
                         var date = new Date(
                             new Date().getTime() +
-                            Math.random() *
-                            (new Date(
-                                    new Date().getFullYear() + 10,
-                                    new Date().getMonth(),
-                                    new Date().getDate()
-                                ).getTime() -
-                                new Date().getTime())
+                                Math.random() *
+                                    (new Date(
+                                        new Date().getFullYear() + 10,
+                                        new Date().getMonth(),
+                                        new Date().getDate()
+                                    ).getTime() -
+                                        new Date().getTime())
                         );
                         var dateStr = `${date.getDate()}/${
                             date.getMonth() + 1
@@ -2184,7 +2222,8 @@ fbi files on ${commandArgString}: ${
                     break;
                 case "!mybeloved":
                     {
-                        if (!msg.attachments.first() ||
+                        if (
+                            !msg.attachments.first() ||
                             !msg.attachments.first().width
                         ) {
                             sendWebhook(
@@ -2212,7 +2251,8 @@ fbi files on ${commandArgString}: ${
                     break;
                 case "!heartclose":
                     {
-                        if (!msg.attachments.first() ||
+                        if (
+                            !msg.attachments.first() ||
                             !msg.attachments.first().width
                         ) {
                             sendWebhook(
@@ -2333,25 +2373,24 @@ fbi files on ${commandArgString}: ${
                         );
                     }
                     break;
-                case "!call":
-                    {
-                        if (commandArgs[1] == "1-087-311-9823") {
-                            sendWebhook(
-                                "smallcock",
-                                "https://cdn.discordapp.com/attachments/882743320554643476/983385178254741514/phone_call.mp3",
-                                false,
-                                msg.channel
-                            );
-                        }
-                        break;
+                case "!call": {
+                    if (commandArgs[1] == "1-087-311-9823") {
+                        sendWebhook(
+                            "smallcock",
+                            "https://cdn.discordapp.com/attachments/882743320554643476/983385178254741514/phone_call.mp3",
+                            false,
+                            msg.channel
+                        );
                     }
+                    break;
+                }
                 case "!define":
                     {
                         if (commandArgs[1]) {
                             fetch(
-                                    "https://api.dictionaryapi.dev/api/v2/entries/en/" +
+                                "https://api.dictionaryapi.dev/api/v2/entries/en/" +
                                     commandArgs[1]
-                                )
+                            )
                                 .then((r) => {
                                     return r.json();
                                 })
@@ -2367,16 +2406,16 @@ fbi files on ${commandArgString}: ${
                                     sendWebhook(
                                         "flaps",
                                         word.word +
-                                        "\n**" +
-                                        word.phonetic +
-                                        "**\n" +
-                                        word.meanings
-                                        .map(
-                                            (m) =>
-                                            m.definitions[0]
-                                            .definition
-                                        )
-                                        .join("\n"),
+                                            "\n**" +
+                                            word.phonetic +
+                                            "**\n" +
+                                            word.meanings
+                                                .map(
+                                                    (m) =>
+                                                        m.definitions[0]
+                                                            .definition
+                                                )
+                                                .join("\n"),
                                         false,
                                         msg.channel
                                     );
@@ -2395,8 +2434,8 @@ fbi files on ${commandArgString}: ${
                         sendWebhook(
                             "bruno",
                             "FUCKING STRS MAKING MY FILES " +
-                            Math.round(filesize) +
-                            " MEGABYTES",
+                                Math.round(filesize) +
+                                " MEGABYTES",
                             false,
                             msg.channel
                         );
@@ -2404,9 +2443,12 @@ fbi files on ${commandArgString}: ${
                         var message = await client.channels.cache
                             .get("956316856422137856")
                             .send({
-                                files: [{
-                                    attachment: "./images/bruno/" + chosenFile,
-                                }, ],
+                                files: [
+                                    {
+                                        attachment:
+                                            "./images/bruno/" + chosenFile,
+                                    },
+                                ],
                             });
 
                         sendWebhook(
@@ -2417,69 +2459,68 @@ fbi files on ${commandArgString}: ${
                         );
                     }
                     break;
-                case "!rps":
-                    {
-                        var input = commandArgString.toLowerCase();
-                        var dicks = [
-                            "nutsack",
-                            "balls",
-                            "testicles",
-                            "dick",
-                            "cock",
-                        ];
-                        var opts = ["rock", "paper", "scissors"];
-                        var output = "error";
-                        var winner = "error";
-                        if (dicks.includes(input)) {
-                            output = "scissors";
-                            winner = "pain";
-                        } else if (!opts.includes(input)) {
-                            var cards = [cahWhiteCard(), cahWhiteCard()];
-                            output = cards[0].substring(2, cards[0].length - 3);
-                            winner = cards[1].substring(2, cards[1].length - 3);
-                        } else {
-                            output = randomFromArray(opts);
-                            switch (output) {
-                                case "scissors":
-                                    if (input == "rock") {
-                                        winner = input;
-                                    } else if (input == "paper") {
-                                        winner = output;
-                                    } else {
-                                        winner = "tie";
-                                    }
-                                    break;
-                                case "rock":
-                                    if (input == "paper") {
-                                        winner = input;
-                                    } else if (input == "scissors") {
-                                        winner = output;
-                                    } else {
-                                        winner = "tie";
-                                    }
-                                    break;
-                                case "paper":
-                                    if (input == "scissors") {
-                                        winner = input;
-                                    } else if (input == "rock") {
-                                        winner = output;
-                                    } else {
-                                        winner = "tie";
-                                    }
-                                    break;
-                            }
+                case "!rps": {
+                    var input = commandArgString.toLowerCase();
+                    var dicks = [
+                        "nutsack",
+                        "balls",
+                        "testicles",
+                        "dick",
+                        "cock",
+                    ];
+                    var opts = ["rock", "paper", "scissors"];
+                    var output = "error";
+                    var winner = "error";
+                    if (dicks.includes(input)) {
+                        output = "scissors";
+                        winner = "pain";
+                    } else if (!opts.includes(input)) {
+                        var cards = [cahWhiteCard(), cahWhiteCard()];
+                        output = cards[0].substring(2, cards[0].length - 3);
+                        winner = cards[1].substring(2, cards[1].length - 3);
+                    } else {
+                        output = randomFromArray(opts);
+                        switch (output) {
+                            case "scissors":
+                                if (input == "rock") {
+                                    winner = input;
+                                } else if (input == "paper") {
+                                    winner = output;
+                                } else {
+                                    winner = "tie";
+                                }
+                                break;
+                            case "rock":
+                                if (input == "paper") {
+                                    winner = input;
+                                } else if (input == "scissors") {
+                                    winner = output;
+                                } else {
+                                    winner = "tie";
+                                }
+                                break;
+                            case "paper":
+                                if (input == "scissors") {
+                                    winner = input;
+                                } else if (input == "rock") {
+                                    winner = output;
+                                } else {
+                                    winner = "tie";
+                                }
+                                break;
                         }
-                        input = input[0].toUpperCase() + input.substring(1);
-                        output = output[0].toUpperCase() + output.substring(1);
-                        winner = winner[0].toUpperCase() + winner.substring(1);
-                        sendWebhook(
-                            "rps",
-                            `You chose **${input}**. I chose **${output}**. Winner: **${winner}**!`,
-                            false,
-                            msg.channel
-                        );
-                        break;
                     }
+                    input = input[0].toUpperCase() + input.substring(1);
+                    output = output[0].toUpperCase() + output.substring(1);
+                    winner = winner[0].toUpperCase() + winner.substring(1);
+                    sendWebhook(
+                        "rps",
+                        `You chose **${input}**. I chose **${output}**. Winner: **${winner}**!`,
+                        false,
+                        msg.channel
+                    );
+                    break;
+                }
                 case "!animethink":
                     animethink(msg, client);
                     break;
@@ -2490,75 +2531,77 @@ fbi files on ${commandArgString}: ${
                     console.log("GHNGNNHNHNH");
                     describe(msg);
                     break;
-                case "!dalle":
-                    {
-                        var x = "pigeons flying in city";
-                        if (commandArgs[1]) x = commandArgString;
-                        sendWebhook(
-                            "dalle",
-                            "im thinking.... beep blorp...",
-                            false,
-                            msg.channel
-                        );
-                        flapslib.ai.dalle(x).then((data) => {
-                            if (!data.image)
-                                return flapslib.webhooks.sendWebhook(
+                case "!dalle": {
+                    var x = "pigeons flying in city";
+                    if (commandArgs[1]) x = commandArgString;
+                    sendWebhook(
+                        "dalle",
+                        "im thinking.... beep blorp...",
+                        false,
+                        msg.channel
+                    );
+                    flapslib.ai.dalle(x).then((data) => {
+                        if (!data.image)
+                            return flapslib.webhooks.sendWebhook(
+                                "dalle",
+                                data.prompt,
+                                false,
+                                msg.channel
+                            );
+                        var c = canvas.createCanvas(768, 768);
+                        var ctx = c.getContext("2d");
+                        var x = 0;
+                        var y = 0;
+                        data.images.forEach((imgurl) => {
+                            var img = new Image();
+                            img.onload = () =>
+                                ctx.drawImage(img, x * 256, y * 256, 256, 256);
+                            img.onerror = (err) => {
+                                throw err;
+                            };
+                            img.src = "data:image/jpeg;base64," + imgurl;
+                            x += 1;
+                            if (x == 3) {
+                                y++;
+                                x = 0;
+                            }
+                        });
+                        var outID = uuidv4() + ".png";
+                        fs.writeFile(
+                            "./images/cache/" + outID,
+                            Buffer.from(
+                                c.toDataURL("image/png").split(",")[1],
+                                "base64"
+                            ),
+                            async () => {
+                                var message = await client.channels.cache
+                                    .get("956316856422137856")
+                                    .send({
+                                        files: [
+                                            {
+                                                attachment:
+                                                    __dirname +
+                                                    "\\images\\cache\\" +
+                                                    outID,
+                                            },
+                                        ],
+                                    });
+                                setTimeout(() => {
+                                    fs.unlinkSync("./images/cache/" + outID);
+                                }, 10000);
+                                flapslib.webhooks.sendWebhook(
                                     "dalle",
-                                    data.prompt,
+                                    data.prompt +
+                                        "\n" +
+                                        message.attachments.first().url,
                                     false,
                                     msg.channel
                                 );
-                            var c = canvas.createCanvas(768, 768);
-                            var ctx = c.getContext("2d");
-                            var x = 0;
-                            var y = 0;
-                            data.images.forEach((imgurl) => {
-                                var img = new Image();
-                                img.onload = () =>
-                                    ctx.drawImage(img, x * 256, y * 256, 256, 256);
-                                img.onerror = (err) => {
-                                    throw err;
-                                };
-                                img.src = "data:image/jpeg;base64," + imgurl;
-                                x += 1;
-                                if (x == 3) {
-                                    y++;
-                                    x = 0;
-                                }
-                            });
-                            var outID = uuidv4() + ".png";
-                            fs.writeFile(
-                                "./images/cache/" + outID,
-                                Buffer.from(
-                                    c.toDataURL("image/png").split(",")[1],
-                                    "base64"
-                                ),
-                                async() => {
-                                    var message = await client.channels.cache
-                                        .get("956316856422137856")
-                                        .send({
-                                            files: [{
-                                                attachment: __dirname +
-                                                    "\\images\\cache\\" +
-                                                    outID,
-                                            }, ],
-                                        });
-                                    setTimeout(() => {
-                                        fs.unlinkSync("./images/cache/" + outID);
-                                    }, 10000);
-                                    flapslib.webhooks.sendWebhook(
-                                        "dalle",
-                                        data.prompt +
-                                        "\n" +
-                                        message.attachments.first().url,
-                                        false,
-                                        msg.channel
-                                    );
-                                }
-                            );
-                        });
-                        break;
-                    }
+                            }
+                        );
+                    });
+                    break;
+                }
                 case "!3amgonewrong":
                     {
                         var originalTitles = [
@@ -2653,7 +2696,8 @@ fbi files on ${commandArgString}: ${
                         }
                         fetch(
                             "https://rule34.xxx/public/autocomplete.php?q=" +
-                            x.replace(/'/g, "&#039;"), {
+                                x.replace(/'/g, "&#039;"),
+                            {
                                 credentials: "omit",
                                 headers: {
                                     "User-Agent": "FlapsChelton",
@@ -2668,292 +2712,310 @@ fbi files on ${commandArgString}: ${
                                 mode: "cors",
                             }
                         )
-                        .then((ra) => {
-                            return ra.json();
-                        })
-                        .then((ra) => {
-                            if (!ra[0] && !x.includes(" ")) {
-                                return sendWebhook(
-                                    "runcling",
-                                    "go outside horny runcling\nhttps://media.discordapp.net/attachments/882743320554643476/982983490075254784/unknown.png",
-                                    false,
-                                    msg.channel
+                            .then((ra) => {
+                                return ra.json();
+                            })
+                            .then((ra) => {
+                                if (!ra[0] && !x.includes(" ")) {
+                                    return sendWebhook(
+                                        "runcling",
+                                        "go outside horny runcling\nhttps://media.discordapp.net/attachments/882743320554643476/982983490075254784/unknown.png",
+                                        false,
+                                        msg.channel
+                                    );
+                                }
+                                console.log(x);
+                                console.log(
+                                    ra.map((z) =>
+                                        z.label.replace(/&#039;/g, "'")
+                                    )
                                 );
-                            }
-                            console.log(x);
-                            console.log(
-                                ra.map((z) =>
-                                    z.label.replace(/&#039;/g, "'")
-                                )
-                            );
-                            ra = ra.filter((z) =>
-                                z.label
-                                .replace(/&#039;/g, "'")
-                                .startsWith(x)
-                            );
-                            if (!ra[0]) {
-                                return sendWebhook(
-                                    "runcling",
-                                    "go inside horny runcling\n😫8====✊===D💦💦",
-                                    false,
-                                    msg.channel
+                                ra = ra.filter((z) =>
+                                    z.label
+                                        .replace(/&#039;/g, "'")
+                                        .startsWith(x)
                                 );
-                            }
-                            fetch(
+                                if (!ra[0]) {
+                                    return sendWebhook(
+                                        "runcling",
+                                        "go inside horny runcling\n😫8====✊===D💦💦",
+                                        false,
+                                        msg.channel
+                                    );
+                                }
+                                fetch(
                                     "https://rule34.xxx/index.php?page=post&s=list&tags=" +
-                                    (x.includes(" ") ? x : ra[0].value)
+                                        (x.includes(" ") ? x : ra[0].value)
                                 )
-                                .then((r) => {
-                                    return r.text();
-                                })
-                                .then((r) => {
-                                    if (!r.split(
-                                            '<div class="image-list">'
-                                        )[1]) {
-                                        return sendWebhook(
-                                            "runcling",
-                                            "go outside horny runcling\nhttps://media.discordapp.net/attachments/882743320554643476/982983490075254784/unknown.png",
-                                            false,
-                                            msg.channel
-                                        );
-                                    }
-                                    var list = r
-                                        .split(
-                                            '<div class="image-list">'
-                                        )[1]
-                                        .split('<div id="paginator">')[0]
-                                        .split(
-                                            /<\/a>\n<\/span>\n<span id="s[0-9]*" class="thumb">\n<a id="p[0-9]*" href="[A-z\.\&\?\=0-9]*" style="">/gi
-                                        );
-                                    list = list.filter((item) => {
-                                        return (
-                                            item.startsWith("\n<img s") &&
-                                            (command.includes("video") ?
+                                    .then((r) => {
+                                        return r.text();
+                                    })
+                                    .then((r) => {
+                                        if (
+                                            !r.split(
+                                                '<div class="image-list">'
+                                            )[1]
+                                        ) {
+                                            return sendWebhook(
+                                                "runcling",
+                                                "go outside horny runcling\nhttps://media.discordapp.net/attachments/882743320554643476/982983490075254784/unknown.png",
+                                                false,
+                                                msg.channel
+                                            );
+                                        }
+                                        var list = r
+                                            .split(
+                                                '<div class="image-list">'
+                                            )[1]
+                                            .split('<div id="paginator">')[0]
+                                            .split(
+                                                /<\/a>\n<\/span>\n<span id="s[0-9]*" class="thumb">\n<a id="p[0-9]*" href="[A-z\.\&\?\=0-9]*" style="">/gi
+                                            );
+                                        list = list.filter((item) => {
+                                            return (
+                                                item.startsWith("\n<img s") &&
+                                                (command.includes("video")
+                                                    ? item.includes(
+                                                          "border: 3px solid #0000ff;"
+                                                      )
+                                                    : true)
+                                            );
+                                        });
+
+                                        list = list.map((item) => {
+                                            return [
+                                                item.substring(
+                                                    '<img src="'.length + 1,
+                                                    "https://wimg.rule34.xxx/thumbnails/5074/thumbnail_d3b24d47c2ac59b0c0f2d04319ec240e.jpg?5784441"
+                                                        .length +
+                                                        '<img src="'.length +
+                                                        1
+                                                ),
                                                 item.includes(
                                                     "border: 3px solid #0000ff;"
-                                                ) :
-                                                true)
-                                        );
-                                    });
+                                                ),
+                                            ];
+                                        });
+                                        list = list.map((item) => {
+                                            return [
+                                                item[0].replace(
+                                                    /thumbnail/g,
+                                                    "sample"
+                                                ),
+                                                item[1],
+                                            ];
+                                        });
+                                        console.log(used);
 
-                                    list = list.map((item) => {
-                                        return [
-                                            item.substring(
-                                                '<img src="'.length + 1,
-                                                "https://wimg.rule34.xxx/thumbnails/5074/thumbnail_d3b24d47c2ac59b0c0f2d04319ec240e.jpg?5784441"
-                                                .length +
-                                                '<img src="'.length +
-                                                1
-                                            ),
-                                            item.includes(
-                                                "border: 3px solid #0000ff;"
-                                            ),
-                                        ];
-                                    });
-                                    list = list.map((item) => {
-                                        return [
-                                            item[0].replace(
-                                                /thumbnail/g,
-                                                "sample"
-                                            ),
-                                            item[1],
-                                        ];
-                                    });
-                                    console.log(used);
+                                        if (
+                                            list.filter((item) => {
+                                                return !used.includes(item[0]);
+                                            }).length == 0 &&
+                                            list.length > 0
+                                        )
+                                            used = [];
 
-                                    if (
-                                        list.filter((item) => {
+                                        list = list.filter((item) => {
                                             return !used.includes(item[0]);
-                                        }).length == 0 &&
-                                        list.length > 0
-                                    )
-                                        used = [];
-
-                                    list = list.filter((item) => {
-                                        return !used.includes(item[0]);
-                                    });
-                                    console.log(list);
-                                    var item = randomFromArray(list);
-                                    var id = uuidv4() + ".jpg";
-                                    if (!item) {
-                                        return sendWebhook(
-                                            "runcling",
-                                            "go outside horny runcling\nhttps://media.discordapp.net/attachments/882743320554643476/982983490075254784/unknown.png",
-                                            false,
-                                            msg.channel
-                                        );
-                                    }
-                                    used.push(item[0]);
-                                    var isVideoStr = item[1] ?
-                                        "Video: YES" :
-                                        "Video: NO";
-                                    if (
-                                        item[1] &&
-                                        command.includes("video")
-                                    ) {
-                                        id = uuidv4() + ".mp4";
-                                        var videoURL =
-                                            "https://ws-cdn-video.rule34.xxx/images/" +
-                                            item[0].split("/")[4] +
-                                            "/" +
-                                            item[0]
-                                            .split("_")[1]
-                                            .replace(
-                                                /(png|jpe*g)/g,
-                                                "mp4"
+                                        });
+                                        console.log(list);
+                                        var item = randomFromArray(list);
+                                        var id = uuidv4() + ".jpg";
+                                        if (!item) {
+                                            return sendWebhook(
+                                                "runcling",
+                                                "go outside horny runcling\nhttps://media.discordapp.net/attachments/882743320554643476/982983490075254784/unknown.png",
+                                                false,
+                                                msg.channel
                                             );
-                                        download(
-                                            videoURL,
-                                            "images/cache/" + id,
-                                            async(err) => {
-                                                getR34Comments(
-                                                    item[0].split("?")[1]
-                                                ).then((comments) => {
-                                                    if (!command.includes(
-                                                            "comments"
-                                                        ))
-                                                        comments = "";
-                                                    sendWebhookFile(
-                                                        "runcling",
-                                                        __dirname +
-                                                        "\\images\\cache\\" +
-                                                        id,
-                                                        msg.channel, {},
-                                                        comments +
-                                                        "\n" +
-                                                        isVideoStr,
-                                                        () => {
-                                                            // this has to be the WORST FUCKING HACK
-                                                            compress(
-                                                                id.split(
-                                                                    "."
-                                                                )[0], {
-                                                                    attachments: {
-                                                                        first: () => {
-                                                                            return {
-                                                                                url: id,
-                                                                            };
-                                                                        },
-                                                                    },
-                                                                    channel: msg.channel,
-                                                                }
-                                                            );
-                                                        }
+                                        }
+                                        used.push(item[0]);
+                                        var isVideoStr = item[1]
+                                            ? "Video: YES"
+                                            : "Video: NO";
+                                        if (
+                                            item[1] &&
+                                            command.includes("video")
+                                        ) {
+                                            id = uuidv4() + ".mp4";
+                                            var videoURL =
+                                                "https://ws-cdn-video.rule34.xxx/images/" +
+                                                item[0].split("/")[4] +
+                                                "/" +
+                                                item[0]
+                                                    .split("_")[1]
+                                                    .replace(
+                                                        /(png|jpe*g)/g,
+                                                        "mp4"
                                                     );
-                                                });
-                                            }
-                                        );
-                                    } else {
-                                        download(
-                                            item[0],
-                                            "images/cache/" + id,
-                                            async(err) => {
-                                                if (err) {
-                                                    console.log(
-                                                        "ERROR WEEWOOWOOEOEOWEO"
-                                                    );
-                                                    return download(
-                                                        item[0].replace(
-                                                            /sample/g,
-                                                            "thumbnail"
-                                                        ),
-                                                        "images/cache/" +
-                                                        id,
-                                                        async(err) => {
-                                                            var message =
-                                                                await client.channels.cache
-                                                                .get(
-                                                                    "956316856422137856"
-                                                                )
-                                                                .send({
-                                                                    files: [{
-                                                                        attachment: __dirname +
-                                                                            "\\images\\cache\\" +
-                                                                            id,
-                                                                    }, ],
-                                                                });
-
-                                                            setTimeout(
-                                                                () => {
-                                                                    fs.unlinkSync(
-                                                                        "./images/cache/" +
-                                                                        id
-                                                                    );
-                                                                },
-                                                                10000
-                                                            );
-
-                                                            getR34Comments(
-                                                                item[0].split(
-                                                                    "?"
-                                                                )[1]
-                                                            ).then(
-                                                                (
-                                                                    comments
-                                                                ) => {
-                                                                    if (!command.includes(
-                                                                            "comments"
-                                                                        ))
-                                                                        comments =
-                                                                        "";
-                                                                    sendWebhook(
-                                                                        "runcling",
-                                                                        comments +
-                                                                        "\n" +
-                                                                        isVideoStr +
-                                                                        "\n" +
-                                                                        message.attachments.first()
-                                                                        .url,
-                                                                        false,
-                                                                        msg.channel
-                                                                    );
-                                                                }
-                                                            );
-                                                        }
-                                                    );
-                                                }
-                                                var message =
-                                                    await client.channels.cache
-                                                    .get(
-                                                        "956316856422137856"
-                                                    )
-                                                    .send({
-                                                        files: [{
-                                                            attachment: __dirname +
+                                            download(
+                                                videoURL,
+                                                "images/cache/" + id,
+                                                async (err) => {
+                                                    getR34Comments(
+                                                        item[0].split("?")[1]
+                                                    ).then((comments) => {
+                                                        if (
+                                                            !command.includes(
+                                                                "comments"
+                                                            )
+                                                        )
+                                                            comments = "";
+                                                        sendWebhookFile(
+                                                            "runcling",
+                                                            __dirname +
                                                                 "\\images\\cache\\" +
                                                                 id,
-                                                        }, ],
+                                                            msg.channel,
+                                                            {},
+                                                            comments +
+                                                                "\n" +
+                                                                isVideoStr,
+                                                            () => {
+                                                                // this has to be the WORST FUCKING HACK
+                                                                compress(
+                                                                    id.split(
+                                                                        "."
+                                                                    )[0],
+                                                                    {
+                                                                        attachments:
+                                                                            {
+                                                                                first: () => {
+                                                                                    return {
+                                                                                        url: id,
+                                                                                    };
+                                                                                },
+                                                                            },
+                                                                        channel:
+                                                                            msg.channel,
+                                                                    }
+                                                                );
+                                                            }
+                                                        );
                                                     });
+                                                }
+                                            );
+                                        } else {
+                                            download(
+                                                item[0],
+                                                "images/cache/" + id,
+                                                async (err) => {
+                                                    if (err) {
+                                                        console.log(
+                                                            "ERROR WEEWOOWOOEOEOWEO"
+                                                        );
+                                                        return download(
+                                                            item[0].replace(
+                                                                /sample/g,
+                                                                "thumbnail"
+                                                            ),
+                                                            "images/cache/" +
+                                                                id,
+                                                            async (err) => {
+                                                                var message =
+                                                                    await client.channels.cache
+                                                                        .get(
+                                                                            "956316856422137856"
+                                                                        )
+                                                                        .send({
+                                                                            files: [
+                                                                                {
+                                                                                    attachment:
+                                                                                        __dirname +
+                                                                                        "\\images\\cache\\" +
+                                                                                        id,
+                                                                                },
+                                                                            ],
+                                                                        });
 
-                                                setTimeout(() => {
-                                                    fs.unlinkSync(
-                                                        "./images/cache/" +
-                                                        id
-                                                    );
-                                                }, 10000);
+                                                                setTimeout(
+                                                                    () => {
+                                                                        fs.unlinkSync(
+                                                                            "./images/cache/" +
+                                                                                id
+                                                                        );
+                                                                    },
+                                                                    10000
+                                                                );
 
-                                                getR34Comments(
-                                                    item[0].split("?")[1]
-                                                ).then((comments) => {
-                                                    if (!command.includes(
-                                                            "comments"
-                                                        ))
-                                                        comments = "";
-                                                    sendWebhook(
-                                                        "runcling",
-                                                        comments +
-                                                        "\n" +
-                                                        message.attachments.first()
-                                                        .url,
-                                                        false,
-                                                        msg.channel
-                                                    );
-                                                });
-                                            }
-                                        );
-                                    }
-                                });
-                        });
+                                                                getR34Comments(
+                                                                    item[0].split(
+                                                                        "?"
+                                                                    )[1]
+                                                                ).then(
+                                                                    (
+                                                                        comments
+                                                                    ) => {
+                                                                        if (
+                                                                            !command.includes(
+                                                                                "comments"
+                                                                            )
+                                                                        )
+                                                                            comments =
+                                                                                "";
+                                                                        sendWebhook(
+                                                                            "runcling",
+                                                                            comments +
+                                                                                "\n" +
+                                                                                isVideoStr +
+                                                                                "\n" +
+                                                                                message.attachments.first()
+                                                                                    .url,
+                                                                            false,
+                                                                            msg.channel
+                                                                        );
+                                                                    }
+                                                                );
+                                                            }
+                                                        );
+                                                    }
+                                                    var message =
+                                                        await client.channels.cache
+                                                            .get(
+                                                                "956316856422137856"
+                                                            )
+                                                            .send({
+                                                                files: [
+                                                                    {
+                                                                        attachment:
+                                                                            __dirname +
+                                                                            "\\images\\cache\\" +
+                                                                            id,
+                                                                    },
+                                                                ],
+                                                            });
+
+                                                    setTimeout(() => {
+                                                        fs.unlinkSync(
+                                                            "./images/cache/" +
+                                                                id
+                                                        );
+                                                    }, 10000);
+
+                                                    getR34Comments(
+                                                        item[0].split("?")[1]
+                                                    ).then((comments) => {
+                                                        if (
+                                                            !command.includes(
+                                                                "comments"
+                                                            )
+                                                        )
+                                                            comments = "";
+                                                        sendWebhook(
+                                                            "runcling",
+                                                            comments +
+                                                                "\n" +
+                                                                message.attachments.first()
+                                                                    .url,
+                                                            false,
+                                                            msg.channel
+                                                        );
+                                                    });
+                                                }
+                                            );
+                                        }
+                                    });
+                            });
                     }
                     break;
                 case "!basedmeter":
@@ -3007,7 +3069,7 @@ fbi files on ${commandArgString}: ${
                                     files.forEach((file) => {
                                         var stats = fs.statSync(
                                             "E:/MBG/2site/sites/konalt/flaps/watchparty/videos/" +
-                                            file
+                                                file
                                         );
                                         var fileSizeInBytes = stats.size;
                                         var fileSizeInMegabytes =
@@ -3021,23 +3083,23 @@ fbi files on ${commandArgString}: ${
                                     flapslib.webhooks.sendWebhook(
                                         "flaps",
                                         "i grow to " +
-                                        lines +
-                                        " lines.\nFlapsCache:tm: total size taken: " +
-                                        flapsCacheFilesize +
-                                        "MB\nbreakdown:\n" +
-                                        Object.entries(lengths)
-                                        .sort((a, b) => {
-                                            return b[1] - a[1];
-                                        })
-                                        .map((x) => {
-                                            return (
-                                                x[0] +
-                                                ": " +
-                                                x[1] +
-                                                " lines"
-                                            );
-                                        })
-                                        .join("\n"),
+                                            lines +
+                                            " lines.\nFlapsCache:tm: total size taken: " +
+                                            flapsCacheFilesize +
+                                            "MB\nbreakdown:\n" +
+                                            Object.entries(lengths)
+                                                .sort((a, b) => {
+                                                    return b[1] - a[1];
+                                                })
+                                                .map((x) => {
+                                                    return (
+                                                        x[0] +
+                                                        ": " +
+                                                        x[1] +
+                                                        " lines"
+                                                    );
+                                                })
+                                                .join("\n"),
                                         false,
                                         msg.channel
                                     );
@@ -3080,34 +3142,34 @@ fbi files on ${commandArgString}: ${
                     {
                         try {
                             await fetch("https://petittube.com/index.php", {
-                                    credentials: "omit",
-                                    headers: {
-                                        "User-Agent": "FlapsChelton",
-                                        Accept: "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8",
-                                        "Accept-Language": "en-US,en;q=0.5",
-                                        "Upgrade-Insecure-Requests": "1",
-                                        "Sec-Fetch-Dest": "document",
-                                        "Sec-Fetch-Mode": "navigate",
-                                        "Sec-Fetch-Site": "same-origin",
-                                        "Cache-Control": "max-age=0",
-                                    },
-                                    method: "GET",
-                                    mode: "cors",
-                                })
+                                credentials: "omit",
+                                headers: {
+                                    "User-Agent": "FlapsChelton",
+                                    Accept: "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8",
+                                    "Accept-Language": "en-US,en;q=0.5",
+                                    "Upgrade-Insecure-Requests": "1",
+                                    "Sec-Fetch-Dest": "document",
+                                    "Sec-Fetch-Mode": "navigate",
+                                    "Sec-Fetch-Site": "same-origin",
+                                    "Cache-Control": "max-age=0",
+                                },
+                                method: "GET",
+                                mode: "cors",
+                            })
                                 .then((r) => r.text())
                                 .then((content) => {
                                     var a = content.substring(
                                         content.indexOf(
                                             "https://www.youtube.com/embed/"
                                         ) +
-                                        "https://www.youtube.com/embed/"
-                                        .length,
+                                            "https://www.youtube.com/embed/"
+                                                .length,
                                         content.indexOf(
                                             "https://www.youtube.com/embed/"
                                         ) +
-                                        "https://www.youtube.com/embed/"
-                                        .length +
-                                        11
+                                            "https://www.youtube.com/embed/"
+                                                .length +
+                                            11
                                     );
                                     console.log(a);
                                     flapslib.webhooks.sendWebhook(
@@ -3134,7 +3196,8 @@ fbi files on ${commandArgString}: ${
                             "flaps",
                             f,
                             false,
-                            msg.channel, {},
+                            msg.channel,
+                            {},
                             msg
                         );
                     }
@@ -3144,11 +3207,14 @@ fbi files on ${commandArgString}: ${
                         var message = await client.channels.cache
                             .get("956316856422137856")
                             .send({
-                                files: [{
-                                    attachment: "images/ciggies/" +
-                                        Math.floor(Math.random() * 17) +
-                                        ".jpg",
-                                }, ],
+                                files: [
+                                    {
+                                        attachment:
+                                            "images/ciggies/" +
+                                            Math.floor(Math.random() * 17) +
+                                            ".jpg",
+                                    },
+                                ],
                             });
 
                         flapslib.webhooks.sendWebhook(
@@ -3169,46 +3235,46 @@ fbi files on ${commandArgString}: ${
                         );
                     }
                     break;
-                case "!translate":
-                    {
-                        var n = parseInt(commandArgs[1]) ?
-                            parseInt(commandArgs[1]) :
-                            10;
-                        var t = parseInt(commandArgs[1]) ?
-                            commandArgs.slice(2).join(" ") :
-                            commandArgString;
-                        sendWebhook(
-                            "flaps",
-                            "woo we translatin baby",
-                            false,
-                            msg.channel
-                        );
-                        var translated = await doTranslate(t, n);
-                        sendWebhook("flaps", translated, msg.channel);
-                        break;
-                    }
-                case "!translate2":
-                    {
-                        var n = 5;
-                        var t = commandArgString;
-                        sendWebhook(
-                            "flaps",
-                            "woo we translatin baby",
-                            false,
-                            msg.channel
-                        );
-                        var o = await doTranslateSending(t, n);
-                        sendWebhook("flaps", o, msg.channel);
-                        break;
-                    }
+                case "!translate": {
+                    var n = parseInt(commandArgs[1])
+                        ? parseInt(commandArgs[1])
+                        : 5;
+                    var t = parseInt(commandArgs[1])
+                        ? commandArgs.slice(2).join(" ")
+                        : commandArgString;
+                    sendWebhook(
+                        "flaps",
+                        "woo we translatin baby",
+                        false,
+                        msg.channel
+                    );
+                    var translated = await doTranslate(t, n);
+                    sendWebhook("flaps", translated, msg.channel);
+                    break;
+                }
+                case "!translate2": {
+                    var n = 5;
+                    var t = commandArgString;
+                    sendWebhook(
+                        "flaps",
+                        "woo we translatin baby",
+                        false,
+                        msg.channel
+                    );
+                    var o = await doTranslateSending(t, n);
+                    sendWebhook("flaps", o, msg.channel);
+                    break;
+                }
                 case "!funnycat":
                     {
                         var message = await client.channels.cache
                             .get("956316856422137856")
                             .send({
-                                files: [{
-                                    attachment: "images/cybercat.jpg",
-                                }, ],
+                                files: [
+                                    {
+                                        attachment: "images/cybercat.jpg",
+                                    },
+                                ],
                             });
 
                         flapslib.webhooks.sendWebhook(
@@ -3224,133 +3290,135 @@ fbi files on ${commandArgString}: ${
                         flapslib.moviereview.morbiusReview(msg.channel);
                     }
                     break;
-                case "!cnv":
-                    {
-                        if (canvases[msg.author.id]) {
-                            var mc_c = canvases[msg.author.id];
-                            var mc = mc_c.getContext("2d");
-                            var a = parseInt(commandArgs[2]) ?
-                                parseInt(commandArgs[2]) :
-                                commandArgs[2];
-                            var b = parseInt(commandArgs[3]) ?
-                                parseInt(commandArgs[3]) :
-                                commandArgs[3];
-                            var c = parseInt(commandArgs[4]) ?
-                                parseInt(commandArgs[4]) :
-                                commandArgs[4];
-                            var d = parseInt(commandArgs[5]) ?
-                                parseInt(commandArgs[5]) :
-                                commandArgs[5];
-                            var send = true;
-                            switch (commandArgs[1]) {
-                                case "rect":
-                                    mc.fillRect(a, b, c, d);
-                                    break;
-                                case "clear":
-                                    mc.clearRect(0, 0, 1000, 1000);
-                                    break;
-                                case "setcol":
-                                    mc.fillStyle = a;
-                                    send = false;
-                                    break;
-                                default:
-                                    send = true;
-                                    break;
-                            }
-                            if (send) {
-                                console.log("the best pigon");
-                                var imgID = uuidv4().replace(/-/g, "_") + ".png";
-                                var imageStream = Buffer.from(
-                                    mc_c.toDataURL("image/png").split(",")[1],
-                                    "base64"
-                                );
-                                fs.writeFileSync(
-                                    "./images/cache/" + imgID,
-                                    imageStream
-                                );
+                case "!cnv": {
+                    if (canvases[msg.author.id]) {
+                        var mc_c = canvases[msg.author.id];
+                        var mc = mc_c.getContext("2d");
+                        var a = parseInt(commandArgs[2])
+                            ? parseInt(commandArgs[2])
+                            : commandArgs[2];
+                        var b = parseInt(commandArgs[3])
+                            ? parseInt(commandArgs[3])
+                            : commandArgs[3];
+                        var c = parseInt(commandArgs[4])
+                            ? parseInt(commandArgs[4])
+                            : commandArgs[4];
+                        var d = parseInt(commandArgs[5])
+                            ? parseInt(commandArgs[5])
+                            : commandArgs[5];
+                        var send = true;
+                        switch (commandArgs[1]) {
+                            case "rect":
+                                mc.fillRect(a, b, c, d);
+                                break;
+                            case "clear":
+                                mc.clearRect(0, 0, 1000, 1000);
+                                break;
+                            case "setcol":
+                                mc.fillStyle = a;
+                                send = false;
+                                break;
+                            default:
+                                send = true;
+                                break;
+                        }
+                        if (send) {
+                            console.log("the best pigon");
+                            var imgID = uuidv4().replace(/-/g, "_") + ".png";
+                            var imageStream = Buffer.from(
+                                mc_c.toDataURL("image/png").split(",")[1],
+                                "base64"
+                            );
+                            fs.writeFileSync(
+                                "./images/cache/" + imgID,
+                                imageStream
+                            );
 
-                                console.log(
-                                    __dirname + "\\images\\cache\\" + imgID
-                                );
-                                /**
-                                 * @type {Discord.Message}
-                                 */
-                                client.channels.cache
-                                    .get("956316856422137856")
-                                    .send({
-                                        files: [{
-                                            attachment: __dirname +
+                            console.log(
+                                __dirname + "\\images\\cache\\" + imgID
+                            );
+                            /**
+                             * @type {Discord.Message}
+                             */
+                            client.channels.cache
+                                .get("956316856422137856")
+                                .send({
+                                    files: [
+                                        {
+                                            attachment:
+                                                __dirname +
                                                 "\\images\\cache\\" +
                                                 imgID,
-                                        }, ],
-                                    })
-                                    .then((message) => {
-                                        setTimeout(() => {
-                                            fs.unlinkSync(
-                                                "./images/cache/" + imgID
-                                            );
-                                        }, 10000);
+                                        },
+                                    ],
+                                })
+                                .then((message) => {
+                                    setTimeout(() => {
+                                        fs.unlinkSync(
+                                            "./images/cache/" + imgID
+                                        );
+                                    }, 10000);
 
-                                        flapslib.webhooks.sendWebhook(
-                                            "flaps",
-                                            message.attachments.first().url,
-                                            false,
-                                            msg.channel
-                                        );
-                                    });
-                            }
-                        } else {
-                            canvases[msg.author.id] = createCanvas(1000, 1000);
-                            sendWebhook(
-                                "flaps",
-                                "yer canvas has been created!!!",
-                                msg.channel
-                            );
+                                    flapslib.webhooks.sendWebhook(
+                                        "flaps",
+                                        message.attachments.first().url,
+                                        false,
+                                        msg.channel
+                                    );
+                                });
                         }
-                        break;
-                    }
-                case "!buttontest":
-                    {
-                        sendWebhookButton(
+                    } else {
+                        canvases[msg.author.id] = createCanvas(1000, 1000);
+                        sendWebhook(
                             "flaps",
-                            "Button test shit", [{
-                                    type: 2,
-                                    label: "Test button 1",
-                                    id: "cheltontest1",
-                                    style: 1,
-                                    cb: (i) => {
-                                        sendWebhook(
-                                            "flaps",
-                                            "royal republic button 1",
-                                            i.channel
-                                        );
-                                    },
-                                },
-                                {
-                                    type: 2,
-                                    label: "Test button 2",
-                                    id: "cheltontest2",
-                                    style: 2,
-                                    cb: (i) => {
-                                        sendWebhook(
-                                            "flaps",
-                                            "royal republic button 2!!>??!",
-                                            i.channel
-                                        );
-                                    },
-                                },
-                            ],
+                            "yer canvas has been created!!!",
                             msg.channel
                         );
-                        break;
                     }
-                case "!c":
-                    {
-                        sendToChatbot(commandArgString, (text) => {
-                            sendWebhook("sammy", text, msg.channel);
-                        });
-                        break;
-                    }
+                    break;
+                }
+                case "!buttontest": {
+                    sendWebhookButton(
+                        "flaps",
+                        "Button test shit",
+                        [
+                            {
+                                type: 2,
+                                label: "Test button 1",
+                                id: "cheltontest1",
+                                style: 1,
+                                cb: (i) => {
+                                    sendWebhook(
+                                        "flaps",
+                                        "royal republic button 1",
+                                        i.channel
+                                    );
+                                },
+                            },
+                            {
+                                type: 2,
+                                label: "Test button 2",
+                                id: "cheltontest2",
+                                style: 2,
+                                cb: (i) => {
+                                    sendWebhook(
+                                        "flaps",
+                                        "royal republic button 2!!>??!",
+                                        i.channel
+                                    );
+                                },
+                            },
+                        ],
+                        msg.channel
+                    );
+                    break;
+                }
+                case "!c": {
+                    sendToChatbot(commandArgString, (text) => {
+                        sendWebhook("sammy", text, msg.channel);
+                    });
+                    break;
+                }
                 case "!southerner":
                     var str = `the best part
                         about meatballs
@@ -3432,7 +3500,7 @@ fbi files on ${commandArgString}: ${
         flapslib.webhooks.sendWebhook(
             "flapserrors",
             "Oooops! Looks like flaps broke.\n<@445968175381610496>, here's the scoop:\n" +
-            err.stack,
+                err.stack,
             false,
             msg.channel
         );
@@ -3497,10 +3565,11 @@ setInterval(() => {
 function respondToInteraction(i) {
     fetch(
         "https://discord.com/api/v10/interactions/" +
-        i.id +
-        "/" +
-        i.token +
-        "/callback", {
+            i.id +
+            "/" +
+            i.token +
+            "/callback",
+        {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
