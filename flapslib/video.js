@@ -9,62 +9,122 @@ var ffmpegVerbose = false;
 
 var h264Preset = "ultrafast";
 
-async function ffmpeg(args) {
+async function ffmpeg(args, quiet = false) {
     return new Promise((resolve, reject) => {
         var startTime = Date.now();
-        console.log("[ffmpeg] Starting FFMpeg instance");
-        console.log(
-            "[ffmpeg] FFMpeg Verbose: " + (ffmpegVerbose ? "YES" : "NO")
-        );
+        if (!quiet) console.log("[ffmpeg] Starting FFMpeg instance");
+        if (!quiet)
+            console.log(
+                "[ffmpeg] FFMpeg Verbose: " + (ffmpegVerbose ? "YES" : "NO")
+            );
         var ffmpegInstance = cp.spawn(
             "ffmpeg",
-            ((ffmpegVerbose ? "" : "-v warning ") + args).split(" "), {
+            ((ffmpegVerbose ? "" : "-v warning ") + args).split(" "),
+            {
                 shell: true,
             }
         );
-        console.log("[ffmpeg] PID: %d", ffmpegInstance.pid);
+        if (!quiet) console.log("[ffmpeg] PID: %d", ffmpegInstance.pid);
         ffmpegInstance.stdout.on("data", (c) => {
-            if (ffmpegVerbose) stdout.write("[ffmpeg] " + c);
+            if (ffmpegVerbose && !quiet) stdout.write("[ffmpeg] " + c);
         });
         ffmpegInstance.stderr.on("data", (c) => {
-            stdout.write("[ffmpeg] " + c);
+            if (!quiet) stdout.write("[ffmpeg] " + c);
         });
         ffmpegInstance.on("exit", (code) => {
-            if (code == 0) console.log("[ffmpeg] Completed OK");
-            if (code == 1) console.log("[ffmpeg] Failed!");
-            console.log("[ffmpeg] Took %d ms", Date.now() - startTime);
+            if (code == 0 && !quiet) console.log("[ffmpeg] Completed OK");
+            if (code == 1 && !quiet) console.log("[ffmpeg] Failed!");
+            if (!quiet)
+                console.log("[ffmpeg] Took %d ms", Date.now() - startTime);
             resolve();
+        });
+    });
+}
+async function ffprobe(args) {
+    return new Promise((resolve, reject) => {
+        var startTime = Date.now();
+        var ffmpegInstance = cp.spawn("ffprobe", args.split(" "), {
+            shell: true,
+        });
+        var body = "";
+        ffmpegInstance.stdout.on("data", (c) => {
+            body += c;
+        });
+        ffmpegInstance.stderr.on("data", (c) => {
+            stdout.write("[ffprobe] " + c);
+        });
+        ffmpegInstance.on("exit", (code) => {
+            if (code == 0) console.log("[ffprobe] Completed OK");
+            if (code == 1) console.log("[ffprobe] Failed!");
+            console.log("[ffprobe] Took %d ms", Date.now() - startTime);
+            resolve(body);
         });
     });
 }
 
 var scalingTableHelpers = ["STR END XPS YPS WTH HGT"];
 
-function parseScalingTable(txt) {
-    var list = txt
-        .toString() // convert buffer to string
-        .split("\n") // remove newlines
-        .map((x) => x.trim().replace(/ +/g, " ")) // strip CR if windows, remove duplicate spaces
-        .filter((x) => !scalingTableHelpers.includes(x.toUpperCase())) // remove helper lines
-        .map((x) => x.split(" ").map((y) => parseInt(y))) // make array of numbers
-        .map((x) => ({
-            start: x[0],
-            end: x[1],
-            x: x[2],
-            y: x[3],
-            width: x[4],
-            height: x[5],
-        })); // make objects
-    console.log(list);
-    var filters = [];
-    list.forEach((dir, i) => {
-        filters.push(
-            `[0:v]scale=${dir.width}:${dir.height}[scalingtable_scaled_img_${i}]`
-        );
-        filters.push(`[0:v][1:v]overlay=${dir.x}:${dir.y}[st_${i}]`);
+function parseScalingTable(
+    txt,
+    in_specifier,
+    frame_count,
+    v_width,
+    v_height,
+    input
+) {
+    return new Promise((resolve, reject) => {
+        var scale = 1;
+        var ext = input.split(".").pop();
+        var list = txt
+            .toString() // convert buffer to string
+            .split("\n") // remove newlines
+            .map((x) => x.trim().replace(/ +/g, " ")) // strip CR if windows, remove duplicate spaces
+            .filter((x) => !scalingTableHelpers.includes(x.toUpperCase())) // remove helper lines
+            .map((x) => x.split(" ").map((y) => parseInt(y))) // make array of numbers
+            .map((x) => ({
+                start: x[0],
+                end: x[1],
+                x: x[2] * scale,
+                y: x[3] * scale,
+                width: x[4] * scale,
+                height: x[5] * scale,
+            })); // make objects
+        var promises = [];
+        var cDir = list[0];
+        var cDirInd = 0;
+        console.log("Creating image sequence...");
+        for (let frame_num = 0; frame_num < frame_count; frame_num++) {
+            if (frame_num > cDir.end) {
+                cDir = list[cDirInd++];
+            }
+            promises.push(
+                ffmpeg(
+                    `-i ${path.join(
+                        __dirname,
+                        "..",
+                        input
+                    )} -filter_complex "[0:v]scale=${cDir.width}:${
+                        cDir.height
+                    },pad=${v_width}:${v_height}:${cDir.x}:${
+                        cDir.y
+                    }[out]" -map "[out]" ${path.join(
+                        __dirname,
+                        "..",
+                        input +
+                            "." +
+                            frame_num.toString().padStart(3, "0") +
+                            "." +
+                            ext
+                    )}`,
+                    true
+                )
+            );
+        }
+        Promise.all(promises).then(() => {
+            console.log("Created all images.");
+            resolve();
+        });
     });
-    console.log(filter(filters));
-    return list;
 }
 
 async function addText(input, output, options) {
@@ -122,11 +182,11 @@ async function caption2(input, output, options) {
     lines = lines.map((l) => [
         l[0],
         l[1]
-        .replace(/\\/g, "\\\\\\\\")
-        .replace(/'/g, "\u2019")
-        .replace(/%/g, "\\\\\\%")
-        .replace(/:/g, "\\\\\\:")
-        .replace(/\n/g, "\\n"),
+            .replace(/\\/g, "\\\\\\\\")
+            .replace(/'/g, "\u2019")
+            .replace(/%/g, "\\\\\\%")
+            .replace(/:/g, "\\\\\\:")
+            .replace(/\n/g, "\\n"),
     ]);
     var barHeight =
         2 * Math.round(((lines.length + 1) * fontSize + lines.length * 5) / 2);
@@ -266,26 +326,71 @@ async function theHorror(input, output) {
         ].join(" ")
     );
 }
+async function getFrameCount(path) {
+    return new Promise((res, rej) => {
+        ffprobe(
+            "-v error -select_streams v:0 -count_frames -show_entries stream=nb_read_frames -print_format default=nokey=1:noprint_wrappers=1 " +
+                path
+        )
+            .then((txt) => {
+                res(parseInt(txt));
+            })
+            .catch(rej);
+    });
+}
 async function stewie(input, output) {
-    return ffmpeg(
-        [
-            "-y",
-            `-i ${path.join(__dirname, "..", "images", "stewie.mp4")}`,
-            `-i ${path.join(__dirname, "..", input)}`,
-            "-filter_complex",
-            filter([
-                "[0:v]scale=800:450,setsar=1:1,setpts=PTS-STARTPTS,colorkey=0x00FF00:0.2:0.2[ckout2]",
-                "[1:v]scale=800:450,setsar=1:1,setpts=PTS-STARTPTS[sout]",
-                "[sout][ckout2]overlay[oout]",
-                "[oout]setpts=0.66*PTS[vout]",
-                "[0:a]atempo=1.5[aout]",
-            ]),
-            '-map "[vout]"',
-            '-map "[aout]"',
-            "-preset " + h264Preset,
-            output,
-        ].join(" ")
-    );
+    return new Promise((resolve, reject) => {
+        getFrameCount(path.join(__dirname, "..", "images", "stewie.mp4")).then(
+            (fc) => {
+                parseScalingTable(
+                    fs.readFileSync("./images/scalingtables/stewie.stb"),
+                    "1:v",
+                    fc,
+                    1280,
+                    720,
+                    input
+                ).then(() => {
+                    var fullFilter = [
+                        "[0:v]colorkey=0x00FF00:0.2:0.2[ckout2]",
+                        "[1:v][ckout2]overlay[oout]",
+                        "[oout]setpts=0.66*PTS[vout]",
+                        "[0:a]atempo=1.5[aout]",
+                    ].join(";");
+                    fs.writeFileSync(
+                        path.join(__dirname, "..", input + ".script.txt"),
+                        fullFilter
+                    );
+                    ffmpeg(
+                        [
+                            "-y",
+                            `-i ${path.join(
+                                __dirname,
+                                "..",
+                                "images",
+                                "stewie.mp4"
+                            )}`,
+                            `-framerate 30 -i ${path.join(
+                                __dirname,
+                                "..",
+                                input + ".%03d." + input.split(".").pop()
+                            )}`,
+                            "-filter_complex_script " +
+                                path.join(
+                                    __dirname,
+                                    "..",
+                                    input + ".script.txt"
+                                ),
+                            "-shortest",
+                            '-map "[vout]"',
+                            '-map "[aout]"',
+                            "-preset " + h264Preset,
+                            output,
+                        ].join(" ")
+                    ).then(resolve);
+                });
+            }
+        );
+    });
 }
 async function videoGif(input, output, options) {
     return ffmpeg(
@@ -391,7 +496,7 @@ async function mimeNod(output, bpm) {
 }
 async function armstrongify(input, output, options) {
     return ffmpeg(
-            `-y ${options.isVideo ? "" : "-t 1 "}-i ${path.join(
+        `-y ${options.isVideo ? "" : "-t 1 "}-i ${path.join(
             __dirname,
             "..",
             input
