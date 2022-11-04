@@ -2,8 +2,7 @@ const cp = require("child_process");
 const fs = require("fs");
 const path = require("path");
 const { stdout } = require("process");
-const { Z_FIXED } = require("zlib");
-const { uuidv4 } = require("./ai");
+const { start } = require("repl");
 const { getTextWidth } = require("./canvas");
 
 var ffmpegVerbose = false;
@@ -20,8 +19,7 @@ async function ffmpeg(args, quiet = false, resolveStdout = false) {
             );
         var ffmpegInstance = cp.spawn(
             "ffmpeg",
-            ((ffmpegVerbose ? "" : "-v warning ") + args).split(" "),
-            {
+            ((ffmpegVerbose ? "" : "-v warning ") + args).split(" "), {
                 shell: true,
             }
         );
@@ -137,8 +135,8 @@ function parseScalingTable(
         Promise.all(promises).then(() => {
             console.log(
                 "Created all key images in " +
-                    (Date.now() - start) +
-                    "ms. Beginning copy process"
+                (Date.now() - start) +
+                "ms. Beginning copy process"
             );
             var curFile = path.join(
                 __dirname,
@@ -150,10 +148,10 @@ function parseScalingTable(
                     __dirname,
                     "..",
                     input +
-                        "." +
-                        frame_num.toString().padStart(3, "0") +
-                        "." +
-                        ext
+                    "." +
+                    frame_num.toString().padStart(3, "0") +
+                    "." +
+                    ext
                 );
                 if (!fs.existsSync(newFile)) {
                     fs.copyFileSync(curFile, newFile);
@@ -221,11 +219,11 @@ async function caption2(input, output, options) {
     lines = lines.map((l) => [
         l[0],
         l[1]
-            .replace(/\\/g, "\\\\\\\\")
-            .replace(/'/g, "\u2019")
-            .replace(/%/g, "\\\\\\%")
-            .replace(/:/g, "\\\\\\:")
-            .replace(/\n/g, "\\n"),
+        .replace(/\\/g, "\\\\\\\\")
+        .replace(/'/g, "\u2019")
+        .replace(/%/g, "\\\\\\%")
+        .replace(/:/g, "\\\\\\:")
+        .replace(/\n/g, "\\n"),
     ]);
     var barHeight =
         2 * Math.round(((lines.length + 1) * fontSize + lines.length * 5) / 2);
@@ -381,11 +379,11 @@ async function theHorror(input, output) {
                                 input + ".%03d." + input.split(".").pop()
                             )}`,
                             "-filter_complex_script " +
-                                path.join(
-                                    __dirname,
-                                    "..",
-                                    input + ".script.txt"
-                                ),
+                            path.join(
+                                __dirname,
+                                "..",
+                                input + ".script.txt"
+                            ),
                             "-shortest",
                             '-map "[oout]"',
                             '-map "0:a:0"',
@@ -398,12 +396,24 @@ async function theHorror(input, output) {
         );
     });
 }
+async function getVideoLength(path) {
+    return new Promise((res, rej) => {
+        ffprobe(
+                "-v error -select_streams v:0 -show_entries format=duration -of default=noprint_wrappers=1:nokey=1 " +
+                path
+            )
+            .then((txt) => {
+                res(parseFloat(txt));
+            })
+            .catch(rej);
+    });
+}
 async function getFrameCount(path) {
     return new Promise((res, rej) => {
         ffprobe(
-            "-v error -select_streams v:0 -count_frames -show_entries stream=nb_read_frames -print_format default=nokey=1:noprint_wrappers=1 " +
+                "-v error -select_streams v:0 -count_frames -show_entries stream=nb_read_frames -print_format default=nokey=1:noprint_wrappers=1 " +
                 path
-        )
+            )
             .then((txt) => {
                 res(parseInt(txt));
             })
@@ -447,11 +457,11 @@ async function stewie(input, output) {
                                 input + ".%03d." + input.split(".").pop()
                             )}`,
                             "-filter_complex_script " +
-                                path.join(
-                                    __dirname,
-                                    "..",
-                                    input + ".script.txt"
-                                ),
+                            path.join(
+                                __dirname,
+                                "..",
+                                input + ".script.txt"
+                            ),
                             "-shortest",
                             '-map "[vout]"',
                             '-map "[aout]"',
@@ -488,6 +498,40 @@ async function stitch(inputs, output) {
             "..",
             output + ".mp4"
         )}`
+    );
+}
+
+function file(x) {
+    return path.join(
+        __dirname,
+        ".." + (x.includes("images") ? "" : "/images"),
+        x
+    );
+}
+
+async function cookingVideo(input, output) {
+    var n_frames = await getFrameCount(file("cooking.mp4"));
+    var len = await getVideoLength(file("cooking.mp4"));
+    var start_frame = Math.round(n_frames * 0.4);
+    var frames_length = Math.round(n_frames * 0.075);
+    var fade_time = Math.round(n_frames * 0.05);
+    var end_frame = start_frame + frames_length;
+
+    return ffmpeg(
+        [
+            "-y",
+            `-t ${len} -loop 1 -i ${file(input)}`,
+            `-i ${file("cooking.mp4")}`,
+            `-filter_complex`,
+            filter([
+                `[0:v]scale=576:1024,setsar=1:1,fade=in:${start_frame}:${fade_time}:alpha=1,fade=out:${end_frame}:${fade_time}:alpha=1[fader]`,
+                `[1:v][fader]overlay[final]`,
+            ]),
+            "-shortest",
+            '-map "[final]"',
+            "-map 1:a:0",
+            file(output + ".mp4"),
+        ].join(" ")
     );
 }
 async function imageAudio(input, output, rev, exts) {
@@ -568,7 +612,7 @@ async function mimeNod(output, bpm) {
 }
 async function armstrongify(input, output, options) {
     return ffmpeg(
-        `-y ${options.isVideo ? "" : "-t 1 "}-i ${path.join(
+            `-y ${options.isVideo ? "" : "-t 1 "}-i ${path.join(
             __dirname,
             "..",
             input
@@ -670,4 +714,5 @@ module.exports = {
     parseScalingTable: parseScalingTable,
     stewie: stewie,
     bassBoost: bassBoost,
+    cookingVideo: cookingVideo,
 };

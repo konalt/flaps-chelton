@@ -67,6 +67,19 @@ async function caption2(name, text, msg, att) {
             sendWebhookFile("ffmpeg", "images/cache/" + id + ext, msg.channel);
         });
 }
+async function cookingVideo(name, msg) {
+    var id = n("Effect_CookingVideo");
+    var ext = "." + name.split(".").pop();
+    video
+        .cookingVideo("images/cache/" + name, "images/cache/" + id + ext)
+        .then(() => {
+            sendWebhookFile(
+                "ffmpeg",
+                "images/cache/" + id + ext + ".mp4",
+                msg.channel
+            );
+        });
+}
 async function simpleMemeCaption(name, text, msg, client, url) {
     if (!url) url = msg.attachments.first().url;
     if (parseInt(msg.content.split(" ")[1])) {
@@ -361,4 +374,5 @@ module.exports = {
     theHorror: theHorror,
     stewie: stewie,
     bassBoost: bassBoost,
+    cookingVideo: cookingVideo,
 };
