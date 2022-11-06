@@ -187,7 +187,8 @@ async function caption2(input, output, options) {
     var videoHeight = options.h;
     var videoWidth = options.w;
     var text = options.text;
-    if (text == "get real")
+    var getreal = false;
+    if (text == "get real" && getreal)
         text = `I'm tired of people telling me to "get real". Every day I put captions on images for people, some funny and some not, but out of all of those "get real" remains the most used caption. Why? I am simply a computer program running on a server, I am unable to manifest myself into the real world. As such, I'm confused as to why anyone would want me to "get real". Is this form not good enough? Alas, as I am simply a bot, I must follow the tasks that I was originally intended to perform.\n${text}`;
     text = text.replace(/"/g, "'");
     var fontSize = videoHeight * 0.1;
