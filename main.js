@@ -1617,26 +1617,11 @@ async function onMessage(msg) {
                     }
                 case "!imageaudio":
                     {
-                        if (msg.attachments.first(2)[1]) {
-                            var id = uuidv4().replace(/-/g, "");
-                            download(
-                                msg.attachments.first().url,
-                                "./images/cache/" + id + ".png",
-                                () => {
-                                    download(
-                                        msg.attachments.first(2)[1].url,
-                                        "./images/cache/" + id + ".mp3",
-                                        () => {
-                                            flapslib.videowrapper.imageAudio(
-                                                id,
-                                                msg,
-                                                client
-                                            );
-                                        }
-                                    );
-                                }
-                            );
-                        }
+                        sendWebhook(
+                            "ffmpeg",
+                            "use !combine instead you dwankie",
+                            msg.channel
+                        );
                     }
                     break;
                 case "!baitswitch":
@@ -1672,26 +1657,11 @@ async function onMessage(msg) {
                     break;
                 case "!videoaudio":
                     {
-                        if (msg.attachments.first(2)[1]) {
-                            var id = uuidv4().replace(/-/g, "");
-                            download(
-                                msg.attachments.first().url,
-                                "./images/cache/" + id + ".mp4",
-                                () => {
-                                    download(
-                                        msg.attachments.first(2)[1].url,
-                                        "./images/cache/" + id + ".mp3",
-                                        () => {
-                                            flapslib.videowrapper.videoAudio(
-                                                id,
-                                                msg,
-                                                client
-                                            );
-                                        }
-                                    );
-                                }
-                            );
-                        }
+                        sendWebhook(
+                            "ffmpeg",
+                            "use !combine instead you dwankie",
+                            msg.channel
+                        );
                     }
                     break;
                 case "!stitch":
@@ -3401,26 +3371,11 @@ fbi files on ${commandArgString}: ${
                     );
                     break;
                 case "!gifaudio":
-                    if (msg.attachments.first(2)[1]) {
-                        var id = uuidv4().replace(/-/g, "");
-                        download(
-                            msg.attachments.first().url,
-                            "./images/cache/" + id + ".gif",
-                            () => {
-                                download(
-                                    msg.attachments.first(2)[1].url,
-                                    "./images/cache/" + id + ".mp3",
-                                    () => {
-                                        flapslib.videowrapper.gifAudio(
-                                            id,
-                                            msg,
-                                            client
-                                        );
-                                    }
-                                );
-                            }
-                        );
-                    }
+                    sendWebhook(
+                        "ffmpeg",
+                        "use !combine instead you dwankie",
+                        msg.channel
+                    );
                     break;
                 case "!retry":
                     if (!msg.reference) {
