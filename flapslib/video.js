@@ -509,6 +509,22 @@ function file(x) {
     );
 }
 
+async function speed(input, output, speed) {
+    return ffmpeg(
+        [
+            `-i ${file(input)}`,
+            `-filter_complex`,
+            filter([
+                `[0:v]setpts=${1 / speed}*PTS[out]`,
+                `[0:a]atempo=${speed}[out_audio]`,
+            ]),
+            '-map "[out]"',
+            '-map "[out_audio]"',
+            file(output),
+        ].join(" ")
+    );
+}
+
 async function cookingVideo(input, output) {
     var n_frames = await getFrameCount(file("cooking.mp4"));
     var len = await getVideoLength(file("cooking.mp4"));
@@ -715,4 +731,5 @@ module.exports = {
     stewie: stewie,
     bassBoost: bassBoost,
     cookingVideo: cookingVideo,
+    speed: speed,
 };

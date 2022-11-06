@@ -1664,6 +1664,17 @@ async function onMessage(msg) {
                         );
                     }
                     break;
+                case "!speed":
+                    {
+                        getSources(msg, ["video"])
+                        .then((ids) => {
+                            flapslib.videowrapper.speed(ids[0], msg);
+                        })
+                        .catch((reason) => {
+                            sendWebhook("ffmpeg", reason, msg.channel);
+                        });
+                    }
+                    break;
                 case "!stitch":
                     {
                         getSources(msg, ["video", "video"])

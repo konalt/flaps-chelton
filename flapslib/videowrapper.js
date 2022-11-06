@@ -129,6 +129,19 @@ async function compress(name, msg) {
             sendWebhookFile("ffmpeg", "images/cache/" + id + ext, msg.channel);
         });
 }
+async function speed(name, msg) {
+    var id = n("Effect_Speed");
+    var ext = "." + name.split(".").pop();
+    video
+        .speed(
+            "images/cache/" + name,
+            "images/cache/" + id + ext,
+            parseFloat(msg.content.split(" ")[1]) || 1.5
+        )
+        .then(() => {
+            sendWebhookFile("ffmpeg", "images/cache/" + id + ext, msg.channel);
+        });
+}
 async function bassBoost(name, msg) {
     var id = n("Effect_BassBoost");
     var ext = "." + name.split(".").pop();
@@ -375,4 +388,5 @@ module.exports = {
     stewie: stewie,
     bassBoost: bassBoost,
     cookingVideo: cookingVideo,
+    speed: speed,
 };
