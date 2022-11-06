@@ -480,7 +480,7 @@ async function videoGif(input, output, options) {
             __dirname,
             "..",
             input
-        )} -vf "fps=24,scale=480:-1:flags=lanczos,split[s0][s1];[s0]palettegen[p];[s1][p]paletteuse" -loop 0 -preset:v ${h264Preset} ${path.join(
+        )} -vf "fps=16,scale=360:-1:flags=lanczos,split[s0][s1];[s0]palettegen[p];[s1][p]paletteuse" -loop 0 -preset:v ${h264Preset} ${path.join(
             __dirname,
             "..",
             output
