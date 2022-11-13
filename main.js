@@ -248,11 +248,11 @@ var serverVCs = {
     "760524739239477340": "874341836796362752",
 };
 
-canvas.registerFont("dog.otf", { family: "Fuckedup" });
-canvas.registerFont("homodog.otf", { family: "Homodog" });
-canvas.registerFont("weezer.otf", { family: "Weezer" });
-canvas.registerFont("futura.otf", { family: "Futura", weight: 400 });
-canvas.registerFont("tate.ttf", { family: "Tate" });
+canvas.registerFont("fonts/dog.otf", { family: "Fuckedup" });
+canvas.registerFont("fonts/homodog.otf", { family: "Homodog" });
+canvas.registerFont("fonts/weezer.otf", { family: "Weezer" });
+canvas.registerFont("fonts/futura.otf", { family: "Futura", weight: 400 });
+canvas.registerFont("fonts/tate.ttf", { family: "Tate" });
 
 var errChannel;
 

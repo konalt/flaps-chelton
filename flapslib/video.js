@@ -169,7 +169,7 @@ async function addText(input, output, options) {
             __dirname,
             "..",
             input
-        )} -filter_complex "drawtext=fontfile=arial.ttf:text='${
+        )} -filter_complex "drawtext=fontfile=fonts/arial.ttf:text='${
             options.text
         }':fontcolor=white:fontsize=${
             options.fontsize
@@ -231,7 +231,7 @@ async function caption2(input, output, options) {
         videoHeight + barHeight
     }:x=0:y=${barHeight}:color=white,`;
     lines.forEach((line, index) => {
-        filter += `drawtext=fontfile=futura.otf:fontsize=${fontSize}:text='${
+        filter += `drawtext=fontfile=fonts/futura.otf:fontsize=${fontSize}:text='${
             line[1]
         }':x=(w-text_w)/2:y=${fontSize / 2 + index * (fontSize + 5)},`;
     });
