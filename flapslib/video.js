@@ -2,15 +2,14 @@ const cp = require("child_process");
 const fs = require("fs");
 const path = require("path");
 const { stdout } = require("process");
-const { start } = require("repl");
 const { getTextWidth } = require("./canvas");
 
 var ffmpegVerbose = false;
 
 var h264Preset = "ultrafast";
 
-async function ffmpeg(args, quiet = false, resolveStdout = false) {
-    return new Promise((resolve, reject) => {
+async function ffmpeg(args, quiet = false) {
+    return new Promise((resolve) => {
         var startTime = Date.now();
         if (!quiet) console.log("[ffmpeg] Starting FFMpeg instance");
         if (!quiet)
@@ -19,8 +18,7 @@ async function ffmpeg(args, quiet = false, resolveStdout = false) {
             );
         var ffmpegInstance = cp.spawn(
             "ffmpeg",
-            ((ffmpegVerbose ? "" : "-v warning ") + args).split(" "),
-            {
+            ((ffmpegVerbose ? "" : "-v warning ") + args).split(" "), {
                 shell: true,
             }
         );
@@ -43,7 +41,7 @@ async function ffmpeg(args, quiet = false, resolveStdout = false) {
     });
 }
 async function ffprobe(args) {
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
         var startTime = Date.now();
         var ffmpegInstance = cp.spawn("ffprobe", args.split(" "), {
             shell: true,
@@ -74,7 +72,7 @@ function parseScalingTable(
     v_height,
     input
 ) {
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
         var start = Date.now();
         var scale = 1;
         var ext = input.split(".").pop();
@@ -104,7 +102,7 @@ function parseScalingTable(
             if (lastIndGen != cDirInd) {
                 promises.push(
                     (() => {
-                        return new Promise((res, rej) => {
+                        return new Promise((res) => {
                             ffmpeg(
                                 `-i ${path.join(
                                     __dirname,
@@ -136,8 +134,8 @@ function parseScalingTable(
         Promise.all(promises).then(() => {
             console.log(
                 "Created all key images in " +
-                    (Date.now() - start) +
-                    "ms. Beginning copy process"
+                (Date.now() - start) +
+                "ms. Beginning copy process"
             );
             var curFile = path.join(
                 __dirname,
@@ -149,10 +147,10 @@ function parseScalingTable(
                     __dirname,
                     "..",
                     input +
-                        "." +
-                        frame_num.toString().padStart(3, "0") +
-                        "." +
-                        ext
+                    "." +
+                    frame_num.toString().padStart(3, "0") +
+                    "." +
+                    ext
                 );
                 if (!fs.existsSync(newFile)) {
                     fs.copyFileSync(curFile, newFile);
@@ -221,11 +219,11 @@ async function caption2(input, output, options) {
     lines = lines.map((l) => [
         l[0],
         l[1]
-            .replace(/\\/g, "\\\\\\\\")
-            .replace(/'/g, "\u2019")
-            .replace(/%/g, "\\\\\\%")
-            .replace(/:/g, "\\\\\\:")
-            .replace(/\n/g, "\\n"),
+        .replace(/\\/g, "\\\\\\\\")
+        .replace(/'/g, "\u2019")
+        .replace(/%/g, "\\\\\\%")
+        .replace(/:/g, "\\\\\\:")
+        .replace(/\n/g, "\\n"),
     ]);
     var barHeight =
         2 * Math.round(((lines.length + 1) * fontSize + lines.length * 5) / 2);
@@ -347,7 +345,7 @@ function filter(arr) {
     return '"' + arr.join(";") + '"';
 }
 async function theHorror(input, output) {
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
         getFrameCount(path.join(__dirname, "..", "images", "horror.mp4")).then(
             (fc) => {
                 parseScalingTable(
@@ -381,11 +379,11 @@ async function theHorror(input, output) {
                                 input + ".%03d." + input.split(".").pop()
                             )}`,
                             "-filter_complex_script " +
-                                path.join(
-                                    __dirname,
-                                    "..",
-                                    input + ".script.txt"
-                                ),
+                            path.join(
+                                __dirname,
+                                "..",
+                                input + ".script.txt"
+                            ),
                             "-shortest",
                             '-map "[oout]"',
                             '-map "0:a:0"',
@@ -401,9 +399,9 @@ async function theHorror(input, output) {
 async function getVideoLength(path) {
     return new Promise((res, rej) => {
         ffprobe(
-            "-v error -select_streams v:0 -show_entries format=duration -of default=noprint_wrappers=1:nokey=1 " +
+                "-v error -select_streams v:0 -show_entries format=duration -of default=noprint_wrappers=1:nokey=1 " +
                 path
-        )
+            )
             .then((txt) => {
                 res(parseFloat(txt));
             })
@@ -413,9 +411,9 @@ async function getVideoLength(path) {
 async function getFrameCount(path) {
     return new Promise((res, rej) => {
         ffprobe(
-            "-v error -select_streams v:0 -count_frames -show_entries stream=nb_read_frames -print_format default=nokey=1:noprint_wrappers=1 " +
+                "-v error -select_streams v:0 -count_frames -show_entries stream=nb_read_frames -print_format default=nokey=1:noprint_wrappers=1 " +
                 path
-        )
+            )
             .then((txt) => {
                 res(parseInt(txt));
             })
@@ -423,7 +421,7 @@ async function getFrameCount(path) {
     });
 }
 async function stewie(input, output) {
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
         getFrameCount(path.join(__dirname, "..", "images", "stewie.mp4")).then(
             (fc) => {
                 parseScalingTable(
@@ -459,11 +457,11 @@ async function stewie(input, output) {
                                 input + ".%03d." + input.split(".").pop()
                             )}`,
                             "-filter_complex_script " +
-                                path.join(
-                                    __dirname,
-                                    "..",
-                                    input + ".script.txt"
-                                ),
+                            path.join(
+                                __dirname,
+                                "..",
+                                input + ".script.txt"
+                            ),
                             "-shortest",
                             '-map "[vout]"',
                             '-map "[aout]"',
@@ -476,7 +474,7 @@ async function stewie(input, output) {
         );
     });
 }
-async function videoGif(input, output, options) {
+async function videoGif(input, output) {
     return ffmpeg(
         `-y -i ${path.join(
             __dirname,
@@ -625,7 +623,7 @@ async function mimeNod(output, bpm) {
 }
 async function armstrongify(input, output, options) {
     return ffmpeg(
-        `-y ${options.isVideo ? "" : "-t 1 "}-i ${path.join(
+            `-y ${options.isVideo ? "" : "-t 1 "}-i ${path.join(
             __dirname,
             "..",
             input

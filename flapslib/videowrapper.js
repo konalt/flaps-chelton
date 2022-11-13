@@ -205,12 +205,6 @@ async function trim(name, times, msg) {
             sendWebhookFile("ffmpeg", "images/cache/" + id + ext, msg.channel);
         });
 }
-
-var client;
-
-function setClient(c) {
-    client = c;
-}
 async function videoGif(name, msg) {
     var id = n("Effect_VideoGif");
     video
@@ -259,7 +253,7 @@ async function videoAudio(name, msg, exts, reverse) {
             );
         });
 }
-async function armstrongify(name, msg, duration, client) {
+async function armstrongify(name, msg, duration) {
     var id = n("Effect_Armstrong");
     var ext = name.endsWith(".mp4") ? ".mp4" : ".png";
     video
@@ -322,7 +316,7 @@ async function geq(name, msg) {
             }
         )
         .then(async() => {
-            sendWebhookFile("ffmpeg", "images/cache/" + id + ext, msgChannel);
+            sendWebhookFile("ffmpeg", "images/cache/" + id + ext, msg.channel);
         });
 }
 
@@ -344,7 +338,7 @@ async function complexFFmpeg(name, msg) {
                 sendWebhookFile(
                     "ffmpeg",
                     "images/cache/" + id + ext,
-                    msgChannel
+                    msg.channel
                 );
             } catch {
                 sendWebhook(
@@ -378,7 +372,6 @@ module.exports = {
     armstrongify: armstrongify,
     complexFFmpeg: complexFFmpeg,
     baitSwitch: baitSwitch,
-    setClient: setClient,
     mimeNod: mimeNod,
     gifAudio: gifAudio,
     compress: compress,
