@@ -1,7 +1,6 @@
 const yt = require("./yt");
 const ai = require("./ai");
 const video = require("./video");
-const steam = require("./steam");
 const canvas = require("./canvas");
 const webhooks = require("./webhooks");
 const download = require("./download");
@@ -24,7 +23,6 @@ module.exports = {
     videowrapper: videowrapper,
     fetchapis: fetchapis,
     watchparty_init: watchparty,
-    steam: steam,
     moviereview: moviereview,
     cah: cah,
     cahWhiteCard: cahWhiteCard,
