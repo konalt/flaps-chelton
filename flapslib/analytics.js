@@ -1,5 +1,4 @@
 const os = require("os-utils");
-const Discord = require("discord.js");
 
 var analytics = {
     uptime: 0,
@@ -38,7 +37,7 @@ function getAnalytics() {
 }
 
 function getStats() {
-    return new Promise((res, rej) => {
+    return new Promise((res) => {
         var s = {
             cpu: 0,
             mem: process.memoryUsage().heapUsed / 1024 / 1024 / os.totalmem(),
