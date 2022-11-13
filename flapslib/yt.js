@@ -297,7 +297,7 @@ function wpAddToQueue(url, wpId, msgChannel) {
                                 headers: { "Content-Type": "application/json" },
                             })
                             .then((r) => r.json())
-                            .then((response) => {
+                            .then(() => {
                                 sendWebhook(
                                     "flaps",
                                     `added to da queue`,
@@ -375,7 +375,7 @@ function wpAddToQueueFile(url, wpId, msgChannel) {
                                 headers: { "Content-Type": "application/json" },
                             })
                             .then((r) => r.json())
-                            .then((response) => {
+                            .then(() => {
                                 sendWebhook(
                                     "flaps",
                                     `added to da queue`,
@@ -396,4 +396,5 @@ module.exports = {
     downloadYoutubeToMP3: downloadYoutubeToMP3,
     startWatchParty: startWatchParty,
     wpAddToQueue: wpAddToQueue,
+    wpAddToQueueFile: wpAddToQueueFile,
 };
