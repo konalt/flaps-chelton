@@ -5,6 +5,7 @@ const fs = require("fs");
 const path = require("path");
 const fetch = require("node-fetch");
 const { complexFFmpeg } = require("./video");
+const { addError } = require("./analytics");
 
 var puppeteerInitialized = false;
 var aiPageData = {};
@@ -33,7 +34,7 @@ function sleep(ms) {
 init();
 
 async function makesweet(text, filename, msgChannel, client, send = true) {
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
         try {
             if (!puppeteerInitialized) {
                 return sendWebhook(
@@ -93,7 +94,7 @@ async function makesweet(text, filename, msgChannel, client, send = true) {
                 sendWebhook("mkswt", "and we're off!", msgChannel);
 
                 var originalSrc = "";
-                waitInterval = setInterval(async() => {
+                var waitInterval = setInterval(async() => {
                     waitCounts++;
                     var url = await aiPageData.page.evaluate((original) => {
                         if (
