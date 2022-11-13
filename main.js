@@ -38,6 +38,7 @@ const {
     sendToChatbot,
     ruQuestion,
     dalle2,
+    questionPromise,
 } = require("./flapslib/ai");
 const {
     sendWebhook,
@@ -80,6 +81,7 @@ const { tenorURLToGifURL } = require("./flapslib/util");
 const { MessageAttachment } = require("discord.js");
 const owoify = require("owoify-js").default;
 const sizeOf = require("buffer-image-size");
+const { caption2 } = require("./flapslib/video");
 var dream = WomboDreamApi.buildDefaultInstance();
 
 flapslib.webhooks.setClient(client);
@@ -3506,6 +3508,23 @@ fbi files on ${commandArgString}: ${
                             msg.channel,
                             n("Canvas_FakeNews", "png")
                         );
+                    });
+                    break;
+                case "!tragicdeath":
+                    questionPromise(
+                        "finish the sentence comedically:\nme tragically dying after"
+                    ).then((answer) => {
+                        var id =
+                            "images/cache/" + n("Effect_TragicDeath", "mp4");
+                        caption2("images/sam.mp4", id, {
+                            w: 498,
+                            h: 270,
+                            text: answer.startsWith("me tragically dying after")
+                                ? answer
+                                : "me tragically dying after " + answer,
+                        }).then(() => {
+                            sendWebhookFile("flaps", id, msg.channel);
+                        });
                     });
                     break;
                 case "!retry":
