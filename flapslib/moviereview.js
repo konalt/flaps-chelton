@@ -2,6 +2,7 @@ var DomParser = require("dom-parser");
 var { sendWebhook } = require("./webhooks");
 var parser = new DomParser();
 var fetch = require("node-fetch");
+const { addError } = require("./analytics");
 
 async function morbiusReview(msgChannel) {
     try {
