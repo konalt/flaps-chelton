@@ -24,7 +24,7 @@ var download = function(url, dest) {
             https
                 .get(url, function(response) {
                     if (response.statusCode != 200) {
-                        return cb(true);
+                        reject(response);
                     }
                     response.pipe(file);
                     file.on("finish", function() {
