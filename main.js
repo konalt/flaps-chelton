@@ -67,6 +67,7 @@ const {
     dog,
     robertDowneyJunior,
     andrewTate,
+    fakeNews,
 } = require("./flapslib/canvas");
 const { createCanvas } = require("canvas");
 const { Canvas } = require("canvas");
@@ -3487,17 +3488,44 @@ fbi files on ${commandArgString}: ${
                         );
                     });
                     break;
+                case "!fakenews":
+                    fakeNews(
+                        await downloadPromise(
+                            msg.attachments.first().url,
+                            "dataurl"
+                        ),
+                        commandArgString.split(":")[0] ||
+                            "BRO FORGOT THE FUCKING HEADLINE LMAO",
+                        commandArgString.split(":")[1] ||
+                            "BRO FORGOT THE FUCKING TICKER LMAO"
+                    ).then((buf) => {
+                        sendWebhookBuffer(
+                            "flaps",
+                            buf,
+                            "some fucking news",
+                            msg.channel,
+                            n("Canvas_FakeNews", "png")
+                        );
+                    });
+                    break;
                 case "!retry":
                     if (!msg.reference) {
-                        return sendWebhook(
-                            "flaps",
-                            "reply to a message bub",
-                            msg.channel
-                        );
+                        if (retryables[msg.author.id]) {
+                            msg.channel.messages
+                                .fetch(retryables[msg.author.id])
+                                .then((message) => {
+                                    onMessage(message);
+                                });
+                        }
+                    } else {
+                        msg.fetchReference().then((ref) => {
+                            onMessage(ref);
+                        });
                     }
-                    msg.fetchReference().then((ref) => {
-                        onMessage(ref);
-                    });
+            }
+            if (command != "!retry" && command.startsWith("!")) {
+                retryables[msg.author.id] = msg.id;
+                fs.writeFileSync("retrycache.json", JSON.stringify(retryables));
             }
             if (toDelete) {
                 msg.delete();
@@ -3514,6 +3542,8 @@ fbi files on ${commandArgString}: ${
         );
     }
 }
+
+var retryables = JSON.parse(fs.readFileSync("retrycache.json").toString());
 
 client.on("messageCreate", onMessage);
 
