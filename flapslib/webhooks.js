@@ -1,7 +1,9 @@
 const fetch = require("node-fetch");
 const fs = require("fs");
 const FormData = require("form-data");
+//eslint-disable-next-line no-unused-vars
 const owoify = require("owoify-js").default;
+//eslint-disable-next-line no-unused-vars
 const Discord = require("discord.js");
 const path = require("path");
 
@@ -30,7 +32,7 @@ function sendWebhook(
     comps = [],
     e
 ) {
-    return new Promise((resolve, _reject) => {
+    return new Promise((resolve) => {
         updateUsers();
         if (!users[id] && id != "custom") {
             return sendWebhook(
@@ -111,7 +113,7 @@ function sendWebhook(
 }
 
 function getWebhook(msgChannel) {
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
         msgChannel
             .fetchWebhooks()
             .then((hooks) => {
@@ -152,7 +154,7 @@ function trySend(url, data) {
 }
 
 function editWebhookMsg(msgid, msgChannel, content) {
-    return new Promise((resolve, _reject) => {
+    return new Promise((resolve) => {
         msgChannel
             .fetchWebhooks()
             .then((hooks) => {
@@ -174,7 +176,9 @@ function editWebhookMsg(msgid, msgChannel, content) {
 }
 
 function editWebhookFile(msgid, msgChannel, path, pretext = "") {
-    if (multipartUpload) {} else {
+    if (multipartUpload) {
+        console.log("pigon");
+    } else {
         client.channels.cache
             .get("956316856422137856")
             .send({
@@ -183,7 +187,7 @@ function editWebhookFile(msgid, msgChannel, path, pretext = "") {
                 }, ],
             })
             .catch((e) => {
-                sendWebhook(id, "Send error: " + e, msgChannel);
+                sendWebhook("flaps", "Send error: " + e, msgChannel);
             })
             .then((message) => {
                 if (!message) {
@@ -361,7 +365,9 @@ async function sendWebhookAttachment(id, att, msgChannel) {
 }
 
 async function sendWebhookFileButton(id, filename, buttons, msgChannel) {
-    if (multipartUpload) {} else {
+    if (multipartUpload) {
+        console.log("gloria fortis miles");
+    } else {
         client.channels.cache
             .get("956316856422137856")
             .send({
@@ -420,10 +426,8 @@ function sendWebhookButton(id, content, buttons, msgChannel) {
     ]);
 }
 
-function sendWebhookFileNew(id, content, path, msgChannel) {}
-
-function sendWebhookEmbed(id, embed, msgChannel, customData = {}, msg) {
-    return new Promise((resolve, _reject) => {
+function sendWebhookEmbed(id, embed, msgChannel) {
+    return new Promise((resolve) => {
         try {
             msgChannel
                 .fetchWebhooks()
@@ -506,14 +510,9 @@ function updateUsers() {
     });
 }
 
-function sendWebhookImage(id, data) {
-    return false;
-}
-
 module.exports = {
     sendWebhook: sendWebhook,
     sendWebhookEmbed: sendWebhookEmbed,
-    sendWebhookImage: sendWebhookImage,
     updateUsers: updateUsers,
     users: users,
     editWebhookMsg: editWebhookMsg,
@@ -524,4 +523,5 @@ module.exports = {
     editWebhookFile: editWebhookFile,
     sendWebhookAttachment: sendWebhookAttachment,
     sendWebhookBuffer: sendWebhookBuffer,
+    sendWebhookFileButton: sendWebhookFileButton,
 };
