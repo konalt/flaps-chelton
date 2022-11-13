@@ -15,7 +15,7 @@ function n(type) {
 }
 
 var memeMaking = {
-    getImageData: async function(n) {
+    getImageData: async function (n) {
         if (!this.imageExists(n)) {
             n = "farquaad";
         }
@@ -28,7 +28,7 @@ var memeMaking = {
             })[0]
             .split(" ");
     },
-    imageExists: function(n) {
+    imageExists: function (n) {
         var o = !!fs
             .readFileSync("./images/sizes.txt")
             .toString()
@@ -42,9 +42,9 @@ var memeMaking = {
 
 function laugh(msg, client) {
     var image =
-        msg.content.substring("!laugh ".length).length == 0 ?
-        "farquaad" :
-        msg.content.substring("!laugh ".length).split(" ")[0];
+        msg.content.substring("!laugh ".length).length == 0
+            ? "farquaad"
+            : msg.content.substring("!laugh ".length).split(" ")[0];
     if (image == "attachment" && msg.attachments.first()) {
         console.log("[laugh] Laugh attachment");
         var id = uuidv4();
@@ -73,7 +73,7 @@ function laugh(msg, client) {
 
             canvas
                 .loadImage(__dirname + "./../images\\" + image)
-                .then(async(i) => {
+                .then(async (i) => {
                     ctx.font = "normal normal bolder" + data[3] + "px Impact";
                     ctx.lineWidth = parseInt(data[3]) / 30;
                     var text1Pos = [0, 0];
@@ -133,18 +133,18 @@ function laugh(msg, client) {
         ) {
             console.log("[laugh] pos1");
             text =
-                msg.content.substring("!laugh ".length).length == 0 ?
-                "" :
-                msg.content.substring(
-                    "!laugh ".length + image.length + 1
-                );
+                msg.content.substring("!laugh ".length).length == 0
+                    ? ""
+                    : msg.content.substring(
+                          "!laugh ".length + image.length + 1
+                      );
         } else {
             console.log("[laugh] pos2");
             image = "farquaad";
             text =
-                msg.content.substring("!laugh ".length).length == 0 ?
-                "" :
-                msg.content.substring("!laugh ".length);
+                msg.content.substring("!laugh ".length).length == 0
+                    ? ""
+                    : msg.content.substring("!laugh ".length);
         }
         console.log("[laugh] mm keep going");
         memeMaking.getImageData(image).then((data) => {
@@ -158,7 +158,7 @@ function laugh(msg, client) {
 
             canvas
                 .loadImage(__dirname + "./../images\\" + image + ".jpg")
-                .then(async(i) => {
+                .then(async (i) => {
                     ctx.font = "normal normal bolder" + data[3] + "px Impact";
                     ctx.lineWidth = parseInt(data[3]) / 30;
                     var text1Pos = [0, 0];
@@ -228,14 +228,18 @@ function todo(ctx, text, w, h, fontSize, cx, cy) {
     // Start calculation
     while (text.length) {
         for (
-            i = text.length; ctx.measureText(text.substr(0, i)).width > max_width; i--
+            i = text.length;
+            ctx.measureText(text.substr(0, i)).width > max_width;
+            i--
         );
 
         result = text.substr(0, i);
 
         if (i !== text.length)
             for (
-                j = 0; result.indexOf(" ", j) !== -1; j = result.indexOf(" ", j) + 1
+                j = 0;
+                result.indexOf(" ", j) !== -1;
+                j = result.indexOf(" ", j) + 1
             );
 
         lines.push(result.substr(0, j || result.length));
@@ -264,7 +268,7 @@ function homodog(msg, client) {
         var ctx = c.getContext("2d");
         canvas
             .loadImage(path.join(__dirname, "..", "images", imgid))
-            .then(async(photo) => {
+            .then(async (photo) => {
                 ctx.drawImage(photo, 0, 0, w, h);
 
                 ctx.fillStyle = "white";
@@ -298,7 +302,7 @@ function flip(msg, client) {
 
         request.get(
             msg.attachments.first().url,
-            function(error, response, body) {
+            function (error, response, body) {
                 if (!error && response.statusCode == 200) {
                     //data = "data:" + response.headers["content-type"] + ";base64," + Buffer.from(body).toString('base64');
                     var imageStream = Buffer.from(body, "base64");
@@ -310,7 +314,7 @@ function flip(msg, client) {
                     var ctx = c.getContext("2d");
                     canvas
                         .loadImage(__dirname + "./../images\\cache\\" + imgID)
-                        .then(async(photo) => {
+                        .then(async (photo) => {
                             ctx.translate(w, 0);
                             ctx.scale(-1, 1);
                             ctx.drawImage(photo, 0, 10, w, h);
@@ -368,13 +372,13 @@ function spotted(msg, client) {
         var request = require("request").defaults({ encoding: null });
 
         var atts = msg.attachments.first(2);
-        request.get(atts[0].url, function(error, response, body) {
+        request.get(atts[0].url, function (error, response, body) {
             if (!error && response.statusCode == 200) {
                 //data = "data:" + response.headers["content-type"] + ";base64," + Buffer.from(body).toString('base64');
                 var imageStream = Buffer.from(body, "base64");
                 var imgID = uuidv4().replace(/-/g, "_") + ".jpg";
                 fs.writeFileSync("../images/cache/" + imgID, imageStream);
-                request.get(atts[1].url, function(error, response, body) {
+                request.get(atts[1].url, function (error, response, body) {
                     if (!error && response.statusCode == 200) {
                         //data = "data:" + response.headers["content-type"] + ";base64," + Buffer.from(body).toString('base64');
                         var imageStream2 = Buffer.from(body, "base64");
@@ -389,10 +393,10 @@ function spotted(msg, client) {
                         var ctx = c.getContext("2d");
                         canvas
                             .loadImage("./../images\\cache\\" + imgID)
-                            .then(async(photo1) => {
+                            .then(async (photo1) => {
                                 canvas
                                     .loadImage("./../images\\cache\\" + imgID2)
-                                    .then(async(photo2) => {
+                                    .then(async (photo2) => {
                                         ctx.drawImage(photo1, 0, 0, w, h);
                                         var positions = [
                                             [w / 8, w / 8],
@@ -404,7 +408,7 @@ function spotted(msg, client) {
                                             positions[
                                                 Math.floor(
                                                     Math.random() *
-                                                    positions.length
+                                                        positions.length
                                                 )
                                             ];
                                         var ang = getAngleArbitrary(
@@ -509,7 +513,8 @@ function unfunnyToImg(ctx, img, unfunnyCutoff = 10) {
     Array.from(imageData.data).forEach((element, index) => {
         curPix[readIndex] = element;
         if (!curPix.includes(-1)) {
-            if (!isBlack(curPix, unfunnyCutoff) &&
+            if (
+                !isBlack(curPix, unfunnyCutoff) &&
                 !isWhite(curPix, unfunnyCutoff) &&
                 !isGray(curPix, unfunnyCutoff)
             ) {
@@ -552,7 +557,7 @@ function unfunnyTest(msg, client) {
 
         request.get(
             msg.attachments.first().url,
-            function(error, response, body) {
+            function (error, response, body) {
                 if (!error && response.statusCode == 200) {
                     //data = "data:" + response.headers["content-type"] + ";base64," + Buffer.from(body).toString('base64');
                     var imageStream = Buffer.from(body, "base64");
@@ -566,7 +571,7 @@ function unfunnyTest(msg, client) {
                     var ctx = c.getContext("2d");
                     canvas
                         .loadImage(path.join("..", "images/cache/", imgID))
-                        .then(async(photo) => {
+                        .then(async (photo) => {
                             ctx.drawImage(photo, 0, 0);
                             var imgs = [
                                 "saul",
@@ -586,9 +591,9 @@ function unfunnyTest(msg, client) {
                                         ] + ".png"
                                     )
                                 ),
-                                msg.content.split(" ")[1] ?
-                                parseInt(msg.content.split(" ")[1]) :
-                                5
+                                msg.content.split(" ")[1]
+                                    ? parseInt(msg.content.split(" ")[1])
+                                    : 5
                             );
 
                             sendCanvas(
@@ -621,7 +626,7 @@ function sb(msg, client) {
 
         request.get(
             msg.attachments.first().url,
-            function(error, response, body) {
+            function (error, response, body) {
                 if (!error && response.statusCode == 200) {
                     //data = "data:" + response.headers["content-type"] + ";base64," + Buffer.from(body).toString('base64');
                     var imageStream = Buffer.from(body, "base64");
@@ -635,10 +640,10 @@ function sb(msg, client) {
                     var ctx = c.getContext("2d");
                     canvas
                         .loadImage(path.join("..", "images/cache/", imgID))
-                        .then(async(photo) => {
+                        .then(async (photo) => {
                             canvas
                                 .loadImage(pj("speech.png"))
-                                .then(async(speechbubble) => {
+                                .then(async (speechbubble) => {
                                     var sbHeight = w * (17 / 22);
                                     ctx.drawImage(photo, 0, 10, w, h);
                                     if (msg.content.includes("flip")) {
@@ -647,7 +652,8 @@ function sb(msg, client) {
                                     }
                                     ctx.drawImage(
                                         speechbubble,
-                                        0, -(sbHeight - sbHeight / 3),
+                                        0,
+                                        -(sbHeight - sbHeight / 3),
                                         w,
                                         sbHeight
                                     );
@@ -683,7 +689,7 @@ function frame(msg, client) {
 
         request.get(
             msg.attachments.first().url,
-            function(error, response, body) {
+            function (error, response, body) {
                 if (!error && response.statusCode == 200) {
                     //data = "data:" + response.headers["content-type"] + ";base64," + Buffer.from(body).toString('base64');
                     var imageStream = Buffer.from(body, "base64");
@@ -694,7 +700,7 @@ function frame(msg, client) {
                     var ctx = c.getContext("2d");
                     canvas
                         .loadImage("./../images/cache/" + imgID)
-                        .then(async(photo) => {
+                        .then(async (photo) => {
                             canvas
                                 .loadImage(
                                     path.join(
@@ -704,10 +710,12 @@ function frame(msg, client) {
                                         "frame.png"
                                     )
                                 )
-                                .then(async(frame) => {
+                                .then(async (frame) => {
                                     ctx.drawImage(photo, 72, 73, 1125, 729);
                                     ctx.drawImage(
-                                        frame, -130 / 2, -140 / 2,
+                                        frame,
+                                        -130 / 2,
+                                        -140 / 2,
                                         1413,
                                         1031
                                     );
@@ -747,7 +755,7 @@ function frame2(msg, client) {
 
         request.get(
             msg.attachments.first().url,
-            async function(error, response, body) {
+            async function (error, response, body) {
                 if (!error && response.statusCode == 200) {
                     //data = "data:" + response.headers["content-type"] + ";base64," + Buffer.from(body).toString('base64');
                     var imageStream = Buffer.from(body, "base64");
@@ -829,7 +837,7 @@ function dalle2watermark(msg, client) {
 
         request.get(
             msg.attachments.first().url,
-            function(error, response, body) {
+            function (error, response, body) {
                 if (!error && response.statusCode == 200) {
                     //data = "data:" + response.headers["content-type"] + ";base64," + Buffer.from(body).toString('base64');
                     var imageStream = Buffer.from(body, "base64");
@@ -843,7 +851,7 @@ function dalle2watermark(msg, client) {
                     var ctx = c.getContext("2d");
                     canvas
                         .loadImage("./../images/cache/" + imgID)
-                        .then(async(photo) => {
+                        .then(async (photo) => {
                             canvas
                                 .loadImage(
                                     path.join(
@@ -853,7 +861,7 @@ function dalle2watermark(msg, client) {
                                         "dalle2.png"
                                     )
                                 )
-                                .then(async(wm) => {
+                                .then(async (wm) => {
                                     ctx.drawImage(photo, 0, 0, w, h);
                                     var dalle = {
                                         w: w * (80 / 1024),
@@ -898,7 +906,7 @@ function animethink(msg, client) {
 
         request.get(
             msg.attachments.first().url,
-            function(error, response, body) {
+            function (error, response, body) {
                 if (!error && response.statusCode == 200) {
                     //data = "data:" + response.headers["content-type"] + ";base64," + Buffer.from(body).toString('base64');
                     var imageStream = Buffer.from(body, "base64");
@@ -909,7 +917,7 @@ function animethink(msg, client) {
                     var ctx = c.getContext("2d");
                     canvas
                         .loadImage("./../images/cache/" + imgID)
-                        .then(async(photo) => {
+                        .then(async (photo) => {
                             canvas
                                 .loadImage(
                                     path.join(
@@ -919,7 +927,7 @@ function animethink(msg, client) {
                                         "animethink.png"
                                     )
                                 )
-                                .then(async(think) => {
+                                .then(async (think) => {
                                     ctx.drawImage(photo, 0, 0, 499, 241);
                                     ctx.drawImage(think, 0, 0, 499, 442);
                                     sendCanvas(
@@ -953,7 +961,7 @@ function animethink2(msg, client) {
 
         request.get(
             msg.attachments.first().url,
-            function(error, response, body) {
+            function (error, response, body) {
                 if (!error && response.statusCode == 200) {
                     //data = "data:" + response.headers["content-type"] + ";base64," + Buffer.from(body).toString('base64');
                     var imageStream = Buffer.from(body, "base64");
@@ -964,7 +972,7 @@ function animethink2(msg, client) {
                     var ctx = c.getContext("2d");
                     canvas
                         .loadImage("./../images/cache/" + imgID)
-                        .then(async(photo) => {
+                        .then(async (photo) => {
                             canvas
                                 .loadImage(
                                     path.join(
@@ -974,7 +982,7 @@ function animethink2(msg, client) {
                                         "anime2.png"
                                     )
                                 )
-                                .then(async(think) => {
+                                .then(async (think) => {
                                     ctx.drawImage(photo, 244, 0, 252, 230);
                                     ctx.drawImage(think, 0, 0, 498, 482);
                                     sendCanvas(
@@ -1095,9 +1103,11 @@ async function weezer(msg, client) {
      * @type {Discord.Message}
      */
     var message = await client.channels.cache.get("956316856422137856").send({
-        files: [{
-            attachment: "../images\\cache\\" + imgID2,
-        }, ],
+        files: [
+            {
+                attachment: "../images\\cache\\" + imgID2,
+            },
+        ],
     });
 
     setTimeout(() => {
@@ -1122,7 +1132,7 @@ async function sendCanvas(c, msg, client, botname, type) {
 }
 
 function getTextWidth(font, fontsize, text) {
-    var c = createCanvas(1, 1);
+    var c = createCanvas(fontsize, fontsize);
     var ctx = c.getContext("2d");
     ctx.font = fontsize + "px " + font;
     var w = ctx.measureText(text).width;
@@ -1155,11 +1165,11 @@ function carbs(msg, client, custom = false) {
     canvas
         .loadImage(
             __dirname +
-            "./../images\\" +
-            images[Math.floor(Math.random() * images.length)] +
-            ".png"
+                "./../images\\" +
+                images[Math.floor(Math.random() * images.length)] +
+                ".png"
         )
-        .then(async(frame) => {
+        .then(async (frame) => {
             ctx.drawImage(frame, 0, 0, w, h);
             var card = cahWhiteCard(custom).replace(/__/g, "");
             ctx.fillStyle = "white";
@@ -1170,7 +1180,7 @@ function carbs(msg, client, custom = false) {
                 "normal normal bolder" + h * fontScaleFactor + "px Impact";
             if (test)
                 card =
-                "TEST AIFISDHFAJEAFHAIJDFHNSEIFOUHADJIFNBASIEFUHSI CUM CUM CUM CUM CUM CUM CUM CUM CUM CUM";
+                    "TEST AIFISDHFAJEAFHAIJDFHNSEIFOUHADJIFNBASIEFUHSI CUM CUM CUM CUM CUM CUM CUM CUM CUM CUM";
             ctx.fillText(card, w / 2, h * fontScaleFactor + 10, w);
             ctx.strokeText(card, w / 2, h * fontScaleFactor + 10, w);
             sendCanvas(c, msg, client, "jamesphotoframe");
@@ -1184,7 +1194,7 @@ function watermark(msg, client) {
 
         request.get(
             msg.attachments.first().url,
-            function(error, response, body) {
+            function (error, response, body) {
                 if (!error && response.statusCode == 200) {
                     //data = "data:" + response.headers["content-type"] + ";base64," + Buffer.from(body).toString('base64');
                     var imageStream = Buffer.from(body, "base64");
@@ -1197,13 +1207,13 @@ function watermark(msg, client) {
                     var ctx = c.getContext("2d");
                     canvas
                         .loadImage("./../images/cache/" + imgID)
-                        .then(async(photo) => {
+                        .then(async (photo) => {
                             canvas
                                 .loadImage(
                                     __dirname +
-                                    "./../images\\redditwatermark.png"
+                                        "./../images\\redditwatermark.png"
                                 )
-                                .then(async(reddit) => {
+                                .then(async (reddit) => {
                                     ctx.drawImage(photo, 0, 0, w, h);
 
                                     //var amount = Math.floor(Math.random() * 100);
@@ -1396,6 +1406,79 @@ async function make512x512(buffer) {
     });
 }
 
+async function andrewTate(buffer, txt) {
+    return new Promise((resolve, reject) => {
+        Promise.all([loadImage(buffer), loadImage(pj("tate.jpg"))]).then(
+            (imgs) => {
+                var c = createCanvas(imgs[1].width, imgs[1].height);
+                var ctx = c.getContext("2d");
+                ctx.drawImage(imgs[1], 0, 0, imgs[1].width, imgs[1].height);
+                ctx.drawImage(
+                    imgs[0],
+                    0,
+                    imgs[1].height / 2,
+                    imgs[1].width,
+                    imgs[1].height / 2
+                );
+                var fac = 0;
+                var grad = ctx.createLinearGradient(
+                    0,
+                    imgs[1].height,
+                    0,
+                    imgs[1].height * fac
+                );
+                grad.addColorStop(1, "rgba(0,0,0,0)");
+                grad.addColorStop(0, "rgba(0,0,0,1)");
+                ctx.fillStyle = grad;
+                ctx.fillRect(
+                    0,
+                    imgs[1].height * fac,
+                    imgs[1].width,
+                    imgs[1].height * (1 - fac)
+                );
+                var textArr = txt.split(" ");
+                var size = imgs[1].height / 8;
+                var cur = [];
+                var lines = [];
+                textArr.forEach((text) => {
+                    var t = [...cur];
+                    t.push(text);
+                    if (
+                        getTextWidth("Tate", size, t.join(" ")) > imgs[1].width
+                    ) {
+                        lines.push([...cur]);
+                        cur = [text];
+                    } else {
+                        cur.push(text);
+                    }
+                });
+                lines.push(cur);
+                ctx.font = size + "px Tate";
+                lines.forEach((line, i) => {
+                    var lineWidth = getTextWidth("Tate", size, line.join(" "));
+                    var co = 0;
+                    line.forEach((word, j) => {
+                        var isWhite = word.toUpperCase() == word;
+                        word.split("").forEach((char, k) => {
+                            ctx.fillStyle = isWhite ? "white" : "orange";
+                            ctx.textAlign = "left";
+                            ctx.fillText(
+                                char,
+                                imgs[1].width / 2 - lineWidth / 2 + co,
+                                imgs[1].height / 2 + (i + 0.75) * size,
+                                getTextWidth("Tate", size, char)
+                            );
+                            co += getTextWidth("Tate", size, char);
+                        });
+                        co += getTextWidth("Tate", size, " ");
+                    });
+                });
+                resolve(c.toBuffer("image/png"));
+            }
+        );
+    });
+}
+
 module.exports = {
     laugh: laugh,
     homodog: homodog,
@@ -1416,4 +1499,5 @@ module.exports = {
     robertDowneyJunior: robertDowneyJunior,
     createCollage: createCollage,
     make512x512: make512x512,
+    andrewTate: andrewTate,
 };
