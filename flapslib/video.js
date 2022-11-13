@@ -19,7 +19,8 @@ async function ffmpeg(args, quiet = false, resolveStdout = false) {
             );
         var ffmpegInstance = cp.spawn(
             "ffmpeg",
-            ((ffmpegVerbose ? "" : "-v warning ") + args).split(" "), {
+            ((ffmpegVerbose ? "" : "-v warning ") + args).split(" "),
+            {
                 shell: true,
             }
         );
@@ -135,8 +136,8 @@ function parseScalingTable(
         Promise.all(promises).then(() => {
             console.log(
                 "Created all key images in " +
-                (Date.now() - start) +
-                "ms. Beginning copy process"
+                    (Date.now() - start) +
+                    "ms. Beginning copy process"
             );
             var curFile = path.join(
                 __dirname,
@@ -148,10 +149,10 @@ function parseScalingTable(
                     __dirname,
                     "..",
                     input +
-                    "." +
-                    frame_num.toString().padStart(3, "0") +
-                    "." +
-                    ext
+                        "." +
+                        frame_num.toString().padStart(3, "0") +
+                        "." +
+                        ext
                 );
                 if (!fs.existsSync(newFile)) {
                     fs.copyFileSync(curFile, newFile);
@@ -220,11 +221,11 @@ async function caption2(input, output, options) {
     lines = lines.map((l) => [
         l[0],
         l[1]
-        .replace(/\\/g, "\\\\\\\\")
-        .replace(/'/g, "\u2019")
-        .replace(/%/g, "\\\\\\%")
-        .replace(/:/g, "\\\\\\:")
-        .replace(/\n/g, "\\n"),
+            .replace(/\\/g, "\\\\\\\\")
+            .replace(/'/g, "\u2019")
+            .replace(/%/g, "\\\\\\%")
+            .replace(/:/g, "\\\\\\:")
+            .replace(/\n/g, "\\n"),
     ]);
     var barHeight =
         2 * Math.round(((lines.length + 1) * fontSize + lines.length * 5) / 2);
@@ -380,11 +381,11 @@ async function theHorror(input, output) {
                                 input + ".%03d." + input.split(".").pop()
                             )}`,
                             "-filter_complex_script " +
-                            path.join(
-                                __dirname,
-                                "..",
-                                input + ".script.txt"
-                            ),
+                                path.join(
+                                    __dirname,
+                                    "..",
+                                    input + ".script.txt"
+                                ),
                             "-shortest",
                             '-map "[oout]"',
                             '-map "0:a:0"',
@@ -400,9 +401,9 @@ async function theHorror(input, output) {
 async function getVideoLength(path) {
     return new Promise((res, rej) => {
         ffprobe(
-                "-v error -select_streams v:0 -show_entries format=duration -of default=noprint_wrappers=1:nokey=1 " +
+            "-v error -select_streams v:0 -show_entries format=duration -of default=noprint_wrappers=1:nokey=1 " +
                 path
-            )
+        )
             .then((txt) => {
                 res(parseFloat(txt));
             })
@@ -412,9 +413,9 @@ async function getVideoLength(path) {
 async function getFrameCount(path) {
     return new Promise((res, rej) => {
         ffprobe(
-                "-v error -select_streams v:0 -count_frames -show_entries stream=nb_read_frames -print_format default=nokey=1:noprint_wrappers=1 " +
+            "-v error -select_streams v:0 -count_frames -show_entries stream=nb_read_frames -print_format default=nokey=1:noprint_wrappers=1 " +
                 path
-            )
+        )
             .then((txt) => {
                 res(parseInt(txt));
             })
@@ -458,11 +459,11 @@ async function stewie(input, output) {
                                 input + ".%03d." + input.split(".").pop()
                             )}`,
                             "-filter_complex_script " +
-                            path.join(
-                                __dirname,
-                                "..",
-                                input + ".script.txt"
-                            ),
+                                path.join(
+                                    __dirname,
+                                    "..",
+                                    input + ".script.txt"
+                                ),
                             "-shortest",
                             '-map "[vout]"',
                             '-map "[aout]"',
@@ -514,13 +515,8 @@ async function speed(input, output, speed) {
     return ffmpeg(
         [
             `-i ${file(input)}`,
-            `-filter_complex`,
-            filter([
-                `[0:v]setpts=${1 / speed}*PTS[out]`,
-                `[0:a]atempo=${speed}[out_audio]`,
-            ]),
-            '-map "[out]"',
-            '-map "[out_audio]"',
+            `-vf "setpts=${1 / speed}*PTS"`,
+            `-af "atempo=${speed}"`,
             file(output),
         ].join(" ")
     );
@@ -629,7 +625,7 @@ async function mimeNod(output, bpm) {
 }
 async function armstrongify(input, output, options) {
     return ffmpeg(
-            `-y ${options.isVideo ? "" : "-t 1 "}-i ${path.join(
+        `-y ${options.isVideo ? "" : "-t 1 "}-i ${path.join(
             __dirname,
             "..",
             input
