@@ -1,15 +1,12 @@
 const { sendWebhook, users, updateUsers } = require("./webhooks");
 const fetch = require("node-fetch");
-const { resolveSoa } = require("dns");
-const { getAnalytics } = require("./analytics");
-const { make512x512 } = require("./canvas");
+const { getAnalytics, addError } = require("./analytics");
 
 function init(client) {
     const fs = require("fs");
     const express = require("express");
     const https = require("https");
     const {
-        uuidv4,
         questionPromise,
         dalle2Promise,
         dalle2InpaintPromise,
@@ -127,7 +124,10 @@ function init(client) {
             return res.status(404).send(false);
         }
         if (!req.body.content) return res.status(400).send(false);
-        chat.push([req.socket.remoteAddress, req.body.content]);
+        currentWps[req.params.id].chat.push([
+            req.socket.remoteAddress,
+            req.body.content,
+        ]);
         res.send(true);
     });
 
