@@ -1415,7 +1415,7 @@ async function andrewTate(buffer, txt) {
                     imgs[1].height * fac
                 );
                 grad.addColorStop(1, "rgba(0,0,0,0)");
-                grad.addColorStop(0, "rgba(0,0,0,1)");
+                grad.addColorStop(0, "rgba(0,0,0,0.7)");
                 ctx.fillStyle = grad;
                 ctx.fillRect(
                     0,
