@@ -3589,4 +3589,3 @@ function startWebServer(port = 8080) {
 startWebServer();
 
 flapslib.watchparty_init(client);
-flapslib.videowrapper.setClient(client);
