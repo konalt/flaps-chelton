@@ -2686,14 +2686,14 @@ fbi files on ${commandArgString}: ${
                                 .replace(/&#039;/g, "'")
                                 .startsWith(x)
                             );
-                            if (!ra[0]) {
+                            /* if (!ra[0]) {
                                 return sendWebhook(
                                     "runcling",
                                     "go inside horny runcling\n😫8====✊===D💦💦",
                                     false,
                                     msg.channel
                                 );
-                            }
+                            } */
                             fetch(
                                     "https://rule34.xxx/index.php?page=post&s=list&tags=" +
                                     (x.includes(" ") ? x : ra[0].value)
