@@ -72,6 +72,7 @@ const { tenorURLToGifURL } = require("./flapslib/util");
 const owoify = require("owoify-js").default;
 const sizeOf = require("buffer-image-size");
 const { caption2 } = require("./flapslib/video");
+const { startGame, handleInteraction } = require("./flapslib/tictactoe");
 
 flapslib.webhooks.setClient(client);
 flapslib.fetchapis.setClient(client);
@@ -3445,6 +3446,13 @@ fbi files on ${commandArgString}: ${
                         });
                     });
                     break;
+                case "!tictactoe":
+                    startGame(
+                        msg.author,
+                        msg.mentions.users.first() || msg.author,
+                        msg.channel
+                    );
+                    break;
                 case "!retry":
                     if (!msg.reference) {
                         if (retryables[msg.author.id]) {
@@ -3555,6 +3563,9 @@ function respondToInteraction(i) {
     );
     if (flapslib.webhooks.buttonCallbacks[i.customId]) {
         flapslib.webhooks.buttonCallbacks[i.customId](i);
+    }
+    if (i.customId.startsWith("TicTacToe")) {
+        handleInteraction(i);
     }
 }
 

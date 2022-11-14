@@ -4,6 +4,7 @@ const video = require("./video");
 const canvas = require("./canvas");
 const webhooks = require("./webhooks");
 const download = require("./download");
+const tictactoe = require("./tictactoe");
 const analytics = require("./analytics");
 const fetchapis = require("./fetchapis");
 const translator = require("./translator");
@@ -32,4 +33,5 @@ module.exports = {
     translator: translator,
     downloadPromise: downloadPromise,
     analytics: analytics,
+    tictactoe: tictactoe,
 };

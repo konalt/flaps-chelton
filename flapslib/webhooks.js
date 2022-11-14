@@ -411,22 +411,95 @@ async function sendWebhookFileButton(id, filename, buttons, msgChannel) {
 var buttonCallbacks = {};
 
 function sendWebhookButton(id, content, buttons, msgChannel) {
-    buttons = buttons.map((btn) => {
-        btn.custom_id =
-            btn.id + "_" + Math.floor(Math.random() * 4096).toString(16);
-        btn.id = undefined;
-        delete btn.id;
-        return btn;
+    return sendWebhook(id, content, msgChannel, {}, null, buttons);
+}
+
+function editWebhookButton(msgid, content, buttons, msgChannel) {
+    return new Promise((resolve) => {
+        msgChannel
+            .fetchWebhooks()
+            .then((hooks) => {
+                var hook = hooks.find(
+                    (h) => h.name == "FlapsCheltonWebhook_" + msgChannel.id
+                );
+                fetch(hook.url + "/messages/" + msgid, {
+                    method: "PATCH",
+                    body: JSON.stringify({
+                        content: content,
+                        components: buttons,
+                    }),
+                    headers: { "Content-Type": "application/json" },
+                }).then(() => {
+                    resolve();
+                });
+            })
+            .catch(console.error);
     });
-    buttons.forEach((button) => {
-        buttonCallbacks[button.custom_id] = button.cb || (() => {});
-    });
-    sendWebhook(id, content, msgChannel, {}, null, [
-        { type: 1, components: buttons },
-    ]);
 }
 
 function sendWebhookEmbed(id, embed, msgChannel) {
+    return new Promise((resolve) => {
+        try {
+            msgChannel
+                .fetchWebhooks()
+                .then((hooks) => {
+                    var hook = hooks.find(
+                        (h) => h.name == "FlapsCheltonWebhook_" + msgChannel.id
+                    );
+                    if (!hook) {
+                        msgChannel
+                            .createWebhook(
+                                "FlapsCheltonWebhook_" + msgChannel.id, {
+                                    avatar: "https://media.discordapp.net/attachments/882743320554643476/966013228641566760/numb.PNG",
+                                    reason: "flap chelton needed a webhook for the channel.",
+                                }
+                            )
+                            .then((hook2) => {
+                                fetch(hook2.url, {
+                                    method: "POST",
+                                    body: JSON.stringify({
+                                        embeds: [embed],
+                                        username: users[id][0],
+                                        avatar_url: users[id][1],
+                                    }),
+                                    headers: {
+                                        "Content-Type": "application/json",
+                                    },
+                                }).then(() => {
+                                    resolve();
+                                });
+                            })
+                            .catch(console.error);
+                    } else {
+                        console.log(`{
+    "embeds": [${JSON.stringify(embed.toJSON())}],
+    "username": ${users[id[0]]},
+    "avatar_url": ${users[id[1]]}
+}`);
+                        fetch(hook.url, {
+                                method: "POST",
+                                body: `{
+                                "embeds": [${JSON.stringify(embed.toJSON())}],
+                                "username": "${users[id][0]}",
+                                "avatar_url": "${users[id][1]}"
+                            }`,
+                                headers: { "Content-Type": "application/json" },
+                            })
+                            .then((r) => r.text())
+                            .then((r) => {
+                                console.log(r);
+                            });
+                    }
+                })
+                .catch(console.error);
+        } catch (e) {
+            console.log("aaahahahahaha");
+            console.log(e);
+        }
+    });
+}
+
+function sendWebhookEmbedButton(id, embed, msgChannel) {
     return new Promise((resolve) => {
         try {
             msgChannel
@@ -524,4 +597,6 @@ module.exports = {
     sendWebhookAttachment: sendWebhookAttachment,
     sendWebhookBuffer: sendWebhookBuffer,
     sendWebhookFileButton: sendWebhookFileButton,
+    sendWebhookEmbedButton: sendWebhookEmbedButton,
+    editWebhookButton,
 };
