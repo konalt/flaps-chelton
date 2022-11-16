@@ -9,7 +9,7 @@ function getButtons(turn) {
     for (let i = 0; i < 7; i++) {
         btns[0].components.push({
             type: 2,
-            style: 2,
+            style: turn,
             label: "_",
             custom_id: `Con4_${i}`,
         });
