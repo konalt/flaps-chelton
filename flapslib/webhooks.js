@@ -93,7 +93,7 @@ function sendWebhook(
                                     resolve(d.id);
                                 })
                                 .catch(() => {
-                                    resolve("ALL_WAIT");
+                                    resolve(e);
                                 });
                         })
                         .catch(console.error);
@@ -103,8 +103,9 @@ function sendWebhook(
                         .then((d) => {
                             resolve(d.id);
                         })
-                        .catch(() => {
-                            resolve("ALL_WAIT");
+                        .catch((e) => {
+                            resolve(e);
+                            console.log(data);
                         });
                 }
             })
@@ -145,7 +146,7 @@ function trySend(url, data) {
             body: JSON.stringify(data),
             headers: { "Content-Type": "application/json" },
         }).then((r) => {
-            if (r.status == 429) {
+            if (r.status != 204) {
                 rej(r);
             }
             res(r);

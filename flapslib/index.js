@@ -9,6 +9,7 @@ const analytics = require("./analytics");
 const fetchapis = require("./fetchapis");
 const translator = require("./translator");
 const moviereview = require("./moviereview");
+const connectfour = require("./connectfour");
 const videowrapper = require("./videowrapper");
 const watchparty = require("./watchparty-server");
 const downloadPromise = require("./download-promise");
@@ -34,4 +35,5 @@ module.exports = {
     downloadPromise: downloadPromise,
     analytics: analytics,
     tictactoe: tictactoe,
+    connectfour,
 };

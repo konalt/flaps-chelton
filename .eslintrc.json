@@ -13,6 +13,14 @@
     },
     "rules": {
         "no-useless-escape":"off",
-        "no-redeclare":"off"
+        "no-redeclare":"off",
+"no-unused-vars": [
+  "warn",
+  { 
+    "argsIgnorePattern": "^_",
+    "varsIgnorePattern": "^_",
+    "caughtErrorsIgnorePattern": "^_"
+  }
+]
     }
 }
