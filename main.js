@@ -1814,6 +1814,17 @@ async function onMessage(msg) {
                         });
                     }
                     break;
+                case "!invert":
+                    {
+                        getSources(msg, ["video/image/gif"])
+                        .then((ids) => {
+                            flapslib.videowrapper.invert(ids[0], msg);
+                        })
+                        .catch((reason) => {
+                            sendWebhook("ffmpeg", reason, msg.channel);
+                        });
+                    }
+                    break;
                 case "!videogif":
                     {
                         getSources(msg, ["video"])

@@ -272,6 +272,13 @@ async function simpleMemeCaption(input, output, options) {
         }" -q:v 3 -preset:v ${h264Preset} ${path.join(__dirname, "..", output)}`
     );
 }
+async function invert(input, output) {
+    return ffmpeg(
+        `-y -i ${file(input)} -vf negate -preset:v ${h264Preset} ${file(
+            output
+        )}`
+    );
+}
 async function squash(input, output) {
     return ffmpeg(
         `-y -i ${path.join(
@@ -727,4 +734,5 @@ module.exports = {
     bassBoost: bassBoost,
     cookingVideo: cookingVideo,
     speed: speed,
+    invert,
 };

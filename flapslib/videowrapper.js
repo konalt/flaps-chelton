@@ -193,6 +193,15 @@ async function stretch(name, msg) {
             sendWebhookFile("ffmpeg", "images/cache/" + id + ext, msg.channel);
         });
 }
+async function invert(name, msg) {
+    var id = n("Effect_Invert");
+    var ext = "." + name.split(".").pop();
+    video
+        .invert("images/cache/" + name, "images/cache/" + id + ext)
+        .then(() => {
+            sendWebhookFile("ffmpeg", "images/cache/" + id + ext, msg.channel);
+        });
+}
 async function trim(name, times, msg) {
     var id = n("Effect_Trim");
     var ext = "." + name.split(".").pop();
@@ -382,4 +391,5 @@ module.exports = {
     bassBoost: bassBoost,
     cookingVideo: cookingVideo,
     speed: speed,
+    invert: invert,
 };
