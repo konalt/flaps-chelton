@@ -6,11 +6,7 @@ function init(client) {
     const fs = require("fs");
     const express = require("express");
     const https = require("https");
-    const {
-        questionPromise,
-        dalle2Promise,
-        dalle2InpaintPromise,
-    } = require("./ai");
+    const { questionPromise, dalle2Promise } = require("./ai");
     var app_rest = express();
 
     const options = {
@@ -177,7 +173,9 @@ function init(client) {
                 .contentType("text/plain")
                 .send("400 Bad Request");
         }
-        dalle2InpaintPromise(req.body)
+        var obj = {...req.body };
+        Object.assign(obj, { inpaint: true });
+        dalle2Promise(obj, false)
             .then((data) => {
                 res.contentType("image/png").send(data);
             })

@@ -1035,7 +1035,7 @@ function dalle(prompt, isSecondReq = false) {
 
 const { Configuration, OpenAIApi } = require("openai");
 const downloadPromise = require("./download-promise");
-const { createCollage, make512x512 } = require("./canvas");
+const { createCollage, make512x512, invertAlpha } = require("./canvas");
 const { uuidv4 } = require("./util");
 const { addError } = require("./analytics");
 
@@ -1499,14 +1499,16 @@ function dalle2InpaintPromise(data) {
     });
 }
 
-function dalle2Promise(prompt, big = false) {
-    return new Promise((resl, rej) => {
+function dalle2Promise(data, big = false) {
+    // fuck you eslint !!
+    // eslint-disable-next-line no-async-promise-executor
+    return new Promise(async(resl, rej) => {
         var size = big ? 1024 : 512;
         var body = {
             num_images: big ? 1 : 4,
             width: size,
             height: size,
-            prompt: prompt,
+            prompt: data.prompt,
             modelType: "stable-diffusion",
             isPrivate: true,
             batchId: "HgIRsj6uES",
@@ -1516,6 +1518,28 @@ function dalle2Promise(prompt, big = false) {
             seed: Math.floor(Math.random() * 1e7),
             sampler: 0,
         };
+        if (data.inpaint) {
+            console.log("adding !!");
+            Object.assign(body, {
+                start_schedule: 0.7,
+                mask_strength: 0.9,
+                mode: 0,
+                mask_image: "data:image/png;base64," +
+                    (
+                        await invertAlpha(
+                            await make512x512(
+                                Buffer.from(data.mask.split(",")[1], "base64")
+                            )
+                        )
+                    ).toString("base64"),
+                init_image: "data:image/png;base64," +
+                    (
+                        await make512x512(
+                            Buffer.from(data.img.split(",")[1], "base64")
+                        )
+                    ).toString("base64"),
+            });
+        }
         fetch("https://playgroundai.com/api/models", {
                 credentials: "include",
                 headers: {

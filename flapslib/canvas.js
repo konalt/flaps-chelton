@@ -1393,6 +1393,25 @@ async function make512x512(buffer) {
     });
 }
 
+async function invertAlpha(buffer) {
+    return new Promise((resolve) => {
+        loadImage(buffer).then((img) => {
+            var c = createCanvas(img.width, img.height);
+            var ctx = c.getContext("2d");
+            ctx.drawImage(img, 0, 0, img.width, img.height);
+            var data = ctx.getImageData(0, 0, img.width, img.height);
+            var d = data.data;
+            for (var i = 0; i < d.length; i += 4) {
+                d[i] = d[i + 1] = d[i + 2] = 255;
+                d[i + 3] = Math.abs(255 - d[i + 3]);
+            }
+            ctx.clearRect(0, 0, img.width, img.height);
+            ctx.putImageData(data, 0, 0);
+            resolve(c.toBuffer("image/png"));
+        });
+    });
+}
+
 async function andrewTate(buffer, txt) {
     return new Promise((resolve) => {
         Promise.all([loadImage(buffer), loadImage(pj("tate.jpg"))]).then(
@@ -1566,4 +1585,5 @@ module.exports = {
     andrewTate: andrewTate,
     fakeNews: fakeNews,
     doNothing: doNothing,
+    invertAlpha,
 };

@@ -61,6 +61,7 @@ const {
     robertDowneyJunior,
     andrewTate,
     fakeNews,
+    invertAlpha,
 } = require("./flapslib/canvas");
 const { createCanvas } = require("canvas");
 const { doTranslate, doTranslateSending } = require("./flapslib/translator");
@@ -1813,6 +1814,22 @@ async function onMessage(msg) {
                             sendWebhook("ffmpeg", reason, msg.channel);
                         });
                     }
+                    break;
+                case "!invertalpha":
+                    downloadPromise(
+                        msg.attachments.first().url,
+                        "dataurl"
+                    ).then((buf) => {
+                        invertAlpha(buf).then((buf2) => {
+                            sendWebhookBuffer(
+                                "flaps",
+                                buf2,
+                                "test",
+                                msg.channel,
+                                "thefile.png"
+                            );
+                        });
+                    });
                     break;
                 case "!invert":
                     {
