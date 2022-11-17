@@ -1551,14 +1551,29 @@ function dalle2Promise(prompt, big = false) {
                     }
                     if (big) {
                         resl(
-                            await downloadPromise(res.images[0].url, "dataurl")
+                            Buffer.from(
+                                res.images[0].url.split(",")[1],
+                                "base64"
+                            )
                         );
                     } else {
                         var imgs = [
-                            await downloadPromise(res.images[0].url, "dataurl"),
-                            await downloadPromise(res.images[1].url, "dataurl"),
-                            await downloadPromise(res.images[2].url, "dataurl"),
-                            await downloadPromise(res.images[3].url, "dataurl"),
+                            Buffer.from(
+                                res.images[0].url.split(",")[1],
+                                "base64"
+                            ),
+                            Buffer.from(
+                                res.images[1].url.split(",")[1],
+                                "base64"
+                            ),
+                            Buffer.from(
+                                res.images[2].url.split(",")[1],
+                                "base64"
+                            ),
+                            Buffer.from(
+                                res.images[3].url.split(",")[1],
+                                "base64"
+                            ),
                         ];
                         createCollage(imgs, 512).then((collage) => {
                             resl(collage);
