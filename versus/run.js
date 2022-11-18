@@ -3,10 +3,11 @@ const path = require("path");
 const { stdout } = require("process");
 const { download } = require("../flapslib");
 const { sendWebhook } = require("../flapslib/webhooks");
-const Discord = require("discord.js");
+
+var font = "fonts/font.ttf";
 
 async function ffmpeg(args) {
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
         var ffmpegInstance = cp.spawn("ffmpeg", args.split(" "), {
             shell: true,
         });
@@ -43,19 +44,19 @@ function createBothVideo(input, output, options) {
             input[1]
         } -t ${segmentLength} -i versus/black.png -filter_complex "[0:v]scale=400:390[img01_scaled];[1:v]scale=400:390[img02_scaled];[2:v]scale=400:800[bg_1s];[bg_1s][img01_scaled]overlay=0:0[bg_and_img01];[bg_and_img01][img02_scaled]overlay=0:410[vs_notext];[vs_notext]scale=400:800,setsar=1:1,setpts=PTS-STARTPTS[scaled];[scaled]split=1[scaled1];[scaled1]drawtext=text='${
             options[0]
-        }':x=W/2-tw/2:y=H/3-th/2:fontsize=36:fontfile=font.ttf:borderw=5:bordercolor=black:fontcolor=white,drawtext=text='VS':x=W/2-tw/2:y=H/2-th/2:fontsize=66:fontfile=font.ttf:borderw=5:bordercolor=black:fontcolor=white,drawtext=text='${
+        }':x=W/2-tw/2:y=H/3-th/2:fontsize=36:fontfile=${font}:borderw=5:bordercolor=black:fontcolor=white,drawtext=text='VS':x=W/2-tw/2:y=H/2-th/2:fontsize=66:fontfile=${font}:borderw=5:bordercolor=black:fontcolor=white,drawtext=text='${
             options[1]
-        }':x=W/2-tw/2:y=H/3*2-th/2:fontsize=36:fontfile=font.ttf:borderw=5:bordercolor=black:fontcolor=white,fps=25[out]" -map "[out]" -t ${segmentLength} -r 25 ${output}.mp4`
+        }':x=W/2-tw/2:y=H/3*2-th/2:fontsize=36:fontfile=${font}:borderw=5:bordercolor=black:fontcolor=white,fps=25[out]" -map "[out]" -t ${segmentLength} -r 25 ${output}.mp4`
     );
 }
 
-function createWinnerVideo(input, output, options) {
+function createWinnerVideo(input, output) {
     return ffmpeg(
         `${verbose ? "" : "-v warning "}-y ${
             input[0].endsWith(".mp4") ? "" : "-loop 1 "
         }-i ${input[0]} ${input[1].endsWith(".mp4") ? "" : "-loop 1 "}-i ${
             input[1]
-        } -t ${segmentLength} -i versus/black.png -filter_complex "[0:v]scale=400:390[img01_scaled];[1:v]scale=400:390[img02_scaled];[2:v]scale=400:800[bg_1s];[bg_1s][img01_scaled]overlay=0:0[bg_and_img01];[bg_and_img01][img02_scaled]overlay=0:410[vs_notext];[vs_notext]scale=400:800,setsar=1:1,setpts=PTS-STARTPTS[scaled];[scaled]drawtext=text='Winner':x=W/2-tw/2:y=H/2-th/2:fontsize=66:fontfile=font.ttf:borderw=5:bordercolor=black:fontcolor=white,fps=25[out]" -map "[out]" -t ${segmentLength} -r 25 ${output}.mp4`
+        } -t ${segmentLength} -i versus/black.png -filter_complex "[0:v]scale=400:390[img01_scaled];[1:v]scale=400:390[img02_scaled];[2:v]scale=400:800[bg_1s];[bg_1s][img01_scaled]overlay=0:0[bg_and_img01];[bg_and_img01][img02_scaled]overlay=0:410[vs_notext];[vs_notext]scale=400:800,setsar=1:1,setpts=PTS-STARTPTS[scaled];[scaled]drawtext=text='Winner':x=W/2-tw/2:y=H/2-th/2:fontsize=66:fontfile=${font}:borderw=5:bordercolor=black:fontcolor=white,fps=25[out]" -map "[out]" -t ${segmentLength} -r 25 ${output}.mp4`
     );
 }
 
@@ -65,7 +66,7 @@ function createTieVideo(input, output) {
             input[0].endsWith(".mp4") ? "" : "-loop 1 "
         }-i ${input[0]} ${input[1].endsWith(".mp4") ? "" : "-loop 1 "}-i ${
             input[1]
-        } -t ${segmentLength} -i versus/black.png -filter_complex "[0:v]scale=400:390[img01_scaled];[1:v]scale=400:390[img02_scaled];[2:v]scale=400:800[bg_1s];[bg_1s][img01_scaled]overlay=0:0[bg_and_img01];[bg_and_img01][img02_scaled]overlay=0:410[vs_notext];[vs_notext]scale=400:800,setsar=1:1,setpts=PTS-STARTPTS[scaled];[scaled]drawtext=text='Tie':x=W/2-tw/2:y=H/2-th/2:fontsize=66:fontfile=font.ttf:borderw=5:bordercolor=black:fontcolor=white,fps=25[out]" -map "[out]" -t ${segmentLength} -r 25 ${output}.mp4`
+        } -t ${segmentLength} -i versus/black.png -filter_complex "[0:v]scale=400:390[img01_scaled];[1:v]scale=400:390[img02_scaled];[2:v]scale=400:800[bg_1s];[bg_1s][img01_scaled]overlay=0:0[bg_and_img01];[bg_and_img01][img02_scaled]overlay=0:410[vs_notext];[vs_notext]scale=400:800,setsar=1:1,setpts=PTS-STARTPTS[scaled];[scaled]drawtext=text='Tie':x=W/2-tw/2:y=H/2-th/2:fontsize=66:fontfile=${font}:borderw=5:bordercolor=black:fontcolor=white,fps=25[out]" -map "[out]" -t ${segmentLength} -r 25 ${output}.mp4`
     );
 }
 
@@ -77,7 +78,7 @@ function createStatVideo(input, output, options) {
             input[1]
         } -t ${segmentLength} -i versus/black.png -filter_complex "[0:v]scale=400:390[img01_scaled];[1:v]scale=400:390[img02_scaled];[2:v]scale=400:800[bg_1s];[bg_1s][img01_scaled]overlay=0:0[bg_and_img01];[bg_and_img01][img02_scaled]overlay=0:410[vs_notext];[vs_notext]scale=400:800,setsar=1:1,setpts=PTS-STARTPTS[scaled];[scaled]split=1[scaled1];[scaled1]drawtext=text='${
             options.stat
-        }':x=W/2-tw/2:y=H/2-th/2:fontsize=72:fontfile=font.ttf:borderw=5:bordercolor=black:fontcolor=white,fps=25[out]" -map "[out]" -t ${segmentLength} -r 25 ${output}.mp4`
+        }':x=W/2-tw/2:y=H/2-th/2:fontsize=72:fontfile=${font}:borderw=5:bordercolor=black:fontcolor=white,fps=25[out]" -map "[out]" -t ${segmentLength} -r 25 ${output}.mp4`
     );
 }
 
@@ -87,7 +88,7 @@ function createScoreVideo(input, output, options) {
             input.endsWith(".mp4") ? "" : "-loop 1 "
         }-t ${segmentLength} -i ${input} -filter_complex "[0:v]scale=-1:800,crop=400:800,setsar=1:1,setpts=PTS-STARTPTS[scaled];[scaled]drawtext=text='${
             options.curScore
-        }':x=W/2-tw/2:y=H/2-th/2:fontsize=72:fontfile=font.ttf:borderw=5:bordercolor=black:fontcolor=white,fps=25[out]" -map "[out]" -t ${segmentLength} -r 25 ${output}.mp4`
+        }':x=W/2-tw/2:y=H/2-th/2:fontsize=72:fontfile=${font}:borderw=5:bordercolor=black:fontcolor=white,fps=25[out]" -map "[out]" -t ${segmentLength} -r 25 ${output}.mp4`
     );
 }
 
@@ -123,11 +124,6 @@ function concat(input, output) {
 var segmentLength = 60000 / 70 / 1000;
 var verbose = false;
 
-/**
- *
- * @param {Discord.Client} client
- * @param {Discord.Message} msg
- */
 async function todo(client, msg) {
     console.log("adfjhsfd");
     if (msg.attachments.first(2)[1]) {
