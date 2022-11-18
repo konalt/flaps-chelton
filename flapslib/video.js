@@ -200,7 +200,6 @@ async function caption2(input, output, options) {
             fontSize,
             currentLine + " " + word
         );
-        console.log(textWidth);
         if (textWidth > videoWidth * 0.9 || word.endsWith("\n")) {
             lines.push([textWidth, `${currentLine}`]);
             currentLine = "";
@@ -242,7 +241,6 @@ async function caption2(input, output, options) {
     } else {
         filter += "[out_v]";
     }
-    console.log(filter);
     return ffmpeg(
         `-y -i ${path.join(
             __dirname,
