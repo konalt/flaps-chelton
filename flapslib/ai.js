@@ -1618,7 +1618,11 @@ function dalle2Promise(data, big = false) {
 function dalle2(msg) {
     var prompt = msg.content.split(" ").slice(1).join(" ").replace(/"/g, '\\"');
     var big = msg.content.split(" ")[0] == "!dalle2big";
-    dalle2Promise(prompt, big)
+    dalle2Promise({
+                prompt: prompt,
+            },
+            big
+        )
         .then((img) => {
             sendWebhookBuffer(
                 "dalle2",
