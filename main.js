@@ -39,6 +39,7 @@ const {
     sendWebhookFile,
     sendWebhookButton,
     sendWebhookBuffer,
+    getWebhook,
 } = require("./flapslib/webhooks");
 const { cahWhiteCard } = require("./flapslib/cardsagainsthumanity");
 const { Image } = require("canvas");
@@ -592,6 +593,10 @@ async function onMessage(msg) {
         console.log(
             `${msg.author.username}#${msg.author.discriminator}: ${msg.content}`
         );
+        var hook = await getWebhook(msg.channel);
+        if (fs.readFileSync("./errorhook.txt").toString() != hook) {
+            fs.writeFileSync("./errorhook.txt", hook);
+        }
         addMessage(msg);
         if (msg.content.includes("copper") && !msg.author.bot) {
             msg.channel.send("copper you say?");

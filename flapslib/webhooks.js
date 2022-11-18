@@ -600,4 +600,5 @@ module.exports = {
     sendWebhookFileButton: sendWebhookFileButton,
     sendWebhookEmbedButton: sendWebhookEmbedButton,
     editWebhookButton,
+    getWebhook,
 };
