@@ -239,7 +239,6 @@ async function caption2(input, output, options) {
         newLines.push([lineYOffset, newWords]);
     });
     console.log(emojis);
-    console.log(JSON.stringify(newLines, null, 4));
     var barHeight =
         2 * Math.round(((lines.length + 1) * fontSize + lines.length * 5) / 2);
     var filter = `[0:v]pad=width=${videoWidth}:height=${
