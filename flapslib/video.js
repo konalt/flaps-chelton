@@ -4,10 +4,7 @@ const path = require("path");
 const { stdout } = require("process");
 const { getTextWidth } = require("./canvas");
 const twemoji = require("twemoji");
-const download = require("./download");
 const downloadPromise = require("./download-promise");
-const { DiscordAPIError } = require("discord.js");
-const { Client } = require("discord.js");
 
 var ffmpegVerbose = false;
 
@@ -187,9 +184,7 @@ async function addText(input, output, options) {
         )}`
     );
 }
-/**
- * @type {Client}
- */
+
 var client = null;
 
 function setClient(c) {
