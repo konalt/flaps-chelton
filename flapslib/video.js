@@ -3,6 +3,9 @@ const fs = require("fs");
 const path = require("path");
 const { stdout } = require("process");
 const { getTextWidth } = require("./canvas");
+const twemoji = require("twemoji");
+const download = require("./download");
+const downloadPromise = require("./download-promise");
 
 var ffmpegVerbose = false;
 
@@ -194,10 +197,10 @@ async function caption2(input, output, options) {
     var fontName = "Futura Condensed Extra";
     var lines = [];
     var currentLine = "";
-    var emojiReplacer = "ww";
+    //var emojiReplacer = "ww";
     var emojiRegex = /(?=\p{Emoji})(?=[\D])/gu;
     var txtW = (txt) => getTextWidth(fontName, fontSize, txt);
-    var emojiSize = txtW(emojiReplacer);
+    var emojiSize = fontSize;
     var fixChar = (c) =>
         c
         .replace(/\\/g, "\\\\\\\\")
@@ -225,9 +228,7 @@ async function caption2(input, output, options) {
             var newWord = [];
             if (!word) return;
             Array.from(word).forEach((char) => {
-                console.log(char);
                 if (char.match(emojiRegex)) {
-                    console.log("Emoji detected: " + char);
                     emojis.push(char);
                     newWord.push([emojiSize, char]);
                 } else {
@@ -238,7 +239,17 @@ async function caption2(input, output, options) {
         });
         newLines.push([lineYOffset, newWords]);
     });
-    console.log(emojis);
+    emojis = emojis.map((e, i) =>
+        downloadPromise(
+            twemoji
+            .parse(e, { size: Math.floor(72) })
+            .split('src="')[1]
+            .split('"/>')[0],
+            path.join(__dirname, "..", output + ".emoji." + i + ".png")
+        )
+    );
+    await Promise.all(emojis);
+    var emojiPositions = [];
     var barHeight =
         2 * Math.round(((lines.length + 1) * fontSize + lines.length * 5) / 2);
     var filter = `[0:v]pad=width=${videoWidth}:height=${
@@ -248,7 +259,14 @@ async function caption2(input, output, options) {
         var charOffset = videoWidth / 2 - line[0] / 2;
         line[1].forEach((word) => {
             word.forEach((char) => {
-                if (char[1].match(emojiRegex)) return (charOffset += char[0]);
+                if (char[1].match(emojiRegex)) {
+                    emojiPositions.push([
+                        charOffset,
+                        index * (fontSize + 5) + emojiSize / 2,
+                    ]);
+                    charOffset += char[0];
+                    return;
+                }
                 filter += `drawtext=fontfile=fonts/futura.otf:fontsize=${fontSize}:text='${
                     char[1]
                 }':x=${charOffset}:y=${
@@ -260,11 +278,28 @@ async function caption2(input, output, options) {
         });
     });
     if (filter.endsWith(",")) filter = filter.substring(0, filter.length - 1);
+    filter += `[out_captioned];`;
+    var emojiInputs = "";
+    for (let i = 0; i < emojis.length; i++) {
+        filter += `[${
+            i + 1
+        }:v]scale=${emojiSize}:${emojiSize},setsar=1:1[scaled_emoji_${i}];`;
+        if (i == 0) filter += `[out_captioned]`;
+        if (i != 0) filter += `[out_emoji_${i - 1}]`;
+        filter += `[scaled_emoji_${i}]overlay=${emojiPositions[i][0]}:${emojiPositions[i][1]}[out_emoji_${i}];`;
+        emojiInputs += ` -i ${path.join(
+            __dirname,
+            "..",
+            output + ".emoji." + i + ".png"
+        )}`;
+    }
+    if (filter.endsWith(",")) filter = filter.substring(0, filter.length - 1);
     if (input.endsWith("gif")) {
-        filter +=
-            "[eff];[eff]split[s0][s1];[s0]palettegen=reserve_transparent=1[p];[s1][p]paletteuse[out_v]";
+        filter += `[out_emoji_${
+            emojis.length - 1
+        }]split[s0][s1];[s0]palettegen=reserve_transparent=1[p];[s1][p]paletteuse[out_v]`;
     } else {
-        filter += "[out_v]";
+        filter += `[out_emoji_${emojis.length - 1}]null[out_v]`;
     }
     fs.writeFileSync(path.join(__dirname, "..", output + ".ffscript"), filter);
     return ffmpeg(
@@ -272,7 +307,7 @@ async function caption2(input, output, options) {
             __dirname,
             "..",
             input
-        )} -filter_complex_script ${path.join(
+        )} ${emojiInputs.trim()} -filter_complex_script ${path.join(
             __dirname,
             "..",
             output + ".ffscript"
