@@ -221,7 +221,19 @@ async function caption2(input, output, options) {
         .replace(/:/g, "\\\\\\:")
         .replace(/\n/g, "\\\\\\n");
     textArr.forEach((realword) => {
-        var word = realword;
+        var word = "";
+        Array.from(realword).forEach((char) => {
+            if (char == "\n") {
+                lines.push([
+                    txtW(currentLine + " " + word),
+                    `${currentLine} ${word}`,
+                ]);
+                currentLine = "";
+                word = "";
+            } else {
+                word += char;
+            }
+        });
         var textWidth = txtW(
             (currentLine + " " + word).replace(customEmojiRegex, emojiReplacer)
         );
@@ -333,29 +345,33 @@ async function caption2(input, output, options) {
     if (filter.endsWith(",")) filter = filter.substring(0, filter.length - 1);
     filter += `[out_captioned];`;
     var emojiInputs = "";
-    for (let i = 0; i < emojis.length; i++) {
-        filter += `[${
-            i + 1
-        }:v]scale=${emojiSize}:${emojiSize},setsar=1:1[scaled_emoji_${i}];`;
-        if (i == 0) filter += `[out_captioned]`;
-        if (i != 0) filter += `[out_emoji_${i - 1}]`;
-        filter += `[scaled_emoji_${i}]overlay=${emojiPositions[i][0]}:${emojiPositions[i][1]}[out_emoji_${i}];`;
-        emojiInputs += ` -i ${path.join(
-            __dirname,
-            "..",
-            output + ".emoji." + i + ".png"
-        )}`;
-    }
-    if (filter.endsWith(",")) filter = filter.substring(0, filter.length - 1);
-    if (input.endsWith("gif")) {
-        filter += `[out_emoji_${
-            emojis.length - 1
-        }]split[s0][s1];[s0]palettegen=reserve_transparent=1[p];[s1][p]paletteuse[out_v]`;
+    if (emojis.length > 0) {
+        for (let i = 0; i < emojis.length; i++) {
+            filter += `[${
+                i + 1
+            }:v]scale=${emojiSize}:${emojiSize},setsar=1:1[scaled_emoji_${i}];`;
+            if (i == 0) filter += `[out_captioned]`;
+            if (i != 0) filter += `[out_emoji_${i - 1}]`;
+            filter += `[scaled_emoji_${i}]overlay=${emojiPositions[i][0]}:${emojiPositions[i][1]}[out_emoji_${i}];`;
+            emojiInputs += ` -i ${path.join(
+                __dirname,
+                "..",
+                output + ".emoji." + i + ".png"
+            )}`;
+        }
+        if (filter.endsWith(","))
+            filter = filter.substring(0, filter.length - 1);
+        if (input.endsWith("gif")) {
+            filter += `[out_emoji_${
+                emojis.length - 1
+            }]split[s0][s1];[s0]palettegen=reserve_transparent=1[p];[s1][p]paletteuse[out_v]`;
+        } else {
+            filter += `[out_emoji_${emojis.length - 1}]null[out_v]`;
+        }
     } else {
-        filter += `[out_emoji_${emojis.length - 1}]null[out_v]`;
+        filter += "[out_captioned]null[out_v]";
     }
     fs.writeFileSync(path.join(__dirname, "..", output + ".ffscript"), filter);
-    console.log(emojiInputs);
     return ffmpeg(
         `-y -i ${path.join(
             __dirname,
