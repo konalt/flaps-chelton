@@ -254,7 +254,8 @@ canvas.registerFont("fonts/dog.otf", { family: "Fuckedup" });
 canvas.registerFont("fonts/homodog.otf", { family: "Homodog" });
 canvas.registerFont("fonts/weezer.otf", { family: "Weezer" });
 canvas.registerFont("fonts/futura.otf", {
-    family: "Futura Condensed Extra",
+    family: "Futura",
+    weight: 400,
 });
 canvas.registerFont("fonts/tate.ttf", { family: "Tate" });
 

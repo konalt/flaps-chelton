@@ -1126,6 +1126,14 @@ function getTextWidth(font, fontsize, text) {
     return w;
 }
 
+function getTextMetrics(font, fontsize, text) {
+    var c = createCanvas(fontsize, fontsize);
+    var ctx = c.getContext("2d");
+    ctx.font = fontsize + "px " + font;
+    var w = ctx.measureText(text);
+    return w;
+}
+
 function carbs(msg, client, custom = false) {
     var w = 960,
         h = 540,
@@ -1586,4 +1594,5 @@ module.exports = {
     fakeNews: fakeNews,
     doNothing: doNothing,
     invertAlpha,
+    getTextMetrics,
 };

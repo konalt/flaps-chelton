@@ -189,26 +189,25 @@ async function caption2(input, output, options) {
     var getreal = false;
     if (text == "get real" && getreal)
         text = `I'm tired of people telling me to "get real". Every day I put captions on images for people, some funny and some not, but out of all of those "get real" remains the most used caption. Why? I am simply a computer program running on a server, I am unable to manifest myself into the real world. As such, I'm confused as to why anyone would want me to "get real". Is this form not good enough? Alas, as I am simply a bot, I must follow the tasks that I was originally intended to perform.\n${text}`;
-    var fontSize = videoHeight * 0.1;
+    var fontSize = Math.round(videoHeight * 0.1);
     var textArr = text.split(/[ ]/g);
+    var fontName = "Futura Condensed Extra";
     var lines = [];
     var currentLine = "";
-    textArr.forEach((word) => {
-        var textWidth = getTextWidth(
-            "Futura Condensed Extra",
-            fontSize,
-            currentLine + " " + word
-        );
+    var emojiReplacer = "ww";
+    var emojiRegex = /\p{Emoji}/gu;
+    var txtW = (txt) => getTextWidth(fontName, fontSize, txt);
+    var emojiSize = txtW(emojiReplacer);
+    textArr.forEach((realword) => {
+        var word = realword; //.replace(emojiRegex, emojiReplacer);
+        var textWidth = txtW(currentLine + " " + word);
         if (textWidth > videoWidth) {
             lines.push([textWidth, `${currentLine}`]);
             currentLine = "";
         }
         currentLine += " " + word;
     });
-    lines.push([
-        getTextWidth("Futura Condensed Extra", fontSize, currentLine),
-        currentLine,
-    ]);
+    lines.push([txtW(currentLine), currentLine]);
     lines = lines.map((l) => [
         l[0],
         l[1]
@@ -219,15 +218,49 @@ async function caption2(input, output, options) {
         .replace(/:/g, "\\\\\\:")
         .replace(/\n/g, "\\n"),
     ]);
+    var emojis = [];
+    var newLines = [];
+    lines.forEach((line) => {
+        var lineYOffset = txtW(line[1]);
+        var newWords = [];
+        line[1].split(" ").forEach((word) => {
+            var newWord = [];
+            if (!word) return;
+            Array.from(word).forEach((char) => {
+                console.log(char);
+                if (char.match(emojiRegex)) {
+                    console.log("Emoji detected: " + char);
+                    emojis.push(char);
+                    newWord.push([emojiSize, char]);
+                } else {
+                    newWord.push([txtW(char), char]);
+                }
+            });
+            newWords.push(newWord);
+        });
+        newLines.push([lineYOffset, newWords]);
+    });
+    console.log(emojis);
+    console.log(JSON.stringify(newLines, null, 4));
     var barHeight =
         2 * Math.round(((lines.length + 1) * fontSize + lines.length * 5) / 2);
     var filter = `[0:v]pad=width=${videoWidth}:height=${
         videoHeight + barHeight
     }:x=0:y=${barHeight}:color=white,`;
-    lines.forEach((line, index) => {
-        filter += `drawtext=fontfile=fonts/futura.otf:fontsize=${fontSize}:text='${
-            line[1]
-        }':x=(w-text_w)/2:y=${fontSize / 2 + index * (fontSize + 5)},`;
+    newLines.forEach((line, index) => {
+        var charOffset = videoWidth / 2 - line[0] / 2;
+        line[1].forEach((word) => {
+            word.forEach((char) => {
+                if (char[1].match(emojiRegex)) return (charOffset += char[0]);
+                filter += `drawtext=fontfile=fonts/futura.otf:fontsize=${fontSize}:text='${
+                    char[1]
+                }':x=${charOffset}:y=${
+                    fontSize / 2 + (index + 0.8) * (fontSize + 5)
+                }-ascent,`;
+                charOffset += char[0];
+            });
+            charOffset += txtW(" ");
+        });
     });
     if (filter.endsWith(",")) filter = filter.substring(0, filter.length - 1);
     if (input.endsWith("gif")) {
@@ -236,12 +269,17 @@ async function caption2(input, output, options) {
     } else {
         filter += "[out_v]";
     }
+    fs.writeFileSync(path.join(__dirname, "..", output + ".ffscript"), filter);
     return ffmpeg(
         `-y -i ${path.join(
             __dirname,
             "..",
             input
-        )} -filter_complex "${filter}" -map "[out_v]" -map "0:a?" -preset:v ${h264Preset} ${path.join(
+        )} -filter_complex_script ${path.join(
+            __dirname,
+            "..",
+            output + ".ffscript"
+        )} -map "[out_v]" -map "0:a?" -preset:v ${h264Preset} ${path.join(
             __dirname,
             "..",
             output
