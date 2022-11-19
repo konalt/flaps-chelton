@@ -199,7 +199,7 @@ async function caption2(input, output, options) {
             fontSize,
             currentLine + " " + word
         );
-        if (textWidth > videoWidth * 0.9) {
+        if (textWidth > videoWidth) {
             lines.push([textWidth, `${currentLine}`]);
             currentLine = "";
         }
