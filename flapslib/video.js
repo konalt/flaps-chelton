@@ -198,6 +198,14 @@ async function caption2(input, output, options) {
     var emojiRegex = /(?=\p{Emoji})(?=[\D])/gu;
     var txtW = (txt) => getTextWidth(fontName, fontSize, txt);
     var emojiSize = txtW(emojiReplacer);
+    var fixChar = (c) =>
+        c
+        .replace(/\\/g, "\\\\\\\\")
+        .replace(/'/g, "\u2019")
+        .replace(/"/g, '\\\\\\"')
+        .replace(/%/g, "\\\\\\%")
+        .replace(/:/g, "\\\\\\:")
+        .replace(/\n/g, "\\\\\\n");
     textArr.forEach((realword) => {
         var word = realword;
         var textWidth = txtW(currentLine + " " + word);
@@ -208,16 +216,6 @@ async function caption2(input, output, options) {
         currentLine += " " + word;
     });
     lines.push([txtW(currentLine), currentLine]);
-    lines = lines.map((l) => [
-        l[0],
-        l[1]
-        .replace(/\\/g, "\\\\\\\\")
-        .replace(/'/g, "\u2019")
-        .replace(/"/g, '\\\\\\"')
-        .replace(/%/g, "\\\\\\%")
-        .replace(/:/g, "\\\\\\:")
-        .replace(/\n/g, "\\n"),
-    ]);
     var emojis = [];
     var newLines = [];
     lines.forEach((line) => {
@@ -233,7 +231,7 @@ async function caption2(input, output, options) {
                     emojis.push(char);
                     newWord.push([emojiSize, char]);
                 } else {
-                    newWord.push([txtW(char), char]);
+                    newWord.push([txtW(char), fixChar(char)]);
                 }
             });
             newWords.push(newWord);
