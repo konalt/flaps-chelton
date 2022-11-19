@@ -16,7 +16,7 @@ function run() {
         lastLog.push(data.toString());
     });
     proc.stderr.on("data", (data) => {
-        if (data.toString().includes("Pango")) return; // fuck you node-canvas
+        //if (data.toString().includes("Pango")) return; // fuck you node-canvas
         process.stdout.write((lastNL ? "[ERR] " : "") + data);
         lastNL = data.toString().endsWith("\n");
         if (lastLog.length == lastLogCount) lastLog.shift();

@@ -195,24 +195,20 @@ async function caption2(input, output, options) {
     var currentLine = "";
     textArr.forEach((word) => {
         var textWidth = getTextWidth(
-            "Futura",
+            "Futura Condensed Extra",
             fontSize,
             currentLine + " " + word
         );
-        if (textWidth > videoWidth * 0.9 || word.endsWith("\n")) {
+        if (textWidth > videoWidth * 0.9) {
             lines.push([textWidth, `${currentLine}`]);
             currentLine = "";
         }
         currentLine += " " + word;
     });
-    lines.push([getTextWidth("Futura", fontSize, currentLine), currentLine]);
-    var emojiRegex =
-        /([\uE000-\uF8FF]|\uD83C[\uDF00-\uDFFF]|\uD83D[\uDC00-\uDDFF])/g;
-    if (text.match(emojiRegex)) {
-        console.log(
-            "[caption-emoji] Emojis found: " + text.match(emojiRegex).join(",")
-        );
-    }
+    lines.push([
+        getTextWidth("Futura Condensed Extra", fontSize, currentLine),
+        currentLine,
+    ]);
     lines = lines.map((l) => [
         l[0],
         l[1]
