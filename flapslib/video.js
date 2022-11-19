@@ -208,7 +208,6 @@ async function caption2(input, output, options) {
     lines.push([getTextWidth("Futura", fontSize, currentLine), currentLine]);
     var emojiRegex =
         /([\uE000-\uF8FF]|\uD83C[\uDF00-\uDFFF]|\uD83D[\uDC00-\uDDFF])/g;
-
     if (text.match(emojiRegex)) {
         console.log(
             "[caption-emoji] Emojis found: " + text.match(emojiRegex).join(",")
