@@ -1,6 +1,7 @@
 const { sendWebhook, users, updateUsers } = require("./webhooks");
 const fetch = require("node-fetch");
 const { getAnalytics, addError } = require("./analytics");
+const { updateHelp, getHelp } = require("./help");
 
 function init(client) {
     const fs = require("fs");
@@ -214,6 +215,10 @@ function init(client) {
     app_rest.get("/flaps_api/all_users", (req, res) => {
         updateUsers();
         res.send(JSON.stringify(users));
+    });
+    app_rest.get("/help/:x", (req, res) => {
+        updateHelp();
+        res.contentType("text/plain").send(getHelp(req.params.x));
     });
     app_rest.get("/bigfile/:name", (req, res) => {
         try {
