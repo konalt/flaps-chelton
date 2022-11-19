@@ -1633,15 +1633,6 @@ async function onMessage(msg) {
                         }
                         break;
                     }
-                case "!imageaudio":
-                    {
-                        sendWebhook(
-                            "ffmpeg",
-                            "use !combine instead you dwankie",
-                            msg.channel
-                        );
-                    }
-                    break;
                 case "!baitswitch":
                     {
                         if (msg.attachments.first(2)[1]) {
@@ -1671,15 +1662,6 @@ async function onMessage(msg) {
                                 }
                             );
                         }
-                    }
-                    break;
-                case "!videoaudio":
-                    {
-                        sendWebhook(
-                            "ffmpeg",
-                            "use !combine instead you dwankie",
-                            msg.channel
-                        );
                     }
                     break;
                 case "!speed":
