@@ -1,0 +1,2 @@
+!homodog <text>
+If an image is supplied, adds homodog text over it. If not, uses the original homodog image
