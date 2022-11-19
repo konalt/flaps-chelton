@@ -6,6 +6,8 @@ const { getTextWidth } = require("./canvas");
 const twemoji = require("twemoji");
 const download = require("./download");
 const downloadPromise = require("./download-promise");
+const { DiscordAPIError } = require("discord.js");
+const { Client } = require("discord.js");
 
 var ffmpegVerbose = false;
 
@@ -185,6 +187,14 @@ async function addText(input, output, options) {
         )}`
     );
 }
+/**
+ * @type {Client}
+ */
+var client = null;
+
+function setClient(c) {
+    client = c;
+}
 async function caption2(input, output, options) {
     var videoHeight = options.h;
     var videoWidth = options.w;
@@ -197,8 +207,9 @@ async function caption2(input, output, options) {
     var fontName = "Futura Condensed Extra";
     var lines = [];
     var currentLine = "";
-    //var emojiReplacer = "ww";
+    var emojiReplacer = "ww";
     var emojiRegex = /(?=\p{Emoji})(?=[\D])/gu;
+    var customEmojiRegex = /(<a?)?:\w+:(\d+>)/g;
     var txtW = (txt) => getTextWidth(fontName, fontSize, txt);
     var emojiSize = fontSize;
     var fixChar = (c) =>
@@ -211,25 +222,55 @@ async function caption2(input, output, options) {
         .replace(/\n/g, "\\\\\\n");
     textArr.forEach((realword) => {
         var word = realword;
-        var textWidth = txtW(currentLine + " " + word);
+        var textWidth = txtW(
+            (currentLine + " " + word).replace(customEmojiRegex, emojiReplacer)
+        );
         if (textWidth > videoWidth) {
             lines.push([textWidth, `${currentLine}`]);
             currentLine = "";
         }
         currentLine += " " + word;
     });
-    lines.push([txtW(currentLine), currentLine]);
-    var emojis = [];
+    lines.push([
+        txtW(currentLine.replace(customEmojiRegex, emojiReplacer)),
+        currentLine,
+    ]);
+    console.log(text.match(customEmojiRegex));
+    var customEmojis = text.match(customEmojiRegex) || [];
+    var emojis = customEmojis.map((x) => [x, true]);
+    console.log(emojis);
     var newLines = [];
     lines.forEach((line) => {
-        var lineYOffset = txtW(line[1]);
+        var lineYOffset = txtW(
+            line[1].replace(customEmojiRegex, emojiReplacer)
+        );
         var newWords = [];
         line[1].split(" ").forEach((word) => {
             var newWord = [];
             if (!word) return;
+            var chars = [];
+            var cached = "";
+            var writingCache = false;
             Array.from(word).forEach((char) => {
+                if (char == "<") {
+                    writingCache = true;
+                }
+                if (writingCache) {
+                    cached += char;
+                } else {
+                    chars.push(char);
+                }
+                if (char == ">") {
+                    writingCache = false;
+                    chars.push(`${cached}`);
+                    cached = "";
+                }
+            });
+            chars.forEach((char) => {
                 if (char.match(emojiRegex)) {
-                    emojis.push(char);
+                    emojis.push([char, false]);
+                    newWord.push([emojiSize, char]);
+                } else if (char.match(customEmojiRegex)) {
                     newWord.push([emojiSize, char]);
                 } else {
                     newWord.push([txtW(char), fixChar(char)]);
@@ -239,15 +280,24 @@ async function caption2(input, output, options) {
         });
         newLines.push([lineYOffset, newWords]);
     });
-    emojis = emojis.map((e, i) =>
-        downloadPromise(
-            twemoji
-            .parse(e, { size: Math.floor(72) })
-            .split('src="')[1]
-            .split('"/>')[0],
-            path.join(__dirname, "..", output + ".emoji." + i + ".png")
-        )
-    );
+    emojis = emojis.map((e, i) => {
+        if (e[1]) {
+            return downloadPromise(
+                client.emojis.cache.find(
+                    (em) => em.id === e[0].split(":")[2].split(">")[0]
+                ).url,
+                path.join(__dirname, "..", output + ".emoji." + i + ".png")
+            );
+        } else {
+            return downloadPromise(
+                twemoji
+                .parse(e[0], { size: Math.floor(72) })
+                .split('src="')[1]
+                .split('"/>')[0],
+                path.join(__dirname, "..", output + ".emoji." + i + ".png")
+            );
+        }
+    });
     await Promise.all(emojis);
     var emojiPositions = [];
     var barHeight =
@@ -259,7 +309,10 @@ async function caption2(input, output, options) {
         var charOffset = videoWidth / 2 - line[0] / 2;
         line[1].forEach((word) => {
             word.forEach((char) => {
-                if (char[1].match(emojiRegex)) {
+                if (
+                    char[1].match(emojiRegex) ||
+                    char[1].match(customEmojiRegex)
+                ) {
                     emojiPositions.push([
                         charOffset,
                         index * (fontSize + 5) + emojiSize / 2,
@@ -302,6 +355,7 @@ async function caption2(input, output, options) {
         filter += `[out_emoji_${emojis.length - 1}]null[out_v]`;
     }
     fs.writeFileSync(path.join(__dirname, "..", output + ".ffscript"), filter);
+    console.log(emojiInputs);
     return ffmpeg(
         `-y -i ${path.join(
             __dirname,
@@ -798,4 +852,5 @@ module.exports = {
     cookingVideo: cookingVideo,
     speed: speed,
     invert,
+    setClient,
 };

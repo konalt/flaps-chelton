@@ -77,6 +77,7 @@ const { caption2 } = require("./flapslib/video");
 
 flapslib.webhooks.setClient(client);
 flapslib.fetchapis.setClient(client);
+flapslib.video.setClient(client);
 
 function n(type, ext) {
     return (
