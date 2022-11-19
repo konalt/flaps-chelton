@@ -195,11 +195,11 @@ async function caption2(input, output, options) {
     var lines = [];
     var currentLine = "";
     var emojiReplacer = "ww";
-    var emojiRegex = /\p{Emoji}/gu;
+    var emojiRegex = /(?=\p{Emoji})(?=[\D])/gu;
     var txtW = (txt) => getTextWidth(fontName, fontSize, txt);
     var emojiSize = txtW(emojiReplacer);
     textArr.forEach((realword) => {
-        var word = realword; //.replace(emojiRegex, emojiReplacer);
+        var word = realword;
         var textWidth = txtW(currentLine + " " + word);
         if (textWidth > videoWidth) {
             lines.push([textWidth, `${currentLine}`]);
