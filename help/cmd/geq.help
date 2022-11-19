@@ -1,0 +1,3 @@
+!geq <string>
+Runs a GEQ on a video, image, or audio file. If none is provided, a video nullsrc is used.
+100 geqs
