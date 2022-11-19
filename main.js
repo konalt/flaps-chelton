@@ -24,9 +24,7 @@ const download = require("./flapslib/download");
 const {
     uuidv4,
     question,
-    switchMode,
     gpt3complete,
-    elcomplete,
     setSanity,
     describe,
     sendToChatbot,
@@ -1943,11 +1941,6 @@ async function onMessage(msg) {
                         flapslib.ai.doDream(msg);
                     }
                     break;
-                case "!txtgen":
-                    {
-                        flapslib.ai.txtgen(msg.channel);
-                    }
-                    break;
                 case "!cah":
                     {
                         flapslib.cah(msg.channel);
@@ -1991,93 +1984,6 @@ async function onMessage(msg) {
                 case "!weezer":
                     {
                         weezer(msg, client);
-                    }
-                    break;
-                case "!calamitas":
-                    {
-                        var files = fs.readdirSync("E:/MBG/StuffAndThings/38/");
-                        var chosenFile =
-                            files[Math.floor(Math.random() * files.length)];
-                        var filesize =
-                            fs.statSync(
-                                "E:/MBG/StuffAndThings/38/" + chosenFile
-                            ).size /
-                            (1024 * 1024);
-                        if (filesize > 8) {
-                            sendWebhook(
-                                "scal",
-                                "ohh my god thats such a fucking big file. i cant,,, upload.,,,, itt ohohohhnnggmggnhahdf. its " +
-                                Math.round(filesize) +
-                                " megabyte. fucking hell. thats what she said.",
-                                false,
-                                msg.channel
-                            );
-                        } else {
-                            var message = await client.channels.cache
-                                .get("956316856422137856")
-                                .send({
-                                    files: [{
-                                        attachment: "E:/MBG/StuffAndThings/38/" +
-                                            chosenFile,
-                                    }, ],
-                                });
-
-                            sendWebhook(
-                                "scal",
-                                message.attachments.first().url,
-                                false,
-                                msg.channel
-                            );
-                        }
-                    }
-                    break;
-                case "!millerswife":
-                    {
-                        var files = fs.readdirSync(
-                            "E:/MBG/StuffAndThings/lormastur/"
-                        );
-                        var chosenFile =
-                            files[Math.floor(Math.random() * files.length)];
-                        var filesize =
-                            fs.statSync(
-                                "E:/MBG/StuffAndThings/lormastur/" + chosenFile
-                            ).size /
-                            (1024 * 1024);
-                        if (Math.random() < 0) {
-                            flapslib.videowrapper.armstrongify(
-                                "E:/MBG/StuffAndThings/lormastur/" + chosenFile,
-                                msg,
-                                1,
-                                client
-                            );
-                            return;
-                        }
-                        if (filesize > 8) {
-                            sendWebhook(
-                                "millerwife",
-                                "*ugngnh* " +
-                                Math.round(filesize) +
-                                " megabyte~~~~~. ah.. uhn......",
-                                false,
-                                msg.channel
-                            );
-                        } else {
-                            var message = await client.channels.cache
-                                .get("956316856422137856")
-                                .send({
-                                    files: [{
-                                        attachment: "E:/MBG/StuffAndThings/lormastur/" +
-                                            chosenFile,
-                                    }, ],
-                                });
-
-                            sendWebhook(
-                                "millerwife",
-                                message.attachments.first().url,
-                                false,
-                                msg.channel
-                            );
-                        }
                     }
                     break;
                 case "!inspire":
@@ -3214,24 +3120,6 @@ fbi files on ${commandArgString}: ${
                         sendWebhook("flaps", o, msg.channel);
                         break;
                     }
-                case "!funnycat":
-                    {
-                        var message = await client.channels.cache
-                            .get("956316856422137856")
-                            .send({
-                                files: [{
-                                    attachment: "images/cybercat.jpg",
-                                }, ],
-                            });
-
-                        flapslib.webhooks.sendWebhook(
-                            "balkan",
-                            message.attachments.first().url,
-                            false,
-                            msg.channel
-                        );
-                    }
-                    break;
                 case "!morbius":
                     {
                         flapslib.moviereview.morbiusReview(msg.channel);
@@ -3383,12 +3271,6 @@ fbi files on ${commandArgString}: ${
                 case "!gpt3complete":
                     gpt3complete(commandArgString, msg.channel);
                     break;
-                case "!monsoonswitch":
-                    switchMode(msg.channel);
-                    break;
-                case "!elcomplete":
-                    elcomplete(commandArgString, msg.channel, 1);
-                    break;
                 case "!mimenod":
                     if (!parseInt(commandArgs[1]))
                         return sendWebhook(
@@ -3400,13 +3282,6 @@ fbi files on ${commandArgString}: ${
                     flapslib.videowrapper.mimeNod(
                         parseInt(commandArgs[1]),
                         msg
-                    );
-                    break;
-                case "!gifaudio":
-                    sendWebhook(
-                        "ffmpeg",
-                        "use !combine instead you dwankie",
-                        msg.channel
                     );
                     break;
                 case "!tate":
