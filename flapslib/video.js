@@ -6,7 +6,7 @@ const { getTextWidth } = require("./canvas");
 const twemoji = require("twemoji");
 const downloadPromise = require("./download-promise");
 
-var ffmpegVerbose = false;
+var ffmpegVerbose = true;
 
 var h264Preset = "ultrafast";
 
@@ -206,7 +206,7 @@ async function caption2(input, output, options) {
     var emojiRegex = /(?=\p{Emoji})(?=[\D])/gu;
     var customEmojiRegex = /(<a?)?:\w+:(\d+>)/g;
     var txtW = (txt) => getTextWidth(fontName, fontSize, txt);
-    var emojiSize = fontSize * 1.2;
+    var emojiSize = fontSize * 1.3;
     var fixChar = (c) =>
         c
         .replace(/\\/g, "\\\\\\\\")
@@ -323,7 +323,7 @@ async function caption2(input, output, options) {
                 ) {
                     emojiPositions.push([
                         charOffset,
-                        index * (fontSize + 5) + emojiSize / 2,
+                        index * (fontSize + 5) + fontSize / 2,
                     ]);
                     charOffset += char[0];
                     return;
@@ -331,7 +331,7 @@ async function caption2(input, output, options) {
                 filter += `drawtext=fontfile=fonts/futura.otf:fontsize=${fontSize}:text='${
                     char[1]
                 }':x=${charOffset}:y=${
-                    fontSize / 2 + (index + 0.8) * (fontSize + 5)
+                    fontSize + index * (fontSize + 5) + fontSize / 2
                 }-ascent,`;
                 charOffset += char[0];
             });
@@ -342,18 +342,16 @@ async function caption2(input, output, options) {
     filter += `[out_captioned];`;
     var emojiInputs = "";
     if (emojis.length > 0) {
+        emojiInputs = `-i ${path.join(
+            __dirname,
+            "..",
+            output + ".emoji.%01d.png"
+        )} `;
         for (let i = 0; i < emojis.length; i++) {
-            filter += `[${
-                i + 1
-            }:v]scale=${emojiSize}:${emojiSize},setsar=1:1[scaled_emoji_${i}];`;
+            filter += `[1:v]select=e=eq(n\\,${i}):n=1,scale=${emojiSize}:${emojiSize},setsar=1:1[scaled_emoji_${i}];`;
             if (i == 0) filter += `[out_captioned]`;
             if (i != 0) filter += `[out_emoji_${i - 1}]`;
             filter += `[scaled_emoji_${i}]overlay=${emojiPositions[i][0]}:${emojiPositions[i][1]}[out_emoji_${i}];`;
-            emojiInputs += ` -i ${path.join(
-                __dirname,
-                "..",
-                output + ".emoji." + i + ".png"
-            )}`;
         }
         if (filter.endsWith(","))
             filter = filter.substring(0, filter.length - 1);
@@ -367,17 +365,22 @@ async function caption2(input, output, options) {
     } else {
         filter += "[out_captioned]null[out_v]";
     }
+    /*  ${
+        ["png", "jpg", "webp", "jpeg"].includes(output.split(".").pop())
+        ? "-frames:v 1"
+        : "-shortest"
+}  */
     fs.writeFileSync(path.join(__dirname, "..", output + ".ffscript"), filter);
     return ffmpeg(
         `-y -i ${path.join(
             __dirname,
             "..",
             input
-        )} ${emojiInputs.trim()} -filter_complex_script ${path.join(
+        )} ${emojiInputs}-filter_complex_script ${path.join(
             __dirname,
             "..",
             output + ".ffscript"
-        )} -map "[out_v]" -map "0:a?" -preset:v ${h264Preset} ${path.join(
+        )} -map "[out_v]" -map "0:a?" -preset:v ${h264Preset} -update 1 ${path.join(
             __dirname,
             "..",
             output
