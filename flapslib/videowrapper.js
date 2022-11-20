@@ -54,18 +54,26 @@ function n(type) {
         type + "_" + uuidv4().toUpperCase().replace(/-/gi, "").substring(0, 8)
     );
 }
-async function caption2(name, text, msg, att) {
-    var id = n("Effect_Caption2");
-    var ext = "." + name.split(".").pop();
-    video
-        .caption2("images/cache/" + name, "images/cache/" + id + ext, {
-            w: att.width,
-            h: att.height,
-            text: text,
+async function doEffect(effect, input, name, options, msg) {
+    effect(
+            "images/cache/" + input,
+            "images/cache/" + n("Effect_" + name) + "." + input.split(".").pop(),
+            options
+        )
+        .then((out) => {
+            sendWebhookFile("ffmpeg", out, msg.channel);
         })
-        .then(() => {
-            sendWebhookFile("ffmpeg", "images/cache/" + id + ext, msg.channel);
+        .catch((out) => {
+            sendWebhook("ffmpeg", out.stack, msg.channel);
         });
+}
+async function caption2(name, text, msg, att) {
+    doEffect(
+        video.caption2,
+        name,
+        "Caption2", { text: text, w: att.width, h: att.height },
+        msg
+    );
 }
 async function cookingVideo(name, msg) {
     var id = n("Effect_CookingVideo");

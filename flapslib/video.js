@@ -6,12 +6,12 @@ const { getTextWidth } = require("./canvas");
 const twemoji = require("twemoji");
 const downloadPromise = require("./download-promise");
 
-var ffmpegVerbose = true;
+var ffmpegVerbose = false;
 
 var h264Preset = "ultrafast";
 
 async function ffmpeg(args, quiet = false) {
-    return new Promise((resolve) => {
+    return new Promise((resolve, reject) => {
         var startTime = Date.now();
         if (!quiet) console.log("[ffmpeg] Starting FFMpeg instance");
         if (!quiet)
@@ -34,11 +34,15 @@ async function ffmpeg(args, quiet = false) {
             if (!quiet) stdout.write("[ffmpeg] " + c);
         });
         ffmpegInstance.on("exit", (code) => {
-            if (code == 0 && !quiet) console.log("[ffmpeg] Completed OK");
-            if (code == 1 && !quiet) console.log("[ffmpeg] Failed!");
+            if (code == 0 && !quiet) {
+                if (!quiet) console.log("[ffmpeg] Completed OK");
+                resolve(args.split(" ").pop());
+            } else {
+                if (!quiet) console.log("[ffmpeg] Failed!");
+                reject(b);
+            }
             if (!quiet)
                 console.log("[ffmpeg] Took %d ms", Date.now() - startTime);
-            resolve(b);
         });
     });
 }
