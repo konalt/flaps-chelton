@@ -355,15 +355,19 @@ async function caption2(input, output, options) {
         }
         if (filter.endsWith(","))
             filter = filter.substring(0, filter.length - 1);
-        if (input.endsWith("gif")) {
+        if (output.endsWith("gif")) {
             filter += `[out_emoji_${
                 emojis.length - 1
-            }]split[s0][s1];[s0]palettegen=reserve_transparent=1[p];[s1][p]paletteuse[out_v]`;
+            }]split[s0][s1];[s0]palettegen[p];[s1][p]paletteuse[out_v]`;
         } else {
             filter += `[out_emoji_${emojis.length - 1}]null[out_v]`;
         }
     } else {
-        filter += "[out_captioned]null[out_v]";
+        if (output.endsWith("gif")) {
+            filter += `[out_captioned]split[s0][s1];[s0]palettegen[p];[s1][p]paletteuse[out_v]`;
+        } else {
+            filter += `[out_captioned]null[out_v]`;
+        }
     }
     /*  ${
         ["png", "jpg", "webp", "jpeg"].includes(output.split(".").pop())
