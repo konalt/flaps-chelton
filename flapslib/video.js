@@ -206,7 +206,7 @@ async function caption2(input, output, options) {
     var emojiRegex = /(?=\p{Emoji})(?=[\D])/gu;
     var customEmojiRegex = /(<a?)?:\w+:(\d+>)/g;
     var txtW = (txt) => getTextWidth(fontName, fontSize, txt);
-    var emojiSize = fontSize;
+    var emojiSize = fontSize * 1.2;
     var fixChar = (c) =>
         c
         .replace(/\\/g, "\\\\\\\\")
@@ -242,7 +242,6 @@ async function caption2(input, output, options) {
         txtW(currentLine.replace(customEmojiRegex, emojiReplacer)),
         currentLine,
     ]);
-    console.log(text.match(customEmojiRegex));
     var customEmojis = text.match(customEmojiRegex) || [];
     var emojis = customEmojis.map((x) => [x, true]);
     console.log(emojis);
@@ -309,8 +308,10 @@ async function caption2(input, output, options) {
     var emojiPositions = [];
     var barHeight =
         2 * Math.round(((lines.length + 1) * fontSize + lines.length * 5) / 2);
-    var filter = `[0:v]pad=width=${videoWidth}:height=${
-        videoHeight + barHeight
+    var filter = `[0:v]scale=${Math.round(videoWidth / 2) * 2}:${
+        Math.round(videoHeight / 2) * 2
+    },pad=width=${Math.round(videoWidth / 2) * 2}:height=${
+        Math.round(videoHeight / 2) * 2 + barHeight
     }:x=0:y=${barHeight}:color=white,`;
     newLines.forEach((line, index) => {
         var charOffset = videoWidth / 2 - line[0] / 2;
