@@ -369,11 +369,6 @@ async function caption2(input, output, options) {
             filter += `[out_captioned]null[out_v]`;
         }
     }
-    /*  ${
-        ["png", "jpg", "webp", "jpeg"].includes(output.split(".").pop())
-        ? "-frames:v 1"
-        : "-shortest"
-}  */
     fs.writeFileSync(path.join(__dirname, "..", output + ".ffscript"), filter);
     return ffmpeg(
         `-y -i ${path.join(
