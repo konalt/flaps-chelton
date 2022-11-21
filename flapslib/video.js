@@ -20,7 +20,8 @@ async function ffmpeg(args, quiet = false) {
             );
         var ffmpegInstance = cp.spawn(
             "ffmpeg",
-            ((ffmpegVerbose ? "" : "-v warning ") + args).split(" "), {
+            ((ffmpegVerbose ? "" : "-v warning ") + args).split(" "),
+            {
                 shell: true,
             }
         );
@@ -140,8 +141,8 @@ function parseScalingTable(
         Promise.all(promises).then(() => {
             console.log(
                 "Created all key images in " +
-                (Date.now() - start) +
-                "ms. Beginning copy process"
+                    (Date.now() - start) +
+                    "ms. Beginning copy process"
             );
             var curFile = path.join(
                 __dirname,
@@ -153,10 +154,10 @@ function parseScalingTable(
                     __dirname,
                     "..",
                     input +
-                    "." +
-                    frame_num.toString().padStart(3, "0") +
-                    "." +
-                    ext
+                        "." +
+                        frame_num.toString().padStart(3, "0") +
+                        "." +
+                        ext
                 );
                 if (!fs.existsSync(newFile)) {
                     fs.copyFileSync(curFile, newFile);
@@ -206,19 +207,19 @@ async function caption2(input, output, options) {
     var fontName = "Futura Condensed Extra";
     var lines = [];
     var currentLine = "";
-    var emojiReplacer = "ww";
+    var emojiReplacer = "aa";
     var emojiRegex = /(?=\p{Emoji})(?=[\D])/gu;
     var customEmojiRegex = /(<a?)?:\w+:(\d+>)/g;
     var txtW = (txt) => getTextWidth(fontName, fontSize, txt);
     var emojiSize = fontSize * 1.3;
     var fixChar = (c) =>
         c
-        .replace(/\\/g, "\\\\\\\\")
-        .replace(/'/g, "\u2019")
-        .replace(/"/g, '\\\\\\"')
-        .replace(/%/g, "\\\\\\%")
-        .replace(/:/g, "\\\\\\:")
-        .replace(/\n/g, "\\\\\\n");
+            .replace(/\\/g, "\\\\\\\\")
+            .replace(/'/g, "\u2019")
+            .replace(/"/g, '\\\\\\"')
+            .replace(/%/g, "\\\\\\%")
+            .replace(/:/g, "\\\\\\:")
+            .replace(/\n/g, "\\\\\\n");
     textArr.forEach((realword) => {
         var word = "";
         Array.from(realword).forEach((char) => {
@@ -301,9 +302,9 @@ async function caption2(input, output, options) {
         } else {
             return downloadPromise(
                 twemoji
-                .parse(e[0], { size: Math.floor(72) })
-                .split('src="')[1]
-                .split('"/>')[0],
+                    .parse(e[0], { size: Math.floor(72) })
+                    .split('src="')[1]
+                    .split('"/>')[0],
                 path.join(__dirname, "..", output + ".emoji." + i + ".png")
             );
         }
@@ -318,7 +319,7 @@ async function caption2(input, output, options) {
         Math.round(videoHeight / 2) * 2 + barHeight
     }:x=0:y=${barHeight}:color=white,`;
     newLines.forEach((line, index) => {
-        var charOffset = videoWidth / 2 - line[0] / 2;
+        var charOffset = videoWidth / 2 - line[0] / 2 + videoWidth * 0.025;
         line[1].forEach((word) => {
             word.forEach((char) => {
                 if (
@@ -521,11 +522,11 @@ async function theHorror(input, output) {
                                 input + ".%03d." + input.split(".").pop()
                             )}`,
                             "-filter_complex_script " +
-                            path.join(
-                                __dirname,
-                                "..",
-                                input + ".script.txt"
-                            ),
+                                path.join(
+                                    __dirname,
+                                    "..",
+                                    input + ".script.txt"
+                                ),
                             "-shortest",
                             '-map "[oout]"',
                             '-map "0:a:0"',
@@ -541,9 +542,9 @@ async function theHorror(input, output) {
 async function getVideoLength(path) {
     return new Promise((res, rej) => {
         ffprobe(
-                "-v error -select_streams v:0 -show_entries format=duration -of default=noprint_wrappers=1:nokey=1 " +
+            "-v error -select_streams v:0 -show_entries format=duration -of default=noprint_wrappers=1:nokey=1 " +
                 path
-            )
+        )
             .then((txt) => {
                 res(parseFloat(txt));
             })
@@ -553,9 +554,9 @@ async function getVideoLength(path) {
 async function getFrameCount(path) {
     return new Promise((res, rej) => {
         ffprobe(
-                "-v error -select_streams v:0 -count_frames -show_entries stream=nb_read_frames -print_format default=nokey=1:noprint_wrappers=1 " +
+            "-v error -select_streams v:0 -count_frames -show_entries stream=nb_read_frames -print_format default=nokey=1:noprint_wrappers=1 " +
                 path
-            )
+        )
             .then((txt) => {
                 res(parseInt(txt));
             })
@@ -599,11 +600,11 @@ async function stewie(input, output) {
                                 input + ".%03d." + input.split(".").pop()
                             )}`,
                             "-filter_complex_script " +
-                            path.join(
-                                __dirname,
-                                "..",
-                                input + ".script.txt"
-                            ),
+                                path.join(
+                                    __dirname,
+                                    "..",
+                                    input + ".script.txt"
+                                ),
                             "-shortest",
                             '-map "[vout]"',
                             '-map "[aout]"',
@@ -765,7 +766,7 @@ async function mimeNod(output, bpm) {
 }
 async function armstrongify(input, output, options) {
     return ffmpeg(
-            `-y ${options.isVideo ? "" : "-t 1 "}-i ${path.join(
+        `-y ${options.isVideo ? "" : "-t 1 "}-i ${path.join(
             __dirname,
             "..",
             input
