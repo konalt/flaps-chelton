@@ -488,7 +488,7 @@ async function reverse(input, output) {
             __dirname,
             "..",
             input
-        )} -vf reverse -af areverse -preset:v ${h264Preset} ${path.join(
+        )} -vf "reverse,split[s0][s1];[s0]palettegen[p];[s1][p]paletteuse" -af areverse -preset:v ${h264Preset} ${path.join(
             __dirname,
             "..",
             output

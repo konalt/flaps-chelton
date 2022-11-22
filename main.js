@@ -1862,7 +1862,7 @@ async function onMessage(msg) {
                     break;
                 case "!reverse":
                     {
-                        getSources(msg, ["video/audio"])
+                        getSources(msg, ["video/audio/gif"])
                         .then((ids) => {
                             flapslib.videowrapper.reverse(
                                 ids[0],
