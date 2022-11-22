@@ -197,6 +197,8 @@ function setClient(c) {
 async function caption2(input, output, options) {
     var videoHeight = options.h;
     var videoWidth = options.w;
+    videoWidth = Math.round(videoWidth / 2) * 2;
+    videoHeight = Math.round(videoHeight / 2) * 2;
     var text = options.text;
     var getreal = false;
     if (text == "get real" && getreal)
@@ -206,7 +208,7 @@ async function caption2(input, output, options) {
     var fontName = "Futura Condensed Extra";
     var lines = [];
     var currentLine = "";
-    var emojiReplacer = "aa";
+    var emojiReplacer = "xx";
     var emojiRegex = /(?=\p{Emoji})(?=[\D])/gu;
     var customEmojiRegex = /(<a?)?:\w+:(\d+>)/g;
     var txtW = (txt) => getTextWidth(fontName, fontSize, txt);
@@ -318,16 +320,17 @@ async function caption2(input, output, options) {
         Math.round(videoHeight / 2) * 2 + barHeight
     }:x=0:y=${barHeight}:color=white,`;
     newLines.forEach((line, index) => {
-        var charOffset = videoWidth / 2 - line[0] / 2 + videoWidth * 0.025;
+        var charOffset = videoWidth / 2 - line[0] / 2;
         line[1].forEach((word) => {
             word.forEach((char) => {
                 if (
                     char[1].match(emojiRegex) ||
                     char[1].match(customEmojiRegex)
                 ) {
+                    console.log("Emoji!");
                     emojiPositions.push([
                         charOffset,
-                        index * (fontSize + 5) + fontSize / 2,
+                        index * (fontSize + 5) + fontSize * 0.4,
                     ]);
                     charOffset += char[0];
                     return;
@@ -335,7 +338,7 @@ async function caption2(input, output, options) {
                 filter += `drawtext=fontfile=fonts/futura.otf:fontsize=${fontSize}:text='${
                     char[1]
                 }':x=${charOffset}:y=${
-                    fontSize + index * (fontSize + 5) + fontSize / 2
+                    fontSize + index * (fontSize + 5) + fontSize * 0.4
                 }-ascent,`;
                 charOffset += char[0];
             });
