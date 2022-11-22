@@ -1673,6 +1673,20 @@ async function onMessage(msg) {
                         });
                     }
                     break;
+                case "!mkvmp4":
+                    {
+                        getSources(msg, ["video"])
+                        .then((ids) => {
+                            flapslib.videowrapper.convertMKVtoMP4(
+                                ids[0],
+                                msg
+                            );
+                        })
+                        .catch((reason) => {
+                            sendWebhook("ffmpeg", reason, msg.channel);
+                        });
+                    }
+                    break;
                 case "!stitch":
                     {
                         getSources(msg, ["video", "video"])

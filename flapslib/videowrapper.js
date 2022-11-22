@@ -75,6 +75,9 @@ async function caption2(name, text, msg, att) {
         msg
     );
 }
+async function convertMKVtoMP4(name, msg) {
+    doEffect(video.mkvmp4, name, "Convert-MKV-MP4", {}, msg);
+}
 async function cookingVideo(name, msg) {
     var id = n("Effect_CookingVideo");
     var ext = "." + name.split(".").pop();
@@ -400,4 +403,5 @@ module.exports = {
     cookingVideo: cookingVideo,
     speed: speed,
     invert: invert,
+    convertMKVtoMP4,
 };
