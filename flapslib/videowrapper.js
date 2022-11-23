@@ -30,7 +30,7 @@ async function addText(name, text, msg) {
             x: gifData[2],
             y: gifData[3],
         })
-        .then(async() => {
+        .then(async () => {
             var id2 = uuidv4().replace(/-/gi, "") + ".gif";
             video
                 .addText("images/cache/" + id, "images/cache/" + id2, {
@@ -56,10 +56,10 @@ function n(type) {
 }
 async function doEffect(effect, input, name, options, msg) {
     effect(
-            "images/cache/" + input,
-            "images/cache/" + n("Effect_" + name) + "." + input.split(".").pop(),
-            options
-        )
+        "images/cache/" + input,
+        "images/cache/" + n("Effect_" + name) + "." + input.split(".").pop(),
+        options
+    )
         .then((out) => {
             sendWebhookFile("ffmpeg", out, msg.channel);
         })
@@ -71,7 +71,8 @@ async function caption2(name, text, msg, att) {
     doEffect(
         video.caption2,
         name,
-        "Caption2", { text: text, w: att.width, h: att.height },
+        "Caption2",
+        { text: text, w: att.width, h: att.height },
         msg
     );
 }
@@ -114,9 +115,9 @@ ${text[1]}`;
     fs.writeFileSync("./subs_bottom.srt", subtitleFileData2);
     video
         .simpleMemeCaption("images/cache/" + name, "images/cache/" + id + ext, {
-            fontSize: !parseInt(msg.content.split(" ")[1]) ?
-                30 :
-                parseInt(msg.content.split(" ")[1]),
+            fontSize: !parseInt(msg.content.split(" ")[1])
+                ? 30
+                : parseInt(msg.content.split(" ")[1]),
         })
         .then(() => {
             sendWebhookFile("ffmpeg", "images/cache/" + id + ext, msg.channel);
@@ -265,7 +266,7 @@ async function videoAudio(name, msg, exts, reverse) {
     var id = n("Effect_CVideoAudio");
     video
         .videoAudio("images/cache/" + name, "images/cache/" + id, reverse, exts)
-        .then(async() => {
+        .then(async () => {
             sendWebhookFile(
                 "ffmpeg",
                 "images/cache/" + id + ".mp4",
@@ -316,6 +317,21 @@ async function stitch(names, msg) {
             );
         });
 }
+async function stitch2(names, msg) {
+    var id = n("Effect_Stitch2");
+    video
+        .stitch2(
+            ["images/cache/" + names[0], "images/cache/" + names[1]],
+            "images/cache/" + id
+        )
+        .then(() => {
+            sendWebhookFile(
+                "ffmpeg",
+                "images/cache/" + id + ".mp4",
+                msg.channel
+            );
+        });
+}
 async function geq(name, msg) {
     var id = n("Effect_GEQ");
     var ext = ".mp4";
@@ -325,17 +341,20 @@ async function geq(name, msg) {
     video
         .geq(
             name == "nullsrc" ? "nullsrc=s=256x256" : "images/cache/" + name,
-            "images/cache/" + id + ext, {
+            "images/cache/" + id + ext,
+            {
                 red: msg.content.split(" ").slice(1)[0],
-                green: msg.content.split(" ").slice(1).length > 1 ?
-                    msg.content.split(" ").slice(1)[1] :
-                    msg.content.split(" ").slice(1)[0],
-                blue: msg.content.split(" ").slice(1).length > 1 ?
-                    msg.content.split(" ").slice(1)[2] :
-                    msg.content.split(" ").slice(1)[0],
+                green:
+                    msg.content.split(" ").slice(1).length > 1
+                        ? msg.content.split(" ").slice(1)[1]
+                        : msg.content.split(" ").slice(1)[0],
+                blue:
+                    msg.content.split(" ").slice(1).length > 1
+                        ? msg.content.split(" ").slice(1)[2]
+                        : msg.content.split(" ").slice(1)[0],
             }
         )
-        .then(async() => {
+        .then(async () => {
             sendWebhookFile("ffmpeg", "images/cache/" + id + ext, msg.channel);
         });
 }
@@ -349,11 +368,12 @@ async function complexFFmpeg(name, msg) {
     video
         .complexFFmpeg(
             name == "nullsrc" ? "nullsrc=s=256x256" : "images/cache/" + name,
-            "images/cache/" + id + ext, {
+            "images/cache/" + id + ext,
+            {
                 args: msg.content.split(" ").slice(1).join(" "),
             }
         )
-        .then(async() => {
+        .then(async () => {
             try {
                 sendWebhookFile(
                     "ffmpeg",
@@ -373,7 +393,7 @@ async function complexFFmpeg(name, msg) {
 async function mimeNod(bpm, msg) {
     var id = n("MimeNod");
     var ext = ".gif";
-    video.mimeNod("images/cache/" + id + ext, bpm).then(async() => {
+    video.mimeNod("images/cache/" + id + ext, bpm).then(async () => {
         sendWebhookFile("ffmpeg", "images/cache/" + id + ext, msg.channel);
     });
 }
@@ -404,4 +424,5 @@ module.exports = {
     speed: speed,
     invert: invert,
     convertMKVtoMP4,
+    stitch2,
 };

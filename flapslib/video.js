@@ -659,6 +659,15 @@ async function stitch(inputs, output) {
         )}`
     );
 }
+async function stitch2(inputs, output) {
+    return ffmpeg(
+        `-y -i ${file(inputs[0])} -i ${file(
+            inputs[1]
+        )} -filter_complex "[0:v][1:v]scale2ref[0vy][1vy]; [0vy]setsar=1:1[0v]; [1vy]setsar=1:1[1v]; [0v][0a][1v][1a]concat=n=2:v=1:a=1[v][a]" -map "[v]" -map "[a]" -fps_mode vfr ${file(
+            output + ".mp4"
+        )}`
+    );
+}
 
 function file(x) {
     return path.join(
@@ -888,4 +897,5 @@ module.exports = {
     invert,
     setClient,
     mkvmp4,
+    stitch2,
 };
