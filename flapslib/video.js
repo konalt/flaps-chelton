@@ -705,16 +705,15 @@ async function cookingVideo(input, output) {
     );
 }
 async function imageAudio(input, output, rev, exts) {
+    var files = [
+        file(input + (!rev ? "-0." + exts[0] : "-1." + exts[1])),
+        file(input + (rev ? "-0." + exts[0] : "-1." + exts[1])),
+    ];
+    var len = await getVideoLength(files[1]);
     return ffmpeg(
-        `-y -loop 1 -i ${path.join(
-            __dirname,
-            "..",
-            input + (!rev ? "-0." + exts[0] : "-1." + exts[1])
-        )} -i ${path.join(
-            __dirname,
-            "..",
-            input + (rev ? "-0." + exts[0] : "-1." + exts[1])
-        )} -vf "pad=ceil(iw/2)*2:ceil(ih/2)*2" -c:v libx264 -tune stillimage -c:a aac -b:a 192k -pix_fmt yuv420p -shortest -preset:v ${h264Preset} ${path.join(
+        `-y -loop 1 -i ${files[0]} -i ${
+            files[1]
+        } -vf "pad=ceil(iw/2)*2:ceil(ih/2)*2" -c:v libx264 -tune stillimage -c:a aac -b:a 192k -pix_fmt yuv420p -preset:v ${h264Preset} -t ${len} ${path.join(
             __dirname,
             "..",
             output + ".mp4"
