@@ -11,7 +11,7 @@ function uuidv4() {
 }
 
 function tenorURLToGifURL(url) {
-    var searchString = '<meta class="dynamic" property="og:url" content="';
+    var searchString = '<meta class="dynamic" name="twitter:image" content="';
     return new Promise((resl) => {
         fetch(url)
             .then((r) => r.text())
