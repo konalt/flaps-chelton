@@ -191,7 +191,7 @@ function init(client) {
                 .contentType("text/plain")
                 .send("400 Bad Request");
         }
-        dalle2Promise(req.body.prompt)
+        dalle2Promise({ prompt: req.body.prompt })
             .then((data) => {
                 res.contentType("image/png").send(data);
             })
@@ -246,8 +246,7 @@ function init(client) {
         if (users[user]) {
             res.send({
                 name: users[user][0] == "__FlapsNick__" ?
-                    "flaps chelton" :
-                    users[user][0],
+                    "flaps chelton" : users[user][0],
                 text: req.params.y.replace(/\.space\./g, " "),
             });
         } else {
