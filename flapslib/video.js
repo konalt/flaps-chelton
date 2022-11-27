@@ -12,6 +12,7 @@ var h264Preset = "ultrafast";
 
 async function ffmpeg(args, quiet = false) {
     return new Promise((resolve, reject) => {
+        console.log(args);
         var startTime = Date.now();
         if (!quiet) console.log("[ffmpeg] Starting FFMpeg instance");
         if (!quiet)
@@ -564,6 +565,18 @@ async function getVideoLength(path) {
             .catch(rej);
     });
 }
+async function getVideoDimensions(path) {
+    return new Promise((res, rej) => {
+        ffprobe(
+            "-v error -select_streams v:0 -show_entries stream=width,height -of csv=s=x:p=0 " +
+                path
+        )
+            .then((txt) => {
+                res(txt.split("x").map(parseFloat));
+            })
+            .catch(rej);
+    });
+}
 async function getFrameCount(path) {
     return new Promise((res, rej) => {
         ffprobe(
@@ -720,6 +733,28 @@ async function imageAudio(input, output, rev, exts) {
         `-y -loop 1 -i ${files[0]} -i ${
             files[1]
         } -vf "pad=ceil(iw/2)*2:ceil(ih/2)*2" -c:v libx264 -tune stillimage -c:a aac -b:a 192k -pix_fmt yuv420p -preset:v ${h264Preset} -t ${len} ${path.join(
+            __dirname,
+            "..",
+            output + ".mp4"
+        )}`
+    );
+}
+async function semiTransparentOverlay(input, output, rev, exts) {
+    var files = [
+        file(input + (!rev ? "-0." + exts[0] : "-1." + exts[1])),
+        file(input + (rev ? "-0." + exts[0] : "-1." + exts[1])),
+    ];
+    var len = await getVideoLength(files[1]);
+    var dims = await getVideoDimensions(files[1]);
+    console.log(dims);
+    return ffmpeg(
+        `-y -loop 1 -i ${files[0]} -i ${files[1]} -filter_complex "[${
+            rev ? 0 : 1
+        }:v]scale=${dims[0]}:${
+            dims[1]
+        },format=argb,geq=r='r(X,Y)':a='0.5*alpha(X,Y)'[zork]; [${
+            rev ? 1 : 0
+        }:v][zork]overlay" -preset:v ${h264Preset} -t ${len} ${path.join(
             __dirname,
             "..",
             output + ".mp4"
@@ -895,4 +930,5 @@ module.exports = {
     setClient,
     mkvmp4,
     stitch2,
+    semiTransparentOverlay,
 };

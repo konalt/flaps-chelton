@@ -1525,7 +1525,7 @@ async function onMessage(msg) {
                 case "!combine": {
                     var atts = msg.attachments.first(2);
                     var images = ["png", "jpg", "webp", "jpeg"];
-                    var videos = ["mp4", "mkv"];
+                    var videos = ["mp4", "mkv", "gif"];
                     var audios = ["mp3", "webm"];
                     if (atts[1]) {
                         var exts = [
@@ -1572,7 +1572,7 @@ async function onMessage(msg) {
                                                         // Stitch images together.
                                                         break;
                                                     case "video":
-                                                        flapslib.videowrapper.imageAudio(
+                                                        flapslib.videowrapper.semiTransparentOverlay(
                                                             id,
                                                             msg,
                                                             exts,
@@ -1592,7 +1592,7 @@ async function onMessage(msg) {
                                             case "video":
                                                 switch (mode[1]) {
                                                     case "image":
-                                                        flapslib.videowrapper.imageAudio(
+                                                        flapslib.videowrapper.semiTransparentOverlay(
                                                             id,
                                                             msg,
                                                             exts,

@@ -250,6 +250,23 @@ async function imageAudio(name, msg, exts, reverse) {
             );
         });
 }
+async function semiTransparentOverlay(name, msg, exts, reverse) {
+    var id = n("Effect_CTransparentOverlay");
+    video
+        .semiTransparentOverlay(
+            "images/cache/" + name,
+            "images/cache/" + id,
+            reverse,
+            exts
+        )
+        .then(() => {
+            sendWebhookFile(
+                "ffmpeg",
+                "images/cache/" + id + ".mp4",
+                msg.channel
+            );
+        });
+}
 async function gifAudio(name, msg, exts, reverse) {
     var id = n("Effect_CGifAudio");
     video
@@ -425,4 +442,5 @@ module.exports = {
     invert: invert,
     convertMKVtoMP4,
     stitch2,
+    semiTransparentOverlay,
 };
