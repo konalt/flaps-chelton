@@ -2583,7 +2583,25 @@ fbi files on ${commandArgString}: ${
                     break;
                 case "!watermark":
                     {
-                        watermark(msg, client);
+                        var att = msg.attachments.first();
+                        if (att) {
+                            var buf = await downloadPromise(att.url, "dataurl");
+                            watermark(buf).then((image) => {
+                                sendWebhookBuffer(
+                                    "reddit",
+                                    image,
+                                    "",
+                                    msg.channel,
+                                    n("Canvas_Watermark", "png")
+                                );
+                            });
+                        } else {
+                            sendWebhook(
+                                "reddit",
+                                "WHOLESOME 0 NOT KEANU MOMENT!!! NO IMAGE !!",
+                                msg.channel
+                            );
+                        }
                     }
                     break;
                 case "!vs2":
