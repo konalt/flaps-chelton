@@ -56,6 +56,25 @@
                 }
             ],
             "output": "image"
+        },
+        "caption2": {
+            "name": "Caption2",
+            "url": "/canvas/caption2",
+            "inputs": [
+                {
+                    "name": "Input File",
+                    "name2": "Upload your input file here",
+                    "type": "image",
+                    "paramname": "file"
+                },
+                {
+                    "name": "Caption",
+                    "name2": "Text...",
+                    "type": "text",
+                    "paramname": "text"
+                }
+            ],
+            "output": "image"
         }
     }
 }

@@ -957,4 +957,7 @@ module.exports = {
     stitch2,
     semiTransparentOverlay,
     ffmpegBuffer,
+    getVideoDimensions,
+    getVideoLength,
+    getFrameCount,
 };
