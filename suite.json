@@ -1,0 +1,17 @@
+{
+    "effects": {
+        "watermark": {
+            "name": "Reddit Watermark",
+            "url": "/canvas/watermark",
+            "inputs": [
+                {
+                    "name": "Input Image",
+                    "name2": "Upload your input image here",
+                    "type": "image",
+                    "paramname": "file"
+                }
+            ],
+            "output": "image"
+        }
+    }
+}

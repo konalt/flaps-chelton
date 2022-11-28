@@ -1,6 +1,7 @@
 const { Router } = require("express");
 const { watermark } = require("./canvas");
 const { dataURLToBuffer } = require("./util");
+const { readFileSync } = require("fs");
 
 /**
  * @type {Router}
@@ -44,9 +45,8 @@ canvasRouter.get("/test", (_req, res) => {
 router.use("/canvas", canvasRouter);
 //#endregion
 
-router.get("/helloworld", (_req, res) => {
-    res.contentType("txt");
-    res.send("Hello world!");
+router.get("/suite_data", (_req, res) => {
+    res.send(JSON.parse(readFileSync("./suite.json").toString()));
 });
 
 router.get("*", (_req, res) => {

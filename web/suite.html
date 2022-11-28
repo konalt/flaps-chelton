@@ -4,7 +4,7 @@
         <meta charset="UTF-8" />
         <meta http-equiv="X-UA-Compatible" content="IE=edge" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>Inpainting - Flaps Chelton</title>
+        <title>The Suite - Flaps Chelton</title>
         <script
             src="https://code.jquery.com/jquery-3.6.1.min.js"
             integrity="sha256-o88AwQnZB+VDvE9tvIXrMQaPlFFSUTR+nldQm1LuPXQ="
@@ -29,15 +29,7 @@
         <h1>The Suite</h1>
         <hr />
         <form id="form">
-            <div id="i">
-                <label for="img">Source Image</label>
-                <input
-                    type="file"
-                    name="img"
-                    id="img"
-                    accept="image/png,image/jpeg"
-                />
-            </div>
+            <div id="i"></div>
             <br />
             <input type="submit" value="Go!" id="genbtn" />
         </form>
@@ -54,8 +46,8 @@
                 font-weight: bold;
             "
         ></div>
-        <img id="out" class="no-scale-out" />
+        <div id="out-container"></div>
         <script src="common.js"></script>
-        <script src="test.js"></script>
+        <script src="suite.js"></script>
     </body>
 </html>
