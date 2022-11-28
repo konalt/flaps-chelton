@@ -41,7 +41,7 @@ function inputMode(mode, name = "Input" + ins.length, name2 = "...") {
             inputDiv.innerHTML += str;
             break;
         case "text":
-            var str = `<label for="txt${x}">${name}</label><br /><input type="text" name="txt${x}" id="txt${x}" class="wide" placeholder="${name2}" autocomplete="off" />`;
+            var str = `<br><label for="txt${x}">${name}</label><br /><input type="text" name="txt${x}" id="txt${x}" class="wide" placeholder="${name2}" autocomplete="off" /><br>`;
             inputDiv.innerHTML += str;
             break;
 

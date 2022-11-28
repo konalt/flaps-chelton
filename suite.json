@@ -31,6 +31,31 @@
                 }
             ],
             "output": "image"
+        },
+        "fakenews": {
+            "name": "Fake News Broadcast",
+            "url": "/canvas/news",
+            "inputs": [
+                {
+                    "name": "Background Image",
+                    "name2": "Upload your input image here",
+                    "type": "image",
+                    "paramname": "file"
+                },
+                {
+                    "name": "Headline",
+                    "name2": "Headline text...",
+                    "type": "text",
+                    "paramname": "headline"
+                },
+                {
+                    "name": "Ticker",
+                    "name2": "Ticker text...",
+                    "type": "text",
+                    "paramname": "ticker"
+                }
+            ],
+            "output": "image"
         }
     }
 }
