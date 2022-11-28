@@ -5,11 +5,36 @@ const { stdout } = require("process");
 const { getTextWidth } = require("./canvas");
 const twemoji = require("twemoji");
 const downloadPromise = require("./download-promise");
+const { uuidv4 } = require("./util");
+const { extension } = require("mime-types");
 
 var ffmpegVerbose = false;
 
 var h264Preset = "ultrafast";
-
+async function ffmpegBuffer(args, buffers, outExt) {
+    return new Promise((res, rej) => {
+        var opId = uuidv4();
+        var files = buffers.map((buf, n) => {
+            return file(
+                "cache/BUF_" + opId + "_" + n + "." + extension(buf[1])
+            );
+        });
+        var outFile = file("cache/BUF_" + opId + "_FINAL." + outExt);
+        files.forEach((filename, i) => {
+            fs.writeFileSync(filename, buffers[i][0]);
+        });
+        args = args.replace(/\$BUF([0-9])+/g, (a, b) => {
+            return files[parseInt(b)];
+        });
+        args = args.replace(/\$OUT/g, outFile);
+        ffmpeg(args).then(() => {
+            fs.readFile(outFile, (e, data) => {
+                if (e) return rej(e);
+                res(data);
+            });
+        });
+    });
+}
 async function ffmpeg(args, quiet = false) {
     return new Promise((resolve, reject) => {
         console.log(args);
@@ -931,4 +956,5 @@ module.exports = {
     mkvmp4,
     stitch2,
     semiTransparentOverlay,
+    ffmpegBuffer,
 };

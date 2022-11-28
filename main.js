@@ -72,7 +72,7 @@ const { downloadPromise, tictactoe, connectfour } = require("./flapslib/index");
 const { tenorURLToGifURL } = require("./flapslib/util");
 const owoify = require("owoify-js").default;
 const sizeOf = require("buffer-image-size");
-const { caption2 } = require("./flapslib/video");
+const { caption2, ffmpegBuffer } = require("./flapslib/video");
 
 flapslib.webhooks.setClient(client);
 flapslib.fetchapis.setClient(client);
@@ -1980,6 +1980,32 @@ async function onMessage(msg) {
                             .catch((reason) => {
                                 sendWebhook("ffmpeg", reason, msg.channel);
                             });
+                    }
+                    break;
+                case "!stretch_buf":
+                    {
+                        downloadPromise(
+                            msg.attachments.first().url,
+                            "dataurl"
+                        ).then((buffer) => {
+                            ffmpegBuffer(
+                                "-i $BUF0 -vf hflip $OUT",
+                                [[buffer, msg.attachments.first().contentType]],
+                                msg.attachments.first().url.split(".").pop()
+                            ).then((out) => {
+                                sendWebhookBuffer(
+                                    "ffmpeg",
+                                    out,
+                                    "hello",
+                                    msg.channel,
+                                    "joe." +
+                                        msg.attachments
+                                            .first()
+                                            .url.split(".")
+                                            .pop()
+                                );
+                            });
+                        });
                     }
                     break;
                 case "!dream":
