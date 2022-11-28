@@ -74,10 +74,27 @@ var effects = null;
 
 var API_URL = "/api";
 
+var selector = document.getElementById("selector");
+
+function addToSelector(x, y, disabled = false) {
+    var option = document.createElement("option");
+    option.value = x;
+    option.innerHTML = y;
+    option.disabled = disabled;
+    selector.appendChild(option);
+}
+
 axios
     .get(API_URL + "/suite_data")
     .then((res) => {
         effects = res.data.effects;
+        Object.entries(effects).forEach((eff) => {
+            addToSelector(eff[0], eff[1].name);
+        });
+        $(selector).change(() => {
+            setEffect($(selector).val());
+        });
+        setEffect($(selector).val());
     })
     .catch((err) => {
         flaps.showError(err);
