@@ -12,6 +12,25 @@
                 }
             ],
             "output": "image"
+        },
+        "tate": {
+            "name": "Andrew Tate",
+            "url": "/canvas/tate",
+            "inputs": [
+                {
+                    "name": "Input Image",
+                    "name2": "Upload your input image here",
+                    "type": "image",
+                    "paramname": "file"
+                },
+                {
+                    "name": "Text",
+                    "name2": "Text here...",
+                    "type": "text",
+                    "paramname": "text"
+                }
+            ],
+            "output": "image"
         }
     }
 }

@@ -1,5 +1,5 @@
 const { Router } = require("express");
-const { watermark } = require("./canvas");
+const { watermark, andrewTate } = require("./canvas");
 const { dataURLToBuffer } = require("./util");
 const { readFileSync } = require("fs");
 
@@ -30,6 +30,28 @@ canvasRouter.post("/watermark", (req, res) => {
         });
     var buf = dataURLToBuffer(file);
     watermark(buf)
+        .then((out) => {
+            res.contentType("png").send(out);
+        })
+        .catch((err) => {
+            res.status(500).send(err);
+        });
+});
+
+canvasRouter.post("/tate", (req, res) => {
+    var file = req.body.file;
+    var text = req.body.text;
+    if (
+        !file ||
+        (!file.startsWith("data:image/png;base64") &&
+            !file.startsWith("data:image/jpeg;base64")) ||
+        !text
+    )
+        return res.status(400).send({
+            error: "Parameter 'file' must be a data URI for image/png or image/jpeg.\nParameter 'text' must be text.",
+        });
+    var buf = dataURLToBuffer(file);
+    andrewTate(buf, text)
         .then((out) => {
             res.contentType("png").send(out);
         })
