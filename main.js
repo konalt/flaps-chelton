@@ -3618,6 +3618,8 @@ function startWebServer(port = 8080) {
     app.get("*", (req, res) => {
         if (fs.existsSync(__dirname + "/web" + req.path)) {
             res.sendFile(__dirname + "/web" + req.path);
+        } else if (fs.existsSync(__dirname + "/web" + req.path + ".html")) {
+            res.sendFile(__dirname + "/web" + req.path + ".html");
         } else {
             res.status(404).contentType("text/plain").send("404 Not Found");
         }
