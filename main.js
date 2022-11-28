@@ -3578,9 +3578,14 @@ fs.readFile("./token.txt", (err, data) => {
     }
 });
 
+const apiRouter = require("./flapslib/api");
+
 function startWebServer(port = 8080) {
     const express = require("express");
     var app = express();
+    app.use(express.urlencoded({ extended: true }));
+    app.use(express.json({ extended: true, limit: "50mb" }));
+    app.use("/api", apiRouter);
     app.get("/", (req, res) => {
         res.sendFile(__dirname + "/web/index.html");
     });

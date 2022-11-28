@@ -73,6 +73,10 @@ img#out {
     -o-border-radius: 5px;
 }
 
+img#out .no-scale-out {
+    height: unset;
+}
+
 .loader {
     margin-top: 5px;
     border: 16px solid #f3f3f3;

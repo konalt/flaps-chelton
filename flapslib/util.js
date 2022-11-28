@@ -24,7 +24,17 @@ function tenorURLToGifURL(url) {
     });
 }
 
+function dataURLToBuffer(url) {
+    return Buffer.from(url.split(",")[1], "base64");
+}
+
+function bufferToDataURL(buffer, type) {
+    return "data:" + type + ";base64," + buffer.toString("base64");
+}
+
 module.exports = {
     uuidv4: uuidv4,
     tenorURLToGifURL: tenorURLToGifURL,
+    dataURLToBuffer,
+    bufferToDataURL,
 };

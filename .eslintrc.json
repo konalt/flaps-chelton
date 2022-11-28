@@ -3,7 +3,8 @@
         "node": true,
         "commonjs": true,
         "es2021": true,
-        "browser": true
+        "browser": true,
+        "jquery": true
     },
     "extends": "eslint:recommended",
     "overrides": [
@@ -20,6 +21,12 @@
     "argsIgnorePattern": "^_",
     "varsIgnorePattern": "^_",
     "caughtErrorsIgnorePattern": "^_"
+  }
+],
+"no-undef": [
+  "error",
+  { 
+    "varsIgnorePattern": "axios"
   }
 ]
     }

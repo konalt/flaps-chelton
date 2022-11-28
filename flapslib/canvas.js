@@ -1194,34 +1194,37 @@ function carbs(msg, client, custom = false) {
 
 function watermark(buffer) {
     // eslint-disable-next-line no-async-promise-executor
-    return new Promise(async (resolve, _reject) => {
-        var photo = await loadImage(buffer);
-        var w = photo.width;
-        var h = photo.height;
-        var c = canvas.createCanvas(w, h);
-        var ctx = c.getContext("2d");
-        var reddit = await loadImage(pj("redditwatermark.png"));
-        ctx.drawImage(photo, 0, 0, w, h);
-        var amount = 75;
-        var redditwidth = w / 4;
-        var redditheight = redditwidth;
-        for (let i = 0; i < amount; i++) {
-            var x = Math.floor(Math.random() * w) - redditwidth / 2;
-            var y = Math.floor(Math.random() * h) - redditheight / 2;
-            var alpha = Math.random();
-            var scaleRandomizer = Math.random() + 0.5;
-            ctx.globalAlpha = alpha;
-            ctx.drawImage(
-                reddit,
-                x,
-                y,
-                redditwidth * scaleRandomizer,
-                redditheight * scaleRandomizer
-            );
-            ctx.globalAlpha = 1;
+    return new Promise(async (resolve, reject) => {
+        try {
+            var photo = await loadImage(buffer);
+            var w = photo.width;
+            var h = photo.height;
+            var c = canvas.createCanvas(w, h);
+            var ctx = c.getContext("2d");
+            var reddit = await loadImage(pj("redditwatermark.png"));
+            ctx.drawImage(photo, 0, 0, w, h);
+            var amount = 75;
+            var redditwidth = w / 4;
+            var redditheight = redditwidth;
+            for (let i = 0; i < amount; i++) {
+                var x = Math.floor(Math.random() * w) - redditwidth / 2;
+                var y = Math.floor(Math.random() * h) - redditheight / 2;
+                var alpha = Math.random();
+                var scaleRandomizer = Math.random() + 0.5;
+                ctx.globalAlpha = alpha;
+                ctx.drawImage(
+                    reddit,
+                    x,
+                    y,
+                    redditwidth * scaleRandomizer,
+                    redditheight * scaleRandomizer
+                );
+                ctx.globalAlpha = 1;
+            }
+            resolve(c.toBuffer());
+        } catch (err) {
+            reject(err);
         }
-
-        resolve(c.toBuffer());
     });
 }
 
