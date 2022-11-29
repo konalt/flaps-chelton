@@ -40,6 +40,10 @@ function inputMode(mode, name = "Input" + ins.length, name2 = "...") {
             var str = `<label for="img${x}">${name}</label><input type="file" name="img${x}" id="img${x}" accept="image/png,image/jpeg"/>`;
             inputDiv.innerHTML += str;
             break;
+        case "caption2source":
+            var str = `<label for="c2s${x}">${name}</label><input type="file" name="c2s${x}" id="c2s${x}" accept="image/*,video/*"/>`;
+            inputDiv.innerHTML += str;
+            break;
         case "text":
             var str = `<br><label for="txt${x}">${name}</label><br /><input type="text" name="txt${x}" id="txt${x}" class="wide" placeholder="${name2}" autocomplete="off" /><br>`;
             inputDiv.innerHTML += str;
@@ -52,7 +56,7 @@ function inputMode(mode, name = "Input" + ins.length, name2 = "...") {
 }
 
 var output;
-function outputMode(mode) {
+function outputMode(mode, set = true) {
     switch (mode) {
         case "image":
             var str = `<img id="out" class="no-scale-out" />`;
@@ -62,11 +66,8 @@ function outputMode(mode) {
             var str = `<video id="out" controls />`;
             outputDiv.innerHTML = str;
             break;
-
-        default:
-            break;
     }
-    output = mode;
+    if (set) output = mode;
     $("#out").hide();
 }
 
@@ -129,6 +130,9 @@ async function getData() {
                 case "image":
                     proms.push(readFilePromise($("#img" + n)[0]));
                     break;
+                case "caption2source":
+                    proms.push(readFilePromise($("#c2s" + n)[0]));
+                    break;
                 case "text":
                     proms.push($("#txt" + n).val());
                     break;
@@ -155,7 +159,10 @@ async function run() {
             responseType: "blob",
         })
         .then((res) => {
-            var blob = new Blob([res.data], { type: "image/png" });
+            var blob = new Blob([res.data]);
+            if (output == "any") {
+                outputMode(res.headers["content-type"].split("/")[0], false);
+            }
             $("#out").attr("src", URL.createObjectURL(blob));
             $("#out").show();
             $("#loader").hide();

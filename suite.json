@@ -64,7 +64,7 @@
                 {
                     "name": "Input File",
                     "name2": "Upload your input file here",
-                    "type": "image",
+                    "type": "caption2source",
                     "paramname": "file"
                 },
                 {
@@ -74,7 +74,7 @@
                     "paramname": "text"
                 }
             ],
-            "output": "image"
+            "output": "any"
         }
     }
 }
