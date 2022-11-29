@@ -3,7 +3,7 @@ const { watermark, andrewTate, fakeNews } = require("./canvas");
 const { dataURLToBuffer, uuidv4 } = require("./util");
 const { readFileSync, fstat, writeFileSync } = require("fs");
 const { extension } = require("mime-types");
-const { caption2, getVideoDimensions, simpleMemeCaption, speed } = require("./video");
+const { caption2, getVideoDimensions, simpleMemeCaption, speed, compress } = require("./video");
 const { resolve } = require("path");
 const { resourceLimits } = require("worker_threads");
 
@@ -140,6 +140,27 @@ canvasRouter.post("/speed", (req, res) => {
         });
     xbuf(file).then(([inFile, outFile]) => {
         speed(inFile, outFile, speedX)
+            .then(() => {
+                res.contentType(file.split(":")[1].split(";")[0]).sendFile(
+                    resolve(__dirname + "/../" + outFile)
+                );
+            })
+            .catch((err) => {
+                console.log(err);
+                res.status(500).send(err);
+            });
+    });
+});
+
+canvasRouter.post("/compress", (req, res) => {
+    var file = req.body.file;
+    var filetypes = "video/mp4".split(",");
+    if (!file || !filetypes.includes(file.split(":")[1].split(";")[0]))
+        return res.status(400).send({
+            error: "Parameter 'file' must be a data URI for video/mp4.",
+        });
+    xbuf(file).then(([inFile, outFile]) => {
+        compress(inFile, outFile)
             .then(() => {
                 res.contentType(file.split(":")[1].split(";")[0]).sendFile(
                     resolve(__dirname + "/../" + outFile)

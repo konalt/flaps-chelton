@@ -88,6 +88,17 @@
                 }
             ],
             "output": "any"
+        },
+        "compress": {
+            "name": "Compress",
+            "url": "/canvas/compress",
+            "inputs": [{
+                "name": "Input File",
+                "name2": "Upload your input file here",
+                "type": "caption2source",
+                "paramname": "file"
+            }],
+            "output": "any"
         }
     }
 }
