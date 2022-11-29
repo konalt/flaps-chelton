@@ -3,21 +3,18 @@
         "watermark": {
             "name": "Reddit Watermark",
             "url": "/canvas/watermark",
-            "inputs": [
-                {
-                    "name": "Input Image",
-                    "name2": "Upload your input image here",
-                    "type": "image",
-                    "paramname": "file"
-                }
-            ],
+            "inputs": [{
+                "name": "Input Image",
+                "name2": "Upload your input image here",
+                "type": "image",
+                "paramname": "file"
+            }],
             "output": "image"
         },
         "tate": {
             "name": "Andrew Tate",
             "url": "/canvas/tate",
-            "inputs": [
-                {
+            "inputs": [{
                     "name": "Input Image",
                     "name2": "Upload your input image here",
                     "type": "image",
@@ -35,8 +32,7 @@
         "fakenews": {
             "name": "Fake News Broadcast",
             "url": "/canvas/news",
-            "inputs": [
-                {
+            "inputs": [{
                     "name": "Background Image",
                     "name2": "Upload your input image here",
                     "type": "image",
@@ -60,8 +56,7 @@
         "caption2": {
             "name": "Caption2",
             "url": "/canvas/caption2",
-            "inputs": [
-                {
+            "inputs": [{
                     "name": "Input File",
                     "name2": "Upload your input file here",
                     "type": "caption2source",
@@ -72,6 +67,24 @@
                     "name2": "Text...",
                     "type": "text",
                     "paramname": "text"
+                }
+            ],
+            "output": "any"
+        },
+        "speed": {
+            "name": "Speed",
+            "url": "/canvas/speed",
+            "inputs": [{
+                    "name": "Input File",
+                    "name2": "Upload your input file here",
+                    "type": "caption2source",
+                    "paramname": "file"
+                },
+                {
+                    "name": "Speed",
+                    "name2": "Number",
+                    "type": "text",
+                    "paramname": "speed"
                 }
             ],
             "output": "any"
