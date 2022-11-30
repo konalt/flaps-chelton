@@ -214,6 +214,15 @@ async function invert(name, msg) {
             sendWebhookFile("ffmpeg", "images/cache/" + id + ext, msg.channel);
         });
 }
+async function blackWhite(name, msg) {
+    var id = n("Effect_BlackWhite");
+    var ext = "." + name.split(".").pop();
+    video
+        .blackWhite("images/cache/" + name, "images/cache/" + id + ext)
+        .then(() => {
+            sendWebhookFile("ffmpeg", "images/cache/" + id + ext, msg.channel);
+        });
+}
 async function trim(name, times, msg) {
     var id = n("Effect_Trim");
     var ext = "." + name.split(".").pop();
@@ -443,4 +452,5 @@ module.exports = {
     convertMKVtoMP4,
     stitch2,
     semiTransparentOverlay,
+    blackWhite,
 };

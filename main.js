@@ -1877,6 +1877,17 @@ async function onMessage(msg) {
                             });
                     }
                     break;
+                case "!blackandwhite":
+                    {
+                        getSources(msg, ["video/image/gif"])
+                            .then((ids) => {
+                                flapslib.videowrapper.blackWhite(ids[0], msg);
+                            })
+                            .catch((reason) => {
+                                sendWebhook("ffmpeg", reason, msg.channel);
+                            });
+                    }
+                    break;
                 case "!videogif":
                     {
                         getSources(msg, ["video"])

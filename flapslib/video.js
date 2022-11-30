@@ -457,6 +457,13 @@ async function invert(input, output) {
         )}`
     );
 }
+async function blackWhite(input, output) {
+    return ffmpeg(
+        `-y -i ${file(input)} -vf monochrome -preset:v ${h264Preset} ${file(
+            output
+        )}`
+    );
+}
 async function squash(input, output) {
     return ffmpeg(
         `-y -i ${path.join(
@@ -960,4 +967,5 @@ module.exports = {
     getVideoDimensions,
     getVideoLength,
     getFrameCount,
+    blackWhite,
 };
