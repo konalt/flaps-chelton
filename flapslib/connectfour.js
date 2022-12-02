@@ -2,10 +2,12 @@ const { MessageComponentInteraction } = require("discord.js"); //eslint-disable-
 const { sendWebhookButton, editWebhookButton } = require("./webhooks");
 
 function getButtons(turn) {
-    var btns = [{
-        type: 1,
-        components: [],
-    }, ];
+    var btns = [
+        {
+            type: 1,
+            components: [],
+        },
+    ];
     for (let i = 0; i < 7; i++) {
         btns[0].components.push({
             type: 2,

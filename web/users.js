@@ -37,11 +37,11 @@ axios
                     id: x[0],
                     username: x[1][0],
                     avatar: x[1][1],
-                    quirk: x[1][2] ?
-                        eval(x[1][2]) :
-                        (x) => {
-                            return x;
-                        },
+                    quirk: x[1][2]
+                        ? eval(x[1][2])
+                        : (x) => {
+                              return x;
+                          },
                     hasQuirk: !!x[1][2],
                 };
                 addToSelector(data.id);

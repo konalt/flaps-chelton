@@ -43,7 +43,7 @@ function getStats() {
             mem: process.memoryUsage().heapUsed / 1024 / 1024 / os.totalmem(),
             time: Date.now(),
         };
-        os.cpuUsage(function(v) {
+        os.cpuUsage(function (v) {
             s.cpu = v;
             res(s);
         });

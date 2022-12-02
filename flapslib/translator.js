@@ -138,10 +138,10 @@ async function doTranslate(input, depth) {
     langList.push("en");
     return (
         langList
-        .map((x) => {
-            return langObj[x];
-        })
-        .join(" -> ") +
+            .map((x) => {
+                return langObj[x];
+            })
+            .join(" -> ") +
         "\n" +
         cur
     );

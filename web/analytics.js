@@ -11,24 +11,28 @@ var chart = new Chart("chart", {
     type: "line",
     data: {
         labels: ["Loading..."],
-        datasets: [{
-            data: [0],
-            borderColor: "black",
-            fill: true,
-        }, ],
+        datasets: [
+            {
+                data: [0],
+                borderColor: "black",
+                fill: true,
+            },
+        ],
     },
     options: {
         animation: {
             duration: 0,
         },
         scales: {
-            yAxes: [{
-                display: true,
-                ticks: {
-                    suggestedMin: 0,
-                    suggestedMax: 100,
+            yAxes: [
+                {
+                    display: true,
+                    ticks: {
+                        suggestedMin: 0,
+                        suggestedMax: 100,
+                    },
                 },
-            }, ],
+            ],
         },
         legend: {
             display: false,
@@ -39,7 +43,8 @@ var chart = new Chart("chart", {
 function update(data) {
     chart.data = {
         labels: data.map((x) => t(x[1])),
-        datasets: [{
+        datasets: [
+            {
                 data: data.map((x) => x[0]),
                 borderColor: "red",
                 fill: false,

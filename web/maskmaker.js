@@ -21,7 +21,7 @@ function loadImage(url, cb) {
     img.src = url;
 }
 
-$("#img").change(function(e) {
+$("#img").change(function (e) {
     e.preventDefault();
     readFile($("#img")[0], (url) => {
         canvasInit(url);
@@ -85,7 +85,7 @@ function canvasInit(url) {
         update();
         $("#maker").show();
         $("#btn").show();
-        $("#btn").click(function(e) {
+        $("#btn").click(function (e) {
             e.preventDefault();
             imgToMask();
             saveMask();

@@ -38,9 +38,9 @@ function sendWebhook(
             return sendWebhook(
                 "flapserrors",
                 'Error: unknown webhook bot "' +
-                id +
-                '". Original message content:\n---\n' +
-                content,
+                    id +
+                    '". Original message content:\n---\n' +
+                    content,
                 false,
                 msgChannel
             );
@@ -70,13 +70,13 @@ function sendWebhook(
                 );
                 var data = {
                     content: content,
-                    username: custom ?
-                        customData.username :
-                        dave ?
-                        "dave " + Math.floor(Math.random() * 200).toString() :
-                        users[id][0] == "__FlapsNick__" ?
-                        msgChannel.guild.me.nickname || client.user.username :
-                        users[id][0],
+                    username: custom
+                        ? customData.username
+                        : dave
+                        ? "dave " + Math.floor(Math.random() * 200).toString()
+                        : users[id][0] == "__FlapsNick__"
+                        ? msgChannel.guild.me.nickname || client.user.username
+                        : users[id][0],
                     avatar_url: custom ? customData.avatar : users[id][1],
                     components: comps, // there used to be a typo on this line
                 };
@@ -183,9 +183,11 @@ function editWebhookFile(msgid, msgChannel, path, pretext = "") {
         client.channels.cache
             .get("956316856422137856")
             .send({
-                files: [{
-                    attachment: path,
-                }, ],
+                files: [
+                    {
+                        attachment: path,
+                    },
+                ],
             })
             .catch((e) => {
                 sendWebhook("flaps", "Send error: " + e, msgChannel);
@@ -250,8 +252,8 @@ async function sendWebhookFile(
                     sendWebhook(
                         id,
                         pre +
-                        "\nThe resulting file was larger than 8MB, so it was uploaded to an external server.\n" +
-                        konaltURL,
+                            "\nThe resulting file was larger than 8MB, so it was uploaded to an external server.\n" +
+                            konaltURL,
                         msgChannel
                     );
                 }
@@ -266,9 +268,9 @@ async function sendWebhookFile(
                 JSON.stringify({
                     content: pre ? pre : "",
                     username: users[id] ? users[id][0] : "?",
-                    avatar_url: users[id] ?
-                        users[id][1] :
-                        "https://post.medicalnewstoday.com/wp-content/uploads/sites/3/2020/02/322868_1100-800x825.jpg",
+                    avatar_url: users[id]
+                        ? users[id][1]
+                        : "https://post.medicalnewstoday.com/wp-content/uploads/sites/3/2020/02/322868_1100-800x825.jpg",
                 })
             );
             getWebhook(msgChannel).then((url) => {
@@ -284,9 +286,11 @@ async function sendWebhookFile(
                         client.channels.cache
                             .get("956316856422137856")
                             .send({
-                                files: [{
-                                    attachment: filename,
-                                }, ],
+                                files: [
+                                    {
+                                        attachment: filename,
+                                    },
+                                ],
                             })
                             .catch((e) => {
                                 sendWebhook(
@@ -302,9 +306,11 @@ async function sendWebhookFile(
             client.channels.cache
                 .get("956316856422137856")
                 .send({
-                    files: [{
-                        attachment: filename,
-                    }, ],
+                    files: [
+                        {
+                            attachment: filename,
+                        },
+                    ],
                 })
                 .catch((e) => {
                     sendWebhook(id, "Send error: " + e, msgChannel);
@@ -331,11 +337,11 @@ function sendWebhookBuffer(id, buf, txt, msgChannel, filename = "file.bin") {
         "payload_json",
         JSON.stringify({
             content: txt ? txt : "",
-            username: dave ?
-                "dave " + Math.floor(Math.random() * 200).toString() :
-                users[id][0] == "__FlapsNick__" ?
-                msgChannel.guild.me.nickname || client.user.username :
-                users[id][0],
+            username: dave
+                ? "dave " + Math.floor(Math.random() * 200).toString()
+                : users[id][0] == "__FlapsNick__"
+                ? msgChannel.guild.me.nickname || client.user.username
+                : users[id][0],
             avatar_url: users[id][1],
         })
     );
@@ -372,9 +378,11 @@ async function sendWebhookFileButton(id, filename, buttons, msgChannel) {
         client.channels.cache
             .get("956316856422137856")
             .send({
-                files: [{
-                    attachment: filename,
-                }, ],
+                files: [
+                    {
+                        attachment: filename,
+                    },
+                ],
             })
             .catch((e) => {
                 sendWebhook(id, "Send error: " + e, msgChannel);
@@ -402,8 +410,10 @@ async function sendWebhookFileButton(id, filename, buttons, msgChannel) {
                 sendWebhook(
                     id,
                     message.attachments.first().url,
-                    msgChannel, {},
-                    null, [{ type: 1, components: buttons }]
+                    msgChannel,
+                    {},
+                    null,
+                    [{ type: 1, components: buttons }]
                 );
             });
     }
@@ -450,7 +460,8 @@ function sendWebhookEmbed(id, embed, msgChannel) {
                     if (!hook) {
                         msgChannel
                             .createWebhook(
-                                "FlapsCheltonWebhook_" + msgChannel.id, {
+                                "FlapsCheltonWebhook_" + msgChannel.id,
+                                {
                                     avatar: "https://media.discordapp.net/attachments/882743320554643476/966013228641566760/numb.PNG",
                                     reason: "flap chelton needed a webhook for the channel.",
                                 }
@@ -478,14 +489,14 @@ function sendWebhookEmbed(id, embed, msgChannel) {
     "avatar_url": ${users[id[1]]}
 }`);
                         fetch(hook.url, {
-                                method: "POST",
-                                body: `{
+                            method: "POST",
+                            body: `{
                                 "embeds": [${JSON.stringify(embed.toJSON())}],
                                 "username": "${users[id][0]}",
                                 "avatar_url": "${users[id][1]}"
                             }`,
-                                headers: { "Content-Type": "application/json" },
-                            })
+                            headers: { "Content-Type": "application/json" },
+                        })
                             .then((r) => r.text())
                             .then((r) => {
                                 console.log(r);
@@ -512,7 +523,8 @@ function sendWebhookEmbedButton(id, embed, msgChannel) {
                     if (!hook) {
                         msgChannel
                             .createWebhook(
-                                "FlapsCheltonWebhook_" + msgChannel.id, {
+                                "FlapsCheltonWebhook_" + msgChannel.id,
+                                {
                                     avatar: "https://media.discordapp.net/attachments/882743320554643476/966013228641566760/numb.PNG",
                                     reason: "flap chelton needed a webhook for the channel.",
                                 }
@@ -540,14 +552,14 @@ function sendWebhookEmbedButton(id, embed, msgChannel) {
     "avatar_url": ${users[id[1]]}
 }`);
                         fetch(hook.url, {
-                                method: "POST",
-                                body: `{
+                            method: "POST",
+                            body: `{
                                 "embeds": [${JSON.stringify(embed.toJSON())}],
                                 "username": "${users[id][0]}",
                                 "avatar_url": "${users[id][1]}"
                             }`,
-                                headers: { "Content-Type": "application/json" },
-                            })
+                            headers: { "Content-Type": "application/json" },
+                        })
                             .then((r) => r.text())
                             .then((r) => {
                                 console.log(r);
@@ -574,11 +586,11 @@ function updateUsers() {
     usersArray.forEach((user) => {
         users[user[0]] = [
             user[1],
-            user[2].startsWith("http") ?
-            user[2] :
-            "https://media.discordapp.net/attachments/882743320554643476/" +
-            user[2] +
-            "/unknown.png",
+            user[2].startsWith("http")
+                ? user[2]
+                : "https://media.discordapp.net/attachments/882743320554643476/" +
+                  user[2] +
+                  "/unknown.png",
             user[3],
         ];
     });

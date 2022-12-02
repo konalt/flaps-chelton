@@ -5,9 +5,11 @@ function dalle2() {
     $("#out").hide();
     axios
         .post(
-            "https://konalt.us.to:4930/flaps_api/dalle2", {
+            "https://konalt.us.to:4930/flaps_api/dalle2",
+            {
                 prompt: t,
-            }, {
+            },
+            {
                 responseType: "blob",
             }
         )
@@ -26,7 +28,7 @@ function dalle2() {
         });
 }
 
-$("#dalle2form").submit(function(e) {
+$("#dalle2form").submit(function (e) {
     e.preventDefault();
     dalle2();
 });

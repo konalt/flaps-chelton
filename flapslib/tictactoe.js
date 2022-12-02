@@ -2,7 +2,8 @@ const { MessageComponentInteraction } = require("discord.js"); //eslint-disable-
 const { sendWebhookButton, editWebhookButton } = require("./webhooks");
 
 function getButtons(board) {
-    var btns = [{
+    var btns = [
+        {
             type: 1,
             components: [],
         },

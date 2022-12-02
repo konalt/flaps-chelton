@@ -29,11 +29,11 @@ function downloadYoutube(
     if (url.startsWith("<")) url = url.substring(1);
     if (url.endsWith(">")) url = url.substring(0, url.length - 1);
     //fs.appendFileSync("./audio/yt/log.txt", "Downloading YouTube URL");
-    var id = url.includes("newgrounds") ?
-        url.split("/")[5] :
-        url.includes("youtube.com/watch?v=") ?
-        url.split("=")[1] :
-        getFirstResultID(url);
+    var id = url.includes("newgrounds")
+        ? url.split("/")[5]
+        : url.includes("youtube.com/watch?v=")
+        ? url.split("=")[1]
+        : getFirstResultID(url);
     if (id === "kemivUKb4f4" || id === "NNv2RHR62Rs") {
         return sendWebhook(
             "flaps",
@@ -80,11 +80,11 @@ function downloadYoutube(
 async function downloadYoutubeToMP3(url, msgChannel, verbose = false, client) {
     if (url.startsWith("<")) url = url.substring(1);
     if (url.endsWith(">")) url = url.substring(0, url.length - 1);
-    var id = url.includes("newgrounds") ?
-        url.split("/")[5] :
-        url.includes("youtube.com/watch?v=") ?
-        url.split("=")[1] :
-        getFirstResultID(url);
+    var id = url.includes("newgrounds")
+        ? url.split("/")[5]
+        : url.includes("youtube.com/watch?v=")
+        ? url.split("=")[1]
+        : getFirstResultID(url);
     if (!url.startsWith("http")) {
         url = "https://youtube.com/watch?v=" + id;
         sendWebhook("flaps", url, msgChannel);
@@ -94,9 +94,11 @@ async function downloadYoutubeToMP3(url, msgChannel, verbose = false, client) {
         var message = await client.channels.cache
             .get("956316856422137856")
             .send({
-                files: [{
-                    attachment: filePath,
-                }, ],
+                files: [
+                    {
+                        attachment: filePath,
+                    },
+                ],
             });
         sendWebhook("flaps", message.attachments.first().url, msgChannel);
     } else {
@@ -112,7 +114,7 @@ async function downloadYoutubeToMP3(url, msgChannel, verbose = false, client) {
         ytProcess.stderr.on("data", (data) => {
             sendWebhook("flaps", data.toString(), msgChannel);
         });
-        ytProcess.on("close", async(code) => {
+        ytProcess.on("close", async (code) => {
             if (code == 1) {
                 sendWebhook(
                     "flaps",
@@ -124,9 +126,11 @@ async function downloadYoutubeToMP3(url, msgChannel, verbose = false, client) {
                 var message = await client.channels.cache
                     .get("956316856422137856")
                     .send({
-                        files: [{
-                            attachment: filePath,
-                        }, ],
+                        files: [
+                            {
+                                attachment: filePath,
+                            },
+                        ],
                     });
                 sendWebhook(
                     "flaps",
@@ -143,11 +147,11 @@ function startWatchParty(url, msgChannel) {
     var verbose = false;
     if (url.startsWith("<")) url = url.substring(1);
     if (url.endsWith(">")) url = url.substring(0, url.length - 1);
-    var id = url.includes("newgrounds") ?
-        url.split("/")[5] :
-        url.includes("youtube.com/watch?v=") ?
-        url.split("=")[1] :
-        getFirstResultID(url);
+    var id = url.includes("newgrounds")
+        ? url.split("/")[5]
+        : url.includes("youtube.com/watch?v=")
+        ? url.split("=")[1]
+        : getFirstResultID(url);
     if (!url.startsWith("http")) {
         url = "https://youtube.com/watch?v=" + id;
         sendWebhook("flaps", url, msgChannel);
@@ -158,12 +162,12 @@ function startWatchParty(url, msgChannel) {
         )
     ) {
         fetch("https://konalt.us.to:4930/start", {
-                method: "POST",
-                body: JSON.stringify({
-                    videoId: id,
-                }),
-                headers: { "Content-Type": "application/json" },
-            })
+            method: "POST",
+            body: JSON.stringify({
+                videoId: id,
+            }),
+            headers: { "Content-Type": "application/json" },
+        })
             .then((r) => r.json())
             .then((response) => {
                 console.log(response);
@@ -192,7 +196,7 @@ function startWatchParty(url, msgChannel) {
         ytProcess.stderr.on("data", (data) => {
             sendWebhook("flaps", data.toString(), msgChannel);
         });
-        ytProcess.on("close", async(code) => {
+        ytProcess.on("close", async (code) => {
             if (code == 1) {
                 sendWebhook(
                     "flaps",
@@ -206,12 +210,12 @@ function startWatchParty(url, msgChannel) {
                     thumbPath,
                     () => {
                         fetch("https://konalt.us.to:4930/start", {
-                                method: "POST",
-                                body: JSON.stringify({
-                                    videoId: id,
-                                }),
-                                headers: { "Content-Type": "application/json" },
-                            })
+                            method: "POST",
+                            body: JSON.stringify({
+                                videoId: id,
+                            }),
+                            headers: { "Content-Type": "application/json" },
+                        })
                             .then((r) => r.json())
                             .then((response) => {
                                 sendWebhook(
@@ -232,11 +236,11 @@ function wpAddToQueue(url, wpId, msgChannel) {
     var verbose = false;
     if (url.startsWith("<")) url = url.substring(1);
     if (url.endsWith(">")) url = url.substring(0, url.length - 1);
-    var id = url.includes("newgrounds") ?
-        url.split("/")[5] :
-        url.includes("youtube.com/watch?v=") ?
-        url.split("=")[1] :
-        getFirstResultID(url);
+    var id = url.includes("newgrounds")
+        ? url.split("/")[5]
+        : url.includes("youtube.com/watch?v=")
+        ? url.split("=")[1]
+        : getFirstResultID(url);
     if (!url.startsWith("http")) {
         url = "https://youtube.com/watch?v=" + id;
         sendWebhook("flaps", url, msgChannel);
@@ -247,12 +251,12 @@ function wpAddToQueue(url, wpId, msgChannel) {
         )
     ) {
         fetch("https://konalt.us.to:4930/start", {
-                method: "POST",
-                body: JSON.stringify({
-                    videoId: id,
-                }),
-                headers: { "Content-Type": "application/json" },
-            })
+            method: "POST",
+            body: JSON.stringify({
+                videoId: id,
+            }),
+            headers: { "Content-Type": "application/json" },
+        })
             .then((r) => r.json())
             .then((response) => {
                 console.log(response);
@@ -276,7 +280,7 @@ function wpAddToQueue(url, wpId, msgChannel) {
         ytProcess.stderr.on("data", (data) => {
             sendWebhook("flaps", data.toString(), msgChannel);
         });
-        ytProcess.on("close", async(code) => {
+        ytProcess.on("close", async (code) => {
             if (code == 1) {
                 sendWebhook(
                     "flaps",
@@ -290,12 +294,12 @@ function wpAddToQueue(url, wpId, msgChannel) {
                     thumbPath,
                     () => {
                         fetch("https://konalt.us.to:4930/queue/" + wpId, {
-                                method: "POST",
-                                body: JSON.stringify({
-                                    videoId: id,
-                                }),
-                                headers: { "Content-Type": "application/json" },
-                            })
+                            method: "POST",
+                            body: JSON.stringify({
+                                videoId: id,
+                            }),
+                            headers: { "Content-Type": "application/json" },
+                        })
                             .then((r) => r.json())
                             .then(() => {
                                 sendWebhook(
@@ -325,12 +329,12 @@ function wpAddToQueueFile(url, wpId, msgChannel) {
         )
     ) {
         fetch("https://konalt.us.to:4930/start", {
-                method: "POST",
-                body: JSON.stringify({
-                    videoId: id,
-                }),
-                headers: { "Content-Type": "application/json" },
-            })
+            method: "POST",
+            body: JSON.stringify({
+                videoId: id,
+            }),
+            headers: { "Content-Type": "application/json" },
+        })
             .then((r) => r.json())
             .then((response) => {
                 console.log(response);
@@ -354,7 +358,7 @@ function wpAddToQueueFile(url, wpId, msgChannel) {
         ytProcess.stderr.on("data", (data) => {
             sendWebhook("flaps", data.toString(), msgChannel);
         });
-        ytProcess.on("close", async(code) => {
+        ytProcess.on("close", async (code) => {
             if (code == 1) {
                 sendWebhook(
                     "flaps",
@@ -368,12 +372,12 @@ function wpAddToQueueFile(url, wpId, msgChannel) {
                     thumbPath,
                     () => {
                         fetch("https://konalt.us.to:4930/queue/" + wpId, {
-                                method: "POST",
-                                body: JSON.stringify({
-                                    videoId: id,
-                                }),
-                                headers: { "Content-Type": "application/json" },
-                            })
+                            method: "POST",
+                            body: JSON.stringify({
+                                videoId: id,
+                            }),
+                            headers: { "Content-Type": "application/json" },
+                        })
                             .then((r) => r.json())
                             .then(() => {
                                 sendWebhook(

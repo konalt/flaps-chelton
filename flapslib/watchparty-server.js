@@ -100,7 +100,8 @@ function init(client) {
         if (!currentWps[req.params.id]) {
             res.status(404).send({ wp: null });
         } else {
-            currentWps[req.params.id].paused = !currentWps[req.params.id].paused;
+            currentWps[req.params.id].paused =
+                !currentWps[req.params.id].paused;
             res.send({ wp: currentWps[req.params.id] });
         }
     });
@@ -131,19 +132,19 @@ function init(client) {
     app_rest.get("/flaps_api/funnynumber/:x", (req, res) => {
         var x = req.params.x.split(" ").join("_");
         fetch("https://rule34.xxx/public/autocomplete.php?q=" + x, {
-                credentials: "omit",
-                headers: {
-                    "User-Agent": "FlapsChelton",
-                    Accept: "*/*",
-                    "Accept-Language": "en-US,en;q=0.5",
-                    "Sec-Fetch-Dest": "empty",
-                    "Sec-Fetch-Mode": "cors",
-                    "Sec-Fetch-Site": "same-origin",
-                },
-                referrer: "https://rule34.xxx/",
-                method: "GET",
-                mode: "cors",
-            })
+            credentials: "omit",
+            headers: {
+                "User-Agent": "FlapsChelton",
+                Accept: "*/*",
+                "Accept-Language": "en-US,en;q=0.5",
+                "Sec-Fetch-Dest": "empty",
+                "Sec-Fetch-Mode": "cors",
+                "Sec-Fetch-Site": "same-origin",
+            },
+            referrer: "https://rule34.xxx/",
+            method: "GET",
+            mode: "cors",
+        })
             .then((r) => {
                 return r.json();
             })
@@ -174,7 +175,7 @@ function init(client) {
                 .contentType("text/plain")
                 .send("400 Bad Request");
         }
-        var obj = {...req.body };
+        var obj = { ...req.body };
         Object.assign(obj, { inpaint: true });
         dalle2Promise(obj, false)
             .then((data) => {
@@ -204,9 +205,9 @@ function init(client) {
         if (user.startsWith("<")) user = user.substring(1);
         if (users[user]) {
             res.send(
-                users[user][0] == "__FlapsNick__" ?
-                "flaps chelton" :
-                users[user][0]
+                users[user][0] == "__FlapsNick__"
+                    ? "flaps chelton"
+                    : users[user][0]
             );
         } else {
             res.send("FlapsAPIUnknownUser");
@@ -245,8 +246,10 @@ function init(client) {
         if (user.startsWith("<")) user = user.substring(1);
         if (users[user]) {
             res.send({
-                name: users[user][0] == "__FlapsNick__" ?
-                    "flaps chelton" : users[user][0],
+                name:
+                    users[user][0] == "__FlapsNick__"
+                        ? "flaps chelton"
+                        : users[user][0],
                 text: req.params.y.replace(/\.space\./g, " "),
             });
         } else {

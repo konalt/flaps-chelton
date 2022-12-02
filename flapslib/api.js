@@ -3,7 +3,13 @@ const { watermark, andrewTate, fakeNews } = require("./canvas");
 const { dataURLToBuffer, uuidv4 } = require("./util");
 const { readFileSync, fstat, writeFileSync } = require("fs");
 const { extension } = require("mime-types");
-const { caption2, getVideoDimensions, simpleMemeCaption, speed, compress } = require("./video");
+const {
+    caption2,
+    getVideoDimensions,
+    simpleMemeCaption,
+    speed,
+    compress,
+} = require("./video");
 const { resolve } = require("path");
 const { resourceLimits } = require("worker_threads");
 
@@ -23,7 +29,8 @@ const canvasRouter = new Router({
 
 canvasRouter.post("/watermark", (req, res) => {
     var file = req.body.file;
-    if (!file ||
+    if (
+        !file ||
         (!file.startsWith("data:image/png;base64") &&
             !file.startsWith("data:image/jpeg;base64"))
     )
@@ -43,7 +50,8 @@ canvasRouter.post("/watermark", (req, res) => {
 canvasRouter.post("/tate", (req, res) => {
     var file = req.body.file;
     var text = req.body.text;
-    if (!file ||
+    if (
+        !file ||
         (!file.startsWith("data:image/png;base64") &&
             !file.startsWith("data:image/jpeg;base64")) ||
         !text
@@ -65,7 +73,8 @@ canvasRouter.post("/news", (req, res) => {
     var file = req.body.file;
     var headline = req.body.headline;
     var ticker = req.body.ticker;
-    if (!file ||
+    if (
+        !file ||
         (!file.startsWith("data:image/png;base64") &&
             !file.startsWith("data:image/jpeg;base64")) ||
         !headline ||
@@ -113,10 +122,10 @@ canvasRouter.post("/caption2", (req, res) => {
     xbuf(file).then(([inFile, outFile]) => {
         getVideoDimensions(inFile).then((dim) => {
             caption2(inFile, outFile, {
-                    text: text,
-                    w: dim[0],
-                    h: dim[1],
-                })
+                text: text,
+                w: dim[0],
+                h: dim[1],
+            })
                 .then(() => {
                     res.contentType(file.split(":")[1].split(";")[0]).sendFile(
                         resolve(__dirname + "/../" + outFile)
@@ -134,7 +143,11 @@ canvasRouter.post("/speed", (req, res) => {
     var file = req.body.file;
     var speedX = req.body.speed;
     var filetypes = "image/gif,video/mp4,audio/mpeg".split(",");
-    if (!file || !filetypes.includes(file.split(":")[1].split(";")[0]) || !speedX)
+    if (
+        !file ||
+        !filetypes.includes(file.split(":")[1].split(";")[0]) ||
+        !speedX
+    )
         return res.status(400).send({
             error: "Parameter 'file' must be a data URI for image/gif, video/mp4, audio/mpeg.\nParameter 'speed' must be a number.",
         });

@@ -12,20 +12,22 @@ async function ffmpeg(args) {
             shell: true,
         });
         ffmpegInstance.stdout.on("data", (c) => {
-            if (!c
-                .toString()
-                .match(
-                    /(\[swscaler @ [0-9a-f]+\])+ deprecated pixel format used, make sure you did set range correctly/g
-                )
+            if (
+                !c
+                    .toString()
+                    .match(
+                        /(\[swscaler @ [0-9a-f]+\])+ deprecated pixel format used, make sure you did set range correctly/g
+                    )
             )
                 stdout.write(c);
         });
         ffmpegInstance.stderr.on("data", (c) => {
-            if (!c
-                .toString()
-                .match(
-                    /(\[swscaler @ [0-9a-f]+\])+ deprecated pixel format used, make sure you did set range correctly/g
-                )
+            if (
+                !c
+                    .toString()
+                    .match(
+                        /(\[swscaler @ [0-9a-f]+\])+ deprecated pixel format used, make sure you did set range correctly/g
+                    )
             )
                 stdout.write(c);
         });
@@ -107,7 +109,8 @@ function addAudio(input, output, lobster, length) {
 function concat(input, output) {
     var intext = "-i " + input.join(".mp4 -i ") + ".mp4";
     console.log(intext);
-    var intext2 = Array.from({ length: input.length },
+    var intext2 = Array.from(
+        { length: input.length },
         (_, i) => "[" + i.toString() + ":v]"
     ).join("");
     console.log(intext2);
@@ -135,29 +138,29 @@ async function todo(client, msg) {
             path.join(
                 __dirname,
                 "img1." +
-                att[0].url.split(".")[att[0].url.split(".").length - 1]
+                    att[0].url.split(".")[att[0].url.split(".").length - 1]
             ),
-            async() => {
+            async () => {
                 console.log("downloaded image 1");
                 download(
                     att[1].url,
                     path.join(
                         __dirname,
                         "img2." +
-                        att[1].url.split(".")[
-                            att[1].url.split(".").length - 1
-                        ]
-                    ),
-                    async() => {
-                        var inputs = [
-                            "versus/img1." +
-                            att[0].url.split(".")[
-                                att[0].url.split(".").length - 1
-                            ],
-                            "versus/img2." +
                             att[1].url.split(".")[
                                 att[1].url.split(".").length - 1
-                            ],
+                            ]
+                    ),
+                    async () => {
+                        var inputs = [
+                            "versus/img1." +
+                                att[0].url.split(".")[
+                                    att[0].url.split(".").length - 1
+                                ],
+                            "versus/img2." +
+                                att[1].url.split(".")[
+                                    att[1].url.split(".").length - 1
+                                ],
                         ];
                         var isLong = msg.content.startsWith("!vs2");
                         var segmentLengths = [70, 80];
@@ -250,14 +253,15 @@ async function todo(client, msg) {
                             });
                             console.log(forceWin);
                             var chosenSide =
-                                forceWin == 0 || forceWin == 1 ?
-                                parseInt(forceWin) :
-                                Math.floor(Math.random() * 2);
+                                forceWin == 0 || forceWin == 1
+                                    ? parseInt(forceWin)
+                                    : Math.floor(Math.random() * 2);
                             console.log("Side" + chosenSide);
                             scores[chosenSide]++;
                             await createScoreVideo(
                                 inputs[chosenSide],
-                                "versus/" + vi++, {
+                                "versus/" + vi++,
+                                {
                                     curScore: scores.join("-"),
                                 }
                             );
@@ -279,15 +283,18 @@ async function todo(client, msg) {
                             if (Math.random() < 0.9) {
                                 await createScoreVideo(
                                     inputs[winner],
-                                    "versus/" + vi++, {
-                                        curScore: winner == 2 ? "Tie" : names[winner],
+                                    "versus/" + vi++,
+                                    {
+                                        curScore:
+                                            winner == 2 ? "Tie" : names[winner],
                                     }
                                 );
                             } else {
                                 lobster = true;
                                 await createScoreVideo(
                                     "versus/lober.png",
-                                    "versus/" + vi++, {
+                                    "versus/" + vi++,
+                                    {
                                         curScore: "lober",
                                     }
                                 );
@@ -313,9 +320,11 @@ async function todo(client, msg) {
                         var message = await client.channels.cache
                             .get("956316856422137856")
                             .send({
-                                files: [{
-                                    attachment: "versus/out.mp4",
-                                }, ],
+                                files: [
+                                    {
+                                        attachment: "versus/out.mp4",
+                                    },
+                                ],
                             });
 
                         sendWebhook(

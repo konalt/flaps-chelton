@@ -12,7 +12,7 @@ function question() {
         });
 }
 
-$("#questionform").submit(function(e) {
+$("#questionform").submit(function (e) {
     e.preventDefault();
     question();
 });

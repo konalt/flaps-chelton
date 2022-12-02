@@ -15,7 +15,7 @@ async function init() {
     aiPageData.browser = await puppeteer.launch();
     aiPageData.page = await aiPageData.browser.newPage();
     await aiPageData.page.goto("about:blank");
-    aiPageData.page.on("console", async(msg) => {
+    aiPageData.page.on("console", async (msg) => {
         const msgArgs = msg.args();
         for (let i = 0; i < msgArgs.length; ++i) {
             console.log(await msgArgs[i].jsonValue());
@@ -43,7 +43,7 @@ async function makesweet(text, filename, msgChannel, client, send = true) {
                     msgChannel
                 );
             }
-            (async() => {
+            (async () => {
                 sendWebhook("mkswt", "setting stuff up", msgChannel);
                 await aiPageData.page.goto(
                     "https://makesweet.com/my/heart-locket"
@@ -82,7 +82,7 @@ async function makesweet(text, filename, msgChannel, client, send = true) {
                 await fileChooser.accept([
                     path.join(__dirname, "..", "images", "cache", filename),
                 ]);
-                await aiPageData.page.evaluate(async() => {
+                await aiPageData.page.evaluate(async () => {
                     document
                         .querySelector("#wb-animate > a:nth-child(1)")
                         .click();
@@ -94,7 +94,7 @@ async function makesweet(text, filename, msgChannel, client, send = true) {
                 sendWebhook("mkswt", "and we're off!", msgChannel);
 
                 var originalSrc = "";
-                var waitInterval = setInterval(async() => {
+                var waitInterval = setInterval(async () => {
                     waitCounts++;
                     var url = await aiPageData.page.evaluate((original) => {
                         if (
@@ -126,7 +126,7 @@ async function makesweet(text, filename, msgChannel, client, send = true) {
                         const blobUrl = newPage.url();
                         var outputFilename =
                             "./images/cache/" + uuidv4() + ".gif";
-                        aiPageData.page.once("response", async(response) => {
+                        aiPageData.page.once("response", async (response) => {
                             console.log(response.url());
                             const img = await response.buffer();
                             fs.writeFileSync(outputFilename, img);
@@ -137,9 +137,11 @@ async function makesweet(text, filename, msgChannel, client, send = true) {
                                 var message = await client.channels.cache
                                     .get("956316856422137856")
                                     .send({
-                                        files: [{
-                                            attachment: outputFilename,
-                                        }, ],
+                                        files: [
+                                            {
+                                                attachment: outputFilename,
+                                            },
+                                        ],
                                     });
 
                                 setTimeout(() => {
@@ -189,7 +191,7 @@ function reverseMakesweet(text, filename, msgChannel) {
             var newId = uuidv4() + ".gif";
             complexFFmpeg(outputFilename, `./images/cache/` + newId, {
                 args: `-lavfi "[0:v]palettegen[p];[0:v]reverse[outx];[outx][p]paletteuse[outf]" -map "[outf]"`,
-            }).then(async() => {
+            }).then(async () => {
                 sendWebhookFile("mkswt", "images/cache/" + newId, msgChannel);
             });
         }

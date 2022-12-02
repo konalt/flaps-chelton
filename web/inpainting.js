@@ -24,11 +24,13 @@ function dalle2() {
     var maskURL = canvas2.toDataURL("image/png");
     axios
         .post(
-            "https://konalt.us.to:4930/flaps_api/inpaint", {
+            "https://konalt.us.to:4930/flaps_api/inpaint",
+            {
                 prompt: t,
                 img: imgURL,
                 mask: maskURL,
-            }, {
+            },
+            {
                 responseType: "blob",
             }
         )
@@ -49,7 +51,7 @@ function dalle2() {
 
 $("#genbtn").attr("disabled", "disabled");
 
-$("#dalle2form").submit(function(e) {
+$("#dalle2form").submit(function (e) {
     e.preventDefault();
     dalle2();
 });
@@ -62,7 +64,7 @@ function loadImage(url, cb) {
     img.src = url;
 }
 
-$("#img").change(function(e) {
+$("#img").change(function (e) {
     e.preventDefault();
     $("#loader").hide();
     $("#out").hide();
@@ -162,7 +164,7 @@ function canvasInit(url) {
     });
 }
 
-window.addEventListener("paste", function(event) {
+window.addEventListener("paste", function (event) {
     var items = (event.clipboardData || event.originalEvent.clipboardData)
         .items;
     for (index in items) {
@@ -173,7 +175,7 @@ window.addEventListener("paste", function(event) {
             $("#loader").hide();
             $("#out").hide();
             $("canvas.maker").hide();
-            reader.onload = function(event) {
+            reader.onload = function (event) {
                 canvasInit(event.target.result);
             };
             reader.readAsDataURL(blob);
