@@ -29,7 +29,7 @@ async function init() {
     await aiPageData.page.goto(
         "https://deepai.org/machine-learning-model/text-generator"
     );
-    aiPageData.page.on("console", async(msg) => {
+    aiPageData.page.on("console", async (msg) => {
         const msgArgs = msg.args();
         for (let i = 0; i < msgArgs.length; ++i) {
             console.log(await msgArgs[i].jsonValue());
@@ -76,7 +76,7 @@ function doDream(msg) {
             })
             .then((task) => {
                 var id = uuidv4() + ".jpg";
-                download(task.result.final, "images/cache/" + id, async() => {
+                download(task.result.final, "images/cache/" + id, async () => {
                     editWebhookFile(
                         msgid,
                         msg.channel,
@@ -106,7 +106,7 @@ async function autocompleteText(text, msgChannel, removeOriginalText = false) {
                 msgChannel
             );
         }
-        (async() => {
+        (async () => {
             await aiPageData.page.goto(
                 "https://deepai.org/machine-learning-model/text-generator"
             );
@@ -120,7 +120,7 @@ async function autocompleteText(text, msgChannel, removeOriginalText = false) {
             var originalHTMLContent = await aiPageData.page.evaluate(() => {
                 return document.querySelector(".try-it-result-area").innerHTML;
             });
-            waitInterval = setInterval(async() => {
+            waitInterval = setInterval(async () => {
                 waitCounts++;
                 var a = await aiPageData.page.evaluate((original) => {
                     if (
@@ -136,7 +136,7 @@ async function autocompleteText(text, msgChannel, removeOriginalText = false) {
                 if (a !== false) {
                     var a2 = a.substring(
                         '<div style="width: 100%; height: 100%; overflow: auto; display: flex; align-items: center; flex-direction: column;"><pre style="white-space: pre-wrap; margin: 0px;">'
-                        .length
+                            .length
                     );
                     if (a2.includes("Model demos are currently paused"))
                         return sendWebhook(
@@ -182,9 +182,9 @@ async function gpt3complete_new(text, msgChannel) {
                 msgChannel
             );
         }
-        (async() => {
+        (async () => {
             await aiPageData.page.goto("https://beta.openai.com/playground");
-            var wi = setInterval(async() => {
+            var wi = setInterval(async () => {
                 var x = await aiPageData.page.evaluate(() => {
                     return document.querySelector(
                         "#root > div.route-container > div > div.pg-root.page-body.full-width.flush > div > div.pg-body > div.pg-left > div.pg-content-body > div > div > div > div > div > div.DraftEditor-editorContainer > div > div > div > div > span"
@@ -212,7 +212,7 @@ async function gpt3complete_new(text, msgChannel) {
                             ).innerHTML;
                         }
                     );
-                    waitInterval = setInterval(async() => {
+                    waitInterval = setInterval(async () => {
                         waitCounts++;
                         var a = await aiPageData.page.evaluate((original) => {
                             if (
@@ -275,9 +275,9 @@ async function markov(text, msgChannel) {
         filterFunction: (word) => word.indexOf("http") === -1,
     });
     m.setTrainingText(
-        text.split(" ").length < 10 ?
-        shuffle(text.repeat(5).split(" ")).join(" ") :
-        text
+        text.split(" ").length < 10
+            ? shuffle(text.repeat(5).split(" ")).join(" ")
+            : text
     );
     var a = m.generateText(1000);
     sendWebhook("deepai", a, msgChannel);
@@ -285,25 +285,26 @@ async function markov(text, msgChannel) {
 async function markov2(text, acc, msgChannel) {
     try {
         fetch("https://projects.haykranen.nl/markov/demo/", {
-                credentials: "omit",
-                headers: {
-                    "User-Agent": "FlapsChelton",
-                    Accept: "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8",
-                    "Accept-Language": "en-US,en;q=0.5",
-                    "Content-Type": "application/x-www-form-urlencoded",
-                    "Upgrade-Insecure-Requests": "1",
-                    "Sec-Fetch-Dest": "document",
-                    "Sec-Fetch-Mode": "navigate",
-                    "Sec-Fetch-Site": "same-origin",
-                    "Sec-Fetch-User": "?1",
-                },
-                referrer: "https://projects.haykranen.nl/markov/demo/",
-                body: "input=" +
-                    encodeURIComponent(text) +
-                    "&text=&order=4&length=2500&submit=GO",
-                method: "POST",
-                mode: "cors",
-            })
+            credentials: "omit",
+            headers: {
+                "User-Agent": "FlapsChelton",
+                Accept: "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8",
+                "Accept-Language": "en-US,en;q=0.5",
+                "Content-Type": "application/x-www-form-urlencoded",
+                "Upgrade-Insecure-Requests": "1",
+                "Sec-Fetch-Dest": "document",
+                "Sec-Fetch-Mode": "navigate",
+                "Sec-Fetch-Site": "same-origin",
+                "Sec-Fetch-User": "?1",
+            },
+            referrer: "https://projects.haykranen.nl/markov/demo/",
+            body:
+                "input=" +
+                encodeURIComponent(text) +
+                "&text=&order=4&length=2500&submit=GO",
+            method: "POST",
+            mode: "cors",
+        })
             .then((r) => r.text())
             .then((resp) => {
                 var content = resp
@@ -335,7 +336,7 @@ async function armstrong(msgChannel) {
                 msgChannel
             );
         }
-        (async() => {
+        (async () => {
             await aiPageData.page.goto(
                 "https://deepai.org/machine-learning-model/text-generator"
             );
@@ -349,7 +350,7 @@ async function armstrong(msgChannel) {
             var originalHTMLContent = await aiPageData.page.evaluate(() => {
                 return document.querySelector(".try-it-result-area").innerHTML;
             });
-            waitInterval = setInterval(async() => {
+            waitInterval = setInterval(async () => {
                 waitCounts++;
                 var a = await aiPageData.page.evaluate((original) => {
                     if (
@@ -365,7 +366,7 @@ async function armstrong(msgChannel) {
                 if (a !== false) {
                     var a2 = a.substring(
                         '<div style="width: 100%; height: 100%; overflow: auto; display: flex; align-items: center; flex-direction: column;"><pre style="white-space: pre-wrap; margin: 0px;">'
-                        .length
+                            .length
                     );
                     a2 = a2.substring(0, a2.length - "</pre></div>".length);
                     a2 = decodeEntities(a2);
@@ -395,27 +396,28 @@ async function armstrong(msgChannel) {
 async function armstrong2(accuracy, msgChannel) {
     try {
         fetch("https://projects.haykranen.nl/markov/demo/", {
-                credentials: "omit",
-                headers: {
-                    "User-Agent": "FlapsChelton",
-                    Accept: "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8",
-                    "Accept-Language": "en-US,en;q=0.5",
-                    "Content-Type": "application/x-www-form-urlencoded",
-                    "Upgrade-Insecure-Requests": "1",
-                    "Sec-Fetch-Dest": "document",
-                    "Sec-Fetch-Mode": "navigate",
-                    "Sec-Fetch-Site": "same-origin",
-                    "Sec-Fetch-User": "?1",
-                },
-                referrer: "https://projects.haykranen.nl/markov/demo/",
-                body: "input=" +
-                    fs.readFileSync("./armstrong.txt").toString() +
-                    "&text=&order=" +
-                    accuracy +
-                    "&length=1000&submit=GO",
-                method: "POST",
-                mode: "cors",
-            })
+            credentials: "omit",
+            headers: {
+                "User-Agent": "FlapsChelton",
+                Accept: "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8",
+                "Accept-Language": "en-US,en;q=0.5",
+                "Content-Type": "application/x-www-form-urlencoded",
+                "Upgrade-Insecure-Requests": "1",
+                "Sec-Fetch-Dest": "document",
+                "Sec-Fetch-Mode": "navigate",
+                "Sec-Fetch-Site": "same-origin",
+                "Sec-Fetch-User": "?1",
+            },
+            referrer: "https://projects.haykranen.nl/markov/demo/",
+            body:
+                "input=" +
+                fs.readFileSync("./armstrong.txt").toString() +
+                "&text=&order=" +
+                accuracy +
+                "&length=1000&submit=GO",
+            method: "POST",
+            mode: "cors",
+        })
             .then((r) => r.text())
             .then((resp) => {
                 var content = resp
@@ -448,15 +450,15 @@ async function threeDimensionalTextLayer2(
 ) {
     await aiPageData.page.goto(
         "https://konalt.us.to/flaps/3dtext/?text=" +
-        encodeURIComponent(text) +
-        (msg.attachments.first() ?
-            "&imageurl=" +
-            encodeURIComponent(
-                "https://konalt.us.to/flaps/image_urls/" + imageName
-            ) :
-            "")
+            encodeURIComponent(text) +
+            (msg.attachments.first()
+                ? "&imageurl=" +
+                  encodeURIComponent(
+                      "https://konalt.us.to/flaps/image_urls/" + imageName
+                  )
+                : "")
     );
-    waitInterval = setInterval(async() => {
+    waitInterval = setInterval(async () => {
         waitCounts++;
         var a = await aiPageData.page.evaluate(() => {
             console.log(document.querySelector("html").innerHTML);
@@ -478,9 +480,11 @@ async function threeDimensionalTextLayer2(
             var message = await client.channels.cache
                 .get("956316856422137856")
                 .send({
-                    files: [{
-                        attachment: imagePath,
-                    }, ],
+                    files: [
+                        {
+                            attachment: imagePath,
+                        },
+                    ],
                 });
             setTimeout(() => {
                 fs.unlinkSync(imagePath);
@@ -508,15 +512,15 @@ async function threeDimensionalTextLayer2(
 async function googleTrends(queries, msgChannel, client) {
     await aiPageData.page.goto(
         "https://trends.google.com/trends/explore?date=all&geo=US&q=" +
-        queries
-        .map((q) => {
-            return encodeURIComponent(q);
-        })
-        .join(",")
+            queries
+                .map((q) => {
+                    return encodeURIComponent(q);
+                })
+                .join(",")
     );
     var imgID2 = uuidv4().replace(/-/gi, "");
     var imagePath = path.join(__dirname, "../images/cache/", imgID2 + ".jpg");
-    var waitInterval = setInterval(async() => {
+    var waitInterval = setInterval(async () => {
         const element = await aiPageData.page.$(
             ".multi-heat-map-and-legends-without-explanation-container"
         );
@@ -527,9 +531,11 @@ async function googleTrends(queries, msgChannel, client) {
             var message = await client.channels.cache
                 .get("956316856422137856")
                 .send({
-                    files: [{
-                        attachment: imagePath,
-                    }, ],
+                    files: [
+                        {
+                            attachment: imagePath,
+                        },
+                    ],
                 });
             setTimeout(() => {
                 fs.unlinkSync(imagePath);
@@ -564,13 +570,15 @@ async function person(msgChannel, client) {
         download(
             "https://thispersondoesnotexist.com/image",
             imagePath,
-            async() => {
+            async () => {
                 var message = await client.channels.cache
                     .get("956316856422137856")
                     .send({
-                        files: [{
-                            attachment: imagePath,
-                        }, ],
+                        files: [
+                            {
+                                attachment: imagePath,
+                            },
+                        ],
                     });
 
                 setTimeout(() => {
@@ -602,28 +610,28 @@ async function threeDimensionalText(text, msgChannel, msg, client) {
                 msgChannel
             );
         }
-        (async() => {
+        (async () => {
             var imgID2 = uuidv4().replace(/-/gi, "");
             if (msg.attachments.first()) {
                 download(
                     msg.attachments.first().url,
                     "../2site/sites/konalt/flaps/image_urls/" +
-                    imgID2 +
-                    msg.attachments.first().url.split(".")[
-                        msg.attachments.first().url.split(".").length - 1
-                    ],
+                        imgID2 +
+                        msg.attachments.first().url.split(".")[
+                            msg.attachments.first().url.split(".").length - 1
+                        ],
                     () => {
                         threeDimensionalTextLayer2(
                             text,
                             msgChannel,
                             msg,
-                            msg.attachments.first() ?
-                            imgID2 +
-                            msg.attachments.first().url.split(".")[
-                                msg.attachments.first().url.split(".")
-                                .length - 1
-                            ] :
-                            null,
+                            msg.attachments.first()
+                                ? imgID2 +
+                                      msg.attachments.first().url.split(".")[
+                                          msg.attachments.first().url.split(".")
+                                              .length - 1
+                                      ]
+                                : null,
                             client
                         );
                     }
@@ -649,7 +657,7 @@ async function generateImage(text, msgChannel, client) {
                 msgChannel
             );
         }
-        (async() => {
+        (async () => {
             await aiPageData.page.goto(
                 "https://deepai.org/machine-learning-model/text2img"
             );
@@ -663,7 +671,7 @@ async function generateImage(text, msgChannel, client) {
             var originalHTMLContent = await aiPageData.page.evaluate(() => {
                 return document.querySelector(".try-it-result-area").innerHTML;
             });
-            waitInterval = setInterval(async() => {
+            waitInterval = setInterval(async () => {
                 waitCounts++;
                 var a = await aiPageData.page.evaluate((original) => {
                     if (
@@ -681,8 +689,8 @@ async function generateImage(text, msgChannel, client) {
                     a2 = a2.substring(
                         0,
                         a2.length -
-                        '" style="position: relative; width: 100%; height: 100%; object-fit: contain;">'
-                        .length
+                            '" style="position: relative; width: 100%; height: 100%; object-fit: contain;">'
+                                .length
                     );
                     console.log(a2);
                     clearInterval(waitInterval);
@@ -694,7 +702,7 @@ async function generateImage(text, msgChannel, client) {
                         imgID2 + ".jpg"
                     );
                     fs.writeFileSync(imagePath, "");
-                    download(a2, imagePath, async(err) => {
+                    download(a2, imagePath, async (err) => {
                         if (err)
                             return sendWebhook(
                                 "deepai",
@@ -708,9 +716,11 @@ async function generateImage(text, msgChannel, client) {
                         var message = await client.channels.cache
                             .get("956316856422137856")
                             .send({
-                                files: [{
-                                    attachment: imagePath,
-                                }, ],
+                                files: [
+                                    {
+                                        attachment: imagePath,
+                                    },
+                                ],
                             });
 
                         setTimeout(() => {
@@ -754,7 +764,7 @@ async function upscaleImage(msg, msgChannel, client) {
                 msgChannel
             );
         }
-        (async() => {
+        (async () => {
             await aiPageData.page.goto(
                 "https://deepai.org/machine-learning-model/waifu2x"
             );
@@ -767,14 +777,14 @@ async function upscaleImage(msg, msgChannel, client) {
             var originalHTMLContent = await aiPageData.page.evaluate(() => {
                 if (
                     document
-                    .querySelector(".try-it-result-area > img:nth-child(1)")
-                    .src.includes("waifu2x")
+                        .querySelector(".try-it-result-area > img:nth-child(1)")
+                        .src.includes("waifu2x")
                 ) {
                     return '<img src="https://api.deepai.org/job-view-file/aea88859-1ed9-4fa9-9a1d-b571b1dc22ed/outputs/output.png" style="position: relative; width: 100%; height: 100%; object-fit: contain;">';
                 }
                 return document.querySelector(".try-it-result-area").innerHTML;
             });
-            waitInterval = setInterval(async() => {
+            waitInterval = setInterval(async () => {
                 waitCounts++;
                 var a = await aiPageData.page.evaluate((original) => {
                     if (
@@ -792,8 +802,8 @@ async function upscaleImage(msg, msgChannel, client) {
                     a2 = a2.substring(
                         0,
                         a2.length -
-                        '" style="position: relative; width: 100%; height: 100%; object-fit: contain;">'
-                        .length
+                            '" style="position: relative; width: 100%; height: 100%; object-fit: contain;">'
+                                .length
                     );
                     console.log(a2);
                     clearInterval(waitInterval);
@@ -810,7 +820,7 @@ async function upscaleImage(msg, msgChannel, client) {
                             "deepai",
                             "Model demos are currently paused for free users."
                         );
-                    download(a2, imagePath, async(err) => {
+                    download(a2, imagePath, async (err) => {
                         if (err)
                             return sendWebhook(
                                 "deepai",
@@ -824,9 +834,11 @@ async function upscaleImage(msg, msgChannel, client) {
                         var message = await client.channels.cache
                             .get("956316856422137856")
                             .send({
-                                files: [{
-                                    attachment: imagePath,
-                                }, ],
+                                files: [
+                                    {
+                                        attachment: imagePath,
+                                    },
+                                ],
                             });
 
                         setTimeout(() => {
@@ -870,7 +882,7 @@ async function tti(text, msgChannel, client) {
                 msgChannel
             );
         }
-        (async() => {
+        (async () => {
             await aiPageData.page.goto(
                 "https://deepai.org/machine-learning-model/text2img"
             );
@@ -884,7 +896,7 @@ async function tti(text, msgChannel, client) {
             var originalHTMLContent = await aiPageData.page.evaluate(() => {
                 return document.querySelector(".try-it-result-area").innerHTML;
             });
-            waitInterval = setInterval(async() => {
+            waitInterval = setInterval(async () => {
                 waitCounts++;
                 var a = await aiPageData.page.evaluate((original) => {
                     if (
@@ -902,8 +914,8 @@ async function tti(text, msgChannel, client) {
                     a2 = a2.substring(
                         0,
                         a2.length -
-                        '" style="position: relative; width: 100%; height: 100%; object-fit: contain;">'
-                        .length
+                            '" style="position: relative; width: 100%; height: 100%; object-fit: contain;">'
+                                .length
                     );
                     console.log(a2);
                     clearInterval(waitInterval);
@@ -920,7 +932,7 @@ async function tti(text, msgChannel, client) {
                             "deepai",
                             "Model demos are currently paused for free users."
                         );
-                    download(a2, imagePath, async(err) => {
+                    download(a2, imagePath, async (err) => {
                         if (err)
                             return sendWebhook(
                                 "deepai",
@@ -934,9 +946,11 @@ async function tti(text, msgChannel, client) {
                         var message = await client.channels.cache
                             .get("956316856422137856")
                             .send({
-                                files: [{
-                                    attachment: imagePath,
-                                }, ],
+                                files: [
+                                    {
+                                        attachment: imagePath,
+                                    },
+                                ],
                             });
 
                         setTimeout(() => {
@@ -973,21 +987,22 @@ async function tti(text, msgChannel, client) {
 function dalle(prompt, isSecondReq = false) {
     return new Promise((resolve) => {
         fetch("https://bf.dallemini.ai/generate", {
-                credentials: "omit",
-                headers: {
-                    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:101.0) Gecko/20100101 Firefox/101.0",
-                    Accept: "application/json",
-                    "Accept-Language": "en-US,en;q=0.5",
-                    "Content-Type": "application/json",
-                    "Sec-Fetch-Dest": "empty",
-                    "Sec-Fetch-Mode": "cors",
-                    "Sec-Fetch-Site": "cross-site",
-                },
-                referrer: "https://hf.space/",
-                body: '{"prompt":"' + prompt + '"}',
-                method: "POST",
-                mode: "cors",
-            })
+            credentials: "omit",
+            headers: {
+                "User-Agent":
+                    "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:101.0) Gecko/20100101 Firefox/101.0",
+                Accept: "application/json",
+                "Accept-Language": "en-US,en;q=0.5",
+                "Content-Type": "application/json",
+                "Sec-Fetch-Dest": "empty",
+                "Sec-Fetch-Mode": "cors",
+                "Sec-Fetch-Site": "cross-site",
+            },
+            referrer: "https://hf.space/",
+            body: '{"prompt":"' + prompt + '"}',
+            method: "POST",
+            mode: "cors",
+        })
             .then((r) => r.text())
             .then((r) => {
                 var out = {
@@ -1158,18 +1173,19 @@ function describe(message) {
                 ";base64," +
                 Buffer.from(r[0]).toString("base64");
             fetch(
-                    "https://hf.space/embed/OFA-Sys/OFA-Image_Caption/api/predict/", {
-                        body: JSON.stringify({
-                            data: [data],
-                            example_id: null,
-                            session_hash: "xdj84bh71fd",
-                        }),
-                        method: "POST",
-                        headers: {
-                            "Content-Type": "application/json",
-                        },
-                    }
-                )
+                "https://hf.space/embed/OFA-Sys/OFA-Image_Caption/api/predict/",
+                {
+                    body: JSON.stringify({
+                        data: [data],
+                        example_id: null,
+                        session_hash: "xdj84bh71fd",
+                    }),
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                }
+            )
                 .then((r) => r.json())
                 .then((r2) => {
                     if (!r2.data) {
@@ -1217,18 +1233,19 @@ function questionImage(question, message) {
                 ";base64," +
                 Buffer.from(r[0]).toString("base64");
             fetch(
-                    "https://hf.space/embed/OFA-Sys/OFA-Visual_Question_Answering/api/predict/", {
-                        body: JSON.stringify({
-                            data: [data, question],
-                            example_id: null,
-                            session_hash: "xdj84bh71fd",
-                        }),
-                        method: "POST",
-                        headers: {
-                            "Content-Type": "application/json",
-                        },
-                    }
-                )
+                "https://hf.space/embed/OFA-Sys/OFA-Visual_Question_Answering/api/predict/",
+                {
+                    body: JSON.stringify({
+                        data: [data, question],
+                        example_id: null,
+                        session_hash: "xdj84bh71fd",
+                    }),
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                }
+            )
                 .then((r) => r.json())
                 .then((r2) => {
                     sendWebhook("jonathan", r2.data[0], false, message.channel);
@@ -1238,25 +1255,26 @@ function questionImage(question, message) {
 
 function questionFree(question, msg) {
     fetch(
-            "https://api-inference.huggingface.co/models/danyaljj/gpt2_question_answering_squad2", {
-                body: JSON.stringify({
-                    inputs: "Q: " + question + "\nA:",
-                }),
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                method: "POST",
-            }
-        )
+        "https://api-inference.huggingface.co/models/danyaljj/gpt2_question_answering_squad2",
+        {
+            body: JSON.stringify({
+                inputs: "Q: " + question + "\nA:",
+            }),
+            headers: {
+                "Content-Type": "application/json",
+            },
+            method: "POST",
+        }
+    )
         .then((r) => r.text())
         .then((a) => {
             sendWebhook(
                 "jonathan",
-                a[0].generated_text ?
-                a[0].generated_text.substring(
-                    ("Q: " + question + "\nA:").length
-                ) :
-                "no response, probably rate limited",
+                a[0].generated_text
+                    ? a[0].generated_text.substring(
+                          ("Q: " + question + "\nA:").length
+                      )
+                    : "no response, probably rate limited",
                 false,
                 msg.channel
             );
@@ -1269,17 +1287,18 @@ var chatbotWaitingIntervalCounts = {};
 
 function sendToChatbot(text, cb) {
     fetch("https://hf.space/embed/carblacac/chatbot/api/queue/push/", {
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: '{"fn_index":0,"data":["' +
-                text +
-                '",null],"action":"predict","session_hash":"' +
-                chatbotSession +
-                '"}',
-            method: "POST",
-            mode: "cors",
-        })
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body:
+            '{"fn_index":0,"data":["' +
+            text +
+            '",null],"action":"predict","session_hash":"' +
+            chatbotSession +
+            '"}',
+        method: "POST",
+        mode: "cors",
+    })
         .then((r) => r.json())
         .then((r) => {
             console.log("Awaiting response for chatbot message");
@@ -1291,15 +1310,16 @@ function sendToChatbot(text, cb) {
                     cb("Loop detected");
                 }
                 fetch(
-                        "https://hf.space/embed/carblacac/chatbot/api/queue/status/", {
-                            credentials: "omit",
-                            headers: {
-                                "Content-Type": "application/json",
-                            },
-                            body: '{"hash":"' + r.hash + '"}',
-                            method: "POST",
-                        }
-                    )
+                    "https://hf.space/embed/carblacac/chatbot/api/queue/status/",
+                    {
+                        credentials: "omit",
+                        headers: {
+                            "Content-Type": "application/json",
+                        },
+                        body: '{"hash":"' + r.hash + '"}',
+                        method: "POST",
+                    }
+                )
                     .then((r2) => r2.json())
                     .then((r2) => {
                         console.log(r2);
@@ -1318,19 +1338,19 @@ var ruGPTWaitingIntervalCounts = {};
 
 function ruQuestion(question, cb) {
     fetch("https://hf.space/embed/AlekseyKorshuk/rugpt3/api/queue/push/", {
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-                action: "predict",
-                cleared: false,
-                data: ["Q: " + question + "\nA:"],
-                example_id: null,
-                session_hash: ruGPTSession,
-            }),
-            method: "POST",
-            mode: "cors",
-        })
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+            action: "predict",
+            cleared: false,
+            data: ["Q: " + question + "\nA:"],
+            example_id: null,
+            session_hash: ruGPTSession,
+        }),
+        method: "POST",
+        mode: "cors",
+    })
         .then((r) => r.json())
         .then((r) => {
             console.log("Awaiting response for ruGPT");
@@ -1342,15 +1362,16 @@ function ruQuestion(question, cb) {
                     cb("Loop detected");
                 }
                 fetch(
-                        "https://hf.space/embed/AlekseyKorshuk/rugpt3/api/queue/status/", {
-                            credentials: "omit",
-                            headers: {
-                                "Content-Type": "application/json",
-                            },
-                            body: '{"hash":"' + r.hash + '"}',
-                            method: "POST",
-                        }
-                    )
+                    "https://hf.space/embed/AlekseyKorshuk/rugpt3/api/queue/status/",
+                    {
+                        credentials: "omit",
+                        headers: {
+                            "Content-Type": "application/json",
+                        },
+                        body: '{"hash":"' + r.hash + '"}',
+                        method: "POST",
+                    }
+                )
                     .then((r2) => r2.json())
                     .then((r2) => {
                         console.log(r2);
@@ -1383,25 +1404,27 @@ async function gpt3complete(question, channel) {
 
 async function elcomplete(content, channel, temp) {
     fetch("https://api.eleuther.ai/completion", {
-            credentials: "omit",
-            headers: {
-                "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:101.0) Gecko/20100101 Firefox/101.0",
-                Accept: "application/json",
-                "Accept-Language": "en-US,en;q=0.5",
-                "Content-Type": "application/json",
-                "Sec-Fetch-Dest": "empty",
-                "Sec-Fetch-Mode": "cors",
-                "Sec-Fetch-Site": "same-site",
-            },
-            referrer: "https://6b.eleuther.ai/",
-            body: '{"context":"' +
-                content +
-                '","top_p":0.9,"temp":' +
-                temp +
-                ',"response_length":128,"remove_input":true}',
-            method: "POST",
-            mode: "cors",
-        })
+        credentials: "omit",
+        headers: {
+            "User-Agent":
+                "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:101.0) Gecko/20100101 Firefox/101.0",
+            Accept: "application/json",
+            "Accept-Language": "en-US,en;q=0.5",
+            "Content-Type": "application/json",
+            "Sec-Fetch-Dest": "empty",
+            "Sec-Fetch-Mode": "cors",
+            "Sec-Fetch-Site": "same-site",
+        },
+        referrer: "https://6b.eleuther.ai/",
+        body:
+            '{"context":"' +
+            content +
+            '","top_p":0.9,"temp":' +
+            temp +
+            ',"response_length":128,"remove_input":true}',
+        method: "POST",
+        mode: "cors",
+    })
         .then((r) => r.json())
         .then((data) => {
             sendWebhook(
@@ -1431,32 +1454,35 @@ function dalle2InpaintPromise(data) {
                         isPrivate: true,
                         batchId: "HgIRsj6uES",
                         generateVariants: false,
-                        init_image: "data:image/png;base64," + img.toString("base64"),
+                        init_image:
+                            "data:image/png;base64," + img.toString("base64"),
                         start_schedule: 0.7,
                         mask_strength: 0.9,
                         mode: 0,
-                        mask_image: "data:image/png;base64," + mask.toString("base64"),
+                        mask_image:
+                            "data:image/png;base64," + mask.toString("base64"),
                     };
                     fetch("https://playgroundai.com/api/models", {
-                            credentials: "include",
-                            headers: {
-                                "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:105.0) Gecko/20100101 Firefox/105.0",
-                                Accept: "application/json, text/plain, */*",
-                                "Accept-Language": "en-US,en;q=0.5",
-                                "Content-Type": "application/json",
-                                "Sec-Fetch-Dest": "empty",
-                                "Sec-Fetch-Mode": "cors",
-                                "Sec-Fetch-Site": "same-origin",
-                                "Sec-GPC": "1",
-                                cookie: cookie,
-                            },
-                            referrer: "https://playgroundai.com/api/models",
-                            body: JSON.stringify(body),
-                            method: "POST",
-                            mode: "cors",
-                        })
+                        credentials: "include",
+                        headers: {
+                            "User-Agent":
+                                "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:105.0) Gecko/20100101 Firefox/105.0",
+                            Accept: "application/json, text/plain, */*",
+                            "Accept-Language": "en-US,en;q=0.5",
+                            "Content-Type": "application/json",
+                            "Sec-Fetch-Dest": "empty",
+                            "Sec-Fetch-Mode": "cors",
+                            "Sec-Fetch-Site": "same-origin",
+                            "Sec-GPC": "1",
+                            cookie: cookie,
+                        },
+                        referrer: "https://playgroundai.com/api/models",
+                        body: JSON.stringify(body),
+                        method: "POST",
+                        mode: "cors",
+                    })
                         .then((res) => res.text())
-                        .then(async(res2) => {
+                        .then(async (res2) => {
                             try {
                                 var res = JSON.parse(res2);
                                 if (!res.images) {
@@ -1502,7 +1528,7 @@ function dalle2InpaintPromise(data) {
 function dalle2Promise(data, big = false) {
     // fuck you eslint !!
     // eslint-disable-next-line no-async-promise-executor
-    return new Promise(async(resl, rej) => {
+    return new Promise(async (resl, rej) => {
         var size = big ? 1024 : 512;
         var body = {
             num_images: big ? 1 : 4,
@@ -1524,7 +1550,8 @@ function dalle2Promise(data, big = false) {
                 start_schedule: 0.7,
                 mask_strength: 0.9,
                 mode: 0,
-                mask_image: "data:image/png;base64," +
+                mask_image:
+                    "data:image/png;base64," +
                     (
                         await invertAlpha(
                             await make512x512(
@@ -1532,7 +1559,8 @@ function dalle2Promise(data, big = false) {
                             )
                         )
                     ).toString("base64"),
-                init_image: "data:image/png;base64," +
+                init_image:
+                    "data:image/png;base64," +
                     (
                         await make512x512(
                             Buffer.from(data.img.split(",")[1], "base64")
@@ -1541,23 +1569,24 @@ function dalle2Promise(data, big = false) {
             });
         }
         fetch("https://playgroundai.com/api/models", {
-                credentials: "include",
-                headers: {
-                    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:105.0) Gecko/20100101 Firefox/105.0",
-                    Accept: "application/json, text/plain, */*",
-                    "Accept-Language": "en-US,en;q=0.5",
-                    "Content-Type": "application/json",
-                    "Sec-Fetch-Dest": "empty",
-                    "Sec-Fetch-Mode": "cors",
-                    "Sec-Fetch-Site": "same-origin",
-                    "Sec-GPC": "1",
-                    cookie: cookie,
-                },
-                referrer: "https://playgroundai.com/api/models",
-                body: JSON.stringify(body),
-                method: "POST",
-                mode: "cors",
-            })
+            credentials: "include",
+            headers: {
+                "User-Agent":
+                    "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:105.0) Gecko/20100101 Firefox/105.0",
+                Accept: "application/json, text/plain, */*",
+                "Accept-Language": "en-US,en;q=0.5",
+                "Content-Type": "application/json",
+                "Sec-Fetch-Dest": "empty",
+                "Sec-Fetch-Mode": "cors",
+                "Sec-Fetch-Site": "same-origin",
+                "Sec-GPC": "1",
+                cookie: cookie,
+            },
+            referrer: "https://playgroundai.com/api/models",
+            body: JSON.stringify(body),
+            method: "POST",
+            mode: "cors",
+        })
             .then((resp) => {
                 return new Promise((res) => {
                     resp.text().then((d) => {
@@ -1565,7 +1594,7 @@ function dalle2Promise(data, big = false) {
                     });
                 });
             })
-            .then(async(res3) => {
+            .then(async (res3) => {
                 try {
                     var res2 = res3[0];
                     var res = JSON.parse(res2);
@@ -1618,11 +1647,12 @@ function dalle2Promise(data, big = false) {
 function dalle2(msg) {
     var prompt = msg.content.split(" ").slice(1).join(" ").replace(/"/g, '\\"');
     var big = msg.content.split(" ")[0] == "!dalle2big";
-    dalle2Promise({
-                prompt: prompt,
-            },
-            big
-        )
+    dalle2Promise(
+        {
+            prompt: prompt,
+        },
+        big
+    )
         .then((img) => {
             sendWebhookBuffer(
                 "dalle2",
