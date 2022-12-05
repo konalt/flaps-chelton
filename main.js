@@ -1765,9 +1765,8 @@ async function onMessage(msg) {
                                 "./images/cache/" + id + ext,
                                 () => {
                                     flapslib.videowrapper.complexFFmpeg(
-                                        id,
-                                        msg,
-                                        client
+                                        id + ext,
+                                        msg
                                     );
                                 }
                             );
@@ -1807,6 +1806,28 @@ async function onMessage(msg) {
                                     msg,
                                     list[0][0]
                                 );
+                            })
+                            .catch((reason) => {
+                                sendWebhook("ffmpeg", reason, msg.channel);
+                            });
+                    }
+                    break;
+                case "!cameffect":
+                    {
+                        getSources(msg, ["video"])
+                            .then((ids) => {
+                                flapslib.videowrapper.camEffect(ids[0], msg);
+                            })
+                            .catch((reason) => {
+                                sendWebhook("ffmpeg", reason, msg.channel);
+                            });
+                    }
+                    break;
+                case "!datamosh":
+                    {
+                        getSources(msg, ["video"])
+                            .then((ids) => {
+                                flapslib.videowrapper.datamosh(ids[0], msg);
                             })
                             .catch((reason) => {
                                 sendWebhook("ffmpeg", reason, msg.channel);

@@ -64,7 +64,7 @@ async function doEffect(effect, input, name, options, msg) {
             sendWebhookFile("ffmpeg", out, msg.channel);
         })
         .catch((out) => {
-            sendWebhook("ffmpeg", out.stack, msg.channel);
+            sendWebhook("ffmpeg", out.stack || out, msg.channel);
         });
 }
 async function caption2(name, text, msg, att) {
@@ -78,6 +78,12 @@ async function caption2(name, text, msg, att) {
 }
 async function convertMKVtoMP4(name, msg) {
     doEffect(video.mkvmp4, name, "Convert-MKV-MP4", {}, msg);
+}
+async function camEffect(name, msg) {
+    doEffect(video.camEffect, name, "CamEffect", {}, msg);
+}
+async function datamosh(name, msg) {
+    doEffect(video.datamosh, name, "Datamosh", {}, msg);
 }
 async function cookingVideo(name, msg) {
     var id = n("Effect_CookingVideo");
@@ -453,4 +459,6 @@ module.exports = {
     stitch2,
     semiTransparentOverlay,
     blackWhite,
+    camEffect,
+    datamosh,
 };

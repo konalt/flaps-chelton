@@ -59,6 +59,7 @@ async function ffmpeg(args, quiet = false) {
         });
         ffmpegInstance.stderr.on("data", (c) => {
             if (!quiet) stdout.write("[ffmpeg] " + c);
+            b += c;
         });
         ffmpegInstance.on("exit", (code) => {
             if (code == 0 && !quiet) {
@@ -239,7 +240,7 @@ async function caption2(input, output, options) {
     var lines = [];
     var currentLine = "";
     var emojiReplacer = "xx";
-    var emojiRegex = /(?=\p{Emoji})(?=[\D])/gu;
+    var emojiRegex = /(?=\p{Emoji})(?=[\D])(?=[^\*])/gu;
     var customEmojiRegex = /(<a?)?:\w+:(\d+>)/g;
     var txtW = (txt) => getTextWidth(fontName, fontSize, txt);
     var emojiSize = fontSize * 1.3;
@@ -323,6 +324,7 @@ async function caption2(input, output, options) {
         newLines.push([lineYOffset, newWords]);
     });
     emojis = emojis.map((e, i) => {
+        console.log(e);
         if (e[1]) {
             var emoji = client.emojis.cache.find(
                 (em) => em.id === e[0].split(":")[2].split(">")[0]
@@ -944,6 +946,20 @@ async function complexFFmpeg(input, output, options) {
     );
 }
 
+async function camEffect(input, output) {
+    return ffmpeg(
+        `-y -i ${file(
+            input
+        )} -filter_complex "[0:v]noise=alls=50:allf=t+u,monochrome[out_v];[0:a]highpass=f=200,lowpass=f=2000[out_a]" -map "[out_a]" -map "[out_v]" ${output}`
+    );
+}
+
+async function datamosh(input, output) {
+    return ffmpeg(
+        `-y -i ${file(input)} -bsf noise=drop=not(key)*-50 ${output}`
+    );
+}
+
 module.exports = {
     addText,
     simpleMemeCaption,
@@ -980,4 +996,6 @@ module.exports = {
     getVideoLength,
     getFrameCount,
     blackWhite,
+    camEffect,
+    datamosh,
 };
