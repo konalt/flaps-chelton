@@ -324,11 +324,23 @@ async function caption2(input, output, options) {
     });
     emojis = emojis.map((e, i) => {
         if (e[1]) {
+            var emoji = client.emojis.cache.find(
+                (em) => em.id === e[0].split(":")[2].split(">")[0]
+            );
+            if (!emoji) {
+                console.log("Error: Emoji " + e[0] + " is not known!");
+                return fs.writeFileSync(
+                    path.join(__dirname, "..", output + ".emoji." + i + ".png"),
+                    fs.readFileSync(path.join(__dirname, "..", "1x1.png"))
+                );
+            }
             return downloadPromise(
-                client.emojis.cache.find(
-                    (em) => em.id === e[0].split(":")[2].split(">")[0]
-                ).url,
-                path.join(__dirname, "..", output + ".emoji." + i + ".png")
+                emoji.url,
+                path.join(
+                    __dirname,
+                    "..",
+                    output + ".emoji." + i + (emoji.animated ? ".gif" : ".png")
+                )
             );
         } else {
             return downloadPromise(
