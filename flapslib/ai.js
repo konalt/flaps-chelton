@@ -1076,7 +1076,8 @@ function setSanity(n) {
 // ! Fuck we ran out again
 // * WE DIT IT FUCKERS
 // ! happy birthday fucker
-var isEmpty = true;
+// * thanks plus8
+var isEmpty = false;
 
 async function question(question, channel) {
     var monsoonData = fs.readFileSync("./monsoon.txt").toString();
