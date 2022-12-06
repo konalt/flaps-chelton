@@ -3593,7 +3593,10 @@ setInterval(() => {
     }
 }, 1000);
 
-client.on("voiceStateUpdate", (st, st2) => {
+var disableServerMute = true;
+
+client.on("voiceStateUpdate", (_st, st2) => {
+    if (disableServerMute) return;
     if (st2.serverMute) {
         sendWebhook(
             "flaps",
