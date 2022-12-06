@@ -955,9 +955,7 @@ async function camEffect(input, output) {
 }
 
 async function datamosh(input, output) {
-    return ffmpeg(
-        `-y -i ${file(input)} -bsf noise=drop=not(key)*-50 ${output}`
-    );
+    return ffmpeg(`-y -i ${file(input)} -bsf noise=drop=-40 ${output}`);
 }
 
 module.exports = {

@@ -57,7 +57,10 @@ function n(type) {
 async function doEffect(effect, input, name, options, msg) {
     effect(
         "images/cache/" + input,
-        "images/cache/" + n("Effect_" + name) + "." + input.split(".").pop(),
+        "images/cache/" +
+            n("Effect_" + name) +
+            "." +
+            (options._ext || input.split(".").pop()),
         options
     )
         .then((out) => {
@@ -83,7 +86,15 @@ async function camEffect(name, msg) {
     doEffect(video.camEffect, name, "CamEffect", {}, msg);
 }
 async function datamosh(name, msg) {
-    doEffect(video.datamosh, name, "Datamosh", {}, msg);
+    doEffect(
+        video.datamosh,
+        name,
+        "Datamosh",
+        {
+            /*  _ext: "webm"  */
+        },
+        msg
+    );
 }
 async function cookingVideo(name, msg) {
     var id = n("Effect_CookingVideo");
