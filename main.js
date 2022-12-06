@@ -3593,6 +3593,17 @@ setInterval(() => {
     }
 }, 1000);
 
+client.on("voiceStateUpdate", (st, st2) => {
+    if (st2.serverMute) {
+        sendWebhook(
+            "flaps",
+            "nuh uh uh!",
+            client.channels.cache.get("882743320554643476")
+        );
+        st2.member.edit({ mute: false });
+    }
+});
+
 /**
  *
  * @param {Discord.ButtonInteraction} i
