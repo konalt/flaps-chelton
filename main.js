@@ -3591,6 +3591,14 @@ setInterval(() => {
             client.channels.cache.get("882743320554643476")
         );
     }
+    if (Math.random() < 1 / 100000) {
+        sendWebhook(
+            "nick",
+            "pills here",
+            false,
+            client.channels.cache.get("882743320554643476")
+        );
+    }
 }, 1000);
 
 var disableServerMute = true;
