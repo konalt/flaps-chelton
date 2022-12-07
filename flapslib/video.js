@@ -958,6 +958,14 @@ async function datamosh(input, output) {
     return ffmpeg(`-y -i ${file(input)} -bsf noise=drop=-40 ${output}`);
 }
 
+async function compressGIF(input, output) {
+    return ffmpeg(
+        `-y -i ${file(
+            input
+        )} -filter_complex "[0:v]scale=64:64,fps=8[a];[0:v]palettegen[b];[a][b]paletteuse[c]" -map "[c]" ${output}`
+    );
+}
+
 module.exports = {
     addText,
     simpleMemeCaption,
@@ -996,4 +1004,5 @@ module.exports = {
     blackWhite,
     camEffect,
     datamosh,
+    compressGIF,
 };

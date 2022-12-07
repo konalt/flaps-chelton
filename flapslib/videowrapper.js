@@ -3,6 +3,7 @@ const { uuidv4 } = require("./ai");
 const { sendWebhook, sendWebhookFile } = require("./webhooks");
 const fs = require("fs");
 const path = require("path");
+const { filesize } = require("filesize");
 
 async function addText(name, text, msg) {
     if (typeof text == "string") {
@@ -63,8 +64,18 @@ async function doEffect(effect, input, name, options, msg) {
             (options._ext || input.split(".").pop()),
         options
     )
-        .then((out) => {
-            sendWebhookFile("ffmpeg", out, msg.channel);
+        .then(async (out) => {
+            var fsize = fs.statSync(out).size;
+            var formattedFilesize = filesize(fsize);
+            sendWebhookFile(
+                "ffmpeg",
+                out,
+                msg.channel,
+                {},
+                options._filesize
+                    ? "File Size: " + formattedFilesize
+                    : undefined
+            );
         })
         .catch((out) => {
             sendWebhook("ffmpeg", out.stack || out, msg.channel);
@@ -95,6 +106,9 @@ async function datamosh(name, msg) {
         },
         msg
     );
+}
+async function compressGIF(name, msg) {
+    doEffect(video.compressGIF, name, "CompressGIF", { _filesize: true }, msg);
 }
 async function cookingVideo(name, msg) {
     var id = n("Effect_CookingVideo");
@@ -472,4 +486,5 @@ module.exports = {
     blackWhite,
     camEffect,
     datamosh,
+    compressGIF,
 };

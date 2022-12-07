@@ -1834,6 +1834,17 @@ async function onMessage(msg) {
                             });
                     }
                     break;
+                case "!tinygif":
+                    {
+                        getSources(msg, ["gif"])
+                            .then((ids) => {
+                                flapslib.videowrapper.compressGIF(ids[0], msg);
+                            })
+                            .catch((reason) => {
+                                sendWebhook("ffmpeg", reason, msg.channel);
+                            });
+                    }
+                    break;
                 case "!cookingvideo":
                     {
                         getSources(msg, ["image"])
