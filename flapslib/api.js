@@ -1,5 +1,5 @@
 const { Router } = require("express");
-const { watermark, andrewTate, fakeNews } = require("./canvas");
+const { watermark, andrewTate, fakeNews, spotifyThisIs } = require("./canvas");
 const { dataURLToBuffer, uuidv4 } = require("./util");
 const { readFileSync, fstat, writeFileSync } = require("fs");
 const { extension } = require("mime-types");
@@ -85,6 +85,28 @@ canvasRouter.post("/news", (req, res) => {
         });
     var buf = dataURLToBuffer(file);
     fakeNews(buf, headline, ticker)
+        .then((out) => {
+            res.contentType("png").send(out);
+        })
+        .catch((err) => {
+            res.status(500).send(err);
+        });
+});
+
+canvasRouter.post("/thisis", (req, res) => {
+    var file = req.body.file;
+    var text = req.body.text;
+    if (
+        !file ||
+        (!file.startsWith("data:image/png;base64") &&
+            !file.startsWith("data:image/jpeg;base64")) ||
+        !text
+    )
+        return res.status(400).send({
+            error: "Parameter 'file' must be a data URI for image/png or image/jpeg.\nParameter 'text' must be text.",
+        });
+    var buf = dataURLToBuffer(file);
+    spotifyThisIs(buf, text)
         .then((out) => {
             res.contentType("png").send(out);
         })

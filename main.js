@@ -62,6 +62,7 @@ const {
     andrewTate,
     fakeNews,
     invertAlpha,
+    spotifyThisIs,
 } = require("./flapslib/canvas");
 const { createCanvas } = require("canvas");
 const { doTranslate, doTranslateSending } = require("./flapslib/translator");
@@ -259,6 +260,7 @@ canvas.registerFont("fonts/futura.otf", {
     weight: 400,
 });
 canvas.registerFont("fonts/tate.ttf", { family: "Tate" });
+canvas.registerFont("fonts/spotify.otf", { family: "Spotify" });
 
 var errChannel;
 
@@ -3461,6 +3463,23 @@ fbi files on ${commandArgString}: ${
                             "BREAKING NEWS!",
                             msg.channel,
                             n("Canvas_AndrewTate", "png")
+                        );
+                    });
+                    break;
+                case "!thisis":
+                    spotifyThisIs(
+                        await downloadPromise(
+                            msg.attachments.first().url,
+                            "dataurl"
+                        ),
+                        commandArgString || "Kanye West"
+                    ).then((buf) => {
+                        sendWebhookBuffer(
+                            "flaps",
+                            buf,
+                            "",
+                            msg.channel,
+                            n("Canvas_ThisIs", "png")
                         );
                     });
                     break;

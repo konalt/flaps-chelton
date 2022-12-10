@@ -1476,6 +1476,31 @@ async function andrewTate(buffer, txt) {
     });
 }
 
+async function spotifyThisIs(buffer, text) {
+    return new Promise((resolve) => {
+        Promise.all([loadImage(buffer), loadImage(pj("thisis.png"))]).then(
+            ([img, thisis]) => {
+                var c = createCanvas(thisis.width, thisis.height);
+                var ctx = c.getContext("2d");
+                ctx.drawImage(thisis, 0, 0);
+                var drawH = thisis.height - (thisis.height / 8) * 2.9;
+                var drawW = drawH * (img.width / img.height);
+                ctx.drawImage(
+                    img,
+                    thisis.width / 2 - drawW / 2,
+                    thisis.height - drawH,
+                    drawW,
+                    drawH
+                );
+                ctx.font = thisis.height / 10 + "px Spotify";
+                ctx.textAlign = "center";
+                ctx.fillText(text, thisis.width / 2, (thisis.height / 8) * 2.3);
+                resolve(c.toBuffer("image/png"));
+            }
+        );
+    });
+}
+
 async function doNothing(buffer) {
     return new Promise((resolve) => {
         loadImage(buffer).then((img) => {
@@ -1578,4 +1603,5 @@ module.exports = {
     doNothing: doNothing,
     invertAlpha,
     getTextMetrics,
+    spotifyThisIs,
 };

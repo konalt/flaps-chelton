@@ -99,6 +99,24 @@
                 "paramname": "file"
             }],
             "output": "any"
+        },
+        "thisis": {
+            "name": "Spotify - This Is",
+            "url": "/canvas/thisis",
+            "inputs": [{
+                    "name": "Input Image",
+                    "name2": "Upload your input image here",
+                    "type": "image",
+                    "paramname": "file"
+                },
+                {
+                    "name": "Artist Name",
+                    "name2": "Name...",
+                    "type": "text",
+                    "paramname": "text"
+                }
+            ],
+            "output": "image"
         }
     }
 }
