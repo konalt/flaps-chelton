@@ -99,6 +99,9 @@ async function camEffect(name, msg) {
 async function gifNoAudio(name, msg) {
     doEffect(video.gifNoAudio, name, "Convert-GIF-MP4", {}, msg);
 }
+async function loop(name, amt, msg) {
+    doEffect(video.loop, name, "Loop", { amount: amt }, msg);
+}
 async function datamosh(name, msg) {
     doEffect(
         video.datamosh,
@@ -491,4 +494,5 @@ module.exports = {
     datamosh,
     compressGIF,
     gifNoAudio,
+    loop,
 };

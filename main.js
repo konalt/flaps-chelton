@@ -1895,6 +1895,21 @@ async function onMessage(msg) {
                             });
                     }
                     break;
+                case "!loopvid":
+                    {
+                        getSources(msg, ["video/audio"])
+                            .then((ids) => {
+                                flapslib.videowrapper.loop(
+                                    ids[0],
+                                    commandArgs[1],
+                                    msg
+                                );
+                            })
+                            .catch((reason) => {
+                                sendWebhook("ffmpeg", reason, msg.channel);
+                            });
+                    }
+                    break;
                 case "!invertalpha":
                     downloadPromise(
                         msg.attachments.first().url,
