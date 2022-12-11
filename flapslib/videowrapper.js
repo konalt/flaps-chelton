@@ -272,6 +272,20 @@ async function trim(name, times, msg) {
             sendWebhookFile("ffmpeg", "images/cache/" + id + ext, msg.channel);
         });
 }
+async function complexFFmpeg2(name, args, msg) {
+    var id = n("Effect_AICommand");
+    var ext = "." + name.split(".").pop();
+    return video
+        .complexFFmpeg("images/cache/" + name, "images/cache/" + id + ext, {
+            args: args,
+        })
+        .then(() => {
+            sendWebhookFile("ffmpeg", "images/cache/" + id + ext, msg.channel);
+        })
+        .catch((d) => {
+            sendWebhook("ffmpeg", d, msg.channel);
+        });
+}
 async function videoGif(name, msg) {
     var id = n("Effect_VideoGif");
     video
@@ -495,4 +509,5 @@ module.exports = {
     compressGIF,
     gifNoAudio,
     loop,
+    complexFFmpeg2,
 };

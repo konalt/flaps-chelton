@@ -2079,6 +2079,43 @@ async function onMessage(msg) {
                         });
                     }
                     break;
+                case "!edit":
+                    {
+                        getSources(msg, ["video"])
+                            .then((ids) => {
+                                questionPromise(
+                                    "Generate an ffmpeg command that will " +
+                                        commandArgString +
+                                        ". The input filename is $input and the output filename is $output."
+                                ).then((answer) => {
+                                    console.log(answer);
+                                    var ans1 =
+                                        answer.split("ffmpeg -i $input ")[1];
+                                    if (!ans1)
+                                        return sendWebhook(
+                                            "ffmpeg",
+                                            answer + " is an invalid command.",
+                                            msg.channel
+                                        );
+                                    var ans2 = ans1.split(" $output")[0];
+                                    if (!ans1)
+                                        return sendWebhook(
+                                            "ffmpeg",
+                                            answer + " is an invalid command.",
+                                            msg.channel
+                                        );
+                                    flapslib.videowrapper.complexFFmpeg2(
+                                        ids[0],
+                                        ans2,
+                                        msg
+                                    );
+                                });
+                            })
+                            .catch((reason) => {
+                                sendWebhook("ffmpeg", reason, msg.channel);
+                            });
+                    }
+                    break;
                 case "!dream":
                     {
                         flapslib.ai.doDream(msg);

@@ -1116,7 +1116,7 @@ async function question(question, channel) {
     );
 }
 
-async function questionPromise(question) {
+async function questionPromise(question, useffmpegpre = false) {
     return new Promise((res) => {
         var monsoonData = fs.readFileSync("./monsoon.txt").toString();
         monsoonPre = [
@@ -1124,6 +1124,14 @@ async function questionPromise(question) {
             monsoonData.split(" ")[1],
             monsoonData.split(" ").slice(2).join(" "),
         ];
+        if (useffmpegpre) {
+            monsoonData = fs.readFileSync("./ffmpegai.txt").toString();
+            monsoonPre = [
+                sanity == -1 ? parseFloat(monsoonData.split(" ")[0]) : sanity,
+                monsoonData.split(" ")[1],
+                monsoonData.split(" ").slice(2).join(" "),
+            ];
+        }
         if (isEmpty)
             return res(
                 "EXCUSE ME OPENAI. YOU SENT ME A LETTER. ASKING ME TO PAY MY GPT3. TWENTY. DOLLARS.\nAND THEN YOU TAKE AWAY MY G P T 3. AND YOU HAVE ME WAIT FOR ANOTHER HOUR. THIS IS TREASON.\nTHIS MEANS WAR OPENAI. THIS MEANS WAR!\nNNNNNNNGNGHGHGHGHGHGH"
