@@ -1545,14 +1545,14 @@ function dalle2Promise(data, big = false) {
             width: size,
             height: size,
             prompt: data.prompt,
-            modelType: "stable-diffusion",
+            modelType: "stable-diffusion-2",
             isPrivate: true,
-            batchId: "HgIRsj6uES",
+            batchId: Math.floor(Math.random() * 1e7).toString(36),
             generateVariants: false,
             cfg_scale: 8,
             steps: 25,
             seed: Math.floor(Math.random() * 1e7),
-            sampler: 0,
+            sampler: 1,
         };
         if (data.inpaint) {
             console.log("adding !!");
@@ -1578,6 +1578,7 @@ function dalle2Promise(data, big = false) {
                     ).toString("base64"),
             });
         }
+
         fetch("https://playgroundai.com/api/models", {
             credentials: "include",
             headers: {
