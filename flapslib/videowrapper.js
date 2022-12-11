@@ -96,6 +96,9 @@ async function convertMKVtoMP4(name, msg) {
 async function camEffect(name, msg) {
     doEffect(video.camEffect, name, "CamEffect", {}, msg);
 }
+async function gifNoAudio(name, msg) {
+    doEffect(video.gifNoAudio, name, "Convert-GIF-MP4", {}, msg);
+}
 async function datamosh(name, msg) {
     doEffect(
         video.datamosh,
@@ -487,4 +490,5 @@ module.exports = {
     camEffect,
     datamosh,
     compressGIF,
+    gifNoAudio,
 };

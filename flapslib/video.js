@@ -835,6 +835,19 @@ async function gifAudio(input, output) {
         )}`
     );
 }
+async function gifNoAudio(input, output) {
+    return ffmpeg(
+        `-y -ignore_loop 0 -i ${path.join(
+            __dirname,
+            "..",
+            input
+        )} -vf "pad=ceil(iw/2)*2:ceil(ih/2)*2" -c:v libx264 -shortest -preset:v ${h264Preset} ${path.join(
+            __dirname,
+            "..",
+            output
+        )}`
+    );
+}
 async function baitSwitch(input, output, options = {}) {
     return ffmpeg(
         `-y -t 1 -i ${path.join(
@@ -1005,4 +1018,5 @@ module.exports = {
     camEffect,
     datamosh,
     compressGIF,
+    gifNoAudio,
 };
