@@ -6,6 +6,7 @@ const owoify = require("owoify-js").default;
 //eslint-disable-next-line no-unused-vars
 const Discord = require("discord.js");
 const path = require("path");
+const { filesize } = require("filesize");
 
 var users = {};
 
@@ -249,10 +250,14 @@ async function sendWebhookFile(
                 } else {
                     console.log("[konalt-upload] copy successful");
                     var konaltURL = "https://konalt.us.to:4930/bigfile/" + fn;
+                    var fsize = fs.statSync(konalt_path).size;
+                    var formattedFilesize = filesize(fsize);
                     sendWebhook(
                         id,
                         pre +
-                            "\nThe resulting file was larger than 8MB, so it was uploaded to an external server.\n" +
+                            "\nThe resulting file was larger than 8MB (" +
+                            formattedFilesize +
+                            '), so it was uploaded to an "external" server.\n' +
                             konaltURL,
                         msgChannel
                     );
