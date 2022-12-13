@@ -2023,6 +2023,20 @@ async function onMessage(msg) {
                             });
                     }
                     break;
+                case "!holymoly":
+                    {
+                        getSources(msg, ["image"])
+                            .then((ids) => {
+                                flapslib.videowrapper.holyMolyGreenscreen(
+                                    ids[0],
+                                    msg
+                                );
+                            })
+                            .catch((reason) => {
+                                sendWebhook("ffmpeg", reason, msg.channel);
+                            });
+                    }
+                    break;
                 case "!stewie":
                     {
                         getSources(msg, ["image"])

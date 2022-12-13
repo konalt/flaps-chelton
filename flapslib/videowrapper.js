@@ -65,6 +65,7 @@ async function doEffect(effect, input, name, options, msg) {
         options
     )
         .then(async (out) => {
+            console.log(out);
             var fsize = fs.statSync(out).size;
             var formattedFilesize = filesize(fsize);
             sendWebhookFile(
@@ -115,6 +116,9 @@ async function datamosh(name, msg) {
 }
 async function compressGIF(name, msg) {
     doEffect(video.compressGIF, name, "CompressGIF", { _filesize: true }, msg);
+}
+async function holyMolyGreenscreen(name, msg) {
+    doEffect(video.holyMolyGreenscreen, name, "HolyMoly", { _ext: "mp4" }, msg);
 }
 async function cookingVideo(name, msg) {
     var id = n("Effect_CookingVideo");
@@ -510,4 +514,5 @@ module.exports = {
     gifNoAudio,
     loop,
     complexFFmpeg2,
+    holyMolyGreenscreen,
 };

@@ -599,6 +599,35 @@ async function theHorror(input, output) {
         );
     });
 }
+async function holyMolyGreenscreen(input, output) {
+    var dims = await getVideoDimensions(file("holymoly.mp4"));
+    var fullFilter = [
+        "[0:v]colorkey=0x00FF00:0.2:0.2[ckout]",
+        "[1:v]scale=" +
+            dims[0] * 0.45 +
+            ":" +
+            dims[1] / 2 +
+            ",pad=" +
+            dims.join(":") +
+            ":" +
+            dims[0] / 6 +
+            ":0[img]",
+        "[img][ckout]overlay[oout]",
+    ].join(";");
+    return ffmpeg(
+        [
+            "-y",
+            `-i ${file("holymoly.mp4")}`,
+            `${input.endsWith(".png") ? "-loop 0 " : ""}-i ${file(input)}`,
+            "-filter_complex " + fullFilter,
+            "-shortest",
+            '-map "[oout]"',
+            '-map "0:a:0"',
+            "-preset " + h264Preset,
+            output,
+        ].join(" ")
+    );
+}
 async function getVideoLength(path) {
     return new Promise((res, rej) => {
         ffprobe(
@@ -1033,4 +1062,5 @@ module.exports = {
     compressGIF,
     gifNoAudio,
     loop,
+    holyMolyGreenscreen,
 };
