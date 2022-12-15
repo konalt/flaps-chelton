@@ -1053,6 +1053,7 @@ const downloadPromise = require("./download-promise");
 const { createCollage, make512x512, invertAlpha } = require("./canvas");
 const { uuidv4 } = require("./util");
 const { addError } = require("./analytics");
+const { createHash } = require("crypto");
 
 const configuration = new Configuration({
     apiKey: fs.readFileSync("./openai.txt"),
@@ -1447,6 +1448,7 @@ async function elcomplete(content, channel, temp) {
 }
 
 var cookie = fs.readFileSync("./cookie.txt");
+var cookieQQ = fs.readFileSync("./cookieqq.txt");
 
 function dalle2InpaintPromise(data) {
     return new Promise((resl, rej) => {
@@ -1680,6 +1682,40 @@ function dalle2(msg) {
         });
 }
 
+function qqAnimeAI(image) {
+    return new Promise(async (resolve) => {
+        var body = /* JSON.stringify({
+            busiId: "different_dimension_me_img_entry",
+            images: [image.toString("base64")],
+        }) */ fs.readFileSync("./qqdata.json").toString();
+        console.log(body);
+        fetch(
+            "https://ai.tu.qq.com/trpc.shadow_cv.ai_processor_cgi.AIProcessorCgi/Process",
+            {
+                credentials: "include",
+                headers: {
+                    "x-sign-version": "v1",
+                    "x-sign-value": createHash("md5")
+                        .update(
+                            "https://h5.tu.qq.com" + body.length + "HQ31X02e"
+                        )
+                        .digest("hex"),
+                    cookie: cookieQQ,
+                    "User-Agent": "Pigeon Browser",
+                },
+                referrer: "https://h5.tu.qq.com/",
+                body: body,
+                method: "POST",
+                mode: "cors",
+            }
+        )
+            .then((d) => d.text())
+            .then((data) => {
+                resolve(data);
+            });
+    });
+}
+
 module.exports = {
     generateImage: generateImage,
     autocompleteText: autocompleteText,
@@ -1710,6 +1746,7 @@ module.exports = {
     dalle2: dalle2,
     dalle2Promise: dalle2Promise,
     dalle2InpaintPromise: dalle2InpaintPromise,
+    qqAnimeAI,
 };
 
 init();

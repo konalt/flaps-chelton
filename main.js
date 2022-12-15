@@ -31,6 +31,7 @@ const {
     sendToChatbot,
     dalle2,
     questionPromise,
+    qqAnimeAI,
 } = require("./flapslib/ai");
 const {
     sendWebhook,
@@ -39,6 +40,7 @@ const {
     sendWebhookButton,
     sendWebhookBuffer,
     getWebhook,
+    sendWebhookFileButton,
 } = require("./flapslib/webhooks");
 const { cahWhiteCard } = require("./flapslib/cardsagainsthumanity");
 const { Image } = require("canvas");
@@ -409,19 +411,9 @@ async function scalFunnyVideo(msg) {
             msg.channel
         );
     } else {
-        var message = await client.channels.cache
-            .get("956316856422137856")
-            .send({
-                files: [
-                    {
-                        attachment: "E:/MBG/the Videos/" + chosenFile,
-                    },
-                ],
-            });
-
-        sendWebhookButton(
+        sendWebhookFileButton(
             "scal",
-            message.attachments.first().url,
+            "E:/MBG/the Videos/" + chosenFile,
             [
                 {
                     type: 2,
@@ -434,6 +426,7 @@ async function scalFunnyVideo(msg) {
                     disableAfter: true,
                 },
             ],
+            ":3 here you go",
             msg.channel
         );
     }
@@ -3613,6 +3606,15 @@ fbi files on ${commandArgString}: ${
                         msg.channel
                     );
                     break;
+                case "!anime":
+                    fs.readFile("flapjpg.jpg", (err, img) => {
+                        console.log("r unning anime !!");
+                        qqAnimeAI(img).then((out) => {
+                            console.log(out);
+                            sendWebhook("flaps", out, msg.channel);
+                        });
+                    });
+                    return;
                 case "!retry":
                     if (!msg.reference) {
                         if (retryables[msg.author.id]) {

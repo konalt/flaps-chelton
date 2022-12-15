@@ -376,9 +376,60 @@ async function sendWebhookAttachment(id, att, msgChannel) {
         });
 }
 
-async function sendWebhookFileButton(id, filename, buttons, msgChannel) {
+async function sendWebhookFileButton(id, filename, buttons, pre, msgChannel) {
     if (multipartUpload) {
-        console.log("gloria fortis miles");
+        buttons = buttons.map((btn) => {
+            btn.custom_id =
+                btn.id + "_" + Math.floor(Math.random() * 4096).toString(16);
+            btn.id = undefined;
+            delete btn.id;
+            return btn;
+        });
+        buttons.forEach((button) => {
+            buttonCallbacks[button.custom_id] = button.cb || (() => {});
+        });
+        var form = new FormData();
+        form.append("file0", fs.readFileSync(filename), filename);
+        form.append(
+            "payload_json",
+            JSON.stringify({
+                content: pre ? pre : "",
+                username: users[id] ? users[id][0] : "?",
+                avatar_url: users[id]
+                    ? users[id][1]
+                    : "https://post.medicalnewstoday.com/wp-content/uploads/sites/3/2020/02/322868_1100-800x825.jpg",
+                components: [{ type: 1, components: buttons }],
+            })
+        );
+        getWebhook(msgChannel).then((url) => {
+            fetch(url, {
+                method: "POST",
+                body: form,
+            }).then((r) => {
+                if (!r.status.toString().startsWith(2)) {
+                    r.text().then((data) => {
+                        sendWebhook("flapserrors", data, msgChannel);
+                    });
+                } else {
+                    client.channels.cache
+                        .get("956316856422137856")
+                        .send({
+                            files: [
+                                {
+                                    attachment: filename,
+                                },
+                            ],
+                        })
+                        .catch((e) => {
+                            sendWebhook(
+                                id,
+                                "Flaps log error: " + e,
+                                msgChannel
+                            );
+                        });
+                }
+            });
+        });
     } else {
         client.channels.cache
             .get("956316856422137856")
