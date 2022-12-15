@@ -388,7 +388,14 @@ var userStickies = {};
 
 async function scalFunnyVideo(msg) {
     var files = fs.readdirSync("E:/MBG/the Videos/");
-    var chosenFile = files[Math.floor(Math.random() * files.length)];
+    var possibleNames = msg.content.split(" ");
+    var chosenFile = msg.content.includes("funny video")
+        ? files[Math.floor(Math.random() * files.length)]
+        : null;
+    possibleNames.forEach((name) => {
+        if (files.includes(name.replace(/ /g, "_"))) chosenFile = name;
+    });
+    if (!chosenFile) return;
     var filesize =
         fs.statSync("E:/MBG/the Videos/" + chosenFile).size / (1024 * 1024);
     if (filesize > 8) {
@@ -708,7 +715,7 @@ async function onMessage(msg) {
             );
         }
         var scal = msg.content.toLowerCase();
-        if (scal.includes("funny") && scal.includes("video")) {
+        if (scal.includes("scal")) {
             return scalFunnyVideo(msg);
         }
         if (
