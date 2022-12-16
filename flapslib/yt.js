@@ -1,7 +1,7 @@
 const cp = require("child_process");
 const fs = require("fs");
 const fetch = require("node-fetch");
-const { sendWebhook } = require("./webhooks");
+const { sendWebhook, sendWebhookFile } = require("./webhooks");
 const path = require("path");
 const download = require("./download");
 const { uuidv4 } = require("./ai");
@@ -85,10 +85,7 @@ async function downloadYoutubeToMP3(url, msgChannel, verbose = false, client) {
         : url.includes("youtube.com/watch?v=")
         ? url.split("=")[1]
         : getFirstResultID(url);
-    if (!url.startsWith("http")) {
-        url = "https://youtube.com/watch?v=" + id;
-        sendWebhook("flaps", url, msgChannel);
-    }
+    sendWebhook("flaps", "lets download that shit yo!", msgChannel);
     if (fs.existsSync("./audio/yt/" + id + ".mp4")) {
         var filePath = path.join(__dirname, "../audio/yt/", id + ".mp3");
         var message = await client.channels.cache
@@ -123,21 +120,7 @@ async function downloadYoutubeToMP3(url, msgChannel, verbose = false, client) {
                     msgChannel
                 );
             } else {
-                var message = await client.channels.cache
-                    .get("956316856422137856")
-                    .send({
-                        files: [
-                            {
-                                attachment: filePath,
-                            },
-                        ],
-                    });
-                sendWebhook(
-                    "flaps",
-                    message.attachments.first().url,
-                    true,
-                    msgChannel
-                );
+                sendWebhookFile("flaps", filePath, msgChannel, {}, "here lmao");
             }
         });
     }
