@@ -76,6 +76,7 @@ const { tenorURLToGifURL } = require("./flapslib/util");
 const owoify = require("owoify-js").default;
 const sizeOf = require("buffer-image-size");
 const { caption2, ffmpegBuffer } = require("./flapslib/video");
+const sharp = require("sharp");
 
 flapslib.webhooks.setClient(client);
 flapslib.fetchapis.setClient(client);
@@ -2619,35 +2620,41 @@ fbi files on ${commandArgString}: ${
                     sendWebhook(
                         "dalle",
                         "im thinking.... beep blorp...",
-                        false,
                         msg.channel
                     );
-                    flapslib.ai.dalle(x).then((data) => {
+                    flapslib.ai.dalle(x).then(async (data) => {
                         if (!data.image)
                             return flapslib.webhooks.sendWebhook(
                                 "dalle",
                                 data.prompt,
-                                false,
                                 msg.channel
                             );
                         var c = canvas.createCanvas(768, 768);
                         var ctx = c.getContext("2d");
                         var x = 0;
                         var y = 0;
-                        data.images.forEach((imgurl) => {
-                            var img = new Image();
-                            img.onload = () =>
-                                ctx.drawImage(img, x * 256, y * 256, 256, 256);
-                            img.onerror = (err) => {
-                                throw err;
-                            };
-                            img.src = "data:image/jpeg;base64," + imgurl;
-                            x += 1;
-                            if (x == 3) {
-                                y++;
-                                x = 0;
-                            }
+                        var imgs2 = [];
+                        data.images.forEach(async (img) => {
+                            var buf = Buffer.from(img, "base64");
+                            imgs2.push(sharp(buf).toFormat("png").toBuffer());
                         });
+                        var imgs3 = await Promise.all(imgs2);
+                        console.log(imgs3);
+                        await Promise.all(
+                            imgs3.map((img, i) => {
+                                var x = i % 3;
+                                var y = Math.floor(i / 3);
+                                loadImage(img).then((image) => {
+                                    ctx.drawImage(
+                                        image,
+                                        x * 256,
+                                        y * 256,
+                                        256,
+                                        256
+                                    );
+                                });
+                            })
+                        );
                         var outID = uuidv4() + ".png";
                         fs.writeFile(
                             "./images/cache/" + outID,
@@ -2676,7 +2683,6 @@ fbi files on ${commandArgString}: ${
                                     data.prompt +
                                         "\n" +
                                         message.attachments.first().url,
-                                    false,
                                     msg.channel
                                 );
                             }
@@ -3776,6 +3782,7 @@ fs.readFile("./token.txt", (err, data) => {
 });
 
 const apiRouter = require("./flapslib/api");
+const { loadImage } = require("canvas");
 
 function startWebServer(port = 8080) {
     const express = require("express");

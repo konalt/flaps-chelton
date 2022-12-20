@@ -1051,7 +1051,7 @@ function dalle(prompt, isSecondReq = false) {
 const { Configuration, OpenAIApi } = require("openai");
 const downloadPromise = require("./download-promise");
 const { createCollage, make512x512, invertAlpha } = require("./canvas");
-const { uuidv4 } = require("./util");
+const { uuidv4, dataURLToBuffer } = require("./util");
 const { addError } = require("./analytics");
 const { createHash } = require("crypto");
 
