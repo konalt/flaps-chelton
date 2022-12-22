@@ -26,15 +26,13 @@ function textgen(channel) {
 async function init() {
     aiPageData.browser = await puppeteer.launch({ headless: true });
     aiPageData.page = await aiPageData.browser.newPage();
-    await aiPageData.page.goto(
-        "https://deepai.org/machine-learning-model/text-generator"
-    );
-    aiPageData.page.on("console", async (msg) => {
+    await aiPageData.page.goto("https://example.com");
+    /* aiPageData.page.on("console", async (msg) => {
         const msgArgs = msg.args();
         for (let i = 0; i < msgArgs.length; ++i) {
             console.log(await msgArgs[i].jsonValue());
         }
-    });
+    }); */
     await aiPageData.page.setExtraHTTPHeaders({
         "Accept-Language": "en-US,en;q=0.9",
     });
