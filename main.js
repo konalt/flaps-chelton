@@ -1456,8 +1456,7 @@ async function onMessage(msg) {
                     break;
                 case "!countdown":
                     {
-                        var endTime = new Date("2022-10-31T19:00:00Z");
-                        endTime.setHours(endTime.getHours() - 1);
+                        var endTime = new Date("2022-12-25T07:00:00Z");
                         endTime = endTime.getTime();
                         var newTime = endTime - Date.now();
                         if (commandArgs[1] == "hour") {
