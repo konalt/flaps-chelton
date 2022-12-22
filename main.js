@@ -65,6 +65,7 @@ const {
     fakeNews,
     invertAlpha,
     spotifyThisIs,
+    getHexCode,
 } = require("./flapslib/canvas");
 const { createCanvas } = require("canvas");
 const { doTranslate, doTranslateSending } = require("./flapslib/translator");
@@ -1485,6 +1486,26 @@ async function onMessage(msg) {
                         var str = `${days}d ${hours}h ${minutes}m ${seconds}s`;
                         sendWebhook("flaps", str, msg.channel);
                     }
+                    break;
+                case "!hexcode":
+                    getHexCode(
+                        await downloadPromise(
+                            msg.attachments.first().url,
+                            "dataurl"
+                        )
+                    ).then((rgb) => {
+                        sendWebhook(
+                            "flaps",
+                            "the average hex color of that image is uhhh " +
+                                ("#" +
+                                    Object.values(rgb)
+                                        .map((x) =>
+                                            x.toString(16).padStart(2, "0")
+                                        )
+                                        .join("")),
+                            msg.channel
+                        );
+                    });
                     break;
                 case "!coinflip":
                     sendWebhook(
