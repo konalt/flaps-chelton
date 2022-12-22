@@ -3746,6 +3746,8 @@ setInterval(() => {
             client.channels.cache.get("882743320554643476")
         );
     }
+    if (!fs.existsSync("scal_allowtime.txt"))
+        fs.writeFileSync("scal_allowtime.txt", "no");
     if (
         d.getMinutes() == 39 &&
         d.getSeconds() < 1 &&
