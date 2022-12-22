@@ -13,6 +13,7 @@ const { sentence } = require("txtgen/dist/cjs/txtgen");
 const MarkovTextGenerator = require("markov-text-generator").default;
 const WomboDreamApi = require("wombo-dream-api");
 var dream = WomboDreamApi.buildDefaultInstance();
+require("dotenv").config();
 
 var waitInterval = 0;
 var waitCounts = 0;
@@ -1054,7 +1055,7 @@ const { addError } = require("./analytics");
 const { createHash } = require("crypto");
 
 const configuration = new Configuration({
-    apiKey: fs.readFileSync("./openai.txt"),
+    apiKey: process.env.OPENAI_TOKEN,
 });
 const openai = new OpenAIApi(configuration);
 
@@ -1445,7 +1446,7 @@ async function elcomplete(content, channel, temp) {
         });
 }
 
-var cookie = fs.readFileSync("./cookie.txt");
+var cookie = process.env.PLAYGROUND_COOKIE || "invalid";
 var cookieQQ = fs.readFileSync("./cookieqq.txt");
 
 function dalle2InpaintPromise(data) {

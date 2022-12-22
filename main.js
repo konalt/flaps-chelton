@@ -78,6 +78,7 @@ const owoify = require("owoify-js").default;
 const sizeOf = require("buffer-image-size");
 const { caption2, ffmpegBuffer } = require("./flapslib/video");
 const sharp = require("sharp");
+require("dotenv").config();
 
 flapslib.webhooks.setClient(client);
 flapslib.fetchapis.setClient(client);
@@ -304,23 +305,24 @@ client.on("ready", async () => {
     });
 
     fs.readFile("./saved_status.txt", (_err, data) => {
-        data = data.toString();
-        var type = data.split(" ")[0].toUpperCase();
-        var name = data.split(" ").slice(1).join(" ");
-        client.user.setPresence({
-            activities: [
-                {
-                    name: name,
-                    type: type,
-                    url: "https://konalt.us.to",
-                    timestamps: {
-                        start: Date.now(),
+        if (!_err) {
+            var type = data.split(" ")[0].toUpperCase();
+            var name = data.split(" ").slice(1).join(" ");
+            client.user.setPresence({
+                activities: [
+                    {
+                        name: name,
+                        type: type,
+                        url: "https://konalt.us.to",
+                        timestamps: {
+                            start: Date.now(),
+                        },
                     },
-                },
-            ],
-            afk: false,
-            status: "online",
-        });
+                ],
+                afk: false,
+                status: "online",
+            });
+        }
     });
 });
 
@@ -626,7 +628,10 @@ async function onMessage(msg) {
             `${msg.author.username}#${msg.author.discriminator}: ${msg.content}`
         );
         var hook = await getWebhook(msg.channel);
-        if (fs.readFileSync("./errorhook.txt").toString() != hook) {
+        if (
+            !fs.existsSync("./errorhook.txt") ||
+            fs.readFileSync("./errorhook.txt").toString() != hook
+        ) {
             fs.writeFileSync("./errorhook.txt", hook);
         }
         addMessage(msg);
@@ -3701,7 +3706,9 @@ fbi files on ${commandArgString}: ${
     }
 }
 
-var retryables = JSON.parse(fs.readFileSync("retrycache.json").toString());
+var retryables = fs.existsSync("retrycache.json")
+    ? JSON.parse(fs.readFileSync("retrycache.json").toString())
+    : {};
 
 client.on("messageCreate", onMessage);
 
@@ -3811,13 +3818,7 @@ client.on("interactionCreate", (i) => {
     respondToInteraction(i);
 });
 
-fs.readFile("./token.txt", (err, data) => {
-    if (err) {
-        console.error(err);
-    } else {
-        client.login(data.toString());
-    }
-});
+client.login(process.env.DISCORD_TOKEN || "notoken");
 
 const apiRouter = require("./flapslib/api");
 const { loadImage } = require("canvas");

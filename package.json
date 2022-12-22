@@ -27,6 +27,7 @@
     "wombo-dream-api": "^0.1.6"
   },
   "devDependencies": {
+    "dotenv": "^16.0.3",
     "eslint": "^8.27.0",
     "sharp": "^0.31.2",
     "webpack-cli": "^4.9.2"
