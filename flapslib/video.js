@@ -628,6 +628,46 @@ async function holyMolyGreenscreen(input, output) {
         ].join(" ")
     );
 }
+async function christmasWeek(input, output) {
+    var dims = await getVideoDimensions(file("christmas.mp4"));
+    var fullFilter = [
+        "[1:v]scale=" +
+            dims[0] * 0.33 +
+            ":" +
+            dims[1] / 6 +
+            ",format=rgba,pad=" +
+            dims.join(":") +
+            ":" +
+            dims[0] / 10 +
+            ":0:black@0[img1]",
+        "[1:v]scale=" +
+            dims[0] / 2 +
+            ":" +
+            dims[1] * 0.45 +
+            ",format=rgba,pad=" +
+            dims.join(":") +
+            ":" +
+            dims[0] / 2 +
+            ":" +
+            dims[1] / 3 +
+            ":black@0[img2]",
+        "[0:v][img1]overlay[oout1]",
+        "[oout1][img2]overlay[oout]",
+    ].join(";");
+    return ffmpeg(
+        [
+            "-y",
+            `-i ${file("christmas.mp4")}`,
+            `-i ${file(input)}`,
+            "-filter_complex " + fullFilter,
+            "-t 18",
+            '-map "[oout]"',
+            '-map "0:a:0"',
+            "-preset " + h264Preset,
+            output,
+        ].join(" ")
+    );
+}
 async function getVideoLength(path) {
     return new Promise((res, rej) => {
         ffprobe(
@@ -1063,4 +1103,5 @@ module.exports = {
     gifNoAudio,
     loop,
     holyMolyGreenscreen,
+    christmasWeek,
 };

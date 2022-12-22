@@ -120,6 +120,9 @@ async function compressGIF(name, msg) {
 async function holyMolyGreenscreen(name, msg) {
     doEffect(video.holyMolyGreenscreen, name, "HolyMoly", { _ext: "mp4" }, msg);
 }
+async function christmasWeek(name, msg) {
+    doEffect(video.christmasWeek, name, "ChristmasWeek", { _ext: "mp4" }, msg);
+}
 async function cookingVideo(name, msg) {
     var id = n("Effect_CookingVideo");
     var ext = "." + name.split(".").pop();
@@ -515,4 +518,5 @@ module.exports = {
     loop,
     complexFFmpeg2,
     holyMolyGreenscreen,
+    christmasWeek,
 };
