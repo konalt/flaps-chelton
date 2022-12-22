@@ -1488,24 +1488,28 @@ async function onMessage(msg) {
                     }
                     break;
                 case "!hexcode":
-                    getHexCode(
-                        await downloadPromise(
-                            msg.attachments.first().url,
-                            "dataurl"
-                        )
-                    ).then((rgb) => {
-                        sendWebhook(
-                            "flaps",
-                            "the average hex color of that image is uhhh " +
-                                ("#" +
-                                    Object.values(rgb)
-                                        .map((x) =>
-                                            x.toString(16).padStart(2, "0")
-                                        )
-                                        .join("")),
-                            msg.channel
-                        );
-                    });
+                    if (msg.attachments.first()) {
+                        getHexCode(
+                            await downloadPromise(
+                                msg.attachments.first().url,
+                                "dataurl"
+                            )
+                        ).then((rgb) => {
+                            sendWebhook(
+                                "flaps",
+                                "the average hex color of that image is uhhh " +
+                                    ("#" +
+                                        Object.values(rgb)
+                                            .map((x) =>
+                                                x.toString(16).padStart(2, "0")
+                                            )
+                                            .join("")),
+                                msg.channel
+                            );
+                        });
+                    } else {
+                        sendWebhook("flaps", "silly mf.", msg.channel);
+                    }
                     break;
                 case "!coinflip":
                     sendWebhook(
