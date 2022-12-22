@@ -444,6 +444,10 @@ async function scalFunnyVideo(msg) {
 }
 
 function getStoredFunnyNumber(id) {
+    if (!fs.existsSync("stored_funnynumbers.txt")) {
+        fs.writeFileSync("stored_funnynumbers.txt", "");
+        return 0;
+    }
     var strData = fs.readFileSync("stored_funnynumbers.txt").toString();
     var obj = {};
     strData.split("\n").forEach((data) => {
@@ -454,6 +458,10 @@ function getStoredFunnyNumber(id) {
 }
 
 function getStoredFunnyNumberData() {
+    if (!fs.existsSync("stored_funnynumbers.txt")) {
+        fs.writeFileSync("stored_funnynumbers.txt", "");
+        return {};
+    }
     var strData = fs.readFileSync("stored_funnynumbers.txt").toString();
     var obj = {};
     strData.split("\n").forEach((data) => {
