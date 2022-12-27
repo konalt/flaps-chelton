@@ -2077,12 +2077,9 @@ async function onMessage(msg) {
                     break;
                 case "!christmasweek":
                     {
-                        getSources(msg, ["image"])
+                        getSources(msg, ["image", "audio"])
                             .then((ids) => {
-                                flapslib.videowrapper.christmasWeek(
-                                    ids[0],
-                                    msg
-                                );
+                                flapslib.videowrapper.christmasWeek(ids, msg);
                             })
                             .catch((reason) => {
                                 sendWebhook("ffmpeg", reason, msg.channel);

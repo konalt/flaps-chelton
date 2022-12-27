@@ -4,6 +4,7 @@ const { sendWebhook, sendWebhookFile } = require("./webhooks");
 const fs = require("fs");
 const path = require("path");
 const { filesize } = require("filesize");
+const e = require("express");
 
 async function addText(name, text, msg) {
     if (typeof text == "string") {
@@ -56,31 +57,45 @@ function n(type) {
     );
 }
 async function doEffect(effect, input, name, options, msg) {
-    effect(
-        "images/cache/" + input,
-        "images/cache/" +
-            n("Effect_" + name) +
-            "." +
-            (options._ext || input.split(".").pop()),
-        options
-    )
-        .then(async (out) => {
-            console.log(out);
-            var fsize = fs.statSync(out).size;
-            var formattedFilesize = filesize(fsize);
-            sendWebhookFile(
-                "ffmpeg",
-                out,
-                msg.channel,
-                {},
-                options._filesize
-                    ? "File Size: " + formattedFilesize
-                    : undefined
-            );
-        })
-        .catch((out) => {
-            sendWebhook("ffmpeg", out.stack || out, msg.channel);
-        });
+    async function done(out) {
+        console.log(out);
+        var fsize = fs.statSync(out).size;
+        var formattedFilesize = filesize(fsize);
+        sendWebhookFile(
+            "ffmpeg",
+            out,
+            msg.channel,
+            {},
+            options._filesize ? "File Size: " + formattedFilesize : undefined
+        );
+    }
+    if (typeof input == "string") {
+        effect(
+            "images/cache/" + input,
+            "images/cache/" +
+                n("Effect_" + name) +
+                "." +
+                (options._ext || input.split(".").pop()),
+            options
+        )
+            .then(done)
+            .catch((out) => {
+                sendWebhook("ffmpeg", out.stack || out, msg.channel);
+            });
+    } else {
+        effect(
+            input.map((x) => "images/cache/" + x),
+            "images/cache/" +
+                n("Effect_" + name) +
+                "." +
+                (options._ext || input.split(".").pop()),
+            options
+        )
+            .then(done)
+            .catch((out) => {
+                sendWebhook("ffmpeg", out.stack || out, msg.channel);
+            });
+    }
 }
 async function caption2(name, text, msg, att) {
     doEffect(

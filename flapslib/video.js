@@ -658,7 +658,8 @@ async function christmasWeek(input, output) {
         [
             "-y",
             `-i ${file("christmas.mp4")}`,
-            `-i ${file(input)}`,
+            `-i ${file(input[0])}`,
+            `-i ${file(input[1])}`,
             "-filter_complex " + fullFilter,
             "-t 18",
             '-map "[oout]"',
