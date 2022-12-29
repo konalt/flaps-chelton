@@ -88,7 +88,14 @@ async function doEffect(effect, input, name, options, msg) {
             "images/cache/" +
                 n("Effect_" + name) +
                 "." +
-                (options._ext || input.split(".").pop()),
+                (options._ext ||
+                    input[
+                        typeof options._extindex === "number"
+                            ? options._extindex
+                            : 0
+                    ]
+                        .split(".")
+                        .pop()),
             options
         )
             .then(done)
@@ -137,6 +144,9 @@ async function holyMolyGreenscreen(name, msg) {
 }
 async function christmasWeek(name, msg) {
     doEffect(video.christmasWeek, name, "ChristmasWeek", { _ext: "mp4" }, msg);
+}
+async function stack(names, msg) {
+    doEffect(video.stack, names, "Stack", {}, msg);
 }
 async function cookingVideo(name, msg) {
     var id = n("Effect_CookingVideo");
@@ -534,4 +544,5 @@ module.exports = {
     complexFFmpeg2,
     holyMolyGreenscreen,
     christmasWeek,
+    stack,
 };

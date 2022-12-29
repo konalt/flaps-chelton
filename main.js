@@ -2104,6 +2104,17 @@ async function onMessage(msg) {
                             });
                     }
                     break;
+                case "!stack":
+                    {
+                        getSources(msg, ["image/video/gif", "image"])
+                            .then((ids) => {
+                                flapslib.videowrapper.stack(ids, msg);
+                            })
+                            .catch((reason) => {
+                                sendWebhook("ffmpeg", reason, msg.channel);
+                            });
+                    }
+                    break;
                 case "!stewie":
                     {
                         getSources(msg, ["image"])
