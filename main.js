@@ -393,7 +393,7 @@ var userStickies = {};
 async function scalFunnyVideo(msg) {
     var files = fs.readdirSync("E:/MBG/the Videos/");
     var possibleNames = msg.content.split(" ");
-    var chosenFile = msg.content.includes("funny video")
+    var chosenFile = msg.content.toLowerCase().includes("funny video")
         ? files[Math.floor(Math.random() * files.length)]
         : null;
     possibleNames.forEach((name) => {
@@ -730,8 +730,26 @@ async function onMessage(msg) {
             );
         }
         var scal = msg.content.toLowerCase();
+        if (
+            /[Ii]('{0,1}m| am).+(so|quite|very).+(hungry|famished|starving)/gi.test(
+                scal
+            )
+        ) {
+            var button = new MessageButton();
+            var row = new MessageActionRow();
+            button.setCustomId("eathorse");
+            button.setLabel("eat the horse");
+            button.setStyle(1);
+            row.addComponents(button);
+            sendWebhookButton(
+                "horsey",
+                "<:horsey:1057317705021132830>",
+                [row],
+                msg.channel
+            );
+        }
         if (scal.includes("scal")) {
-            return scalFunnyVideo(msg);
+            scalFunnyVideo(msg);
         }
         if (
             scal.includes("scal") &&
@@ -3829,6 +3847,8 @@ client.login(process.env.DISCORD_TOKEN || "notoken");
 
 const apiRouter = require("./flapslib/api");
 const { loadImage } = require("canvas");
+const { MessageButton } = require("discord.js");
+const { MessageActionRow } = require("discord.js");
 
 function startWebServer(port = 8080) {
     const express = require("express");
