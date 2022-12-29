@@ -689,6 +689,29 @@ async function stack(input, output) {
         ].join(" ")
     );
 }
+async function stack2(input, output) {
+    var dims = (await getVideoDimensions(file(input[0]))).map(
+        (n) => Math.ceil(n / 2) * 2
+    );
+    var fullFilter = [
+        `[1:v]scale=${dims.join(":")}[img1]`,
+        `[0:v]pad=${dims[0]}:${dims[1] * 2}:0:0:violet[img2]`,
+        `[img2][img1]overlay=0:${dims[1]}[oout]`,
+    ].join(";");
+    return ffmpeg(
+        [
+            "-y",
+            `-i ${file(input[0])}`,
+            `-i ${file(input[1])}`,
+            "-filter_complex " + fullFilter,
+            "-shortest",
+            '-map "[oout]"',
+            '-map "0:a:0?"',
+            "-preset " + h264Preset,
+            output,
+        ].join(" ")
+    );
+}
 async function getVideoLength(path) {
     return new Promise((res, rej) => {
         ffprobe(
@@ -1126,4 +1149,5 @@ module.exports = {
     holyMolyGreenscreen,
     christmasWeek,
     stack,
+    stack2,
 };

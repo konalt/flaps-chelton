@@ -5,6 +5,7 @@ const fs = require("fs");
 const path = require("path");
 const { filesize } = require("filesize");
 const e = require("express");
+const mime = require("mime-types");
 
 async function addText(name, text, msg) {
     if (typeof text == "string") {
@@ -55,6 +56,22 @@ function n(type) {
     return (
         type + "_" + uuidv4().toUpperCase().replace(/-/gi, "").substring(0, 8)
     );
+}
+var types = {
+    image: ["image/png", "image/jpeg", "image/webp"],
+    video: ["video/mp4", "video/x-matroska"],
+    text: ["text/plain"],
+    json: ["application/json"],
+    gif: ["image/gif"],
+    audio: ["audio/mpeg", "audio/aac"],
+};
+
+function getTypeSingular(ct) {
+    var type = "unknown";
+    Object.entries(types).forEach((a) => {
+        if (a[1].includes(ct)) type = a[0];
+    });
+    return type;
 }
 async function doEffect(effect, input, name, options, msg) {
     async function done(out) {
@@ -147,6 +164,24 @@ async function christmasWeek(name, msg) {
 }
 async function stack(names, msg) {
     doEffect(video.stack, names, "Stack", {}, msg);
+}
+async function stack2(names, msg) {
+    var types = names.map((x) => getTypeSingular(mime.lookup(x)));
+    console.log(types);
+    doEffect(
+        video.stack2,
+        names,
+        "Stack2",
+        {
+            _extindex:
+                types.indexOf("video") > -1
+                    ? types.indexOf("video")
+                    : types.indexOf("gif") > -1
+                    ? types.indexOf("gif")
+                    : 0,
+        },
+        msg
+    );
 }
 async function cookingVideo(name, msg) {
     var id = n("Effect_CookingVideo");
@@ -545,4 +580,5 @@ module.exports = {
     holyMolyGreenscreen,
     christmasWeek,
     stack,
+    stack2,
 };

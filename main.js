@@ -505,6 +505,15 @@ var types = {
     audio: ["audio/mpeg", "audio/aac"],
 };
 
+function getTypeSingular() {
+    var ct = att.contentType;
+    var type = "unknown";
+    Object.entries(types).forEach((a) => {
+        if (a[1].includes(ct)) type = a[0];
+    });
+    return type;
+}
+
 function getTypes(atts) {
     return atts.map((att) => {
         var ct = att.contentType;
@@ -2109,6 +2118,17 @@ async function onMessage(msg) {
                         getSources(msg, ["image/video/gif", "image"])
                             .then((ids) => {
                                 flapslib.videowrapper.stack(ids, msg);
+                            })
+                            .catch((reason) => {
+                                sendWebhook("ffmpeg", reason, msg.channel);
+                            });
+                    }
+                    break;
+                case "!stack2":
+                    {
+                        getSources(msg, ["image/video/gif", "image/video/gif"])
+                            .then((ids) => {
+                                flapslib.videowrapper.stack2(ids, msg);
                             })
                             .catch((reason) => {
                                 sendWebhook("ffmpeg", reason, msg.channel);
