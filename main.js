@@ -1059,6 +1059,10 @@ async function onMessage(msg) {
                     );
                     break;
                 }
+                case "!firearm": {
+                    randomRedditImage("cursedguns", "firearms", msg);
+                    break;
+                }
                 case "!restart": {
                     flapslib.webhooks
                         .sendWebhook(
