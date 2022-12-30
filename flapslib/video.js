@@ -230,6 +230,11 @@ async function caption2(input, output, options) {
     var videoWidth = options.w;
     videoWidth = Math.round(videoWidth / 2) * 2;
     videoHeight = Math.round(videoHeight / 2) * 2;
+    var minHeight = 200;
+    if (videoHeight < minHeight) {
+        videoWidth = minHeight * (videoWidth / videoHeight);
+        videoHeight = minHeight;
+    }
     var text = options.text;
     var getreal = false;
     if (text == "get real" && getreal)
