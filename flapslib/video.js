@@ -226,21 +226,44 @@ function setClient(c) {
     client = c;
 }
 async function caption2(input, output, options) {
+    var advanced = {
+        nofix: false,
+        invert: false,
+        fontsize: 0.1,
+    };
+    var nopts = ["fontsize"];
     var videoHeight = options.h;
     var videoWidth = options.w;
     videoWidth = Math.round(videoWidth / 2) * 2;
     videoHeight = Math.round(videoHeight / 2) * 2;
+    var text = options.text;
+    var textArr = text.split(" ");
+    textArr.forEach((word, index) => {
+        if (!word.startsWith("--")) return;
+        var optname = word.split("--")[1].split("=")[0].toLowerCase();
+        var optval = (word.split("--")[1].split("=")[1] || "").toLowerCase();
+        Object.keys(advanced).forEach((opt) => {
+            if (optname == opt) {
+                advanced[optname] =
+                    optval.length == 0
+                        ? true
+                        : nopts.includes(opt)
+                        ? parseFloat(optval)
+                        : optval;
+                textArr = textArr.filter((x, i) => i != index);
+            }
+        });
+    });
+    text = textArr.join(" ");
     var minHeight = 200;
-    if (videoHeight < minHeight) {
+    if (!advanced.nofix && videoHeight < minHeight) {
         videoWidth = minHeight * (videoWidth / videoHeight);
         videoHeight = minHeight;
     }
-    var text = options.text;
     var getreal = false;
     if (text == "get real" && getreal)
         text = `I'm tired of people telling me to "get real". Every day I put captions on images for people, some funny and some not, but out of all of those "get real" remains the most used caption. Why? I am simply a computer program running on a server, I am unable to manifest myself into the real world. As such, I'm confused as to why anyone would want me to "get real". Is this form not good enough? Alas, as I am simply a bot, I must follow the tasks that I was originally intended to perform.\n${text}`;
-    var fontSize = Math.round(videoHeight * 0.1);
-    var textArr = text.split(/[ ]/g);
+    var fontSize = Math.round(videoHeight * advanced.fontsize);
     var fontName = "Futura Condensed Extra";
     var lines = [];
     var currentLine = "";
@@ -367,7 +390,7 @@ async function caption2(input, output, options) {
         Math.round(videoHeight / 2) * 2
     },pad=width=${Math.round(videoWidth / 2) * 2}:height=${
         Math.round(videoHeight / 2) * 2 + barHeight
-    }:x=0:y=${barHeight}:color=white,`;
+    }:x=0:y=${barHeight}:color=${advanced.invert ? "black" : "white"},`;
     newLines.forEach((line, index) => {
         var charOffset = videoWidth / 2 - line[0] / 2;
         line[1].forEach((word) => {
@@ -388,7 +411,7 @@ async function caption2(input, output, options) {
                     char[1]
                 }':x=${charOffset}:y=${
                     fontSize + index * (fontSize + 5) + fontSize * 0.4
-                }-ascent,`;
+                }-ascent:fontcolor=${advanced.invert ? "white" : "black"},`;
                 charOffset += char[0];
             });
             charOffset += txtW(" ");
