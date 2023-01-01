@@ -3737,7 +3737,7 @@ fbi files on ${commandArgString}: ${
         log(
             `${esc(Color.DarkGrey)}[${time()}] ${
                 msg.author.bot && msg.author.discriminator == "0000"
-                    ? esc(Color.BrightYellow) +
+                    ? esc(Color.Cyan) +
                       `<wh:${idFromName(msg.author.username)}>`
                     : esc(Color.BrightCyan) +
                       `<${msg.author.username}#${msg.author.discriminator}>`
@@ -3747,11 +3747,11 @@ fbi files on ${commandArgString}: ${
                     : webhookUsed
                     ? esc(Color.BrightYellow)
                     : ""
-            }${msg.content} ${esc(Color.DarkGrey)}<${
-                Date.now() - startProcessTime
-            }ms> ${toDelete ? esc(Color.Red) + "<Delete>" : ""} ${
-                isRetry ? esc(Color.Cyan) + "<Retrying>" : ""
-            }`,
+            }${msg.content || `${esc(Color.Yellow)}(No Content)`} ${esc(
+                Color.DarkGrey
+            )}<${Date.now() - startProcessTime}ms>${
+                toDelete ? esc(Color.Red) + " <Delete>" : ""
+            } ${isRetry ? esc(Color.Cyan) + " <Retrying>" : ""}`,
             "chat"
         );
         if (command != "!retry" && command.startsWith("!")) {
