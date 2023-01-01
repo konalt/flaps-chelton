@@ -1907,6 +1907,40 @@ async function onMessage(msg, isRetry = false) {
                             });
                     }
                     break;
+                case "!spin":
+                    {
+                        getSources(msg, ["image"])
+                            .then((ids) => {
+                                flapslib.videowrapper.spin(
+                                    ids[0],
+                                    parseFloat(commandArgs[1]) || 3,
+                                    parseFloat(commandArgs[2]) || 1,
+                                    false,
+                                    msg
+                                );
+                            })
+                            .catch((reason) => {
+                                sendWebhook("ffmpeg", reason, msg.channel);
+                            });
+                    }
+                    break;
+                case "!spingif":
+                    {
+                        getSources(msg, ["image"])
+                            .then((ids) => {
+                                flapslib.videowrapper.spin(
+                                    ids[0],
+                                    2,
+                                    1,
+                                    true,
+                                    msg
+                                );
+                            })
+                            .catch((reason) => {
+                                sendWebhook("ffmpeg", reason, msg.channel);
+                            });
+                    }
+                    break;
                 case "!squash":
                     {
                         getSources(msg, ["video/image/gif"])

@@ -902,7 +902,22 @@ async function speed(input, output, speed) {
         ].join(" ")
     );
 }
-
+async function spin(input, output, options) {
+    return ffmpeg(
+        [
+            "-y",
+            `-t ${options.length} -loop 1 -i ${file(input)}`,
+            `-vf "scale=trunc(iw/2)*2:trunc(ih/2)*2,rotate=t*${
+                options.speed
+            }*180*(PI/180)${
+                options.gif
+                    ? ",split[s0][s1];[s0]palettegen[p];[s1][p]paletteuse"
+                    : ""
+            }"`,
+            file(output + (options.gif ? ".gif" : ".mp4")),
+        ].join(" ")
+    );
+}
 async function cookingVideo(input, output) {
     var n_frames = await getFrameCount(file("cooking.mp4"));
     var len = await getVideoLength(file("cooking.mp4"));
@@ -1195,4 +1210,5 @@ module.exports = {
     christmasWeek,
     stack,
     stack2,
+    spin,
 };

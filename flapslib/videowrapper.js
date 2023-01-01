@@ -182,6 +182,15 @@ async function stack2(names, msg) {
         msg
     );
 }
+async function spin(name, length, speed, gif, msg) {
+    doEffect(
+        video.spin,
+        name,
+        "Spin",
+        { _ext: gif ? "gif" : "mp4", length, speed, gif },
+        msg
+    );
+}
 async function cookingVideo(name, msg) {
     var id = n("Effect_CookingVideo");
     var ext = "." + name.split(".").pop();
@@ -580,4 +589,5 @@ module.exports = {
     christmasWeek,
     stack,
     stack2,
+    spin,
 };
