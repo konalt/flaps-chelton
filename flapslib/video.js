@@ -60,20 +60,19 @@ async function ffmpeg(args, quiet = false) {
         });
         ffmpegInstance.on("exit", (code) => {
             if (code == 0 && !quiet) {
-                if (!quiet)
-                    log(
-                        `${esc(Color.Green)}Completed in ${esc(
-                            Color.BrightCyan
-                        )}${Date.now() - startTime}ms`,
-                        "ffmpeg"
-                    );
+                log(
+                    `${esc(Color.Green)}Completed ${esc(Color.White)}in ${esc(
+                        Color.BrightCyan
+                    )}${Date.now() - startTime}ms`,
+                    "ffmpeg"
+                );
                 resolve(args.split(" ").pop());
             } else {
                 if (!quiet)
                     log(
-                        `${esc(Color.Red)}Failed in ${esc(Color.BrightCyan)}${
-                            Date.now() - startTime
-                        }ms`,
+                        `${esc(Color.Red)}Failed ${esc(Color.White)}in ${esc(
+                            Color.BrightCyan
+                        )}${Date.now() - startTime}ms`,
                         "ffmpeg"
                     );
                 reject(b);

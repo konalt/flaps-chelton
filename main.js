@@ -3674,33 +3674,42 @@ fbi files on ${commandArgString}: ${
                     break;
             }
         }
-        log(
-            `${esc(Color.DarkGrey)}[${time()}] ${
-                msg.author.bot && msg.author.discriminator == "0000"
-                    ? esc(Color.Cyan) +
-                      `<wh:${idFromName(msg.author.username)}>`
-                    : esc(Color.BrightCyan) +
-                      `<${msg.author.username}#${msg.author.discriminator}>`
-            }${esc(Color.White)} ${
-                commandRan
-                    ? esc(Color.BrightGreen)
-                    : webhookUsed
-                    ? esc(Color.BrightYellow)
-                    : ""
-            }${
-                msg.content ||
-                `${esc(Color.Yellow)}(${
-                    msg.attachments.size > 0
-                        ? msg.attachments.size +
-                          " Image" +
-                          (msg.attachments.size > 1 ? "s" : "")
-                        : "No Content"
-                })`
-            } ${esc(Color.DarkGrey)}<${Date.now() - startProcessTime}ms>${
-                toDelete ? esc(Color.Red) + " <Delete>" : ""
-            } ${isRetry ? esc(Color.Cyan) + " <Retrying>" : ""}`,
-            "chat"
-        );
+        if (msg.channel.id != "956316856422137856") {
+            log(
+                `${esc(Color.DarkGrey)}[${time()}] ${esc(Color.Yellow)}<#${
+                    msg.channel.name
+                }> ${
+                    msg.author.bot && msg.author.discriminator == "0000"
+                        ? esc(Color.Cyan) +
+                          `<wh:${idFromName(msg.author.username)}>`
+                        : esc(Color.BrightCyan) +
+                          `<${msg.author.username}#${msg.author.discriminator}>`
+                }${esc(Color.White)} ${
+                    commandRan
+                        ? esc(Color.BrightGreen)
+                        : webhookUsed
+                        ? esc(Color.BrightYellow)
+                        : ""
+                }${
+                    commandRan || webhookUsed
+                        ? `${[
+                              commandArgs[0],
+                              esc(Color.White) + commandArgs.slice(1).join(" "),
+                          ].join(" ")}`
+                        : msg.content ||
+                          `${esc(Color.Yellow)}(${
+                              msg.attachments.size > 0
+                                  ? msg.attachments.size +
+                                    " Attachment" +
+                                    (msg.attachments.size > 1 ? "s" : "")
+                                  : "No Content"
+                          })`
+                } ${esc(Color.DarkGrey)}<${Date.now() - startProcessTime}ms>${
+                    toDelete ? esc(Color.Red) + " <Delete>" : ""
+                } ${isRetry ? esc(Color.Cyan) + " <Retrying>" : ""}`,
+                "chat"
+            );
+        }
         if (command != "!retry" && command.startsWith("!")) {
             retryables[msg.author.id] = msg.id;
             fs.writeFileSync("retrycache.json", JSON.stringify(retryables));
@@ -3827,8 +3836,6 @@ client.on("interactionCreate", (i) => {
     respondToInteraction(i);
 });
 
-client.login(process.env.DISCORD_TOKEN || "notoken");
-
 var cacheRouter = new Router({
     mergeParams: true,
 });
@@ -3866,3 +3873,6 @@ function startWebServer(port = 8080) {
 startWebServer();
 
 flapslib.watchparty_init(client);
+
+log(`${esc(Color.White)}Logging in...`, "flaps");
+client.login(process.env.DISCORD_TOKEN || "notoken");
