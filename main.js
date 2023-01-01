@@ -3686,9 +3686,16 @@ fbi files on ${commandArgString}: ${
                     : webhookUsed
                     ? esc(Color.BrightYellow)
                     : ""
-            }${msg.content || `${esc(Color.Yellow)}(No Content)`} ${esc(
-                Color.DarkGrey
-            )}<${Date.now() - startProcessTime}ms>${
+            }${
+                msg.content ||
+                `${esc(Color.Yellow)}(${
+                    msg.attachments.size > 0
+                        ? msg.attachments.size +
+                          " Image" +
+                          (msg.attachments.size > 1 ? "s" : "")
+                        : "No Content"
+                })`
+            } ${esc(Color.DarkGrey)}<${Date.now() - startProcessTime}ms>${
                 toDelete ? esc(Color.Red) + " <Delete>" : ""
             } ${isRetry ? esc(Color.Cyan) + " <Retrying>" : ""}`,
             "chat"
