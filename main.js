@@ -67,6 +67,7 @@ const {
     invertAlpha,
     spotifyThisIs,
     getHexCode,
+    makeHexCode,
 } = require("./flapslib/canvas");
 const { createCanvas } = require("canvas");
 const { doTranslate, doTranslateSending } = require("./flapslib/translator");
@@ -1523,6 +1524,16 @@ async function onMessage(msg, isRetry = false) {
                                             )
                                             .join("")),
                                 msg.channel
+                            );
+                        });
+                    } else if (commandArgs[1]) {
+                        makeHexCode(commandArgs[1]).then((img) => {
+                            sendWebhookBuffer(
+                                "flaps",
+                                img,
+                                "heres your fuckin colour lmao",
+                                msg.channel,
+                                n("Canvas_HexCode", "png")
                             );
                         });
                     } else {

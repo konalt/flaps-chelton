@@ -1543,6 +1543,16 @@ async function doNothing(buffer) {
     });
 }
 
+async function makeHexCode(hexcode) {
+    return new Promise((resolve) => {
+        var c = createCanvas(512, 512);
+        var ctx = c.getContext("2d");
+        ctx.fillStyle = hexcode.startsWith("#") ? hexcode : "#" + hexcode;
+        ctx.fillRect(0, 0, 512, 512);
+        resolve(c.toBuffer("image/png"));
+    });
+}
+
 async function fakeNews(image, headline, ticker) {
     return new Promise((resolve) => {
         var [w, h] = [1280, 720];
@@ -1636,4 +1646,5 @@ module.exports = {
     getTextMetrics,
     spotifyThisIs,
     getHexCode,
+    makeHexCode,
 };
