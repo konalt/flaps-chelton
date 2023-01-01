@@ -106,7 +106,6 @@ function sendWebhook(
                         })
                         .catch((e) => {
                             resolve(e);
-                            console.log(data);
                         });
                 }
             })
@@ -652,6 +651,16 @@ function updateUsers() {
     });
 }
 
+function idFromName(name) {
+    updateUsers();
+    var u = null;
+    console.log(name);
+    Object.entries(users).forEach(([id, data]) => {
+        if (data[0] == name) u = id;
+    });
+    return u || "flaps";
+}
+
 module.exports = {
     sendWebhook: sendWebhook,
     sendWebhookEmbed: sendWebhookEmbed,
@@ -669,4 +678,5 @@ module.exports = {
     sendWebhookEmbedButton: sendWebhookEmbedButton,
     editWebhookButton,
     getWebhook,
+    idFromName,
 };
