@@ -1,4 +1,5 @@
 const { MessageComponentInteraction } = require("discord.js"); //eslint-disable-line no-unused-vars
+const { log } = require("./log");
 const { sendWebhookButton, editWebhookButton } = require("./webhooks");
 
 function getButtons(board) {
@@ -87,9 +88,7 @@ function handleInteraction(interaction) {
         }**`,
         getButtons(board),
         channel
-    ).then(() => {
-        console.log("Update");
-    });
+    );
 }
 
 function startGame(player1, player2, channel) {
@@ -99,9 +98,12 @@ function startGame(player1, player2, channel) {
         getButtons(new Array(3).fill([0, 0, 0])),
         channel
     ).then((msgid) => {
-        channel.messages.fetch(msgid).then((msg) => {
-            console.log(msg);
-        });
+        log(
+            `${esc(Color.White)}Started TicTacToe game with msgid ${esc(
+                Color.Cyan
+            )}${msgid}`,
+            "game:ttt"
+        );
     });
 }
 

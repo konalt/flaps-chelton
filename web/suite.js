@@ -115,7 +115,6 @@ function setEffect(eff) {
             inputMode(input.type, input.name, input.name2);
         });
         outputMode(e.output);
-        console.log(e.name);
         $("#genbtn").removeAttr("disabled");
     }
 }

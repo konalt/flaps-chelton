@@ -16,7 +16,6 @@ function getButtons(turn) {
             custom_id: `Con4_${i}`,
         });
     }
-    console.log(btns);
     return btns;
 }
 
@@ -55,15 +54,18 @@ function handleInteraction(interaction) {
         }**`,
         getButtons(board),
         channel
-    ).then(() => {
-        console.log("Update");
-    });
+    ).then(() => {});
 }
 
 function startGame(player1, player2, channel) {
     sendWebhookButton("tictactoe", "test", getButtons(1), channel).then(
         (msgid) => {
-            console.log(msgid);
+            log(
+                `${esc(Color.White)}Started Connect4 game with msgid ${esc(
+                    Color.Cyan
+                )}${msgid}`,
+                "game:con4"
+            );
         }
     );
 }

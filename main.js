@@ -127,8 +127,8 @@ players.forEach((ply, i) => {
     ply.on("stateChange", (oldState, newState) => {
         if (loopingPlayers.includes(index)) {
             if (oldState.status == "playing" && newState.status == "idle") {
-                console.log("LOOPIG HAHAH");
-                //attachRecorder(index, curPlayerTracks[index]);
+                log(`${esc(Color.White)} Looping track`, "vcradio");
+                attachRecorder(index, curPlayerTracks[index]);
             }
         }
     });
@@ -277,7 +277,7 @@ canvas.registerFont("fonts/spotify.otf", { family: "Spotify" });
 var errChannel;
 
 client.on("ready", async () => {
-    console.log(`[flaps] Started chelton`);
+    log(`${esc(Color.White)}Ready!`, "flaps");
 
     const connections = await connectToChannel(
         Object.values(serverVCs).map((x) => {
@@ -295,7 +295,7 @@ client.on("ready", async () => {
             try {
                 sendWebhook("flapserrors", err, false, errChannel);
             } catch {
-                console.log("ERAR ! !", err);
+                log(`${esc(Color.Red)}${err.stack}`, "vc");
             }
         });
     });
@@ -306,7 +306,7 @@ client.on("ready", async () => {
                 sendWebhook("flapserrors", err, false, errChannel);
             } catch (e) {
                 addError(e);
-                console.log("ERAR ! !", err);
+                log(`${esc(Color.Red)}${err.stack}`, "vc");
             }
         });
     });
@@ -1366,7 +1366,6 @@ async function onMessage(msg, isRetry = false) {
                                             )
                                         );
                                     });
-                                    console.log(data);
                                     y = r
                                         .map((z) => {
                                             return (
@@ -1439,13 +1438,10 @@ async function onMessage(msg, isRetry = false) {
                                 })
                                 .then((r) => {
                                     var y = "";
-                                    if (!r[1]) {
-                                        console.log("WHN !!?");
-                                    } else {
+                                    if (r[1]) {
                                         y =
                                             r[1][0].label.replace(/_/g, "\\_") +
                                             "\n";
-                                        console.log(y.trim());
                                         out += y;
                                     }
                                     var done = true;
@@ -1469,7 +1465,6 @@ async function onMessage(msg, isRetry = false) {
                                 })
                                 .catch((e) => {
                                     addError(e);
-                                    console.log(e);
                                 });
                         });
                     }
@@ -1855,7 +1850,6 @@ async function onMessage(msg, isRetry = false) {
                     {
                         getSourcesWithAttachments(msg, ["video/image/gif"])
                             .then((list) => {
-                                console.log(list);
                                 flapslib.videowrapper.caption2(
                                     list[0][1],
                                     commandArgString,
@@ -2189,7 +2183,6 @@ async function onMessage(msg, isRetry = false) {
                                         commandArgString +
                                         ". The input filename is $input and the output filename is $output."
                                 ).then((answer) => {
-                                    console.log(answer);
                                     var ans1 =
                                         answer.split("ffmpeg -i $input ")[1];
                                     if (!ans1)
@@ -2697,7 +2690,6 @@ fbi files on ${commandArgString}: ${
                     animethink2(msg, client);
                     break;
                 case "!describe":
-                    console.log("GHNGNNHNHNH");
                     describe(msg);
                     break;
                 case "!dalle": {
@@ -2725,7 +2717,6 @@ fbi files on ${commandArgString}: ${
                             imgs2.push(sharp(buf).toFormat("png").toBuffer());
                         });
                         var imgs3 = await Promise.all(imgs2);
-                        console.log(imgs3);
                         await Promise.all(
                             imgs3.map((img, i) => {
                                 var x = i % 3;
@@ -2911,12 +2902,6 @@ fbi files on ${commandArgString}: ${
                                         msg.channel
                                     );
                                 }
-                                console.log(x);
-                                console.log(
-                                    ra.map((z) =>
-                                        z.label.replace(/&#039;/g, "'")
-                                    )
-                                );
                                 ra = ra.filter((z) =>
                                     z.label
                                         .replace(/&#039;/g, "'")
@@ -2992,7 +2977,6 @@ fbi files on ${commandArgString}: ${
                                                 item[1],
                                             ];
                                         });
-                                        console.log(used);
 
                                         if (
                                             list.filter((item) => {
@@ -3005,7 +2989,6 @@ fbi files on ${commandArgString}: ${
                                         list = list.filter((item) => {
                                             return !used.includes(item[0]);
                                         });
-                                        console.log(list);
                                         var item = randomFromArray(list);
                                         var id = uuidv4() + ".jpg";
                                         if (!item) {
@@ -3088,9 +3071,6 @@ fbi files on ${commandArgString}: ${
                                                 "images/cache/" + id,
                                                 async (err) => {
                                                     if (err) {
-                                                        console.log(
-                                                            "ERROR WEEWOOWOOEOEOWEO"
-                                                        );
                                                         return download(
                                                             item[0].replace(
                                                                 /sample/g,
@@ -3358,7 +3338,6 @@ fbi files on ${commandArgString}: ${
                                                 .length +
                                             11
                                     );
-                                    console.log(a);
                                     flapslib.webhooks.sendWebhook(
                                         "deepai",
                                         "https://youtube.com/watch?v=" + a,
@@ -3368,8 +3347,6 @@ fbi files on ${commandArgString}: ${
                                 });
                         } catch (e) {
                             addError(e);
-                            console.log("aw");
-                            console.log(e);
                         }
                     }
                     break;
@@ -3490,49 +3467,13 @@ fbi files on ${commandArgString}: ${
                                 break;
                         }
                         if (send) {
-                            console.log("the best pigon");
-                            var imgID = uuidv4().replace(/-/g, "_") + ".png";
-                            var imageStream = Buffer.from(
-                                mc_c.toDataURL("image/png").split(",")[1],
-                                "base64"
+                            sendWebhookBuffer(
+                                "flaps",
+                                mc_c.toBuffer("image/png"),
+                                "",
+                                msg.channel,
+                                n("Canvas_Custom", "png")
                             );
-                            fs.writeFileSync(
-                                "./images/cache/" + imgID,
-                                imageStream
-                            );
-
-                            console.log(
-                                __dirname + "\\images\\cache\\" + imgID
-                            );
-                            /**
-                             * @type {Discord.Message}
-                             */
-                            client.channels.cache
-                                .get("956316856422137856")
-                                .send({
-                                    files: [
-                                        {
-                                            attachment:
-                                                __dirname +
-                                                "\\images\\cache\\" +
-                                                imgID,
-                                        },
-                                    ],
-                                })
-                                .then((message) => {
-                                    setTimeout(() => {
-                                        fs.unlinkSync(
-                                            "./images/cache/" + imgID
-                                        );
-                                    }, 10000);
-
-                                    flapslib.webhooks.sendWebhook(
-                                        "flaps",
-                                        message.attachments.first().url,
-                                        false,
-                                        msg.channel
-                                    );
-                                });
                         }
                     } else {
                         canvases[msg.author.id] = createCanvas(1000, 1000);
@@ -3707,9 +3648,7 @@ fbi files on ${commandArgString}: ${
                     break;
                 case "!anime":
                     fs.readFile("flapjpg.jpg", (err, img) => {
-                        console.log("r unning anime !!");
                         qqAnimeAI(img).then((out) => {
-                            console.log(out);
                             sendWebhook("flaps", out, msg.channel);
                         });
                     });
@@ -3788,13 +3727,6 @@ setInterval(() => {
         d.getMonth() == 2 &&
         d.getDate() == 3
     ) {
-        console.log(
-            d.getMinutes(),
-            d.getHours(),
-            d.getFullYear(),
-            d.getMonth(),
-            d.getDate()
-        );
         sendWebhook(
             "flaps",
             "@everyone R.I.P. FUNKY TOWN\n IT'S 3/3/33 23:33 THO YA FUCKIN DONGS!!!!!",

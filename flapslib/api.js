@@ -154,7 +154,6 @@ canvasRouter.post("/caption2", (req, res) => {
                     );
                 })
                 .catch((err) => {
-                    console.log(err);
                     res.status(500).send(err);
                 });
         });
@@ -181,7 +180,6 @@ canvasRouter.post("/speed", (req, res) => {
                 );
             })
             .catch((err) => {
-                console.log(err);
                 res.status(500).send(err);
             });
     });
@@ -202,7 +200,6 @@ canvasRouter.post("/compress", (req, res) => {
                 );
             })
             .catch((err) => {
-                console.log(err);
                 res.status(500).send(err);
             });
     });

@@ -46,10 +46,8 @@ function laugh(msg, client) {
             ? "farquaad"
             : msg.content.substring("!laugh ".length).split(" ")[0];
     if (image == "attachment" && msg.attachments.first()) {
-        console.log("[laugh] Laugh attachment");
         var id = uuidv4();
         download(msg.attachments.first().url, "images/cache/" + id, () => {
-            console.log("[laugh] Downloaded attachment");
             image = "cache/" + id;
             var data = [
                 "cache/" + id,
@@ -61,8 +59,6 @@ function laugh(msg, client) {
                 "D",
                 "D",
             ];
-            console.log("[laugh] data");
-            console.log(data);
             var c = canvas.createCanvas(parseInt(data[1]), parseInt(data[2]));
             var ctx = c.getContext("2d");
             var text = msg.content.split(" ").slice(2).join(" ");
@@ -118,20 +114,16 @@ function laugh(msg, client) {
                     ctx.strokeText(text[0], text1Pos[0], text1Pos[1]);
                     ctx.fillText(text[1], text2Pos[0], text2Pos[1]);
                     ctx.strokeText(text[1], text2Pos[0], text2Pos[1]);
-
-                    console.log("[laugh] Sending canvas");
                     sendCanvas(c, msg, client, "jamesphotoframe");
                 });
         });
     } else {
         var text;
-        console.log("[laugh] random checks and shit");
         if (
             memeMaking.imageExists(
                 msg.content.substring("!laugh ".length).split(" ")[0]
             )
         ) {
-            console.log("[laugh] pos1");
             text =
                 msg.content.substring("!laugh ".length).length == 0
                     ? ""
@@ -139,16 +131,13 @@ function laugh(msg, client) {
                           "!laugh ".length + image.length + 1
                       );
         } else {
-            console.log("[laugh] pos2");
             image = "farquaad";
             text =
                 msg.content.substring("!laugh ".length).length == 0
                     ? ""
                     : msg.content.substring("!laugh ".length);
         }
-        console.log("[laugh] mm keep going");
         memeMaking.getImageData(image).then((data) => {
-            console.log(parseInt(data[1]), parseInt(data[2]));
             var c = canvas.createCanvas(parseInt(data[1]), parseInt(data[2]));
             var ctx = c.getContext("2d");
 
@@ -204,7 +193,6 @@ function laugh(msg, client) {
                     ctx.fillText(text[1], text2Pos[0], text2Pos[1]);
                     ctx.strokeText(text[1], text2Pos[0], text2Pos[1]);
 
-                    console.log("[laugh] sending canvas");
                     sendCanvas(
                         c,
                         msg,
@@ -295,7 +283,6 @@ function homodog(msg, client) {
 
 function flip(msg, client) {
     if (msg.attachments.size > 0) {
-        console.log(msg.attachments.first());
         var request = require("request").defaults({ encoding: null });
 
         request.get(
@@ -550,7 +537,6 @@ function unfunnyToImg(ctx, img, unfunnyCutoff = 10) {
 
 function unfunnyTest(msg, client) {
     if (msg.attachments.size > 0) {
-        console.log(msg.attachments.first());
         var request = require("request").defaults({ encoding: null });
 
         request.get(
@@ -618,7 +604,6 @@ function unfunnyTest(msg, client) {
 
 function sb(msg, client) {
     if (msg.attachments.size > 0) {
-        console.log(msg.attachments.first());
         var request = require("request").defaults({ encoding: null });
 
         request.get(
@@ -681,7 +666,6 @@ function sb(msg, client) {
 
 function frame(msg, client) {
     if (msg.attachments.size > 0) {
-        console.log(msg.attachments.first());
         var request = require("request").defaults({ encoding: null });
 
         request.get(
@@ -747,7 +731,6 @@ function pj(fn) {
 
 function frame2(msg, client) {
     if (msg.attachments.size > 0) {
-        console.log(msg.attachments.first());
         var request = require("request").defaults({ encoding: null });
 
         request.get(
@@ -829,7 +812,6 @@ function frame2(msg, client) {
 
 function dalle2watermark(msg, client) {
     if (msg.attachments.size > 0) {
-        console.log(msg.attachments.first());
         var request = require("request").defaults({ encoding: null });
 
         request.get(
@@ -898,7 +880,6 @@ function dalle2watermark(msg, client) {
 
 function animethink(msg, client) {
     if (msg.attachments.size > 0) {
-        console.log(msg.attachments.first());
         var request = require("request").defaults({ encoding: null });
 
         request.get(
@@ -953,7 +934,6 @@ function animethink(msg, client) {
 
 function animethink2(msg, client) {
     if (msg.attachments.size > 0) {
-        console.log(msg.attachments.first());
         var request = require("request").defaults({ encoding: null });
 
         request.get(

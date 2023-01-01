@@ -153,7 +153,6 @@ function startWatchParty(url, msgChannel) {
         })
             .then((r) => r.json())
             .then((response) => {
-                console.log(response);
                 sendWebhook(
                     "flaps",
                     `[yer watch party is ready](https://konalt.us.to/flaps/watchparty/?id=${response.id})\nSponsored by **FlapsCache:tm:**`,
@@ -242,7 +241,6 @@ function wpAddToQueue(url, wpId, msgChannel) {
         })
             .then((r) => r.json())
             .then((response) => {
-                console.log(response);
                 sendWebhook("flaps", `added to da queue`, msgChannel);
             });
     } else {
@@ -320,7 +318,6 @@ function wpAddToQueueFile(url, wpId, msgChannel) {
         })
             .then((r) => r.json())
             .then((response) => {
-                console.log(response);
                 sendWebhook("flaps", `added to da queue`, msgChannel);
             });
     } else {

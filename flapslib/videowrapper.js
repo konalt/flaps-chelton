@@ -75,7 +75,6 @@ function getTypeSingular(ct) {
 }
 async function doEffect(effect, input, name, options, msg) {
     async function done(out) {
-        console.log(out);
         var fsize = fs.statSync(out).size;
         var formattedFilesize = filesize(fsize);
         sendWebhookFile(
@@ -167,7 +166,6 @@ async function stack(names, msg) {
 }
 async function stack2(names, msg) {
     var types = names.map((x) => getTypeSingular(mime.lookup(x)));
-    console.log(types);
     doEffect(
         video.stack2,
         names,

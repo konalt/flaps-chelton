@@ -37,21 +37,17 @@ async function morbiusReview(msgChannel) {
                     if (chosen.includes("click expand to view")) {
                         throw new Error();
                     }
-                    console.log(chosen);
                     sendWebhook("morbius", chosen, msgChannel);
                 } catch {
                     var chosen =
                         reviews[Math.floor(Math.random() * reviews.length)]
                             .childNodes[3].childNodes[3].childNodes[1]
                             .childNodes[1].textContent;
-                    console.log(chosen);
                     sendWebhook("morbius", chosen, msgChannel);
                 }
             });
     } catch (e) {
         addError(e);
-        console.log("aw");
-        console.log(e);
     }
 }
 

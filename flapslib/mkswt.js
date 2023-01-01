@@ -15,12 +15,6 @@ async function init() {
     aiPageData.browser = await puppeteer.launch();
     aiPageData.page = await aiPageData.browser.newPage();
     await aiPageData.page.goto("about:blank");
-    aiPageData.page.on("console", async (msg) => {
-        const msgArgs = msg.args();
-        for (let i = 0; i < msgArgs.length; ++i) {
-            console.log(await msgArgs[i].jsonValue());
-        }
-    });
     await aiPageData.page.evaluate(() => {
         window.sleep = (ms) => new Promise((r) => setTimeout(r, ms));
     });
@@ -106,9 +100,7 @@ async function makesweet(text, filename, msgChannel, client, send = true) {
                             return document.querySelector("#result_preview")
                                 .src;
                     }, originalSrc);
-                    console.log("Waiting...");
                     if (url !== false) {
-                        console.log("DONE!!!!");
                         sendWebhook(
                             "mkswt",
                             "i say, i say, we're done!",
@@ -127,7 +119,6 @@ async function makesweet(text, filename, msgChannel, client, send = true) {
                         var outputFilename =
                             "./images/cache/" + uuidv4() + ".gif";
                         aiPageData.page.once("response", async (response) => {
-                            console.log(response.url());
                             const img = await response.buffer();
                             fs.writeFileSync(outputFilename, img);
                             if (send) {
@@ -179,8 +170,6 @@ async function makesweet(text, filename, msgChannel, client, send = true) {
             })();
         } catch (e) {
             addError(e);
-            console.log("aw");
-            console.log(e);
         }
     });
 }

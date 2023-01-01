@@ -7,6 +7,7 @@ const twemoji = require("twemoji");
 const downloadPromise = require("./download-promise");
 const { uuidv4 } = require("./util");
 const { extension } = require("mime-types");
+const { log, esc, Color } = require("./log");
 
 var ffmpegVerbose = false;
 
@@ -37,13 +38,7 @@ async function ffmpegBuffer(args, buffers, outExt) {
 }
 async function ffmpeg(args, quiet = false) {
     return new Promise((resolve, reject) => {
-        console.log(args);
         var startTime = Date.now();
-        if (!quiet) console.log("[ffmpeg] Starting FFMpeg instance");
-        if (!quiet)
-            console.log(
-                "[ffmpeg] FFMpeg Verbose: " + (ffmpegVerbose ? "YES" : "NO")
-            );
         var ffmpegInstance = cp.spawn(
             "ffmpeg",
             ((ffmpegVerbose ? "" : "-v warning ") + args).split(" "),
@@ -52,25 +47,37 @@ async function ffmpeg(args, quiet = false) {
             }
         );
         var b = "";
-        if (!quiet) console.log("[ffmpeg] PID: %d", ffmpegInstance.pid);
+        if (!quiet)
+            log(
+                `${esc(Color.White)}Instance PID: ${ffmpegInstance.pid}`,
+                "ffmpeg"
+            );
         ffmpegInstance.stdout.on("data", (c) => {
-            if (ffmpegVerbose && !quiet) stdout.write("[ffmpeg] " + c);
             b += c;
         });
         ffmpegInstance.stderr.on("data", (c) => {
-            if (!quiet) stdout.write("[ffmpeg] " + c);
             b += c;
         });
         ffmpegInstance.on("exit", (code) => {
             if (code == 0 && !quiet) {
-                if (!quiet) console.log("[ffmpeg] Completed OK");
+                if (!quiet)
+                    log(
+                        `${esc(Color.Green)}Completed in ${esc(
+                            Color.BrightCyan
+                        )}${Date.now() - startTime}ms`,
+                        "ffmpeg"
+                    );
                 resolve(args.split(" ").pop());
             } else {
-                if (!quiet) console.log("[ffmpeg] Failed!");
+                if (!quiet)
+                    log(
+                        `${esc(Color.Red)}Failed in ${esc(Color.BrightCyan)}${
+                            Date.now() - startTime
+                        }ms`,
+                        "ffmpeg"
+                    );
                 reject(b);
             }
-            if (!quiet)
-                console.log("[ffmpeg] Took %d ms", Date.now() - startTime);
         });
     });
 }
@@ -88,10 +95,25 @@ async function ffprobe(args) {
             stdout.write("[ffprobe] " + c);
         });
         ffmpegInstance.on("exit", (code) => {
-            if (code == 0) console.log("[ffprobe] Completed OK");
-            if (code == 1) console.log("[ffprobe] Failed!");
-            console.log("[ffprobe] Took %d ms", Date.now() - startTime);
-            resolve(body);
+            if (code == 0 && !quiet) {
+                if (!quiet)
+                    log(
+                        `${esc(Color.Green)}Completed in ${esc(
+                            Color.BrightCyan
+                        )}${Date.now() - startTime}ms`,
+                        "ffprobe"
+                    );
+                resolve(body);
+            } else {
+                if (!quiet)
+                    log(
+                        `${esc(Color.Red)}Failed in ${esc(Color.BrightCyan)}${
+                            Date.now() - startTime
+                        }ms`,
+                        "ffprobe"
+                    );
+                reject(body);
+            }
         });
     });
 }
@@ -128,7 +150,7 @@ function parseScalingTable(
         var cDir = list[0];
         var cDirInd = 0;
         var lastIndGen = -1;
-        console.log("Creating image sequence...");
+        log(`${esc(Color.White)}Creating image sequence...`, "scalingtable");
         for (let frame_num = 0; frame_num < frame_count; frame_num++) {
             if (frame_num > cDir.end) {
                 cDir = list[cDirInd++];
@@ -169,10 +191,9 @@ function parseScalingTable(
             }
         }
         Promise.all(promises).then(() => {
-            console.log(
-                "Created all key images in " +
-                    (Date.now() - start) +
-                    "ms. Beginning copy process"
+            log(
+                `${esc(Color.White)}Keyframes created. Copying...`,
+                "scalingtable"
             );
             var curFile = path.join(
                 __dirname,
@@ -195,6 +216,7 @@ function parseScalingTable(
                     curFile = newFile;
                 }
             }
+            log(`${esc(Color.White)}All frames created.`, "scalingtable");
             resolve();
         });
     });
@@ -255,7 +277,6 @@ async function caption2(input, output, options) {
         });
     });
     text = textArr.join(" ");
-    console.log(advanced);
     var minHeight = 200;
     if (!advanced.nofix && videoHeight < minHeight) {
         videoWidth = minHeight * (videoWidth / videoHeight);
@@ -311,7 +332,6 @@ async function caption2(input, output, options) {
     ]);
     var customEmojis = text.match(customEmojiRegex) || [];
     var emojis = customEmojis.map((x) => [x, true]);
-    console.log(emojis);
     var newLines = [];
     lines.forEach((line) => {
         var lineYOffset = txtW(
@@ -354,13 +374,11 @@ async function caption2(input, output, options) {
         newLines.push([lineYOffset, newWords]);
     });
     emojis = emojis.map((e, i) => {
-        console.log(e);
         if (e[1]) {
             var emoji = client.emojis.cache.find(
                 (em) => em.id === e[0].split(":")[2].split(">")[0]
             );
             if (!emoji) {
-                console.log("Error: Emoji " + e[0] + " is not known!");
                 return fs.writeFileSync(
                     path.join(__dirname, "..", output + ".emoji." + i + ".png"),
                     fs.readFileSync(path.join(__dirname, "..", "1x1.png"))
@@ -401,7 +419,6 @@ async function caption2(input, output, options) {
                     char[1].match(emojiRegex) ||
                     char[1].match(customEmojiRegex)
                 ) {
-                    console.log("Emoji!");
                     emojiPositions.push([
                         charOffset,
                         index * (fontSize + 5) + fontSize * 0.4,
@@ -935,7 +952,6 @@ async function semiTransparentOverlay(input, output, rev, exts) {
     ];
     var len = await getVideoLength(files[1]);
     var dims = await getVideoDimensions(files[1]);
-    console.log(dims);
     return ffmpeg(
         `-y -loop 1 -i ${files[0]} -i ${files[1]} -filter_complex "[${
             rev ? 0 : 1

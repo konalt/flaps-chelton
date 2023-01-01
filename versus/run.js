@@ -32,7 +32,6 @@ async function ffmpeg(args) {
                 stdout.write(c);
         });
         ffmpegInstance.on("exit", (code) => {
-            console.log("EXIT " + code);
             resolve();
         });
     });
@@ -108,12 +107,10 @@ function addAudio(input, output, lobster, length) {
 
 function concat(input, output) {
     var intext = "-i " + input.join(".mp4 -i ") + ".mp4";
-    console.log(intext);
     var intext2 = Array.from(
         { length: input.length },
         (_, i) => "[" + i.toString() + ":v]"
     ).join("");
-    console.log(intext2);
     return ffmpeg(
         `${
             verbose ? "" : "-v warning "
@@ -128,11 +125,8 @@ var segmentLength = 60000 / 70 / 1000;
 var verbose = false;
 
 async function todo(client, msg) {
-    console.log("adfjhsfd");
     if (msg.attachments.first(2)[1]) {
-        console.log("idsjijdfifjs");
         var att = msg.attachments.first(2);
-        console.log(att.map((a) => a.url));
         download(
             att[0].url,
             path.join(
@@ -141,7 +135,6 @@ async function todo(client, msg) {
                     att[0].url.split(".")[att[0].url.split(".").length - 1]
             ),
             async () => {
-                console.log("downloaded image 1");
                 download(
                     att[1].url,
                     path.join(
@@ -251,12 +244,10 @@ async function todo(client, msg) {
                             await createStatVideo(inputs, "versus/" + vi++, {
                                 stat: stat,
                             });
-                            console.log(forceWin);
                             var chosenSide =
                                 forceWin == 0 || forceWin == 1
                                     ? parseInt(forceWin)
                                     : Math.floor(Math.random() * 2);
-                            console.log("Side" + chosenSide);
                             scores[chosenSide]++;
                             await createScoreVideo(
                                 inputs[chosenSide],

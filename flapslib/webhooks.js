@@ -178,7 +178,11 @@ function editWebhookMsg(msgid, msgChannel, content) {
 
 function editWebhookFile(msgid, msgChannel, path, pretext = "") {
     if (multipartUpload) {
-        console.log("pigon");
+        sendWebhook(
+            "flaps",
+            "AYO GET THIS MF!!! GET THIS MF !! TO FIX!!" + e,
+            msgChannel
+        );
     } else {
         client.channels.cache
             .get("956316856422137856")
@@ -238,16 +242,12 @@ async function sendWebhookFile(
         if (failcb) {
             failcb();
         } else {
-            console.log(
-                "[konalt-upload] File larger than 8MB, sending to konalt"
-            );
             var fn = path.basename(filename);
             var konalt_path = "E:/MBG/2Site/sites/konalt/flaps/bigfile/" + fn;
             fs.copyFile(filename, konalt_path, (err) => {
                 if (err) {
                     sendWebhook(id, "Send error: " + err, msgChannel);
                 } else {
-                    console.log("[konalt-upload] copy successful");
                     var konaltURL = "https://konalt.us.to:4930/bigfile/" + fn;
                     var fsize = fs.statSync(konalt_path).size;
                     var formattedFilesize = filesize(fsize);
@@ -538,11 +538,6 @@ function sendWebhookEmbed(id, embed, msgChannel) {
                             })
                             .catch(console.error);
                     } else {
-                        console.log(`{
-    "embeds": [${JSON.stringify(embed.toJSON())}],
-    "username": ${users[id[0]]},
-    "avatar_url": ${users[id[1]]}
-}`);
                         fetch(hook.url, {
                             method: "POST",
                             body: `{
@@ -551,18 +546,11 @@ function sendWebhookEmbed(id, embed, msgChannel) {
                                 "avatar_url": "${users[id][1]}"
                             }`,
                             headers: { "Content-Type": "application/json" },
-                        })
-                            .then((r) => r.text())
-                            .then((r) => {
-                                console.log(r);
-                            });
+                        });
                     }
                 })
                 .catch(console.error);
-        } catch (e) {
-            console.log("aaahahahahaha");
-            console.log(e);
-        }
+        } catch {}
     });
 }
 
@@ -601,11 +589,6 @@ function sendWebhookEmbedButton(id, embed, msgChannel) {
                             })
                             .catch(console.error);
                     } else {
-                        console.log(`{
-    "embeds": [${JSON.stringify(embed.toJSON())}],
-    "username": ${users[id[0]]},
-    "avatar_url": ${users[id[1]]}
-}`);
                         fetch(hook.url, {
                             method: "POST",
                             body: `{
@@ -614,18 +597,11 @@ function sendWebhookEmbedButton(id, embed, msgChannel) {
                                 "avatar_url": "${users[id][1]}"
                             }`,
                             headers: { "Content-Type": "application/json" },
-                        })
-                            .then((r) => r.text())
-                            .then((r) => {
-                                console.log(r);
-                            });
+                        });
                     }
                 })
                 .catch(console.error);
-        } catch (e) {
-            console.log("aaahahahahaha");
-            console.log(e);
-        }
+        } catch {}
     });
 }
 

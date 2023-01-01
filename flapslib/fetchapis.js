@@ -33,14 +33,12 @@ async function roulette(msgChannel) {
             sendWebhook("4chanroulette", "Error:\n" + err, msgChannel);
         })
         .then((r) => {
-            console.log("line 18");
             var thread = randomArr(randomArr(r).threads);
             fetch(
                 "https://a.4cdn.org/" + board + "/thread/" + thread.no + ".json"
             )
                 .then((r) => r.json())
                 .then((r) => {
-                    console.log("line 21");
                     var post = r.posts[0];
                     if (post.com) {
                         var postText = post.com
@@ -80,7 +78,6 @@ async function roulette(msgChannel) {
                         ].forEach((match) => {
                             var m = match[0];
                             var id = m.substring(m.indexOf(">>>") + 3);
-                            console.log(id);
                             +postText.replace(
                                 m,
                                 `[>>${id}](https://boards.4chan.org/${board}/thread/${id})`
@@ -301,7 +298,6 @@ function randomRedditImage(sub, bot, msg) {
                     return p.data.url_overridden_by_dest;
                 });
             var item = randomArr(images);
-            console.log(item);
             var id = uuidv4() + ".jpg";
             download(item, "images/cache/" + id, async () => {
                 var message = await client.channels.cache

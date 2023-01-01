@@ -28,12 +28,6 @@ async function init() {
     aiPageData.browser = await puppeteer.launch({ headless: true });
     aiPageData.page = await aiPageData.browser.newPage();
     await aiPageData.page.goto("https://example.com");
-    /* aiPageData.page.on("console", async (msg) => {
-        const msgArgs = msg.args();
-        for (let i = 0; i < msgArgs.length; ++i) {
-            console.log(await msgArgs[i].jsonValue());
-        }
-    }); */
     await aiPageData.page.setExtraHTTPHeaders({
         "Accept-Language": "en-US,en;q=0.9",
     });
@@ -55,7 +49,6 @@ function doDream(msg) {
     ).then((msgid) => {
         dream
             .generatePicture(commandArgString, 32, (task) => {
-                console.log(task.state, "stage", task.photo_url_list.length);
                 if (
                     lastState !=
                     task.state + " " + task.photo_url_list.length
@@ -131,7 +124,6 @@ async function autocompleteText(text, msgChannel, removeOriginalText = false) {
                         return document.querySelector(".try-it-result-area")
                             .innerHTML;
                 }, originalHTMLContent);
-                console.log("Waiting...");
                 if (a !== false) {
                     var a2 = a.substring(
                         '<div style="width: 100%; height: 100%; overflow: auto; display: flex; align-items: center; flex-direction: column;"><pre style="white-space: pre-wrap; margin: 0px;">'
@@ -145,7 +137,6 @@ async function autocompleteText(text, msgChannel, removeOriginalText = false) {
                     a2 = a2.substring(0, a2.length - "</pre></div>".length);
                     a2 = decodeEntities(a2);
                     if (removeOriginalText) a2 = a2.substring(text.length + 6);
-                    //console.log(a2);
                     clearInterval(waitInterval);
                     waitCounts = 0;
                     sendWebhook("deepai", a2, msgChannel);
@@ -164,8 +155,6 @@ async function autocompleteText(text, msgChannel, removeOriginalText = false) {
         })();
     } catch (e) {
         addError(e);
-        console.log("aw");
-        console.log(e);
     }
 }
 
@@ -226,7 +215,6 @@ async function gpt3complete_new(text, msgChannel) {
                                     "#root > div.route-container > div > div.pg-root.page-body.full-width.flush > div > div.pg-body > div.pg-left > div.pg-content-body > div > div > div > div > div > div.DraftEditor-editorContainer > div > div > div > div > span"
                                 ).innerHTML;
                         }, originalHTMLContent);
-                        console.log("Waiting...");
                         if (a !== false) {
                             waitCounts = 0;
                             sendWebhook("deepai", a, msgChannel);
@@ -247,8 +235,6 @@ async function gpt3complete_new(text, msgChannel) {
         })();
     } catch (e) {
         addError(e);
-        console.log("aw");
-        console.log(e);
     }
 }
 
@@ -315,13 +301,10 @@ async function markov2(text, acc, msgChannel) {
                 if (content.length > 1500) {
                     content = content.substring(0, 1500);
                 }
-                console.log(content);
                 sendWebhook("deepai", content, msgChannel);
             });
     } catch (e) {
         addError(e);
-        console.log("aw");
-        console.log(e);
     }
 }
 async function armstrong(msgChannel) {
@@ -361,7 +344,6 @@ async function armstrong(msgChannel) {
                         return document.querySelector(".try-it-result-area")
                             .innerHTML;
                 }, originalHTMLContent);
-                console.log("Waiting...");
                 if (a !== false) {
                     var a2 = a.substring(
                         '<div style="width: 100%; height: 100%; overflow: auto; display: flex; align-items: center; flex-direction: column;"><pre style="white-space: pre-wrap; margin: 0px;">'
@@ -369,7 +351,6 @@ async function armstrong(msgChannel) {
                     );
                     a2 = a2.substring(0, a2.length - "</pre></div>".length);
                     a2 = decodeEntities(a2);
-                    //console.log(a2);
                     clearInterval(waitInterval);
                     waitCounts = 0;
                     sendWebhook("deepai", a2, msgChannel);
@@ -388,8 +369,6 @@ async function armstrong(msgChannel) {
         })();
     } catch (e) {
         addError(e);
-        console.log("aw");
-        console.log(e);
     }
 }
 async function armstrong2(accuracy, msgChannel) {
@@ -430,13 +409,10 @@ async function armstrong2(accuracy, msgChannel) {
                 if (content.length > 1500) {
                     content = content.substring(0, 1500);
                 }
-                console.log(content);
                 sendWebhook("armstrong", content, msgChannel);
             });
     } catch (e) {
         addError(e);
-        console.log("aw");
-        console.log(e);
     }
 }
 
@@ -460,12 +436,9 @@ async function threeDimensionalTextLayer2(
     waitInterval = setInterval(async () => {
         waitCounts++;
         var a = await aiPageData.page.evaluate(() => {
-            console.log(document.querySelector("html").innerHTML);
             var element = document.querySelector("canvas");
-            console.log(element);
             return typeof element != "undefined" && element != null;
         });
-        console.log("Waiting...");
         if (a) {
             clearInterval(waitInterval);
             waitCounts = 0;
@@ -523,7 +496,6 @@ async function googleTrends(queries, msgChannel, client) {
         const element = await aiPageData.page.$(
             ".multi-heat-map-and-legends-without-explanation-container"
         );
-        console.log(element);
         if (element) {
             clearInterval(waitInterval);
             await element.screenshot({ path: imagePath });
@@ -594,8 +566,6 @@ async function person(msgChannel, client) {
         );
     } catch (e) {
         addError(e);
-        console.log("aw");
-        console.log(e);
     }
 }
 
@@ -641,8 +611,6 @@ async function threeDimensionalText(text, msgChannel, msg, client) {
         })();
     } catch (e) {
         addError(e);
-        console.log("aw");
-        console.log(e);
     }
 }
 
@@ -682,7 +650,6 @@ async function generateImage(text, msgChannel, client) {
                         return document.querySelector(".try-it-result-area")
                             .innerHTML;
                 }, originalHTMLContent);
-                console.log("Waiting...");
                 if (a !== false) {
                     var a2 = a.substring('<img src="'.length);
                     a2 = a2.substring(
@@ -691,7 +658,6 @@ async function generateImage(text, msgChannel, client) {
                             '" style="position: relative; width: 100%; height: 100%; object-fit: contain;">'
                                 .length
                     );
-                    console.log(a2);
                     clearInterval(waitInterval);
                     waitCounts = 0;
                     var imgID2 = uuidv4().replace(/-/gi, "");
@@ -748,8 +714,6 @@ async function generateImage(text, msgChannel, client) {
         })();
     } catch (e) {
         addError(e);
-        console.log("aw");
-        console.log(e);
     }
 }
 
@@ -795,7 +759,6 @@ async function upscaleImage(msg, msgChannel, client) {
                         return document.querySelector(".try-it-result-area")
                             .innerHTML;
                 }, originalHTMLContent);
-                console.log("Waiting...");
                 if (a !== false) {
                     var a2 = a.substring('<img src="'.length);
                     a2 = a2.substring(
@@ -804,7 +767,6 @@ async function upscaleImage(msg, msgChannel, client) {
                             '" style="position: relative; width: 100%; height: 100%; object-fit: contain;">'
                                 .length
                     );
-                    console.log(a2);
                     clearInterval(waitInterval);
                     waitCounts = 0;
                     var imgID2 = uuidv4().replace(/-/gi, "");
@@ -866,8 +828,6 @@ async function upscaleImage(msg, msgChannel, client) {
         })();
     } catch (e) {
         addError(e);
-        console.log("aw");
-        console.log(e);
     }
 }
 
@@ -907,7 +867,6 @@ async function tti(text, msgChannel, client) {
                         return document.querySelector(".try-it-result-area")
                             .innerHTML;
                 }, originalHTMLContent);
-                console.log("Waiting...");
                 if (a !== false) {
                     var a2 = a.substring('<img src="'.length);
                     a2 = a2.substring(
@@ -916,7 +875,6 @@ async function tti(text, msgChannel, client) {
                             '" style="position: relative; width: 100%; height: 100%; object-fit: contain;">'
                                 .length
                     );
-                    console.log(a2);
                     clearInterval(waitInterval);
                     waitCounts = 0;
                     var imgID2 = uuidv4().replace(/-/gi, "");
@@ -978,8 +936,6 @@ async function tti(text, msgChannel, client) {
         })();
     } catch (e) {
         addError(e);
-        console.log("aw");
-        console.log(e);
     }
 }
 
@@ -1026,16 +982,13 @@ function dalle(prompt, isSecondReq = false) {
                     r = JSON.parse(r);
                     out.images = r.images;
                 } catch (e) {
-                    console.log("some internal server error shit");
                     if (isSecondReq) {
-                        console.log("SR: Error");
                         addError(e);
                         out.prompt = r.replace(/<[/A-z0-9 =!]+>/g, "");
                         out.image = false;
                     } else {
                         setTimeout(() => {
                             dalle(prompt, true).then((data) => {
-                                console.log(data);
                                 resolve(data);
                             });
                         }, 3000);
@@ -1170,7 +1123,6 @@ function describe(message) {
     fetch(message.attachments.first().url)
         .then((r) => {
             return new Promise((r2) => {
-                console.log("line 953");
                 r.arrayBuffer().then((x) => {
                     r2([x, r.headers.get("content-type")]);
                 });
@@ -1219,7 +1171,6 @@ function describe(message) {
 
 function questionImage(question, message) {
     if (!message.attachments.first()) {
-        console.log("line 942");
         return sendWebhook(
             "scott",
             "i cant answer questions about nothing",
@@ -1230,7 +1181,6 @@ function questionImage(question, message) {
     fetch(message.attachments.first().url)
         .then((r) => {
             return new Promise((r2) => {
-                console.log("line 953");
                 r.arrayBuffer().then((x) => {
                     r2([x, r.headers.get("content-type")]);
                 });
@@ -1311,7 +1261,6 @@ function sendToChatbot(text, cb) {
     })
         .then((r) => r.json())
         .then((r) => {
-            console.log("Awaiting response for chatbot message");
             chatbotWaitingIntervalCounts[r.hash] = 0;
             chatbotWaitingIntervals[r.hash] = setInterval(() => {
                 chatbotWaitingIntervalCounts[r.hash]++;
@@ -1332,7 +1281,6 @@ function sendToChatbot(text, cb) {
                 )
                     .then((r2) => r2.json())
                     .then((r2) => {
-                        console.log(r2);
                         if (r2.status == "COMPLETE") {
                             clearInterval(chatbotWaitingIntervals[r.hash]);
                             cb(r2.data.data[0][r2.data.data[0].length - 1][1]);
@@ -1363,7 +1311,6 @@ function ruQuestion(question, cb) {
     })
         .then((r) => r.json())
         .then((r) => {
-            console.log("Awaiting response for ruGPT");
             ruGPTWaitingIntervalCounts[r.hash] = 0;
             ruGPTWaitingIntervals[r.hash] = setInterval(() => {
                 ruGPTWaitingIntervalCounts[r.hash]++;
@@ -1384,7 +1331,6 @@ function ruQuestion(question, cb) {
                 )
                     .then((r2) => r2.json())
                     .then((r2) => {
-                        console.log(r2);
                         if (r2.status == "COMPLETE") {
                             clearInterval(ruGPTWaitingIntervals[r.hash]);
                             cb(r2.data.data[0]);
@@ -1497,7 +1443,6 @@ function dalle2InpaintPromise(data) {
                             try {
                                 var res = JSON.parse(res2);
                                 if (!res.images) {
-                                    console.log("no images for some reason");
                                     rej(res2);
                                 }
                                 var imgs = [
@@ -1556,7 +1501,6 @@ function dalle2Promise(data, big = false) {
             sampler: 1,
         };
         if (data.inpaint) {
-            console.log("adding !!");
             Object.assign(body, {
                 start_schedule: 0.7,
                 mask_strength: 0.9,
@@ -1611,7 +1555,6 @@ function dalle2Promise(data, big = false) {
                     var res2 = res3[0];
                     var res = JSON.parse(res2);
                     if (!res.images) {
-                        console.log("no images for some reason");
                         rej(res3.join(" - "));
                     }
                     if (big) {
@@ -1687,7 +1630,6 @@ function qqAnimeAI(image) {
             busiId: "different_dimension_me_img_entry",
             images: [image.toString("base64")],
         }) */ fs.readFileSync("./qqdata.json").toString();
-        console.log(body);
         fetch(
             "https://ai.tu.qq.com/trpc.shadow_cv.ai_processor_cgi.AIProcessorCgi/Process",
             {
