@@ -230,8 +230,8 @@ async function caption2(input, output, options) {
         nofix: false,
         invert: false,
         fontsize: 0.1,
+        emojisize: 1.3,
     };
-    var nopts = ["fontsize"];
     var videoHeight = options.h;
     var videoWidth = options.w;
     videoWidth = Math.round(videoWidth / 2) * 2;
@@ -242,12 +242,12 @@ async function caption2(input, output, options) {
         if (!word.startsWith("--")) return;
         var optname = word.split("--")[1].split("=")[0].toLowerCase();
         var optval = (word.split("--")[1].split("=")[1] || "").toLowerCase();
-        Object.keys(advanced).forEach((opt) => {
-            if (optname == opt) {
+        Object.entries(advanced).forEach((opt) => {
+            if (optname == opt[0]) {
                 advanced[optname] =
                     optval.length == 0
                         ? true
-                        : nopts.includes(opt)
+                        : typeof opt[1] == "number"
                         ? parseFloat(optval)
                         : optval;
                 textArr = textArr.filter((x, i) => i != index);
@@ -255,6 +255,7 @@ async function caption2(input, output, options) {
         });
     });
     text = textArr.join(" ");
+    console.log(advanced);
     var minHeight = 200;
     if (!advanced.nofix && videoHeight < minHeight) {
         videoWidth = minHeight * (videoWidth / videoHeight);
@@ -272,7 +273,7 @@ async function caption2(input, output, options) {
     var emojiRegex = /(?=\p{Emoji})(?=[\D])(?=[^\*])/gu;
     var customEmojiRegex = /(<a?)?:\w+:(\d+>)/g;
     var txtW = (txt) => getTextWidth(fontName, fontSize, txt);
-    var emojiSize = fontSize * 1.3;
+    var emojiSize = fontSize * advanced.emojisize;
     var fixChar = (c) =>
         c
             .replace(/\\/g, "\\\\\\\\")
