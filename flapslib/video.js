@@ -374,22 +374,13 @@ async function caption2(input, output, options) {
     });
     emojis = emojis.map((e, i) => {
         if (e[1]) {
-            var emoji = client.emojis.cache.find(
-                (em) => em.id === e[0].split(":")[2].split(">")[0]
-            );
-            if (!emoji) {
-                return fs.writeFileSync(
-                    path.join(__dirname, "..", output + ".emoji." + i + ".png"),
-                    fs.readFileSync(path.join(__dirname, "..", "1x1.png"))
-                );
-            }
+            var url =
+                "https://cdn.discordapp.com/emojis/" +
+                e[0].split(":")[2].split(">")[0] +
+                ".png";
             return downloadPromise(
-                emoji.url,
-                path.join(
-                    __dirname,
-                    "..",
-                    output + ".emoji." + i + (emoji.animated ? ".gif" : ".png")
-                )
+                url,
+                path.join(__dirname, "..", output + ".emoji." + i + ".png")
             );
         } else {
             return downloadPromise(
