@@ -79,6 +79,11 @@ const owoify = require("owoify-js").default;
 const sizeOf = require("buffer-image-size");
 const { caption2, ffmpegBuffer } = require("./flapslib/video");
 const sharp = require("sharp");
+const apiRouter = require("./flapslib/api");
+const { loadImage } = require("canvas");
+const { MessageButton } = require("discord.js");
+const { MessageActionRow } = require("discord.js");
+const { log, esc, Color } = require("./flapslib/log");
 require("dotenv").config();
 
 flapslib.webhooks.setClient(client);
@@ -779,6 +784,8 @@ async function onMessage(msg, isRetry = false) {
                 msg.channel
             );
         }
+        var commandRan = msg.content.startsWith("!");
+        var webhookUsed = false;
         if (msg.content.startsWith("!..sticky")) {
             var stickyBot = commandArgs[1];
             flapslib.webhooks.updateUsers();
@@ -962,6 +969,7 @@ async function onMessage(msg, isRetry = false) {
                             msg.channel
                         );
                         toDelete = true;
+                        webhookUsed = true;
                     }
                     break;
             }
@@ -3709,6 +3717,10 @@ fbi files on ${commandArgString}: ${
                             onMessage(ref, true);
                         });
                     }
+                    break;
+                default:
+                    commandRan = false;
+                    break;
             }
         }
         log(
@@ -3718,7 +3730,13 @@ fbi files on ${commandArgString}: ${
                       `<wh:${idFromName(msg.author.username)}>`
                     : esc(Color.BrightCyan) +
                       `<${msg.author.username}#${msg.author.discriminator}>`
-            }${esc(Color.White)} ${msg.content} ${esc(Color.DarkGrey)}<${
+            }${esc(Color.White)} ${
+                commandRan
+                    ? esc(Color.BrightGreen)
+                    : webhookUsed
+                    ? esc(Color.BrightYellow)
+                    : ""
+            }${msg.content} ${esc(Color.DarkGrey)}<${
                 Date.now() - startProcessTime
             }ms> ${toDelete ? esc(Color.Red) + "<Delete>" : ""} ${
                 isRetry ? esc(Color.Cyan) + "<Retrying>" : ""
@@ -3859,13 +3877,6 @@ client.on("interactionCreate", (i) => {
 });
 
 client.login(process.env.DISCORD_TOKEN || "notoken");
-
-const apiRouter = require("./flapslib/api");
-const { loadImage } = require("canvas");
-const { MessageButton } = require("discord.js");
-const { MessageActionRow } = require("discord.js");
-const { log, esc, Color } = require("./flapslib/log");
-const { start } = require("repl");
 
 function startWebServer(port = 8080) {
     const express = require("express");
