@@ -654,7 +654,6 @@ function updateUsers() {
 function idFromName(name) {
     updateUsers();
     var u = null;
-    console.log(name);
     Object.entries(users).forEach(([id, data]) => {
         if (data[0] == name) u = id;
     });

@@ -32,6 +32,8 @@ var esc = (n) => "\x1b[" + n + "m";
 module.exports.esc = esc;
 module.exports.Color = Color;
 
-module.exports.log = (text, sub = null) => {
-    console.log((sub ? `${esc(Color.White)}[${sub}] ` : "") + text);
+module.exports.log = (text = "pigon", sub = null) => {
+    console.log(
+        (sub ? `${esc(Color.White)}[${sub}]${esc(0)} ` : "") + text + esc(0)
+    );
 };

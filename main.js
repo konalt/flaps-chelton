@@ -41,6 +41,7 @@ const {
     sendWebhookBuffer,
     getWebhook,
     sendWebhookFileButton,
+    idFromName,
 } = require("./flapslib/webhooks");
 const { cahWhiteCard } = require("./flapslib/cardsagainsthumanity");
 const { Image } = require("canvas");
@@ -634,16 +635,22 @@ function getSources(msg, types) {
     });
 }
 
+function time() {
+    var d = new Date();
+    var h = d.getHours().toString().padStart(2, "0");
+    var m = d.getMinutes().toString().padStart(2, "0");
+    var s = d.getSeconds().toString().padStart(2, "0");
+    return [h, m, s].join(":");
+}
+
 /**
  *
  * @param {Discord.Message} msg
  * @returns
  */
-async function onMessage(msg) {
+async function onMessage(msg, isRetry = false) {
     try {
-        console.log(
-            `${msg.author.username}#${msg.author.discriminator}: ${msg.content}`
-        );
+        var startProcessTime = Date.now();
         var hook = await getWebhook(msg.channel);
         if (
             !fs.existsSync("./errorhook.txt") ||
@@ -805,55 +812,10 @@ async function onMessage(msg) {
         } else if (msg.content.startsWith("<")) {
             var content = `${msg.content}`;
             flapslib.webhooks.updateUsers();
-            if (commandArgs[0].substring(1) == "all") {
-                Object.keys(flapslib.webhooks.users).forEach((user, index) => {
-                    setTimeout(() => {
-                        flapslib.webhooks
-                            .sendWebhook(
-                                user,
-                                content.substring(
-                                    content.split(" ")[0].length + 1
-                                ),
-                                false,
-                                msg.channel
-                            )
-                            .then((r) => {
-                                if (r == "ALL_WAIT") {
-                                    setTimeout(() => {
-                                        flapslib.webhooks
-                                            .sendWebhook(
-                                                user,
-                                                content.substring(
-                                                    content.split(" ")[0]
-                                                        .length + 1
-                                                ),
-                                                false,
-                                                msg.channel
-                                            )
-                                            .then();
-                                    }, 4000);
-                                }
-                            });
-                    }, index * 1500);
-                });
-                msg.delete();
-                return;
-            } else if (commandArgs[0].substring(1) == "random") {
-                var user = Object.keys(flapslib.webhooks.users)[
-                    Math.floor(
-                        Math.random() *
-                            Object.keys(flapslib.webhooks.users).length
-                    )
-                ];
-                flapslib.webhooks
-                    .sendWebhook(
-                        user,
-                        content.substring(content.split(" ")[0].length + 1),
-                        false,
-                        msg.channel
-                    )
-                    .then((r) => {
-                        if (r == "ALL_WAIT") {
+            switch (commandArgs[0].substring(1)) {
+                case "all":
+                    Object.keys(flapslib.webhooks.users).forEach(
+                        (user, index) => {
                             setTimeout(() => {
                                 flapslib.webhooks
                                     .sendWebhook(
@@ -864,35 +826,98 @@ async function onMessage(msg) {
                                         false,
                                         msg.channel
                                     )
-                                    .then();
-                            }, 4000);
+                                    .then((r) => {
+                                        if (r == "ALL_WAIT") {
+                                            setTimeout(() => {
+                                                flapslib.webhooks
+                                                    .sendWebhook(
+                                                        user,
+                                                        content.substring(
+                                                            content.split(
+                                                                " "
+                                                            )[0].length + 1
+                                                        ),
+                                                        false,
+                                                        msg.channel
+                                                    )
+                                                    .then();
+                                            }, 4000);
+                                        }
+                                    });
+                            }, index * 1500);
                         }
-                    });
-                msg.delete();
-                return;
-            } else if (commandArgs[0].substring(1) == "custom") {
-                console.log(
-                    msg.content.includes("--u") &&
-                        msg.content.includes("--c") &&
-                        msg.content.includes("--a")
-                );
-                if (
-                    !(
-                        msg.content.includes("--u") &&
-                        msg.content.includes("--c") &&
-                        msg.content.includes("--a")
-                    )
-                ) {
-                    flapslib.webhooks.sendWebhook(
-                        "flaps",
-                        "custom must have --u, --c and --a",
-                        false,
-                        msg.channel
                     );
-                    return;
-                }
-                flapslib.webhooks
-                    .sendWebhook(
+                    toDelete = true;
+                    break;
+                case "random":
+                    var user = Object.keys(flapslib.webhooks.users)[
+                        Math.floor(
+                            Math.random() *
+                                Object.keys(flapslib.webhooks.users).length
+                        )
+                    ];
+                    flapslib.webhooks
+                        .sendWebhook(
+                            user,
+                            content.substring(content.split(" ")[0].length + 1),
+                            false,
+                            msg.channel
+                        )
+                        .then((r) => {
+                            if (r == "ALL_WAIT") {
+                                setTimeout(() => {
+                                    flapslib.webhooks
+                                        .sendWebhook(
+                                            user,
+                                            content.substring(
+                                                content.split(" ")[0].length + 1
+                                            ),
+                                            false,
+                                            msg.channel
+                                        )
+                                        .then();
+                                }, 4000);
+                            }
+                        });
+                    toDelete = true;
+                    break;
+                case "custom":
+                    if (
+                        !(
+                            msg.content.includes("--u") &&
+                            msg.content.includes("--c") &&
+                            msg.content.includes("--a")
+                        )
+                    ) {
+                        flapslib.webhooks.sendWebhook(
+                            "flaps",
+                            "custom must have --u, --c and --a",
+                            false,
+                            msg.channel
+                        );
+                        return;
+                    }
+                    function param() {
+                        return (function () {
+                            var r = 0;
+                            content.split(" ").forEach((el, index) => {
+                                if (
+                                    index >
+                                        content
+                                            .split(" ")
+                                            .indexOf("--" + param) &&
+                                    el.startsWith("--")
+                                ) {
+                                    r = index - 2;
+                                }
+                            });
+                            if (r == 0) {
+                                r = content.split(" ").length;
+                            }
+                            return r;
+                        })();
+                    }
+                    sendWebhook(
                         "custom",
                         content.substring(content.split(" ")[0].length + 1),
                         false,
@@ -902,103 +927,44 @@ async function onMessage(msg) {
                                 .split(" ")
                                 .slice(
                                     content.split(" ").indexOf("--c") + 1,
-                                    (function () {
-                                        var r = 0;
-                                        content
-                                            .split(" ")
-                                            .forEach((el, index) => {
-                                                if (
-                                                    index >
-                                                        content
-                                                            .split(" ")
-                                                            .indexOf("--c") &&
-                                                    el.startsWith("--")
-                                                ) {
-                                                    r = index - 2;
-                                                }
-                                            });
-                                        if (r == 0) {
-                                            r = content.split(" ").length;
-                                        }
-                                        return r;
-                                    })()
+                                    param("c")
                                 )
                                 .join(" "),
                             avatar: content
                                 .split(" ")
                                 .slice(
                                     content.split(" ").indexOf("--a") + 1,
-                                    (function () {
-                                        var r = 0;
-                                        content
-                                            .split(" ")
-                                            .forEach((el, index) => {
-                                                if (
-                                                    index >
-                                                        content
-                                                            .split(" ")
-                                                            .indexOf("--a") &&
-                                                    el.startsWith("--")
-                                                ) {
-                                                    r = index;
-                                                }
-                                            });
-                                        if (r == 0) {
-                                            r = content.split(" ").length;
-                                        }
-                                        return r;
-                                    })()
+                                    param("a")
                                 )
                                 .join(" "),
                             username: content
                                 .split(" ")
                                 .slice(
                                     content.split(" ").indexOf("--u") + 1,
-                                    (function () {
-                                        var r = 0;
-                                        content
-                                            .split(" ")
-                                            .forEach((el, index) => {
-                                                if (
-                                                    index >
-                                                        content
-                                                            .split(" ")
-                                                            .indexOf("--u") &&
-                                                    el.startsWith("--")
-                                                ) {
-                                                    r = index;
-                                                }
-                                            });
-                                        if (r == 0) {
-                                            r = content.split(" ").length;
-                                        }
-                                        return r;
-                                    })()
+                                    param("u")
                                 )
                                 .join(" "),
                         },
                         msg
-                    )
-                    .then();
-                msg.delete();
-                return;
+                    );
+                    toDelete = true;
+                    break;
+                default:
+                    if (
+                        Object.keys(flapslib.webhooks.users).includes(
+                            commandArgs[0].substring(1)
+                        )
+                    ) {
+                        flapslib.webhooks.sendWebhook(
+                            commandArgs[0].substring(1),
+                            msg.content.substring(commandArgs[0].length + 1),
+                            false,
+                            msg.channel
+                        );
+                        toDelete = true;
+                    }
+                    break;
             }
-            if (
-                !Object.keys(flapslib.webhooks.users).includes(
-                    commandArgs[0].substring(1)
-                )
-            )
-                return;
-            flapslib.webhooks
-                .sendWebhook(
-                    commandArgs[0].substring(1),
-                    msg.content.substring(commandArgs[0].length + 1),
-                    false,
-                    msg.channel
-                )
-                .then(() => {
-                    msg.delete();
-                });
         } else {
             switch (command) {
                 case "!insanity": {
@@ -3735,22 +3701,36 @@ fbi files on ${commandArgString}: ${
                             msg.channel.messages
                                 .fetch(retryables[msg.author.id])
                                 .then((message) => {
-                                    onMessage(message);
+                                    onMessage(message, true);
                                 });
                         }
                     } else {
                         msg.fetchReference().then((ref) => {
-                            onMessage(ref);
+                            onMessage(ref, true);
                         });
                     }
             }
-            if (command != "!retry" && command.startsWith("!")) {
-                retryables[msg.author.id] = msg.id;
-                fs.writeFileSync("retrycache.json", JSON.stringify(retryables));
-            }
-            if (toDelete) {
-                msg.delete();
-            }
+        }
+        log(
+            `${esc(Color.DarkGrey)}[${time()}] ${
+                msg.author.bot && msg.author.discriminator == "0000"
+                    ? esc(Color.BrightYellow) +
+                      `<wh:${idFromName(msg.author.username)}>`
+                    : esc(Color.BrightCyan) +
+                      `<${msg.author.username}#${msg.author.discriminator}>`
+            }${esc(Color.White)} ${msg.content} ${esc(Color.DarkGrey)}<${
+                Date.now() - startProcessTime
+            }ms> ${toDelete ? esc(Color.Red) + "<Delete>" : ""} ${
+                isRetry ? esc(Color.Cyan) + "<Retrying>" : ""
+            }`,
+            "chat"
+        );
+        if (command != "!retry" && command.startsWith("!")) {
+            retryables[msg.author.id] = msg.id;
+            fs.writeFileSync("retrycache.json", JSON.stringify(retryables));
+        }
+        if (toDelete) {
+            msg.delete();
         }
     } catch (err) {
         addError(err);
@@ -3884,6 +3864,8 @@ const apiRouter = require("./flapslib/api");
 const { loadImage } = require("canvas");
 const { MessageButton } = require("discord.js");
 const { MessageActionRow } = require("discord.js");
+const { log, esc, Color } = require("./flapslib/log");
+const { start } = require("repl");
 
 function startWebServer(port = 8080) {
     const express = require("express");
