@@ -243,26 +243,17 @@ async function sendWebhookFile(
         if (failcb) {
             failcb();
         } else {
-            var fn = path.basename(filename);
-            var konalt_path = "E:/MBG/2Site/sites/konalt/flaps/bigfile/" + fn;
-            fs.copyFile(filename, konalt_path, (err) => {
-                if (err) {
-                    sendWebhook(id, "Send error: " + err, msgChannel);
-                } else {
-                    var konaltURL = "https://konalt.us.to:4930/bigfile/" + fn;
-                    var fsize = fs.statSync(konalt_path).size;
-                    var formattedFilesize = filesize(fsize);
-                    sendWebhook(
-                        id,
-                        pre +
-                            "\nThe resulting file was larger than 8MB (" +
-                            formattedFilesize +
-                            '), so it was uploaded to an "external" server.\n' +
-                            konaltURL,
-                        msgChannel
-                    );
-                }
-            });
+            var url = "https://flaps.us.to/cache/" + path.basename(filename);
+            var fsize = filesize(fs.statSync(filename).size);
+            sendWebhook(
+                id,
+                pre +
+                    "\nThe resulting file was larger than 8MB (" +
+                    fsize +
+                    "). Download or view at this URL:\n" +
+                    url,
+                msgChannel
+            );
         }
     } else {
         if (multipartUpload) {

@@ -85,6 +85,7 @@ const { loadImage } = require("canvas");
 const { MessageButton } = require("discord.js");
 const { MessageActionRow } = require("discord.js");
 const { log, esc, Color } = require("./flapslib/log");
+const { Router } = require("express");
 require("dotenv").config();
 
 flapslib.webhooks.setClient(client);
@@ -3828,12 +3829,25 @@ client.on("interactionCreate", (i) => {
 
 client.login(process.env.DISCORD_TOKEN || "notoken");
 
+var cacheRouter = new Router({
+    mergeParams: true,
+});
+
+cacheRouter.get("*", (req, res) => {
+    if (fs.existsSync(__dirname + "/images/cache" + req.path)) {
+        res.sendFile(__dirname + "/images/cache" + req.path);
+    } else {
+        res.status(404).contentType("text/plain").send("404 Not Found");
+    }
+});
+
 function startWebServer(port = 8080) {
     const express = require("express");
     var app = express();
     app.use(express.urlencoded({ extended: true }));
     app.use(express.json({ extended: true, limit: "50mb" }));
     app.use("/api", apiRouter);
+    app.use("/cache", cacheRouter);
     app.get("/", (req, res) => {
         res.sendFile(__dirname + "/web/index.html");
     });
