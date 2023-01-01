@@ -1,5 +1,6 @@
 const yt = require("./yt");
 const ai = require("./ai");
+const log = require("./log");
 const video = require("./video");
 const canvas = require("./canvas");
 const webhooks = require("./webhooks");
@@ -36,4 +37,5 @@ module.exports = {
     analytics: analytics,
     tictactoe: tictactoe,
     connectfour,
+    log,
 };
