@@ -3799,9 +3799,7 @@ setInterval(() => {
     if (d.getMinutes() == 0 && d.getHours() == 0 && d.getSeconds() < 1) {
         sendWebhook(
             "flaps",
-            "MIDNIGHT BABEYY!!!!! ITS FUCKIN UHHH " +
-                d.getFullYear() +
-                " FUCK YEA BAHBABEYYY!!!!!",
+            "midnight",
             false,
             client.channels.cache.get("882743320554643476")
         );
