@@ -3,6 +3,7 @@ var { sendWebhook } = require("./webhooks");
 var parser = new DomParser();
 var fetch = require("node-fetch");
 const { addError } = require("./analytics");
+const { log, esc, Color } = require("./log");
 
 async function morbiusReview(msgChannel) {
     try {

@@ -12,6 +12,7 @@ const {
 } = require("./video");
 const { resolve } = require("path");
 const { resourceLimits } = require("worker_threads");
+const { log, esc, Color } = require("./log");
 
 /**
  * @type {Router}

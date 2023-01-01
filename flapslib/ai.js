@@ -12,6 +12,7 @@ const fetch = require("node-fetch");
 const { sentence } = require("txtgen/dist/cjs/txtgen");
 const MarkovTextGenerator = require("markov-text-generator").default;
 const WomboDreamApi = require("wombo-dream-api");
+const { log, esc, Color } = require("./log");
 var dream = WomboDreamApi.buildDefaultInstance();
 require("dotenv").config();
 

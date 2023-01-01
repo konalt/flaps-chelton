@@ -7,6 +7,7 @@ const owoify = require("owoify-js").default;
 const Discord = require("discord.js");
 const path = require("path");
 const { filesize } = require("filesize");
+const { log, esc, Color } = require("./log");
 
 var users = {};
 

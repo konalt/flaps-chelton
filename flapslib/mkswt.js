@@ -6,6 +6,7 @@ const path = require("path");
 const fetch = require("node-fetch");
 const { complexFFmpeg } = require("./video");
 const { addError } = require("./analytics");
+const { log, esc, Color } = require("./log");
 
 var puppeteerInitialized = false;
 var aiPageData = {};

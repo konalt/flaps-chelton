@@ -7,6 +7,7 @@ const { cahWhiteCard } = require("./cardsagainsthumanity");
 const { createCanvas } = require("canvas");
 const { loadImage } = require("canvas");
 const { uuidv4 } = require("./util");
+const { log, esc, Color } = require("./log");
 
 function n(type) {
     return (

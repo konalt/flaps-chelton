@@ -6,6 +6,7 @@ const path = require("path");
 const { filesize } = require("filesize");
 const e = require("express");
 const mime = require("mime-types");
+const { log, esc, Color } = require("./log");
 
 async function addText(name, text, msg) {
     if (typeof text == "string") {

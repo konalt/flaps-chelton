@@ -5,6 +5,7 @@ const Discord = require("discord.js");
 const { uuidv4 } = require("./ai");
 const fs = require("fs");
 const { addError } = require("./analytics");
+const { log, esc, Color } = require("./log");
 
 function randomArr(arr) {
     return arr[Math.floor(Math.random() * arr.length)];

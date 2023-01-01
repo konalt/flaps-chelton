@@ -3,6 +3,7 @@ const path = require("path");
 const { stdout } = require("process");
 const { download } = require("../flapslib");
 const { sendWebhook } = require("../flapslib/webhooks");
+const { log, esc, Color } = require("../flapslib/log");
 
 var font = "fonts/font.ttf";
 

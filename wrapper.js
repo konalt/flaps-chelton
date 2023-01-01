@@ -1,7 +1,7 @@
 const cp = require("child_process");
 const fs = require("fs");
 const fetch = require("node-fetch");
-const { log } = require("./flapslib/log");
+const { log, esc, Color } = require("./flapslib/log");
 
 var lastNL = true;
 var lastLogCount = 20;

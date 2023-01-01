@@ -5,6 +5,7 @@ const { sendWebhook, sendWebhookFile } = require("./webhooks");
 const path = require("path");
 const download = require("./download");
 const { uuidv4 } = require("./ai");
+const { log, esc, Color } = require("./log");
 
 function getFirstResultID(search) {
     if (search.includes("weezer")) return "kemivUKb4f4";

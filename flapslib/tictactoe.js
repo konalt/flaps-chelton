@@ -1,6 +1,6 @@
 const { MessageComponentInteraction } = require("discord.js"); //eslint-disable-line no-unused-vars
-const { log } = require("./log");
 const { sendWebhookButton, editWebhookButton } = require("./webhooks");
+const { log, esc, Color } = require("./log");
 
 function getButtons(board) {
     var btns = [
