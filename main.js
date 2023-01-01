@@ -3706,7 +3706,7 @@ fbi files on ${commandArgString}: ${
                           })`
                 } ${esc(Color.DarkGrey)}<${Date.now() - startProcessTime}ms>${
                     toDelete ? esc(Color.Red) + " <Delete>" : ""
-                } ${isRetry ? esc(Color.Cyan) + " <Retrying>" : ""}`,
+                }${isRetry ? esc(Color.Cyan) + " <Retrying>" : ""}`,
                 "chat"
             );
         }
