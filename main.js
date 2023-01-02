@@ -85,7 +85,7 @@ const { randomRedditImage } = require("./flapslib/fetchapis");
 const { compress, armstrongify } = require("./flapslib/videowrapper");
 const { addMessage, addError } = require("./flapslib/analytics");
 const { downloadPromise, tictactoe, connectfour } = require("./flapslib/index");
-const { tenorURLToGifURL } = require("./flapslib/util");
+const { tenorURLToGifURL, time } = require("./flapslib/util");
 const owoify = require("owoify-js").default;
 const sizeOf = require("buffer-image-size");
 const { caption2, ffmpegBuffer } = require("./flapslib/video");
@@ -651,14 +651,6 @@ function getSources(msg, types) {
                 reject(r);
             });
     });
-}
-
-function time() {
-    var d = new Date();
-    var h = d.getHours().toString().padStart(2, "0");
-    var m = d.getMinutes().toString().padStart(2, "0");
-    var s = d.getSeconds().toString().padStart(2, "0");
-    return [h, m, s].join(":");
 }
 
 var doneUsers = [];

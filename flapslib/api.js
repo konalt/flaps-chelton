@@ -1,6 +1,6 @@
 const { Router } = require("express");
 const { watermark, andrewTate, fakeNews, spotifyThisIs } = require("./canvas");
-const { dataURLToBuffer, uuidv4 } = require("./util");
+const { dataURLToBuffer, uuidv4, time } = require("./util");
 const { readFileSync, fstat, writeFileSync } = require("fs");
 const { extension } = require("mime-types");
 const {
@@ -30,6 +30,7 @@ const canvasRouter = new Router({
 });
 
 canvasRouter.post("/watermark", (req, res) => {
+    logRequest(req);
     var file = req.body.file;
     if (
         !file ||
@@ -50,6 +51,7 @@ canvasRouter.post("/watermark", (req, res) => {
 });
 
 canvasRouter.post("/tate", (req, res) => {
+    logRequest(req);
     var file = req.body.file;
     var text = req.body.text;
     if (
@@ -72,6 +74,7 @@ canvasRouter.post("/tate", (req, res) => {
 });
 
 canvasRouter.post("/news", (req, res) => {
+    logRequest(req);
     var file = req.body.file;
     var headline = req.body.headline;
     var ticker = req.body.ticker;
@@ -96,6 +99,7 @@ canvasRouter.post("/news", (req, res) => {
 });
 
 canvasRouter.post("/thisis", (req, res) => {
+    logRequest(req);
     var file = req.body.file;
     var text = req.body.text;
     if (
@@ -136,6 +140,7 @@ function xbuf(file, ext = null) {
 }
 
 canvasRouter.post("/caption2", (req, res) => {
+    logRequest(req);
     var file = req.body.file;
     var text = req.body.text;
     var filetypes = "image/png,image/jpeg,image/gif,video/mp4".split(",");
@@ -163,6 +168,7 @@ canvasRouter.post("/caption2", (req, res) => {
 });
 
 canvasRouter.post("/speed", (req, res) => {
+    logRequest(req);
     var file = req.body.file;
     var speedX = req.body.speed;
     var filetypes = "image/gif,video/mp4,audio/mpeg".split(",");
@@ -247,7 +253,6 @@ var ffmpegEffects = {
 
 function doEffect(eff, file, res, options) {
     xbuf(file, options._ext).then(([inFile, outFile]) => {
-        console.log(inFile, outFile);
         eff(inFile, outFile, options)
             .then(() => {
                 res.contentType(
@@ -260,8 +265,21 @@ function doEffect(eff, file, res, options) {
     });
 }
 
+function logRequest(req) {
+    var ip = req.header("x-forwarded-for") || req.socket.remoteAddress;
+    log(
+        `${esc(Color.DarkGrey)}[${time()}] ${esc(
+            Color.White
+        )}API Request for effect ${esc(Color.BrightYellow)}${req.path.substring(
+            1
+        )}${esc(Color.White)} by IP ${esc(Color.Blue)}${ip}`,
+        "api"
+    );
+}
+
 Object.entries(ffmpegEffects).forEach((effect) => {
     canvasRouter.post("/" + effect[0], (req, res) => {
+        logRequest(req);
         var file = req.body.file;
         var filetypes = effect[1].filetypes.split(",");
         if (!file || !filetypes.includes(file.split(":")[1].split(";")[0]))

@@ -32,9 +32,18 @@ function bufferToDataURL(buffer, type) {
     return "data:" + type + ";base64," + buffer.toString("base64");
 }
 
+function time() {
+    var d = new Date();
+    var h = d.getHours().toString().padStart(2, "0");
+    var m = d.getMinutes().toString().padStart(2, "0");
+    var s = d.getSeconds().toString().padStart(2, "0");
+    return [h, m, s].join(":");
+}
+
 module.exports = {
     uuidv4: uuidv4,
     tenorURLToGifURL: tenorURLToGifURL,
     dataURLToBuffer,
     bufferToDataURL,
+    time,
 };
