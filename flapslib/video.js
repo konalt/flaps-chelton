@@ -696,8 +696,7 @@ async function christmasWeek(input, output) {
         [
             "-y",
             `-i ${file("christmas.mp4")}`,
-            `-i ${file(input[0])}`,
-            `-i ${file(input[1])}`,
+            `-i ${file(input)}`,
             "-filter_complex " + fullFilter,
             "-t 18",
             '-map "[oout]"',
@@ -906,7 +905,12 @@ async function spin(input, output, options) {
                     ? ",split[s0][s1];[s0]palettegen[p];[s1][p]paletteuse"
                     : ""
             }"`,
-            file(output + (options.gif ? ".gif" : ".mp4")),
+            file(
+                output
+                    .split(".")
+                    .slice(0, output.split(".").length - 1)
+                    .join(".") + (options.gif ? ".gif" : ".mp4")
+            ),
         ].join(" ")
     );
 }

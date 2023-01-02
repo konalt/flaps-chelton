@@ -185,32 +185,40 @@ canvasRouter.post("/speed", (req, res) => {
     });
 });
 
-canvasRouter.post("/compress", (req, res) => {
-    var file = req.body.file;
-    var filetypes = "video/mp4".split(",");
-    if (!file || !filetypes.includes(file.split(":")[1].split(";")[0]))
-        return res.status(400).send({
-            error: "Parameter 'file' must be a data URI for video/mp4.",
-        });
-    xbuf(file).then(([inFile, outFile]) => {
-        compress(inFile, outFile)
-            .then(() => {
-                res.contentType(file.split(":")[1].split(";")[0]).sendFile(
-                    resolve(__dirname + "/../" + outFile)
-                );
-            })
-            .catch((err) => {
-                res.status(500).send(err);
-            });
-    });
-});
+var ffmpegEffects = {
+    holymoly: {
+        filetypes: "image/png,image/jpeg",
+        effect: video.holyMolyGreenscreen,
+        ext: "mp4",
+    },
+    spin: {
+        filetypes: "image/png,image/jpeg",
+        effect: video.spin,
+        ext: "gif",
+        options: {
+            gif: true,
+            length: 2,
+            speed: 1,
+        },
+    },
+    christmas: {
+        filetypes: "image/png,image/jpeg",
+        effect: video.christmasWeek,
+        ext: "mp4",
+    },
+    compress: {
+        filetypes: "video/mp4,image/gif,image/png,image/jpeg",
+        effect: video.compress,
+    },
+};
 
-function doEffect(eff, file, res, ext = null) {
-    xbuf(file, ext).then(([inFile, outFile]) => {
-        eff(inFile, outFile)
+function doEffect(eff, file, res, options) {
+    xbuf(file, options._ext).then(([inFile, outFile]) => {
+        console.log(inFile, outFile);
+        eff(inFile, outFile, options)
             .then(() => {
                 res.contentType(
-                    ext || file.split(":")[1].split(";")[0]
+                    options._ext || file.split(":")[1].split(";")[0]
                 ).sendFile(resolve(__dirname + "/../" + outFile));
             })
             .catch((err) => {
@@ -219,14 +227,23 @@ function doEffect(eff, file, res, ext = null) {
     });
 }
 
-canvasRouter.post("/holymoly", (req, res) => {
-    var file = req.body.file;
-    var filetypes = "image/png,image/jpeg".split(",");
-    if (!file || !filetypes.includes(file.split(":")[1].split(";")[0]))
-        return res.status(400).send({
-            error: "Parameter 'file' must be a data URI for video/mp4.",
-        });
-    doEffect(video.holyMolyGreenscreen, file, res, "mp4");
+Object.entries(ffmpegEffects).forEach((effect) => {
+    canvasRouter.post("/" + effect[0], (req, res) => {
+        var file = req.body.file;
+        var filetypes = effect[1].filetypes.split(",");
+        if (!file || !filetypes.includes(file.split(":")[1].split(";")[0]))
+            return res.status(400).send({
+                error:
+                    "Parameter 'file' must be a data URI for " +
+                    effect[1].filetypes.join(", "),
+            });
+        doEffect(
+            effect[1].effect,
+            file,
+            res,
+            Object.assign(effect[1].options || {}, { _ext: effect[1].ext })
+        );
+    });
 });
 
 canvasRouter.get("/test", (_req, res) => {
