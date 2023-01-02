@@ -13,6 +13,7 @@ const {
 const { resolve } = require("path");
 const { resourceLimits } = require("worker_threads");
 const { log, esc, Color } = require("./log");
+const { video } = require(".");
 
 /**
  * @type {Router}
@@ -116,7 +117,7 @@ canvasRouter.post("/thisis", (req, res) => {
         });
 });
 
-function xbuf(file) {
+function xbuf(file, ext = null) {
     return new Promise((res, rej) => {
         var buf = dataURLToBuffer(file);
         var inFile =
@@ -125,9 +126,7 @@ function xbuf(file) {
             "." +
             extension(file.split(":")[1].split(";")[0]);
         var outFile =
-            "images/cache/" +
-            uuidv4() +
-            "." +
+            "images/cache/" + uuidv4() + "." + ext ||
             extension(file.split(":")[1].split(";")[0]);
         writeFileSync(inFile, buf);
         res([inFile, outFile]);
@@ -204,6 +203,30 @@ canvasRouter.post("/compress", (req, res) => {
                 res.status(500).send(err);
             });
     });
+});
+
+function doEffect(eff, file, res, ext = null) {
+    xbuf(file, ext).then(([inFile, outFile]) => {
+        eff(inFile, outFile)
+            .then(() => {
+                res.contentType(file.split(":")[1].split(";")[0]).sendFile(
+                    resolve(__dirname + "/../" + outFile)
+                );
+            })
+            .catch((err) => {
+                res.status(500).send(err);
+            });
+    });
+}
+
+canvasRouter.post("/holymoly", (req, res) => {
+    var file = req.body.file;
+    var filetypes = "image/png,image/jpeg".split(",");
+    if (!file || !filetypes.includes(file.split(":")[1].split(";")[0]))
+        return res.status(400).send({
+            error: "Parameter 'file' must be a data URI for video/mp4.",
+        });
+    doEffect(video.holyMolyGreenscreen, file, res, "mp4");
 });
 
 canvasRouter.get("/test", (_req, res) => {
