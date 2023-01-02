@@ -1047,9 +1047,16 @@ async function onMessage(msg, isRetry = false) {
                             );
                         });
                     }
-                    if (commandArgs[1]) {
-                        if (commandArgs[1].match(/(<a?)?:\w+:(\d+>)/g)) {
-                            var e = commandArgs[1];
+                    var emj = commandArgs[1];
+                    if (!emj) {
+                        var ref = await msg.fetchReference();
+                        if (ref) {
+                            emj = ref.content.split(" ")[0];
+                        }
+                    }
+                    if (emj) {
+                        if (emj.match(/(<a?)?:\w+:(\d+>)/g)) {
+                            var e = emj;
                             var id = e.split(":")[2].split(">")[0];
                             var name = e.split(":")[1];
                             var anim = e.split(":")[0].split("<")[1] == "a";
@@ -1060,15 +1067,13 @@ async function onMessage(msg, isRetry = false) {
                                 (anim ? "gif" : "png");
                             s(url, anim, name);
                         } else if (
-                            commandArgs[1].match(
-                                /(?=\p{Emoji})(?=[\D])(?=[^\*])/gu
-                            )
+                            emj.match(/(?=\p{Emoji})(?=[\D])(?=[^\*])/gu)
                         ) {
                             var url = twemoji
-                                .parse(commandArgs[1], { size: 72 })
+                                .parse(emj, { size: 72 })
                                 .split('src="')[1]
                                 .split('"/>')[0];
-                            s(url, false, commandArgs[1]);
+                            s(url, false, emj);
                         } else {
                             sendWebhook(
                                 "flaps",
