@@ -82,6 +82,7 @@ async function ffmpeg(args, quiet = false) {
 }
 async function ffprobe(args) {
     return new Promise((resolve) => {
+        var quiet = false;
         var startTime = Date.now();
         var ffmpegInstance = cp.spawn("ffprobe", args.split(" "), {
             shell: true,
