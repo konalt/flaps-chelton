@@ -86,6 +86,7 @@ const { MessageButton } = require("discord.js");
 const { MessageActionRow } = require("discord.js");
 const { log, esc, Color } = require("./flapslib/log");
 const { Router } = require("express");
+const twemoji = require("twemoji");
 require("dotenv").config();
 
 flapslib.webhooks.setClient(client);
@@ -977,6 +978,55 @@ async function onMessage(msg, isRetry = false) {
             }
         } else {
             switch (command) {
+                case "!emoji":
+                    function s(url, gif, name) {
+                        downloadPromise(url, "dataurl").then((emoji) => {
+                            sendWebhookBuffer(
+                                "flaps",
+                                emoji,
+                                "your emoji is: damn " + name,
+                                msg.channel,
+                                n("Emoji", gif ? "gif" : "png")
+                            );
+                        });
+                    }
+                    if (commandArgs[1]) {
+                        if (commandArgs[1].match(/(<a?)?:\w+:(\d+>)/g)) {
+                            var e = commandArgs[1];
+                            var id = e.split(":")[2].split(">")[0];
+                            var name = e.split(":")[1];
+                            var anim = e.split(":")[0].split("<")[1] == "a";
+                            var url =
+                                "https://cdn.discordapp.com/emojis/" +
+                                id +
+                                "." +
+                                (anim ? "gif" : "png");
+                            s(url, anim, name);
+                        } else if (
+                            commandArgs[1].match(
+                                /(?=\p{Emoji})(?=[\D])(?=[^\*])/gu
+                            )
+                        ) {
+                            var url = twemoji
+                                .parse(commandArgs[1], { size: 72 })
+                                .split('src="')[1]
+                                .split('"/>')[0];
+                            s(url, false, commandArgs[1]);
+                        } else {
+                            sendWebhook(
+                                "flaps",
+                                "that aint an emoji!",
+                                msg.channel
+                            );
+                        }
+                    } else {
+                        sendWebhook(
+                            "flaps",
+                            "sorry, ol' buddy, ol' pal! you need to gimme an emoji!!",
+                            msg.channel
+                        );
+                    }
+                    break;
                 case "!insanity": {
                     setSanity(parseFloat(commandArgs[1]));
                     sendWebhook(
