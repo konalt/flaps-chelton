@@ -1458,7 +1458,7 @@ async function andrewTate(buffer, txt) {
 }
 
 async function spotifyThisIs(buffer, text) {
-    return new Promise((resolve) => {
+    return new Promise((resolve, reject) => {
         Promise.all([loadImage(buffer), loadImage(pj("thisis.png"))]).then(
             ([img, thisis]) => {
                 var c = createCanvas(thisis.width, thisis.height);
