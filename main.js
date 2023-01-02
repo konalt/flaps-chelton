@@ -6,7 +6,16 @@ const fetch = require("node-fetch");
 const canvas = require("canvas");
 const client = new Discord.Client({
     partials: ["MESSAGE", "CHANNEL", "REACTION", "GUILD_MEMBER", "USER"],
-    intents: ["GUILDS", "GUILD_MESSAGES", "GUILD_VOICE_STATES"],
+    intents: [
+        "GUILD_MEMBERS",
+        "GUILD_MESSAGES",
+        "GUILD_MESSAGE_REACTIONS",
+        "GUILD_VOICE_STATES",
+        "GUILD_WEBHOOKS",
+        "MESSAGE_CONTENT",
+        "GUILDS",
+        "GUILD_PRESENCES",
+    ], // why
 });
 const versus = require("./versus/run");
 const flapslib = require("./flapslib/index");
@@ -42,6 +51,7 @@ const {
     getWebhook,
     sendWebhookFileButton,
     idFromName,
+    users,
 } = require("./flapslib/webhooks");
 const { cahWhiteCard } = require("./flapslib/cardsagainsthumanity");
 const { Image } = require("canvas");
@@ -651,6 +661,51 @@ function time() {
     return [h, m, s].join(":");
 }
 
+var doneUsers = [];
+var isMidnightActive = false;
+/**
+ *
+ * @param {Discord.TextBasedChannel} channel
+ * @param {string} text
+ */
+async function midnight(channel) {
+    sendWebhook("flaps", "midnight", channel);
+    var members = await channel.guild.members.fetch();
+    var usersRequired = [];
+    for (const member of members) {
+        if (member[1].presence && !member[1].user.bot) {
+            if (member[1].presence.status != "offline") {
+                console.log(member[1].user.username);
+                usersRequired.push(member[0]);
+            }
+        }
+    }
+    isMidnightActive = true;
+    setTimeout(() => {
+        var nonusers = usersRequired.filter((x) => !doneUsers.includes(x));
+        if (nonusers.length > 0) {
+            sendWebhook(
+                "flaps",
+                "<@" +
+                    nonusers.join(">, <@") +
+                    ">" +
+                    ". YOU FUCKER" +
+                    (nonusers.length > 1 ? "S" : "") +
+                    ". have MISSED .. the MIDNIGH R!!!!",
+                channel
+            );
+        } else {
+            sendWebhook(
+                "flaps",
+                "good job everyone. another great day.",
+                channel
+            );
+        }
+        isMidnightActive = false;
+        doneUsers = [];
+    }, 60 * 1000); // 1 min
+}
+
 /**
  *
  * @param {Discord.Message} msg
@@ -786,6 +841,16 @@ async function onMessage(msg, isRetry = false) {
                 false,
                 msg.channel
             );
+        }
+        var mem = await msg.guild.members.fetch(msg.member);
+        if (
+            scal.includes("midnight") &&
+            isMidnightActive &&
+            !msg.author.bot &&
+            !doneUsers.includes(mem.id)
+        ) {
+            doneUsers.push(mem.id);
+            msg.react("👍");
         }
         var commandRan = msg.content.startsWith("!");
         var webhookUsed = false;
@@ -3839,12 +3904,7 @@ setInterval(() => {
 setInterval(() => {
     var d = new Date();
     if (d.getMinutes() == 0 && d.getHours() == 0 && d.getSeconds() < 1) {
-        sendWebhook(
-            "flaps",
-            "midnight",
-            false,
-            client.channels.cache.get("882743320554643476")
-        );
+        midnight(client.channels.cache.get("882743320554643476"));
     }
     if (!fs.existsSync("scal_allowtime.txt"))
         fs.writeFileSync("scal_allowtime.txt", "no");
