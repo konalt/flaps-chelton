@@ -209,9 +209,9 @@ function doEffect(eff, file, res, ext = null) {
     xbuf(file, ext).then(([inFile, outFile]) => {
         eff(inFile, outFile)
             .then(() => {
-                res.contentType(file.split(":")[1].split(";")[0]).sendFile(
-                    resolve(__dirname + "/../" + outFile)
-                );
+                res.contentType(
+                    ext || file.split(":")[1].split(";")[0]
+                ).sendFile(resolve(__dirname + "/../" + outFile));
             })
             .catch((err) => {
                 res.status(500).send(err);
