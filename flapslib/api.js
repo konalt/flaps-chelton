@@ -126,8 +126,10 @@ function xbuf(file, ext = null) {
             "." +
             extension(file.split(":")[1].split(";")[0]);
         var outFile =
-            "images/cache/" + uuidv4() + "." + ext ||
-            extension(file.split(":")[1].split(";")[0]);
+            "images/cache/" +
+            uuidv4() +
+            "." +
+            (ext || extension(file.split(":")[1].split(";")[0]));
         writeFileSync(inFile, buf);
         res([inFile, outFile]);
     });
@@ -209,6 +211,37 @@ var ffmpegEffects = {
     compress: {
         filetypes: "video/mp4,image/gif,image/png,image/jpeg",
         effect: video.compress,
+    },
+    cookingvideo: {
+        filetypes: "image/png,image/jpeg",
+        effect: video.cookingVideo,
+        ext: "mp4",
+    },
+    thehorror: {
+        filetypes: "image/png,image/jpeg",
+        effect: video.theHorror,
+        ext: "mp4",
+    },
+    stewie: {
+        filetypes: "image/png,image/jpeg",
+        effect: video.stewie,
+        ext: "mp4",
+    },
+    reverse: {
+        filetypes: "video/mp4,audio/mpeg",
+        effect: video.reverse,
+    },
+    invert: {
+        filetypes: "video/mp4,image/gif,image/png,image/jpeg",
+        effect: video.invert,
+    },
+    blackwhite: {
+        filetypes: "video/mp4,image/gif,image/png,image/jpeg",
+        effect: video.blackWhite,
+    },
+    tinygif: {
+        filetypes: "image/gif",
+        effect: video.compressGIF,
     },
 };
 

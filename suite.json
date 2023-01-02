@@ -150,6 +150,83 @@
                 "paramname": "file"
             }],
             "output": "any"
+        },
+        "cookingvideo": {
+            "name": "Cooking Video",
+            "url": "/canvas/cookingvideo",
+            "inputs": [{
+                "name": "Input File",
+                "name2": "Upload your input file here",
+                "type": "image",
+                "paramname": "file"
+            }],
+            "output": "any"
+        },
+        "thehorror": {
+            "name": "The Horror",
+            "url": "/canvas/thehorror",
+            "inputs": [{
+                "name": "Input File",
+                "name2": "Upload your input file here",
+                "type": "image",
+                "paramname": "file"
+            }],
+            "output": "any"
+        },
+        "stewie": {
+            "name": "Stewie",
+            "url": "/canvas/stewie",
+            "inputs": [{
+                "name": "Input File",
+                "name2": "Upload your input file here",
+                "type": "image",
+                "paramname": "file"
+            }],
+            "output": "any"
+        },
+        "reverse": {
+            "name": "Reverse",
+            "url": "/canvas/reverse",
+            "inputs": [{
+                "name": "Input File",
+                "name2": "Upload your input file here",
+                "type": "va",
+                "paramname": "file"
+            }],
+            "output": "any"
+        },
+        "invert": {
+            "name": "Invert",
+            "url": "/canvas/invert",
+            "inputs": [{
+                "name": "Input File",
+                "name2": "Upload your input file here",
+                "type": "caption2source",
+                "paramname": "file"
+            }],
+            "output": "any"
+        },
+        "blackwhite": {
+            "name": "Black and White",
+            "url": "/canvas/blackwhite",
+            "inputs": [{
+                "name": "Input File",
+                "name2": "Upload your input file here",
+                "type": "caption2source",
+                "paramname": "file"
+            }],
+            "output": "any"
+        },
+        "tinygif": {
+            "name": "Tiny GIF",
+            "url": "/canvas/tinygif",
+            "inputs": [{
+                "name": "Input File",
+                "name2": "Upload your input file here",
+                "type": "gif",
+                "paramname": "file"
+            }],
+            "output": "any"
         }
     }
 }

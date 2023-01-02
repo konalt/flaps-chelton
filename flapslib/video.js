@@ -905,13 +905,18 @@ async function spin(input, output, options) {
                     ? ",split[s0][s1];[s0]palettegen[p];[s1][p]paletteuse"
                     : ""
             }"`,
-            file(
-                output
-                    .split(".")
-                    .slice(0, output.split(".").length - 1)
-                    .join(".") + (options.gif ? ".gif" : ".mp4")
-            ),
+            file(setext(output, options.gif ? "gif" : "mp4")),
         ].join(" ")
+    );
+}
+function setext(fn, ext) {
+    return (
+        fn
+            .split(".")
+            .slice(0, fn.split(".").length - 1)
+            .join(".") +
+        "." +
+        ext
     );
 }
 async function cookingVideo(input, output) {
@@ -935,7 +940,7 @@ async function cookingVideo(input, output) {
             "-shortest",
             '-map "[final]"',
             "-map 1:a:0",
-            file(output + ".mp4"),
+            file(setext(output, "mp4")),
         ].join(" ")
     );
 }
