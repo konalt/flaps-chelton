@@ -117,6 +117,39 @@
                 }
             ],
             "output": "image"
+        },
+        "holymoly": {
+            "name": "Holy Moly",
+            "url": "/canvas/holymoly",
+            "inputs": [{
+                "name": "Input File",
+                "name2": "Upload your input file here",
+                "type": "image",
+                "paramname": "file"
+            }],
+            "output": "any"
+        },
+        "christmasweek": {
+            "name": "Christmas is in a Week!",
+            "url": "/canvas/christmas",
+            "inputs": [{
+                "name": "Input File",
+                "name2": "Upload your input file here",
+                "type": "image",
+                "paramname": "file"
+            }],
+            "output": "any"
+        },
+        "spin": {
+            "name": "Spin",
+            "url": "/canvas/spin",
+            "inputs": [{
+                "name": "Input File",
+                "name2": "Upload your input file here",
+                "type": "image",
+                "paramname": "file"
+            }],
+            "output": "any"
         }
     }
 }
