@@ -887,7 +887,11 @@ async function speed(input, output, speed) {
     return ffmpeg(
         [
             `-i ${file(input)}`,
-            `-vf "setpts=${1 / speed}*PTS"`,
+            `-vf "setpts=${1 / speed}*PTS${
+                output.endsWith("gif")
+                    ? ",split[s0][s1];[s0]palettegen[p];[s1][p]paletteuse"
+                    : ""
+            }"`,
             `-af "atempo=${speed}"`,
             file(output),
         ].join(" ")

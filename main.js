@@ -1859,7 +1859,7 @@ async function onMessage(msg, isRetry = false) {
                     break;
                 case "!speed":
                     {
-                        getSources(msg, ["video"])
+                        getSources(msg, ["video/gif"])
                             .then((ids) => {
                                 flapslib.videowrapper.speed(ids[0], msg);
                             })
