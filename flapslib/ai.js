@@ -1613,32 +1613,23 @@ function dalle2(msg) {
 
 function qqAnimeAI(image) {
     return new Promise(async (resolve) => {
-        var body = /* JSON.stringify({
-            busiId: "different_dimension_me_img_entry",
-            images: [image.toString("base64")],
-        }) */ fs.readFileSync("./qqdata.json").toString();
-        fetch(
-            "https://ai.tu.qq.com/trpc.shadow_cv.ai_processor_cgi.AIProcessorCgi/Process",
-            {
-                credentials: "include",
-                headers: {
-                    "x-sign-version": "v1",
-                    "x-sign-value": createHash("md5")
-                        .update(
-                            "https://h5.tu.qq.com" + body.length + "HQ31X02e"
-                        )
-                        .digest("hex"),
-                    cookie: cookieQQ,
-                    "User-Agent": "Pigeon Browser",
-                },
-                referrer: "https://h5.tu.qq.com/",
-                body: body,
-                method: "POST",
-                mode: "cors",
-            }
-        )
+        var body = JSON.stringify({
+            image: "data:image/jpeg;base64," + image.toString("base64"),
+            ip: "79.97.201.107",
+        });
+        fetch("https://www.genfty.com/ai/cartoon", {
+            credentials: "include",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            referrer: "https://www.genfty.com/ai/process",
+            body: body,
+            method: "POST",
+            mode: "cors",
+        })
             .then((d) => d.text())
             .then((data) => {
+                console.log(data);
                 resolve(data);
             });
     });

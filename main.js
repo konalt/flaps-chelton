@@ -1033,7 +1033,7 @@ async function onMessage(msg, isRetry = false) {
                     }
                     break;
             }
-        } else {
+        } else if (command.startsWith("!")) {
             switch (command) {
                 case "!emoji":
                     function s(url, gif, name) {
@@ -3794,12 +3794,14 @@ fbi files on ${commandArgString}: ${
                     );
                     break;
                 case "!anime":
-                    fs.readFile("flapjpg.jpg", (err, img) => {
+                    console.log("mf doing");
+                    fs.readFile("images/gman.png", (err, img) => {
+                        console.log("mf read");
                         qqAnimeAI(img).then((out) => {
                             sendWebhook("flaps", out, msg.channel);
                         });
                     });
-                    return;
+                    break;
                 case "!retry":
                     if (!msg.reference) {
                         if (retryables[msg.author.id]) {
