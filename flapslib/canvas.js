@@ -1330,13 +1330,15 @@ async function createCollage(buffers, imgSize) {
             });
         });
         Promise.all(proms).then((imgs) => {
-            var w = imgSize * (imgs.length / 2);
-            var h = imgSize * (imgs.length / 2);
+            var w = imgSize * 2;
+            var h = w;
             var c = createCanvas(w, h);
             var ctx = c.getContext("2d");
+            ctx.fillStyle = "#24e632";
+            ctx.fillRect(0, 0, w, h);
             var i = 0;
-            for (let y = 0; y < imgs.length / 2; y++) {
-                for (let x = 0; x < imgs.length / 2; x++) {
+            for (let y = 0; y < 2; y++) {
+                for (let x = 0; x < 2; x++) {
                     if (imgs[i]) {
                         ctx.drawImage(
                             imgs[i],

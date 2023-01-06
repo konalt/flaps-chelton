@@ -1566,24 +1566,10 @@ function dalle2Promise(data, big = false) {
                             )
                         );
                     } else {
-                        var imgs = [
-                            Buffer.from(
-                                res.images[0].url.split(",")[1],
-                                "base64"
-                            ),
-                            Buffer.from(
-                                res.images[1].url.split(",")[1],
-                                "base64"
-                            ),
-                            Buffer.from(
-                                res.images[2].url.split(",")[1],
-                                "base64"
-                            ),
-                            Buffer.from(
-                                res.images[3].url.split(",")[1],
-                                "base64"
-                            ),
-                        ];
+                        //res.images[0].url.split(",")[1];
+                        var imgs = res.images.map((img) =>
+                            Buffer.from(img.url.split(",")[1], "base64")
+                        );
                         createCollage(imgs, 512).then((collage) => {
                             resl(collage);
                         });
