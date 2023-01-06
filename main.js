@@ -716,7 +716,20 @@ async function onMessage(msg, isRetry = false) {
                 },
                 (err, data) => {
                     if (err || data != hook) {
-                        fs.writeFile("./errorhook.txt", hook);
+                        fs.writeFile(
+                            "./errorhook.txt",
+                            hook,
+                            { encoding: "utf-8" },
+                            (err) => {
+                                if (err) {
+                                    log(
+                                        `${esc(Color.White)}[errorfile] ${esc(
+                                            Color.BrightRed
+                                        )}Error writing errorhook.txt`
+                                    );
+                                }
+                            }
+                        );
                     }
                 }
             );
