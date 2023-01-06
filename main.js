@@ -862,17 +862,19 @@ async function onMessage(msg, isRetry = false) {
             );
         }
         addTiming("ScalTests");
-        var mem = await msg.guild.members.fetch(msg.member);
-        if (
-            scal.includes("midnight") &&
-            isMidnightActive &&
-            !msg.author.bot &&
-            !doneUsers.includes(mem.id)
-        ) {
-            doneUsers.push(mem.id);
-            msg.react("👍");
+        if (isMidnightActive) {
+            var mem = await msg.guild.members.fetch(msg.member);
+            if (
+                scal.includes("midnight") &&
+                isMidnightActive &&
+                !msg.author.bot &&
+                !doneUsers.includes(mem.id)
+            ) {
+                doneUsers.push(mem.id);
+                msg.react("👍");
+            }
+            addTiming("Midnight");
         }
-        addTiming("Midnight");
         var commandRan = msg.content.startsWith("!");
         var webhookUsed = false;
         if (msg.content.startsWith("!..sticky")) {
@@ -3754,11 +3756,19 @@ fbi files on ${commandArgString}: ${
             timings.forEach((timing) => {
                 timeStr +=
                     timing.join(" timed ") +
-                    ", lap" +
+                    ", lap " +
                     (timing[0] - prevTime) +
-                    "\n";
+                    ". ";
                 prevTime = timing[0];
             });
+            if (Date.now() - timings[0][0] > 100) {
+                log(
+                    `${esc(
+                        Color.White
+                    )}msg parse took more than 100ms, timing info: ${timeStr}`,
+                    "longmsg"
+                );
+            }
         }
         if (command != "!retry" && command.startsWith("!")) {
             retryables[msg.author.id] = msg.id;
