@@ -37,9 +37,9 @@ function sendError() {
     fetch(url, {
         method: "POST",
         body: JSON.stringify({
-            content: `[flaps-watchdog] Flaps has crashed, fucking hell.\nLast ${lastLogCount} chunks of log:\`\`\`${lastLog.join(
+            content: `your error was: damn \`\`\`ansi\n${lastLog.join(
                 ""
-            )}\`\`\`\nI've gone and restarted him for you, you lazy cunts.`,
+            )}\`\`\`\n broken flaps: you Did it\nError: come here boy\nme: 🏃🏃🏃`,
             avatar_url:
                 "https://media.discordapp.net/attachments/882743320554643476/966053990427156650/unknown.png",
             username: "CHELTON FUCKING CRASHED",
