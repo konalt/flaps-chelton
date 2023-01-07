@@ -1,131 +1,131 @@
-flaps--__FlapsNick__--913068086725341224
-kb--the killer boss--930495779141980270
-dziad--dziad ufolud--918148425680302110
-jeremiah--the racist jeremiah fink--913928050905845810
-sammy--sammy merk--918147000380313660
-micheal--Taoiseach Micheál Martin--917831859059163186
-norma--Norma Foley #OpenSchools--917840712786116608
-deepai--ROBOT FROM THE LOONEY BIN--918147143569666048
-briez--Briez Drohmer #illinoispride--917291555868516373
-joingle--🥰🥰 Joe Joingle 🥰🥰--918147413858983946--(x) => { return "🥰🥰 " + x + " 🥰🥰";}
-zephiel--Mr. Zephiel--917918947272163368
-lamazzu--MR LAMAZZU | NEW EP--917923037574205510
-jaz--DJ Jaz--918145130379235348
-cicero--UNCLEAN CICERO #CROWCAUSECANCER #CANCER--918159082165252157--(x) => {return x.toUpperCase()}
-spamton--Spamton G. Spamton--918196512536789002--(x) => {var swears=["fuck","shit","dick","cock"]; var a=false; var je=false; var jl=false; return x.toLowerCase().split(" ").map(w => {if (Math.random() <= (a ? 0.5 : 0.2)) { (a ? (w = w + "]]") : (w = "[[" + w)); a = !a; }; if (!a && !w.endsWith("]]")) { retval = w.toUpperCase(); } else { retval = (w.startsWith("[[") ? "[[" : "") + w.charAt((w.startsWith("[[") ? 2 : 0)).toUpperCase() + w.slice((w.startsWith("[[") ? 3 : 1)); } swears.forEach(swear => { if (retval.toLowerCase().includes(swear.toLowerCase())) { retval = retval.toLowerCase().replace(swear, "[$!?!]").toUpperCase(); } }); return retval;}).join(" ") + (a ? "]]" : "")}
-gabe--the angel "gabriel"--918260672821878884--(x) => {var z = ['\u0315', '\u031b', '\u0340', '\u0341', '\u0358', '\u0321', '\u0322', '\u0327', '\u0328', '\u0334', '\u0335', '\u0336', '\u034f', '\u035c', '\u035d', '\u035e', '\u035f', '\u0360', '\u0362', '\u0338', '\u0337', '\u0361', '\u0489']; var newtxt = ""; for (var i = 0; i < x.length; i++) { if (z.includes(x.substr(i, 1))) { continue; } newtxt += x.substr(i, 1); for (var j = 0; j < Math.floor(Math.random() * 16); j++) { newtxt += z[Math.floor(Math.random() * z.length)]; } } return newtxt; }
-tom--freaky tom--918261842432884766
-wake--joe biden wake up--918271062515515463
-shang--Shang Jiu-Li (Chinese Mole Man)--918272340280885288--(x)=>{ return x.replace(/mr/gi, "mistuh").replace(/mister/gi, "mistuh").replace(/[rw]/gi, "w");}
-intruder--an intruder--918536333926993940
-lamioti--mr lamioti--918560106688442398
-shapiro--Ben Shapiro #OwnTheLibs--918903633171599440--(x)=>{ return x + ", libtard"; }
-based--The Based Department--.
-scringo--el scringo--920363266297970768
-elves--The Elves--923934449316544552
-xi--Xi Jinping - 习近平--924861994635509770--(x)=>{ var chinese = "现在是你成为大人物的机会用你的灵魂我有我是新的你不是"; var words = x.split(" "); var retval = words.map((word) => { return word + (Math.random() < 0.5 ? (" " + chinese.substring( Math.floor(Math.random() * chinese.length)) ) : "")}).join(" "); return retval; }
-william--william jenkins--926168225014743080
-ena--ENA--926169087627915275
-4chanroulette--4Chan Roulette--930536972496302130
-bonus--bonus nose jim--932735794760777758
-anita--Blonde Lady Anita (Anita Ire)--933064375105900574
-zimbabwe--CEO of Zimbabwe (Real)--934173325951926332
-bruno--BRUNO POWROZNIK--935578541930733618--(x) => { var y = [".", ",", "!", "?"], z = false; y.forEach(p => { if (x.endsWith(p)) { z = true; } }); return x.toUpperCase() + (z ? " FUCKING STRS" : ". FUCKING STRS")}
-dentist--gustavo fing--936718085363236924--(x) => {return "**" + x + "**";}
-firingsquad--The Firing Squad--938460969112313957
-salmon--Salmon of Knowledge--945807706034434048
-walter--walt whit--https://upload.wikimedia.org/wikipedia/en/thumb/0/03/Walter_White_S5B.png/220px-Walter_White_S5B.png
-jesse--jese pine--https://upload.wikimedia.org/wikipedia/en/c/c6/Jesse_Pinkman_S5B.png
-scal--el supremo del calamitas--https://cdn.discordapp.com/emojis/974804860077764608.png
-locke--Locke (murkywanker insider)--951532680242167838
-jamesphotoframe--james the photo framer (now selling speech bubbles)--956565518683340800
-rals--Ralsei--963900513051639868
-flapserrors--Flaps Chelton® Error Handling™©--966053990427156650
-owl--owl--https://media.discordapp.net/attachments/882743320554643476/966101495823102032/owl2.png--(x) => {return "<:owl:964880176355897374>";}
-armstrong--OMELETTE LOVER--https://cdn.discordapp.com/attachments/882743320554643476/969722937361985536/unknown.png--(x) => {return x.toUpperCase()}
-ffmpeg--majik vido editor bot--https://media.discordapp.net/attachments/882743320554643476/970338503126818926/unknown.png
-balkan--hairy balkan man--https://media.discordapp.net/attachments/882743320554643476/970684762253566003/unknown.png
-morbius--msorbingus best movie--https://media.discordapp.net/attachments/882743320554643476/970702785630851192/unknown.png--(x) => {return x + "\nwatch morbius today. morbius is the best mvoie ever made."}
-cah--cars against dragons--https://media.discordapp.net/attachments/882743320554643476/971433068206387280/unknown.png
-restman--adnvansed techmonamologise--https://images.freeimages.com/images/premium/small-comps/2603/26032932-colourful-pigeon.jpg
-dallas--dallas--https://static.wikia.nocookie.net/payday/images/a/ae/DallasIcon.jpg/revision/latest?cb=20140220175829
-censor--el censoro--https://interactive.wttw.com/sites/default/files/styles/full/public/images/2017/11/17/1200px-Parental_Advisory_label.svg_.png?itok=g42UNUxg--(x)=>{var y = `${x}`; (x.match(/[aeiou]/gi) ? x.match(/[aeiou]/gi) : []).forEach(z=>{if(Math.random() < 0.5) {y = y.replace(z, "\\*")}}); return y; }
-mkswt--my beloved--https://media.discordapp.net/attachments/981952396500537394/1002095288539955291/unknown.png
-fbi--mr fbi man--https://pbs.twimg.com/profile_images/956703857404506112/k2AM5_oL_400x400.jpg
-caption--video/image captioneer--https://media.discordapp.net/attachments/956316856422137856/980505151599153182/7f93de8613034a9e9a7e8d36039dc745.png
-runcling--little runcling of the dark web--https://i1.sndcdn.com/artworks-Ik9UvVzRe7imJcjq-ToPw5A-t500x500.jpg
-reddit--REDDIT NATIOn!!!!!!!--https://media.discordapp.net/attachments/956316856422137856/980526464271282176/4f53cd99-e39c-4aab-82a2-16e9e39d7652.png
-weezer--weezer--https://media.discordapp.net/attachments/882743320554643476/980868291285385266/unknown.png
-giftest--the hyperchad--https://cdn.discordapp.com/attachments/882743320554643476/981575022126706718/profeshnal.gif
-millerwife--millers wife--https://media.discordapp.net/attachments/882743320554643476/982264624969830400/dumb_bitch.PNG
-welldressed--A Well Dressed Man.--https://media.discordapp.net/attachments/882743320554643476/982985127720267836/unknown.png
-dalle--Salvador Dall-E--https://media.discordapp.net/attachments/882743320554643476/983326643068231710/unknown.png
-rps--rock paper scissors 1--https://media.discordapp.net/attachments/882743320554643476/983367588962770994/icon.jpg
-smallcock--small cock department--https://media.discordapp.net/attachments/882743320554643476/983384610828341319/unknown.png
-ben--Talking Ben--https://media.discordapp.net/attachments/910525327585992737/983748757118124102/unknown.png
-southerner--Poor Person Hater--https://media.discordapp.net/attachments/882743320554643476/983815005101240340/unknown.png?width=404&height=663
-cockdep--Cock Department--https://media.discordapp.net/attachments/910525327585992737/984172286141673543/unknown.png--(x)=>{ return x.replace(/mr/gi, "mistuh").replace(/mister/gi, "mistuh");}
-ghost--Ghost (separate from machine)--https://media.discordapp.net/attachments/910525327585992737/984175596831653968/unknown.png--(x) => {return owoify(x, "uvu");}
-monsoon--monsoo mgr--https://media.discordapp.net/attachments/882743320554643476/984424719937843221/unknown.png
-haircut--bad haircut bot--https://media.discordapp.net/attachments/910525327585992737/988975164807057433/unknown.png
-raiden--raiden mgr--https://cdn.discordapp.com/emojis/983303857629200405.png
-doktor--dok tor--https://media.discordapp.net/attachments/949678711295328256/991413852698849420/unknown.png
-wendys--Wendy's--https://www.the-sun.com/wp-content/uploads/sites/6/2022/02/ba33b3a7-4990-484b-b406-01fb2b7658f9.jpg
-sanfran--SAFN FRANZISCO REDISENT--https://podcastaddict.com/cache/artwork/thumb/2242048--(x)=>{return x.toLowerCase().split('').map(function(c){ return (Math.random() < .5? c : c.toUpperCase()) + (Math.random() < .5? "" : (Math.random() < .5 ? " HRNNRANGE " : " hoohhgngngh ")); }).join('')}
-neco--racist cat--https://media.discordapp.net/attachments/882743320554643476/998544779019309137/unknown.png
-tasquem--dommy mommy catgirl--https://cdn.discordapp.com/attachments/838732607344214019/999090252281040896/unknown.png
-funo--funo--https://media.discordapp.net/attachments/838732607344214019/999105153212883104/unknown.png
-scott--scott--https://media.discordapp.net/attachments/882743320554643476/1000272947988148234/s_cott.PNG
-walmart--walmart customer service--https://blog.hubspot.com/hubfs/customer-experience%20%281%29.jpg
-homodog--homophobic dog--https://media.discordapp.net/attachments/956316856422137856/1002093589767127050/a721f14c-6877-44dc-a1d6-bcdbf35a17e7.png?width=671&height=671
-comedy--the most comedic of all--https://i.ytimg.com/vi/5zoLUQGVmy0/maxresdefault.jpg
-pigeon--pigon--https://upload.wikimedia.org/wikipedia/commons/e/e3/Close-up_picture_of_a_common_wood_pigeon.jpg
-frank--FRANNKKKKKK JOOONESSSSS--https://c8.alamy.com/comp/GKBXCP/sad-old-man-GKBXCP.jpg
-nursinghome--the nursing home--https://media.discordapp.net/attachments/981952396500537394/1002094897169444954/unknown.png
-nursingresident--nursing home resident--https://media.discordapp.net/attachments/981952396500537394/1002094998201827328/unknown.png?width=583&height=671
-microsoft--FUCKING MICROSOFT--https://media.discordapp.net/attachments/882743320554643476/1002097276405162024/unknown.png
-finger--kid named overused joke--https://pbs.twimg.com/media/FWJ9dO_XgAAvQeB.jpg
-nft--nft--https://www.artnews.com/wp-content/uploads/2022/01/unnamed-2.png?w=631
-obama--obamam--https://www.biography.com/.image/ar_1:1%2Cc_fill%2Ccs_srgb%2Cfl_progressive%2Cq_auto:good%2Cw_1200/MTE4MDAzNDEwNzg5ODI4MTEw/barack-obama-12782369-1-402.jpg
-obunga--obungor--https://wompampsupport.azureedge.net/fetchimage?siteId=7575&v=2&jpgQuality=100&width=700&url=https%3A%2F%2Fi.kym-cdn.com%2Fphotos%2Fimages%2Fnewsfeed%2F001%2F383%2F477%2F44b.jpg
-ubisoft--mr ubi soft--https://i.redd.it/rxpcao916ya91.jpg
-redditor--famed redditor--https://static.wikia.nocookie.net/joke-battles/images/a/aa/Mike2.jpg/revision/latest?cb=20210206233312
-saul--saul--https://upload.wikimedia.org/wikipedia/en/thumb/3/34/Jimmy_McGill_BCS_S3.png/220px-Jimmy_McGill_BCS_S3.png
-brimmy--briston elementalo--https://media.discordapp.net/attachments/981952396500537394/1002104213851082752/unknown.png
-goofygabe--and why he goufy--https://us-tuna-sounds-images.voicemod.net/ff1075d2-5e60-4e0a-b8e5-5fce6cd7508d-1657133488913.png
-ballin--BALLIN !?!?--https://i.pinimg.com/originals/a5/94/89/a594898fba9079c0ecf4b6057b80a31a.jpg
-tressel--jim tressel--https://buckeyeswire.usatoday.com/wp-content/uploads/sites/32/2019/11/jim-tressel.jpg
-twink--femboy twink--https://media.discordapp.net/attachments/882743320554643476/1006350064253407353/unknown.png
-gus--gus frig--https://static.wikia.nocookie.net/breakingbad/images/d/d2/Gus_2008.png/revision/latest?cb=20220611213736
-100--THE 100TH BOT 💯💯--https://ichef.bbci.co.uk/news/624/mcs/media/images/71922000/jpg/_71922912_100_thinkstock.jpg--(x) => {return "💯💯" + x.toUpperCase() + "💯💯"}
-bee--bee girl--https://cdn.discordapp.com/emojis/992057629469851728.gif
-tree--tree girl--https://e.snmc.io/i/600/s/ab3cafad940bdc8340c59e4c12e410b7/9619722
-moth--funny moth--https://cdn.discordapp.com/emojis/887419530308108290.png
-howard--howar hamin--https://www.medadmbjmc.in/wp-content/uploads/2022/05/Howard-Hamlin-1.png
-weezer--weezing time--https://upload.wikimedia.org/wikipedia/en/thumb/7/70/Weezer_-_Blue_Album.png/220px-Weezer_-_Blue_Album.png--(x) => {return x.split(" ").map(y => {return "w" + y.substring(1)}).join(" ")}
-chuchu--chuchu (the better one)--https://cdn.discordapp.com/emojis/1001476464434221066.png
-bonbon--bonbon--https://cdn.discordapp.com/emojis/880078501779210280.png
-politics--politician--https://cdn.discordapp.com/emojis/919570340433252412.png
-nikku--waow niku--https://cdn.discordapp.com/emojis/973936206406615190.png
-openai--"open" ai--https://openai.com/content/images/2022/05/openai-avatar.png
-snatcher--snatcher the child predator--https://static.wikia.nocookie.net/a-hat-in-time/images/e/e1/SubconForest_01.jpg/revision/latest?cb=20180506174909
-spamtonneo--[[SPAMTER NEO]]--https://static.wikia.nocookie.net/villains/images/8/84/Spamton_NEO.png/revision/latest?cb=20211029231600--(x) => {var swears=["fuck","shit","dick","cock"]; var a=false; var je=false; var jl=false; return x.toLowerCase().split(" ").map(w => {if (Math.random() <= (a ? 0.5 : 0.2)) { (a ? (w = w + "]]") : (w = "[[" + w)); a = !a; }; if (!a && !w.endsWith("]]")) { retval = w.toUpperCase(); } else { retval = (w.startsWith("[[") ? "[[" : "") + w.charAt((w.startsWith("[[") ? 2 : 0)).toUpperCase() + w.slice((w.startsWith("[[") ? 3 : 1)); } swears.forEach(swear => { if (retval.toLowerCase().includes(swear.toLowerCase())) { retval = retval.toLowerCase().replace(swear, "[$!?!]").toUpperCase(); } }); return retval;}).join(" ") + (a ? "]]" : "")}
-clueless--<- clueless--https://cdn.discordapp.com/emojis/983071017599631400.png
-quizzical--huh?--https://media.discordapp.net/attachments/882743320554643476/1002124139018068078/unknown.png
-wombo--NEXT-GENERATION DIFFUSION AI-GENERATED IMAGES--https://media.discordapp.net/attachments/882743320554643476/1002165129028304997/unknown.png
-dalle2--Dall-E 2's Diversity Filter--https://cdn.discordapp.com/icons/974519864045756446/04c7960b6b6c4bc0aceaa644b8b53932.png--(x) => {var diversity = ["black", "asian", "indian", "ethnic"]; return x + (", " + diversity[Math.floor(Math.random() * diversity.length)] + " woman")}
-jonathan--jonathan--https://media.discordapp.net/attachments/882743320554643476/1002509182135717948/unknown.png
-toshiro--bigtime toshiro--https://media.discordapp.net/attachments/882743320554643476/1004126279685124137/bigtime.PNG
-barry--barry, 63--https://media.discordapp.net/attachments/882743320554643476/1005621899100954685/unknown.png
-neo--1739--https://media.discordapp.net/attachments/838732607344214019/1015284648185704538/unknown.png
-youngthug--young thug--https://media.discordapp.net/attachments/838732607344214019/1024687697043918918/unknown.png
-youngfish--hello young thug--https://media.discordapp.net/attachments/838732607344214019/1024687783568216134/unknown.png
-butcher--billy butcher the chad--https://media.discordapp.net/attachments/838732607344214019/1027315629214146600/unknown.png
-doctor--medical professional--https://media.discordapp.net/attachments/882743320554643476/1032051734761177168/unknown.png
-stuff--robert downey jr--https://media.discordapp.net/attachments/956316856422137856/1033138370861350973/50d634ae-b999-4af3-902b-0f5ee4d89b3a.png
-dalle2--2aale daples slpres--https://media.discordapp.net/attachments/838732607344214019/1036045392401403934/unknown.png
-knook--knook--https://media.discordapp.net/attachments/882743320554643476/1038541784617341028/whiteKnook.png
-tictactoe--tic tac toe bot--https://media.discordapp.net/attachments/981952396500537394/1041498761723134012/image.png
-nick--nick from left for dead--https://static.wikia.nocookie.net/left4dead/images/e/e6/Bg_nick.jpg/revision/latest/scale-to-width-down/250?cb=20100327234840
-horsey--food--https://cdn.discordapp.com/attachments/882743320554643476/1057317542177288242/image.png
-firearms--warrior--https://media.discordapp.net/attachments/882743320554643476/1058388088390439053/image.png
+flaps--__FlapsNick__
+kb--the killer boss
+dziad--dziad ufolud
+jeremiah--the racist jeremiah fink
+sammy--sammy merk
+micheal--Taoiseach Micheál Martin
+norma--Norma Foley #OpenSchools
+deepai--ROBOT FROM THE LOONEY BIN
+briez--Briez Drohmer #illinoispride
+joingle--🥰🥰 Joe Joingle 🥰🥰--(x) => { return "🥰🥰 " + x + " 🥰🥰";}
+zephiel--Mr. Zephiel
+lamazzu--MR LAMAZZU | NEW EP
+jaz--DJ Jaz
+cicero--UNCLEAN CICERO #CROWCAUSECANCER #CANCER--(x) => {return x.toUpperCase()}
+spamton--Spamton G. Spamton--(x) => {var swears=["fuck","shit","dick","cock"]; var a=false; var je=false; var jl=false; return x.toLowerCase().split(" ").map(w => {if (Math.random() <= (a ? 0.5 : 0.2)) { (a ? (w = w + "]]") : (w = "[[" + w)); a = !a; }; if (!a && !w.endsWith("]]")) { retval = w.toUpperCase(); } else { retval = (w.startsWith("[[") ? "[[" : "") + w.charAt((w.startsWith("[[") ? 2 : 0)).toUpperCase() + w.slice((w.startsWith("[[") ? 3 : 1)); } swears.forEach(swear => { if (retval.toLowerCase().includes(swear.toLowerCase())) { retval = retval.toLowerCase().replace(swear, "[$!?!]").toUpperCase(); } }); return retval;}).join(" ") + (a ? "]]" : "")}
+gabe--the angel "gabriel"--(x) => {var z = ['\u0315', '\u031b', '\u0340', '\u0341', '\u0358', '\u0321', '\u0322', '\u0327', '\u0328', '\u0334', '\u0335', '\u0336', '\u034f', '\u035c', '\u035d', '\u035e', '\u035f', '\u0360', '\u0362', '\u0338', '\u0337', '\u0361', '\u0489']; var newtxt = ""; for (var i = 0; i < x.length; i++) { if (z.includes(x.substr(i, 1))) { continue; } newtxt += x.substr(i, 1); for (var j = 0; j < Math.floor(Math.random() * 16); j++) { newtxt += z[Math.floor(Math.random() * z.length)]; } } return newtxt; }
+tom--freaky tom
+wake--joe biden wake up
+shang--Shang Jiu-Li (Chinese Mole Man)--(x)=>{ return x.replace(/mr/gi, "mistuh").replace(/mister/gi, "mistuh").replace(/[rw]/gi, "w");}
+intruder--an intruder
+lamioti--mr lamioti
+shapiro--Ben Shapiro #OwnTheLibs--(x)=>{ return x + ", libtard"; }
+based--The Based Department
+scringo--el scringo
+elves--The Elves
+xi--Xi Jinping - 习近平--(x)=>{ var chinese = "现在是你成为大人物的机会用你的灵魂我有我是新的你不是"; var words = x.split(" "); var retval = words.map((word) => { return word + (Math.random() < 0.5 ? (" " + chinese.substring( Math.floor(Math.random() * chinese.length)) ) : "")}).join(" "); return retval; }
+william--william jenkins
+ena--ENA
+4chanroulette--4Chan Roulette
+bonus--bonus nose jim
+anita--Blonde Lady Anita (Anita Ire)
+zimbabwe--CEO of Zimbabwe (Real)
+bruno--BRUNO POWROZNIK--(x) => { var y = [".", ",", "!", "?"], z = false; y.forEach(p => { if (x.endsWith(p)) { z = true; } }); return x.toUpperCase() + (z ? " FUCKING STRS" : ". FUCKING STRS")}
+dentist--gustavo fing--(x) => {return "**" + x + "**";}
+firingsquad--The Firing Squad
+salmon--Salmon of Knowledge
+walter--walt whit
+jesse--jese pine
+scal--el supremo del calamitas
+locke--Locke (murkywanker insider)
+jamesphotoframe--james the photo framer (now selling speech bubbles)
+rals--Ralsei
+flapserrors--Flaps Chelton® Error Handling™©
+owl--owl--(x) => {return "<:owl:964880176355897374>";}
+armstrong--OMELETTE LOVER--(x) => {return x.toUpperCase()}
+ffmpeg--majik vido editor bot
+balkan--hairy balkan man
+morbius--msorbingus best movie--(x) => {return x + "\nwatch morbius today. morbius is the best mvoie ever made."}
+cah--cars against dragons
+restman--adnvansed techmonamologise
+dallas--dallas
+censor--el censoro--(x)=>{var y = `${x}`; (x.match(/[aeiou]/gi) ? x.match(/[aeiou]/gi) : []).forEach(z=>{if(Math.random() < 0.5) {y = y.replace(z, "\\*")}}); return y; }
+mkswt--my beloved
+fbi--mr fbi man
+caption--video/image captioneer
+runcling--little runcling of the dark web
+reddit--REDDIT NATIOn!!!!!!!
+weezer--weezer
+giftest--the hyperchad
+millerwife--millers wife
+welldressed--A Well Dressed Man.
+dalle--Salvador Dall-E
+rps--rock paper scissors 1
+smallcock--small cock department
+ben--Talking Ben
+southerner--Poor Person Hater
+cockdep--Cock Department--(x)=>{ return x.replace(/mr/gi, "mistuh").replace(/mister/gi, "mistuh");}
+ghost--Ghost (separate from machine)--(x) => {return owoify(x, "uvu");}
+monsoon--monsoo mgr
+haircut--bad haircut bot
+raiden--raiden mgr
+doktor--dok tor
+wendys--Wendy's
+sanfran--SAFN FRANZISCO REDISENT--(x)=>{return x.toLowerCase().split('').map(function(c){ return (Math.random() < .5? c : c.toUpperCase()) + (Math.random() < .5? "" : (Math.random() < .5 ? " HRNNRANGE " : " hoohhgngngh ")); }).join('')}
+neco--racist cat
+tasquem--dommy mommy catgirl
+funo--funo
+scott--scott
+walmart--walmart customer service
+homodog--homophobic dog
+comedy--the most comedic of all
+pigeon--pigon
+frank--FRANNKKKKKK JOOONESSSSS
+nursinghome--the nursing home
+nursingresident--nursing home resident
+microsoft--FUCKING MICROSOFT
+finger--kid named overused joke
+nft--nft
+obama--obamam
+obunga--obungor
+ubisoft--mr ubi soft
+redditor--famed redditor
+saul--saul
+brimmy--briston elementalo
+goofygabe--and why he goufy
+ballin--BALLIN !?!?
+tressel--jim tressel
+twink--femboy twink
+gus--gus frig
+100--THE 100TH BOT 💯💯--(x) => {return "💯💯" + x.toUpperCase() + "💯💯"}
+bee--bee girl
+tree--tree girl
+moth--funny moth
+howard--howar hamin
+weezer--weezing time--(x) => {return x.split(" ").map(y => {return "w" + y.substring(1)}).join(" ")}
+chuchu--chuchu (the better one)
+bonbon--bonbon
+politics--politician
+nikku--waow niku
+openai--"open" ai
+snatcher--snatcher the child predator
+spamtonneo--[[SPAMTER NEO]]--(x) => {var swears=["fuck","shit","dick","cock"]; var a=false; var je=false; var jl=false; return x.toLowerCase().split(" ").map(w => {if (Math.random() <= (a ? 0.5 : 0.2)) { (a ? (w = w + "]]") : (w = "[[" + w)); a = !a; }; if (!a && !w.endsWith("]]")) { retval = w.toUpperCase(); } else { retval = (w.startsWith("[[") ? "[[" : "") + w.charAt((w.startsWith("[[") ? 2 : 0)).toUpperCase() + w.slice((w.startsWith("[[") ? 3 : 1)); } swears.forEach(swear => { if (retval.toLowerCase().includes(swear.toLowerCase())) { retval = retval.toLowerCase().replace(swear, "[$!?!]").toUpperCase(); } }); return retval;}).join(" ") + (a ? "]]" : "")}
+clueless--<- clueless
+quizzical--huh?
+wombo--NEXT-GENERATION DIFFUSION AI-GENERATED IMAGES
+dalle2--Dall-E 2's Diversity Filter--(x) => {var diversity = ["black", "asian", "indian", "ethnic"]; return x + (", " + diversity[Math.floor(Math.random() * diversity.length)] + " woman")}
+jonathan--jonathan
+toshiro--bigtime toshiro
+barry--barry, 63
+neo--1739
+youngthug--young thug
+youngfish--hello young thug
+butcher--billy butcher the chad
+doctor--medical professional
+stuff--robert downey jr
+dalle2--2aale daples slpres
+knook--knook
+tictactoe--tic tac toe bot
+nick--nick from left for dead
+horsey--food
+firearms--warrior

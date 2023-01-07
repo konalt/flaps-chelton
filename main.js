@@ -3910,6 +3910,18 @@ cacheRouter.get("*", (req, res) => {
     }
 });
 
+var avatarRouter = new Router({
+    mergeParams: true,
+});
+
+avatarRouter.get("*", (req, res) => {
+    if (fs.existsSync(__dirname + "/images/avatars" + req.path)) {
+        res.sendFile(__dirname + "/images/avatars" + req.path);
+    } else {
+        res.status(404).contentType("text/plain").send("404 Not Found");
+    }
+});
+
 function startWebServer(port = 8080) {
     const express = require("express");
     var app = express();
@@ -3917,6 +3929,7 @@ function startWebServer(port = 8080) {
     app.use(express.json({ extended: true, limit: "50mb" }));
     app.use("/api", apiRouter);
     app.use("/cache", cacheRouter);
+    app.use("/avatar", avatarRouter);
     app.get("/", (req, res) => {
         res.sendFile(__dirname + "/web/index.html");
     });

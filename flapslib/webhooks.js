@@ -79,7 +79,9 @@ function sendWebhook(
                         : users[id][0] == "__FlapsNick__"
                         ? msgChannel.guild.me.nickname || client.user.username
                         : users[id][0],
-                    avatar_url: custom ? customData.avatar : users[id][1],
+                    avatar_url: custom
+                        ? customData.avatar
+                        : "https://flaps.us.to/avatar/" + id + ".png",
                     components: comps, // there used to be a typo on this line
                 };
                 if (!hook) {
@@ -264,9 +266,7 @@ async function sendWebhookFile(
                 JSON.stringify({
                     content: pre ? pre : "",
                     username: users[id] ? users[id][0] : "?",
-                    avatar_url: users[id]
-                        ? users[id][1]
-                        : "https://post.medicalnewstoday.com/wp-content/uploads/sites/3/2020/02/322868_1100-800x825.jpg",
+                    avatar_url: "https://flaps.us.to/avatar/" + id + ".png",
                 })
             );
             getWebhook(msgChannel).then((url) => {
@@ -338,7 +338,7 @@ function sendWebhookBuffer(id, buf, txt, msgChannel, filename = "file.bin") {
                 : users[id][0] == "__FlapsNick__"
                 ? msgChannel.guild.me.nickname || client.user.username
                 : users[id][0],
-            avatar_url: users[id][1],
+            avatar_url: "https://flaps.us.to/avatar/" + id + ".png",
         })
     );
     getWebhook(msgChannel).then((url) => {
@@ -386,9 +386,7 @@ async function sendWebhookFileButton(id, filename, buttons, pre, msgChannel) {
             JSON.stringify({
                 content: pre ? pre : "",
                 username: users[id] ? users[id][0] : "?",
-                avatar_url: users[id]
-                    ? users[id][1]
-                    : "https://post.medicalnewstoday.com/wp-content/uploads/sites/3/2020/02/322868_1100-800x825.jpg",
+                avatar_url: "https://flaps.us.to/avatar/" + id + ".png",
                 components: [{ type: 1, components: buttons }],
             })
         );
@@ -519,7 +517,10 @@ function sendWebhookEmbed(id, embed, msgChannel) {
                                     body: JSON.stringify({
                                         embeds: [embed],
                                         username: users[id][0],
-                                        avatar_url: users[id][1],
+                                        avatar_url:
+                                            "https://flaps.us.to/avatar/" +
+                                            id +
+                                            ".png",
                                     }),
                                     headers: {
                                         "Content-Type": "application/json",
@@ -535,7 +536,9 @@ function sendWebhookEmbed(id, embed, msgChannel) {
                             body: `{
                                 "embeds": [${JSON.stringify(embed.toJSON())}],
                                 "username": "${users[id][0]}",
-                                "avatar_url": "${users[id][1]}"
+                                "avatar_url": "${
+                                    "https://flaps.us.to/avatar/" + id + ".png"
+                                }"
                             }`,
                             headers: { "Content-Type": "application/json" },
                         });
@@ -570,7 +573,10 @@ function sendWebhookEmbedButton(id, embed, msgChannel) {
                                     body: JSON.stringify({
                                         embeds: [embed],
                                         username: users[id][0],
-                                        avatar_url: users[id][1],
+                                        avatar_url:
+                                            "https://flaps.us.to/avatar/" +
+                                            id +
+                                            ".png",
                                     }),
                                     headers: {
                                         "Content-Type": "application/json",
@@ -586,7 +592,9 @@ function sendWebhookEmbedButton(id, embed, msgChannel) {
                             body: `{
                                 "embeds": [${JSON.stringify(embed.toJSON())}],
                                 "username": "${users[id][0]}",
-                                "avatar_url": "${users[id][1]}"
+                                "avatar_url": "${
+                                    "https://flaps.us.to/avatar/" + id + ".png"
+                                }"
                             }`,
                             headers: { "Content-Type": "application/json" },
                         });
@@ -607,15 +615,7 @@ function updateUsers() {
             return u.split("--");
         });
     usersArray.forEach((user) => {
-        users[user[0]] = [
-            user[1],
-            user[2].startsWith("http")
-                ? user[2]
-                : "https://media.discordapp.net/attachments/882743320554643476/" +
-                  user[2] +
-                  "/unknown.png",
-            user[3],
-        ];
+        users[user[0]] = [user[1], user[2]];
     });
 }
 
