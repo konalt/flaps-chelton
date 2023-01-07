@@ -3701,6 +3701,13 @@ fbi files on ${commandArgString}: ${
                                 .fetch(retryables[msg.author.id])
                                 .then((message) => {
                                     onMessage(message, true);
+                                })
+                                .catch((err) => {
+                                    sendWebhook(
+                                        "flaps",
+                                        "fuck ing hell. that message was in another channel!!!! bruhhh !!! try replying to it intead lmao",
+                                        msg.channel
+                                    );
                                 });
                         }
                     } else {
