@@ -23,6 +23,20 @@ function tenorURLToGifURL(url) {
             });
     });
 }
+function tenorURLToVideoURL(url) {
+    var searchString =
+        '<meta class="dynamic" property="og:video:secure_url" content="';
+    return new Promise((resl) => {
+        fetch(url)
+            .then((r) => r.text())
+            .then((data) => {
+                var newURL = data
+                    .substring(data.indexOf(searchString) + searchString.length)
+                    .split('"')[0];
+                resl(newURL);
+            });
+    });
+}
 
 function dataURLToBuffer(url) {
     return Buffer.from(url.split(",")[1], "base64");
@@ -46,4 +60,5 @@ module.exports = {
     dataURLToBuffer,
     bufferToDataURL,
     time,
+    tenorURLToVideoURL,
 };

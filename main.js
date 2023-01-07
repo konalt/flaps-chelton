@@ -85,10 +85,19 @@ const { randomRedditImage } = require("./flapslib/fetchapis");
 const { compress, armstrongify } = require("./flapslib/videowrapper");
 const { addMessage, addError } = require("./flapslib/analytics");
 const { downloadPromise, tictactoe, connectfour } = require("./flapslib/index");
-const { tenorURLToGifURL, time } = require("./flapslib/util");
+const {
+    tenorURLToGifURL,
+    time,
+    tenorURLToVideoURL,
+} = require("./flapslib/util");
 const owoify = require("owoify-js").default;
 const sizeOf = require("buffer-image-size");
-const { caption2, ffmpegBuffer } = require("./flapslib/video");
+const {
+    caption2,
+    ffmpegBuffer,
+    getVideoDimensions,
+    videoGif,
+} = require("./flapslib/video");
 const sharp = require("sharp");
 const apiRouter = require("./flapslib/api");
 const { loadImage } = require("canvas");
@@ -582,25 +591,35 @@ function getSourcesWithAttachments(msg, types) {
             var attTypes = getTypes(atts);
             if (!atts[0]) {
                 if (msg.content.startsWith("https://tenor.com/")) {
-                    if (typesMatch(["gif"], types)) {
-                        tenorURLToGifURL(msg.content).then((url) => {
+                    var tenorVideo = true;
+                    var ext = tenorVideo ? "mp4" : "gif";
+                    var type = tenorVideo ? "video" : "gif";
+                    var fn = tenorVideo ? tenorURLToVideoURL : tenorURLToGifURL;
+                    if (typesMatch([type], types)) {
+                        fn(msg.content).then((url) => {
                             var id = uuidv4().replace(/-/gi, "");
                             downloadPromise(
                                 url,
-                                "images/cache/" + id + ".gif"
-                            ).then(() => {
-                                var dimensions = sizeOf(
-                                    fs.readFileSync(
-                                        "images/cache/" + id + ".gif"
-                                    )
-                                );
+                                "images/cache/" + id + "." + ext
+                            ).then(async () => {
+                                var name = "images/cache/" + id + "." + ext;
+                                if (tenorVideo) {
+                                    await videoGif(
+                                        name,
+                                        "images/cache/" + id + "-conv.gif"
+                                    );
+                                    name = "images/cache/" + id + "-conv.gif";
+                                }
+                                var dimensions = await getVideoDimensions(name);
                                 resolve([
                                     [
                                         {
-                                            width: dimensions.width,
-                                            height: dimensions.height,
+                                            width: dimensions[0],
+                                            height: dimensions[1],
                                         },
-                                        id + ".gif",
+                                        tenorVideo
+                                            ? id + "-conv.gif"
+                                            : id + "." + ext,
                                     ],
                                 ]);
                             });
