@@ -12,6 +12,7 @@ const { log, esc, Color } = require("./log");
 var ffmpegVerbose = false;
 
 var h264Preset = "ultrafast";
+var vcodec = "libx264";
 async function ffmpegBuffer(args, buffers, outExt) {
     return new Promise((res, rej) => {
         var opId = uuidv4();
@@ -39,13 +40,12 @@ async function ffmpegBuffer(args, buffers, outExt) {
 async function ffmpeg(args, quiet = false) {
     return new Promise((resolve, reject) => {
         var startTime = Date.now();
-        var ffmpegInstance = cp.spawn(
-            "ffmpeg",
-            ((ffmpegVerbose ? "" : "-v warning ") + args).split(" "),
-            {
-                shell: true,
-            }
-        );
+        var newargs =
+            extraArgs + " " + (ffmpegVerbose ? "" : "-v warning ") + args;
+        console.log(newargs);
+        var ffmpegInstance = cp.spawn("ffmpeg", newargs.trim().split(" "), {
+            shell: true,
+        });
         var b = "";
         if (!quiet)
             log(
@@ -858,7 +858,7 @@ async function stitch(inputs, output) {
             __dirname,
             "..",
             inputs[1]
-        )} -filter_complex "[0][1]scale2ref=iw:ih[intro][main];[intro]drawbox=t=fill[intro-bg];[0][intro-bg]scale2ref=iw:ih:force_original_aspect_ratio=decrease:flags=spline[intro][intro-bg];[intro-bg][intro]overlay=x='(W-w)/2':y='(H-h)/2'[intro-resized]; [intro-resized][0:a][main][1:a]concat=n=2:v=1:a=1:unsafe=1[v][a]" -map "[v]" -map "[a]" -c:v libx264 -preset:v ${h264Preset} ${path.join(
+        )} -filter_complex "[0][1]scale2ref=iw:ih[intro][main];[intro]drawbox=t=fill[intro-bg];[0][intro-bg]scale2ref=iw:ih:force_original_aspect_ratio=decrease:flags=spline[intro][intro-bg];[intro-bg][intro]overlay=x='(W-w)/2':y='(H-h)/2'[intro-resized]; [intro-resized][0:a][main][1:a]concat=n=2:v=1:a=1:unsafe=1[v][a]" -map "[v]" -map "[a]" -c:v ${vcodec} -preset:v ${h264Preset} ${path.join(
             __dirname,
             "..",
             output + ".mp4"
@@ -957,7 +957,7 @@ async function imageAudio(input, output, rev, exts) {
     return ffmpeg(
         `-y -loop 1 -i ${files[0]} -i ${
             files[1]
-        } -vf "pad=ceil(iw/2)*2:ceil(ih/2)*2" -c:v libx264 -tune stillimage -c:a aac -b:a 192k -pix_fmt yuv420p -preset:v ${h264Preset} -t ${len} ${path.join(
+        } -vf "pad=ceil(iw/2)*2:ceil(ih/2)*2" -c:v ${vcodec} -tune stillimage -c:a aac -b:a 192k -pix_fmt yuv420p -preset:v ${h264Preset} -t ${len} ${path.join(
             __dirname,
             "..",
             output + ".mp4"
@@ -1006,7 +1006,7 @@ async function gifAudio(input, output) {
             __dirname,
             "..",
             input + ".mp3"
-        )} -vf "pad=ceil(iw/2)*2:ceil(ih/2)*2" -c:v libx264 -shortest -preset:v ${h264Preset} ${path.join(
+        )} -vf "pad=ceil(iw/2)*2:ceil(ih/2)*2" -c:v ${vcodec} -shortest -preset:v ${h264Preset} ${path.join(
             __dirname,
             "..",
             output + ".mp4"
@@ -1019,7 +1019,7 @@ async function gifNoAudio(input, output) {
             __dirname,
             "..",
             input
-        )} -vf "pad=ceil(iw/2)*2:ceil(ih/2)*2" -c:v libx264 -shortest -preset:v ${h264Preset} ${path.join(
+        )} -vf "pad=ceil(iw/2)*2:ceil(ih/2)*2" -c:v ${vcodec} -shortest -preset:v ${h264Preset} ${path.join(
             __dirname,
             "..",
             output + ".mp4"
@@ -1032,7 +1032,7 @@ async function loop(input, output, options) {
             __dirname,
             "..",
             input
-        )} -c:v libx264 -preset:v ${h264Preset} ${path.join(
+        )} -c:v ${vcodec} -preset:v ${h264Preset} ${path.join(
             __dirname,
             "..",
             output
@@ -1107,7 +1107,7 @@ async function armstrongify(input, output, options) {
                       options.videoLength
                   }[atrimb];[3:a]atrim=0:1[atrimc];[3:a]atrim=1:28[atrimd];[atrimb][atrimc]amix=inputs=2:duration=1[atrime];[atrima][atrime][atrimd]concat=n=3:v=0:a=1[aout]`
                 : "[3:a]anull[aout]"
-        }" -map "[vout]" -map "[aout]" -vsync 2 -c:v libx264 -preset:v ${h264Preset} -t ${
+        }" -map "[vout]" -map "[aout]" -vsync 2 -c:v ${vcodec} -preset:v ${h264Preset} -t ${
             28 + options.videoLength - 1
         } ${path.join(__dirname, "..", output + ".mp4")}`
     );
