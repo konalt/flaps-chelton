@@ -13,6 +13,7 @@ var ffmpegVerbose = false;
 
 var h264Preset = "ultrafast";
 var vcodec = "libx264";
+var extraArgs = "";
 async function ffmpegBuffer(args, buffers, outExt) {
     return new Promise((res, rej) => {
         var opId = uuidv4();
