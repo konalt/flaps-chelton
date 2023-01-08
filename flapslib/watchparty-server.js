@@ -177,7 +177,7 @@ function init(client) {
         }
         var obj = { ...req.body };
         Object.assign(obj, { inpaint: true });
-        dalle2Promise(obj, false)
+        dalle2Promise(obj, req.body.single || false)
             .then((data) => {
                 res.contentType("image/png").send(data);
             })
