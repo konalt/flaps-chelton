@@ -192,7 +192,7 @@ function init(client) {
                 .contentType("text/plain")
                 .send("400 Bad Request");
         }
-        dalle2Promise({ prompt: req.body.prompt })
+        dalle2Promise({ prompt: req.body.prompt }, req.body.single || false)
             .then((data) => {
                 res.contentType("image/png").send(data);
             })
