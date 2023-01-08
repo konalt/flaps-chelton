@@ -1496,15 +1496,15 @@ function dalle2Promise(data, big = false) {
             isPrivate: true,
             batchId: Math.floor(Math.random() * 1e7).toString(36),
             generateVariants: false,
-            cfg_scale: 8,
-            steps: 25,
+            cfg_scale: 6,
+            steps: 50,
             seed: Math.floor(Math.random() * 1e7),
             sampler: 1,
         };
         if (data.inpaint) {
             Object.assign(body, {
                 start_schedule: 0.7,
-                mask_strength: 0.9,
+                mask_strength: 0.5,
                 mode: 0,
                 mask_image:
                     "data:image/png;base64," +
