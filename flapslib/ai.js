@@ -1486,7 +1486,7 @@ function dalle2Promise(data, big = false) {
     // fuck you eslint !!
     // eslint-disable-next-line no-async-promise-executor
     return new Promise(async (resl, rej) => {
-        var size = big ? 1024 : 512;
+        var size = 512;
         var body = {
             num_images: big ? 1 : 4,
             width: size,
@@ -1496,8 +1496,8 @@ function dalle2Promise(data, big = false) {
             isPrivate: true,
             batchId: Math.floor(Math.random() * 1e7).toString(36),
             generateVariants: false,
-            cfg_scale: 6,
-            steps: 50,
+            cfg_scale: 7,
+            steps: big ? 50 : 25,
             seed: Math.floor(Math.random() * 1e7),
             sampler: 1,
         };
