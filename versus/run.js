@@ -184,7 +184,6 @@ async function todo(client, msg) {
                             "Weaponry",
                             "Diplomacy",
                             "Comedy",
-                            "Bonus",
                         ];
                         if (isLong) {
                             stats = [
