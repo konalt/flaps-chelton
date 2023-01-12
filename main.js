@@ -674,18 +674,14 @@ function getSources(msg, types) {
 
 var doneUsers = [];
 var isMidnightActive = false;
-var midnightText = "happy birthday funo";
+var midnightText = "midnight";
 /**
  *
  * @param {Discord.TextBasedChannel} channel
  * @param {string} text
  */
 async function midnight(channel) {
-    sendWebhook(
-        "flaps",
-        "HAPPY BIRTDAY FUNO !!!!\n ALL THEM MFS THAT ARE ONLINE RN SAY HAPPY BIRTHDAY FUNO!!!!",
-        channel
-    );
+    sendWebhook("flaps", "midnight", channel);
     var members = await channel.guild.members.fetch();
     var usersRequired = [];
     for (const member of members) {
@@ -706,7 +702,7 @@ async function midnight(channel) {
                     ">" +
                     ". YOU FUCKER" +
                     (nonusers.length > 1 ? "S" : "") +
-                    ". WHUY DO YOU NOT CARE ABOUT FUNO !???!?! <:crybaby:1026118113340694528> <:crybaby:1026118113340694528> <:crybaby:1026118113340694528> <:crybaby:1026118113340694528>",
+                    ". YOU MISS THE MIDNIGH !!!!",
                 channel
             );
         } else {
