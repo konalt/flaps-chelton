@@ -248,6 +248,20 @@ var client = null;
 function setClient(c) {
     client = c;
 }
+
+/**
+ *
+ * @param {string} char
+ */
+function twemojiURL(char) {
+    var cp = char.codePointAt(0).toString(16);
+    return (
+        "https://cdnjs.cloudflare.com/ajax/libs/twemoji/14.0.2/72x72/" +
+        cp +
+        ".png"
+    );
+}
+
 async function caption2(input, output, options) {
     var advanced = {
         nofix: false,
@@ -386,10 +400,7 @@ async function caption2(input, output, options) {
             );
         } else {
             return downloadPromise(
-                twemoji
-                    .parse(e[0], { size: Math.floor(72) })
-                    .split('src="')[1]
-                    .split('"/>')[0],
+                twemojiURL(e[0]),
                 path.join(__dirname, "..", output + ".emoji." + i + ".png")
             );
         }
