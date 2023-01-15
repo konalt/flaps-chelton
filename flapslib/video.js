@@ -593,6 +593,18 @@ async function reverse(input, output) {
         )}`
     );
 }
+async function perseverantia(input, output) {
+    var dur = await getVideoLength(file(input));
+    return ffmpeg(
+        `-y -i ${path.join(
+            __dirname,
+            "..",
+            input
+        )} -filter_complex "[0:v]reverse[rev];[0:v][rev]concat=n=2:v=1:a=0[vout];[0:a]areverse[arev];[0:a][arev]concat=n=2:v=0:a=1[aout]" -map "[aout]" -map "[vout]" -t ${
+            dur * 2
+        } -preset:v ${h264Preset} ${path.join(__dirname, "..", output)}`
+    );
+}
 
 function filter(arr) {
     return '"' + arr.join(";") + '"';
@@ -1228,4 +1240,5 @@ module.exports = {
     stack,
     stack2,
     spin,
+    perseverantia,
 };

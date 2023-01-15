@@ -204,6 +204,9 @@ async function cookingVideo(name, msg) {
             );
         });
 }
+async function perseverantia(name, msg) {
+    doEffect(video.perseverantia, name, "Perseverantia", {}, msg);
+}
 async function simpleMemeCaption(name, text, msg, client, url) {
     if (!url) url = msg.attachments.first().url;
     if (parseInt(msg.content.split(" ")[1])) {
@@ -590,4 +593,5 @@ module.exports = {
     stack,
     stack2,
     spin,
+    perseverantia,
 };

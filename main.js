@@ -2087,6 +2087,21 @@ async function onMessage(msg, isRetry = false) {
                             });
                     }
                     break;
+                case "!perseverantia":
+                    {
+                        getSources(msg, ["video/audio/gif"])
+                            .then((ids) => {
+                                flapslib.videowrapper.perseverantia(
+                                    ids[0],
+                                    msg,
+                                    client
+                                );
+                            })
+                            .catch((reason) => {
+                                sendWebhook("ffmpeg", reason, msg.channel);
+                            });
+                    }
+                    break;
                 case "!compress":
                     {
                         getSources(msg, ["video/audio"])
