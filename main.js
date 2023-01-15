@@ -593,7 +593,7 @@ function getSourcesWithAttachments(msg, types) {
                 if (msg.content.startsWith("https://tenor.com/")) {
                     var tenorVideo = true;
                     var ext = tenorVideo ? "mp4" : "gif";
-                    var type = tenorVideo ? "video" : "gif";
+                    var type = "gif";
                     var fn = tenorVideo ? tenorURLToVideoURL : tenorURLToGifURL;
                     if (typesMatch([type], types)) {
                         fn(msg.content).then((url) => {
