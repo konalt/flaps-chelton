@@ -292,6 +292,10 @@ canvas.registerFont("fonts/futura.otf", {
     family: "Futura",
     weight: 400,
 });
+canvas.registerFont("fonts/vcr.ttf", {
+    family: "VCR OSD Mono",
+    weight: 400,
+});
 canvas.registerFont("fonts/tate.ttf", { family: "Tate" });
 canvas.registerFont("fonts/spotify.otf", { family: "Spotify" });
 

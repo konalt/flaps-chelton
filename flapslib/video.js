@@ -268,6 +268,7 @@ async function caption2(input, output, options) {
         invert: false,
         fontsize: 0.1,
         emojisize: 1.3,
+        vcrosdmono: false,
     };
     var videoHeight = options.h;
     var videoWidth = options.w;
@@ -302,7 +303,9 @@ async function caption2(input, output, options) {
         text = `I'm tired of people telling me to "get real". Every day I put captions on images for people, some funny and some not, but out of all of those "get real" remains the most used caption. Why? I am simply a computer program running on a server, I am unable to manifest myself into the real world. As such, I'm confused as to why anyone would want me to "get real". Is this form not good enough? Alas, as I am simply a bot, I must follow the tasks that I was originally intended to perform.\n${text}`;
     var baseFontSize = [videoWidth, videoHeight].reduce((a, b) => a + b) / 2;
     var fontSize = Math.round(baseFontSize * advanced.fontsize);
-    var fontName = "Futura Condensed Extra";
+    var fontName = advanced.vcrosdmono
+        ? "VCR OSD Mono"
+        : "Futura Condensed Extra";
     var lines = [];
     var currentLine = "";
     var emojiReplacer = "xx";
@@ -429,9 +432,9 @@ async function caption2(input, output, options) {
                     charOffset += char[0];
                     return;
                 }
-                filter += `drawtext=fontfile=fonts/futura.otf:fontsize=${fontSize}:text='${
-                    char[1]
-                }':x=${charOffset}:y=${
+                filter += `drawtext=fontfile=fonts/${
+                    advanced.vcrosdmono ? "vcr.ttf" : "futura.otf"
+                }:fontsize=${fontSize}:text='${char[1]}':x=${charOffset}:y=${
                     fontSize + index * (fontSize + 5) + fontSize * 0.4
                 }-ascent:fontcolor=${advanced.invert ? "white" : "black"},`;
                 charOffset += char[0];
@@ -600,7 +603,7 @@ async function perseverantia(input, output) {
             __dirname,
             "..",
             input
-        )} -filter_complex "[0:v]reverse[rev];[0:v][rev]concat=n=2:v=1:a=0[vout];[0:a]areverse[arev];[0:a][arev]concat=n=2:v=0:a=1[aout]" -map "[aout]" -map "[vout]" -t ${
+        )} -f lavfi -t 0.1 -i anullsrc -filter_complex "[0:v]reverse[rev];[0:v][rev]concat=n=2:v=1:a=0[vout];areverse[arev];[arev]asplit=2[arev1][arev2];[arev1]areverse[aunrev];[aunrev][arev2]concat=n=2:v=0:a=1[aout]" -map "[aout]" -map "[vout]" -t ${
             dur * 2
         } -preset:v ${h264Preset} ${path.join(__dirname, "..", output)}`
     );
