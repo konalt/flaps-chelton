@@ -1954,6 +1954,26 @@ async function onMessage(msg, isRetry = false) {
                             });
                     }
                     break;
+                case "!tint":
+                    {
+                        getSources(msg, ["image/video/gif"])
+                            .then((ids) => {
+                                flapslib.videowrapper.tint(
+                                    ids[0],
+                                    "0x" +
+                                        commandArgs[1]
+                                            .substring(
+                                                commandArgs[1][0] == "#" ? 1 : 0
+                                            )
+                                            .toUpperCase() || "0x00FF00",
+                                    msg
+                                );
+                            })
+                            .catch((reason) => {
+                                sendWebhook("ffmpeg", reason, msg.channel);
+                            });
+                    }
+                    break;
                 case "!spingif":
                     {
                         getSources(msg, ["image"])

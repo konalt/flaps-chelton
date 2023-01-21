@@ -975,6 +975,21 @@ async function cookingVideo(input, output) {
         ].join(" ")
     );
 }
+async function tint(input, output, { color }) {
+    var dims = await getVideoDimensions(file(input));
+    return ffmpeg(
+        [
+            "-i " + file(input),
+            '-f lavfi -i "color=' + color + ":s=" + dims.join("x") + '"',
+            '-filter_complex "[0:v]scale=' +
+                dims.join("x") +
+                "[x];[1:v]scale=" +
+                dims.join("x") +
+                '[y];[x][y]blend=shortest=1:all_mode=overlay:all_opacity=0.2"',
+            file(output),
+        ].join(" ")
+    );
+}
 async function imageAudio(input, output, rev, exts) {
     var files = [
         file(input + (!rev ? "-0." + exts[0] : "-1." + exts[1])),
@@ -1244,4 +1259,5 @@ module.exports = {
     stack2,
     spin,
     perseverantia,
+    tint,
 };

@@ -191,6 +191,9 @@ async function spin(name, length, speed, gif, msg) {
         msg
     );
 }
+async function tint(name, color, msg) {
+    doEffect(video.tint, name, "Tint", { color }, msg);
+}
 async function cookingVideo(name, msg) {
     var id = n("Effect_CookingVideo");
     var ext = "." + name.split(".").pop();
@@ -594,4 +597,5 @@ module.exports = {
     stack2,
     spin,
     perseverantia,
+    tint,
 };
