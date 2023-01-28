@@ -2,6 +2,7 @@
 //#region Require shit
 const Discord = require("discord.js");
 const fs = require("fs");
+const fsprom = require("fs/promises");
 const fetch = require("node-fetch");
 const canvas = require("canvas");
 const client = new Discord.Client({
@@ -78,6 +79,8 @@ const {
     spotifyThisIs,
     getHexCode,
     makeHexCode,
+    make512x512,
+    doNothing,
 } = require("./flapslib/canvas");
 const { createCanvas } = require("canvas");
 const { doTranslate, doTranslateSending } = require("./flapslib/translator");
@@ -106,6 +109,7 @@ const { MessageActionRow } = require("discord.js");
 const { log, esc, Color } = require("./flapslib/log");
 const { Router } = require("express");
 const twemoji = require("twemoji");
+const videowrapper = require("./flapslib/videowrapper");
 require("dotenv").config();
 
 flapslib.webhooks.setClient(client);
@@ -1858,6 +1862,68 @@ async function onMessage(msg, isRetry = false) {
                                 msg,
                                 client
                             );
+                        }
+                    }
+                    break;
+                case "!img2gif":
+                    {
+                        if (msg.attachments.first()) {
+                            var id = uuidv4().replace(/-/g, "");
+                            var ext = ".png";
+                            var proms = [];
+                            var i = 0;
+                            for (const [id2, att] of msg.attachments) {
+                                proms.push(
+                                    (() => {
+                                        return new Promise((res, rej) => {
+                                            // Save attachment to buffer
+                                            downloadPromise(
+                                                att.url,
+                                                "dataurl"
+                                            ).then((rawBuffer) => {
+                                                // Convert to PNG
+                                                doNothing(rawBuffer).then(
+                                                    (pngBuffer) => {
+                                                        // Save to file
+                                                        fsprom
+                                                            .writeFile(
+                                                                "images/cache/" +
+                                                                    id +
+                                                                    "_" +
+                                                                    Array.from(
+                                                                        msg.attachments.keys()
+                                                                    )
+                                                                        .indexOf(
+                                                                            id2
+                                                                        )
+                                                                        .toString()
+                                                                        .padStart(
+                                                                            3,
+                                                                            "0"
+                                                                        ) +
+                                                                    ext,
+                                                                pngBuffer,
+                                                                "binary"
+                                                            )
+                                                            .then(() => {
+                                                                // Finally resolve
+                                                                res();
+                                                            });
+                                                    }
+                                                );
+                                            });
+                                        });
+                                    })()
+                                );
+                                i++;
+                            }
+                            console.log(proms);
+                            Promise.all(proms).then(() => {
+                                videowrapper.imagestogif(
+                                    id + "_%03d" + ext,
+                                    msg
+                                );
+                            });
                         }
                     }
                     break;

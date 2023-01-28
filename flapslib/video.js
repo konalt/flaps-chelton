@@ -9,7 +9,7 @@ const { uuidv4 } = require("./util");
 const { extension } = require("mime-types");
 const { log, esc, Color } = require("./log");
 
-var ffmpegVerbose = false;
+var ffmpegVerbose = true;
 
 var h264Preset = "ultrafast";
 var vcodec = "libx264";
@@ -60,6 +60,7 @@ async function ffmpeg(args, quiet = false) {
             b += c;
         });
         ffmpegInstance.on("exit", (code) => {
+            if (ffmpegVerbose) console.log(b);
             if (code == 0 && !quiet) {
                 log(
                     `${esc(Color.Green)}Completed ${esc(Color.White)}in ${esc(
@@ -1081,6 +1082,14 @@ async function loop(input, output, options) {
         )}`
     );
 }
+const GIF_FIXER = "split[s0][s1];[s0]palettegen[p];[s1][p]paletteuse";
+async function imagestogif(input, output) {
+    return ffmpeg(
+        `-y -f image2 -framerate 6 -i ${file(
+            input
+        )} -filter_complex "[0:v]${GIF_FIXER}[o]" -map "[o]" ${file(output)}`
+    );
+}
 async function baitSwitch(input, output, options = {}) {
     return ffmpeg(
         `-y -t 1 -i ${path.join(
@@ -1260,4 +1269,5 @@ module.exports = {
     spin,
     perseverantia,
     tint,
+    imagestogif,
 };

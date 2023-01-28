@@ -194,6 +194,9 @@ async function spin(name, length, speed, gif, msg) {
 async function tint(name, color, msg) {
     doEffect(video.tint, name, "Tint", { color }, msg);
 }
+async function imagestogif(name, msg) {
+    doEffect(video.imagestogif, name, "ImgGif", { _ext: "mp4" }, msg);
+}
 async function cookingVideo(name, msg) {
     var id = n("Effect_CookingVideo");
     var ext = "." + name.split(".").pop();
@@ -598,4 +601,5 @@ module.exports = {
     spin,
     perseverantia,
     tint,
+    imagestogif,
 };
