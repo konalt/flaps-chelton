@@ -110,6 +110,8 @@ const { log, esc, Color } = require("./flapslib/log");
 const { Router } = require("express");
 const twemoji = require("twemoji");
 const videowrapper = require("./flapslib/videowrapper");
+const { lookup } = require("mime-types");
+const e = require("express");
 require("dotenv").config();
 
 flapslib.webhooks.setClient(client);
@@ -541,8 +543,7 @@ var types = {
     audio: ["audio/mpeg", "audio/aac"],
 };
 
-function getTypeSingular() {
-    var ct = att.contentType;
+function getTypeSingular(ct) {
     var type = "unknown";
     Object.entries(types).forEach((a) => {
         if (a[1].includes(ct)) type = a[0];
@@ -638,8 +639,44 @@ function getSourcesWithAttachments(msg, types) {
                                 getTypeMessage(["gif"], types)
                         );
                     }
+                } else if (
+                    msg.content.startsWith("https://cdn.discordapp.com/") ||
+                    msg.content.startsWith("https://media.discordapp.net/")
+                ) {
+                    var filename = msg.content.split(" ")[0].split("/")[
+                        msg.content.split("/").length - 1
+                    ];
+                    var type = getTypeSingular(lookup(filename));
+                    var ext =
+                        filename.split(".")[filename.split(".").length - 1];
+                    if (typesMatch([type], types)) {
+                        var id = uuidv4().replace(/-/gi, "");
+                        var npath = id + "." + ext;
+                        var zpath = "images/cache/" + npath;
+                        downloadPromise(msg.content.split(" ")[0], zpath).then(
+                            async () => {
+                                var dimensions = await getVideoDimensions(
+                                    zpath
+                                );
+                                resolve([
+                                    [
+                                        {
+                                            width: dimensions[0],
+                                            height: dimensions[1],
+                                        },
+                                        npath,
+                                    ],
+                                ]);
+                            }
+                        );
+                    } else {
+                        reject(
+                            "Type Error (Attempted Discord):\n" +
+                                getTypeMessage(["gif"], types)
+                        );
+                    }
                 } else {
-                    reject("No source found");
+                    reject("No source found (content:" + msg.content + ")");
                 }
             } else if (!typesMatch(attTypes, types)) {
                 reject("Type Error:\n" + getTypeMessage(attTypes, types));
