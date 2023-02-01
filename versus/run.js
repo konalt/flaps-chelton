@@ -38,11 +38,15 @@ async function ffmpeg(args) {
     });
 }
 
+function looparg(name) {
+    return name.endsWith(".mp4") || name.endsWith(".gif") ? "" : "-loop 1 ";
+}
+
 function createBothVideo(input, output, options) {
     return ffmpeg(
-        `${verbose ? "" : "-v warning "}-y ${
-            input[0].endsWith(".mp4") ? "" : "-loop 1 "
-        }-i ${input[0]} ${input[1].endsWith(".mp4") ? "" : "-loop 1 "}-i ${
+        `${verbose ? "" : "-v warning "}-y ${looparg(input[0])}-i ${
+            input[0]
+        } ${looparg(input[1])}-i ${
             input[1]
         } -t ${segmentLength} -i versus/black.png -filter_complex "[0:v]scale=400:390[img01_scaled];[1:v]scale=400:390[img02_scaled];[2:v]scale=400:800[bg_1s];[bg_1s][img01_scaled]overlay=0:0[bg_and_img01];[bg_and_img01][img02_scaled]overlay=0:410[vs_notext];[vs_notext]scale=400:800,setsar=1:1,setpts=PTS-STARTPTS[scaled];[scaled]split=1[scaled1];[scaled1]drawtext=text='${
             options[0]
@@ -54,9 +58,9 @@ function createBothVideo(input, output, options) {
 
 function createWinnerVideo(input, output) {
     return ffmpeg(
-        `${verbose ? "" : "-v warning "}-y ${
-            input[0].endsWith(".mp4") ? "" : "-loop 1 "
-        }-i ${input[0]} ${input[1].endsWith(".mp4") ? "" : "-loop 1 "}-i ${
+        `${verbose ? "" : "-v warning "}-y ${looparg(input[0])}-i ${
+            input[0]
+        } ${looparg(input[1])}-i ${
             input[1]
         } -t ${segmentLength} -i versus/black.png -filter_complex "[0:v]scale=400:390[img01_scaled];[1:v]scale=400:390[img02_scaled];[2:v]scale=400:800[bg_1s];[bg_1s][img01_scaled]overlay=0:0[bg_and_img01];[bg_and_img01][img02_scaled]overlay=0:410[vs_notext];[vs_notext]scale=400:800,setsar=1:1,setpts=PTS-STARTPTS[scaled];[scaled]drawtext=text='Winner':x=W/2-tw/2:y=H/2-th/2:fontsize=66:fontfile=${font}:borderw=5:bordercolor=black:fontcolor=white,fps=25[out]" -map "[out]" -t ${segmentLength} -r 25 ${output}.mp4`
     );
@@ -64,9 +68,9 @@ function createWinnerVideo(input, output) {
 
 function createTieVideo(input, output) {
     return ffmpeg(
-        `${verbose ? "" : "-v warning "}-y ${
-            input[0].endsWith(".mp4") ? "" : "-loop 1 "
-        }-i ${input[0]} ${input[1].endsWith(".mp4") ? "" : "-loop 1 "}-i ${
+        `${verbose ? "" : "-v warning "}-y ${looparg(input[0])}-i ${
+            input[0]
+        } ${looparg(input[1])}-i ${
             input[1]
         } -t ${segmentLength} -i versus/black.png -filter_complex "[0:v]scale=400:390[img01_scaled];[1:v]scale=400:390[img02_scaled];[2:v]scale=400:800[bg_1s];[bg_1s][img01_scaled]overlay=0:0[bg_and_img01];[bg_and_img01][img02_scaled]overlay=0:410[vs_notext];[vs_notext]scale=400:800,setsar=1:1,setpts=PTS-STARTPTS[scaled];[scaled]drawtext=text='Tie':x=W/2-tw/2:y=H/2-th/2:fontsize=66:fontfile=${font}:borderw=5:bordercolor=black:fontcolor=white,fps=25[out]" -map "[out]" -t ${segmentLength} -r 25 ${output}.mp4`
     );
@@ -74,9 +78,9 @@ function createTieVideo(input, output) {
 
 function createStatVideo(input, output, options) {
     return ffmpeg(
-        `${verbose ? "" : "-v warning "}-y ${
-            input[0].endsWith(".mp4") ? "" : "-loop 1 "
-        }-i ${input[0]} ${input[1].endsWith(".mp4") ? "" : "-loop 1 "}-i ${
+        `${verbose ? "" : "-v warning "}-y ${looparg(input[0])}-i ${
+            input[0]
+        } ${looparg(input[1])}-i ${
             input[1]
         } -t ${segmentLength} -i versus/black.png -filter_complex "[0:v]scale=400:390[img01_scaled];[1:v]scale=400:390[img02_scaled];[2:v]scale=400:800[bg_1s];[bg_1s][img01_scaled]overlay=0:0[bg_and_img01];[bg_and_img01][img02_scaled]overlay=0:410[vs_notext];[vs_notext]scale=400:800,setsar=1:1,setpts=PTS-STARTPTS[scaled];[scaled]split=1[scaled1];[scaled1]drawtext=text='${
             options.stat
@@ -86,9 +90,9 @@ function createStatVideo(input, output, options) {
 
 function createScoreVideo(input, output, options) {
     return ffmpeg(
-        `${verbose ? "" : "-v warning "}-y ${
-            input.endsWith(".mp4") ? "" : "-loop 1 "
-        }-t ${segmentLength} -i ${input} -filter_complex "[0:v]scale=-1:800,crop=400:800,setsar=1:1,setpts=PTS-STARTPTS[scaled];[scaled]drawtext=text='${
+        `${verbose ? "" : "-v warning "}-y ${looparg(
+            input
+        )}-t ${segmentLength} -i ${input} -filter_complex "[0:v]scale=-1:800,crop=400:800,setsar=1:1,setpts=PTS-STARTPTS[scaled];[scaled]drawtext=text='${
             options.curScore
         }':x=W/2-tw/2:y=H/2-th/2:fontsize=72:fontfile=${font}:borderw=5:bordercolor=black:fontcolor=white,fps=25[out]" -map "[out]" -t ${segmentLength} -r 25 ${output}.mp4`
     );
@@ -123,7 +127,7 @@ function concat(input, output) {
     );
 }
 var segmentLength = 60000 / 70 / 1000;
-var verbose = false;
+var verbose = true;
 
 async function todo(client, msg) {
     if (msg.attachments.first(2)[1]) {
