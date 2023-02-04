@@ -213,6 +213,15 @@ async function cookingVideo(name, msg) {
 async function perseverantia(name, msg) {
     doEffect(video.perseverantia, name, "Perseverantia", {}, msg);
 }
+async function img2vid(name, length, msg) {
+    doEffect(
+        video.img2vid,
+        name,
+        "Img2Vid",
+        { length: length, _ext: "mp4" },
+        msg
+    );
+}
 async function simpleMemeCaption(name, text, msg, client, url) {
     if (!url) url = msg.attachments.first().url;
     if (parseInt(msg.content.split(" ")[1])) {
@@ -602,4 +611,5 @@ module.exports = {
     perseverantia,
     tint,
     imagestogif,
+    img2vid,
 };

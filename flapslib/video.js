@@ -609,6 +609,19 @@ async function perseverantia(input, output) {
         } -preset:v ${h264Preset} ${path.join(__dirname, "..", output)}`
     );
 }
+function even(n) {
+    return Math.floor(n / 2) * 2;
+}
+async function img2vid(input, output, options) {
+    var dims = await getVideoDimensions(file(input));
+    return ffmpeg(
+        `-y -loop 1 -i ${file(input)} -c:v libx264 -t ${
+            options.length
+        } -pix_fmt yuv420p -vf scale=${even(dims[0])}:${even(
+            dims[1]
+        )} -preset:v ${h264Preset} ${file(output)}`
+    );
+}
 
 function filter(arr) {
     return '"' + arr.join(";") + '"';
@@ -1270,4 +1283,5 @@ module.exports = {
     perseverantia,
     tint,
     imagestogif,
+    img2vid,
 };

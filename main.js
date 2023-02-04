@@ -2146,6 +2146,21 @@ async function onMessage(msg, isRetry = false) {
                             });
                     }
                     break;
+                case "!img2vid":
+                    {
+                        getSources(msg, ["image"])
+                            .then((ids) => {
+                                flapslib.videowrapper.img2vid(
+                                    ids[0],
+                                    commandArgs[1],
+                                    msg
+                                );
+                            })
+                            .catch((reason) => {
+                                sendWebhook("ffmpeg", reason, msg.channel);
+                            });
+                    }
+                    break;
                 case "!invertalpha":
                     downloadPromise(
                         msg.attachments.first().url,
