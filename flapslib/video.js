@@ -615,7 +615,9 @@ function even(n) {
 async function img2vid(input, output, options) {
     var dims = await getVideoDimensions(file(input));
     return ffmpeg(
-        `-y -loop 1 -i ${file(input)} -c:v libx264 -t ${
+        `-y -loop 1 -i ${file(
+            input
+        )} -f lavfi -i anullsrc=r=48000:cl=mono -c:v libx264 -t ${
             options.length
         } -pix_fmt yuv420p -vf scale=${even(dims[0])}:${even(
             dims[1]
@@ -1075,7 +1077,7 @@ async function gifNoAudio(input, output) {
             __dirname,
             "..",
             input
-        )} -vf "pad=ceil(iw/2)*2:ceil(ih/2)*2" -c:v ${vcodec} -shortest -preset:v ${h264Preset} ${path.join(
+        )} -f lavfi -i anullsrc=r=48000:cl=mono -vf "pad=ceil(iw/2)*2:ceil(ih/2)*2" -c:v ${vcodec} -shortest -preset:v ${h264Preset} ${path.join(
             __dirname,
             "..",
             output + ".mp4"
