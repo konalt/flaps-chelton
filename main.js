@@ -42,6 +42,7 @@ const {
     dalle2,
     questionPromise,
     qqAnimeAI,
+    dalle2Promise,
 } = require("./flapslib/ai");
 const {
     sendWebhook,
@@ -92,6 +93,7 @@ const {
     tenorURLToGifURL,
     time,
     tenorURLToVideoURL,
+    bufferToDataURL,
 } = require("./flapslib/util");
 const owoify = require("owoify-js").default;
 const sizeOf = require("buffer-image-size");
@@ -2426,6 +2428,44 @@ async function onMessage(msg, isRetry = false) {
                             .catch((reason) => {
                                 sendWebhook("ffmpeg", reason, msg.channel);
                             });
+                    }
+                    break;
+                case "!aiedit":
+                    if (msg.attachments.first()) {
+                        downloadPromise(
+                            msg.attachments.first().url,
+                            "dataurl"
+                        ).then((inbuf) => {
+                            dalle2Promise(
+                                {
+                                    img2img: true,
+                                    prompt:
+                                        commandArgString ||
+                                        "Make him more realistic",
+                                    img: bufferToDataURL(inbuf, "image/png"),
+                                },
+                                true,
+                                true
+                            )
+                                .then((buf) => {
+                                    sendWebhookBuffer(
+                                        "flaps",
+                                        buf,
+                                        "yeah",
+                                        msg.channel,
+                                        n("AI_InstructPix2Pix", "png")
+                                    );
+                                })
+                                .catch((err) => {
+                                    sendWebhook("flaps", err, msg.channel);
+                                });
+                        });
+                    } else {
+                        sendWebhook(
+                            "flaps",
+                            "PHONY!!!!!1!!!!!!!!!!!",
+                            msg.channel
+                        );
                     }
                     break;
                 case "!dream":

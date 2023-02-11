@@ -1482,11 +1482,13 @@ function dalle2InpaintPromise(data) {
     });
 }
 
-function dalle2Promise(data, big = false) {
+function dalle2Promise(data, big = false, img2img) {
     // fuck you eslint !!
     // eslint-disable-next-line no-async-promise-executor
     return new Promise(async (resl, rej) => {
-        var size = 512;
+        if (data.img2img) big = true;
+        var size = big ? 1024 : 512;
+        if (data.img2img) size = 512;
         var body = {
             num_images: big ? 1 : 4,
             width: size,
@@ -1499,13 +1501,13 @@ function dalle2Promise(data, big = false) {
             cfg_scale: 7,
             steps: big ? 50 : 25,
             seed: Math.floor(Math.random() * 1e7),
-            sampler: 1,
+            sampler: 3,
         };
         if (data.inpaint) {
             Object.assign(body, {
                 start_schedule: 0.7,
                 mask_strength: 0.5,
-                mode: 0,
+                mode: 1,
                 mask_image:
                     "data:image/png;base64," +
                     (
@@ -1522,6 +1524,23 @@ function dalle2Promise(data, big = false) {
                             Buffer.from(data.img.split(",")[1], "base64")
                         )
                     ).toString("base64"),
+            });
+        } else if (data.img2img) {
+            Object.assign(body, {
+                start_schedule: 0.7,
+                mask_strength: 0.7,
+                filter: "none",
+                hide: true,
+                init_image:
+                    "data:image/png;base64," +
+                    (
+                        await make512x512(
+                            Buffer.from(data.img.split(",")[1], "base64")
+                        )
+                    ).toString("base64"),
+                mode: 2,
+                strength: 1.3,
+                cfg_scale: 4,
             });
         }
 
