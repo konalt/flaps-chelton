@@ -346,8 +346,8 @@ client.on("ready", async () => {
 
     fs.readFile("./saved_status.txt", (_err, data) => {
         if (!_err) {
-            var type = data.split(" ")[0].toUpperCase();
-            var name = data.split(" ").slice(1).join(" ");
+            var type = data.toString().split(" ")[0].toUpperCase();
+            var name = data.toString().split(" ").slice(1).join(" ");
             client.user.setPresence({
                 activities: [
                     {
@@ -1572,6 +1572,25 @@ async function onMessage(msg, isRetry = false) {
                         var seconds = Math.round(delta % 60);
 
                         var str = `${days}d ${hours}h ${minutes}m ${seconds}s`;
+                        sendWebhook("flaps", str, msg.channel);
+                    }
+                    break;
+                case "!lastdrink":
+                    {
+                        var newTime =
+                            Date.now() -
+                            new Date(
+                                fs.readFileSync("./lastdrink.txt").toString()
+                            ).getTime();
+                        var delta = newTime / 1000;
+                        var days = Math.floor(delta / 86400);
+                        delta -= days * 86400;
+                        var hours = Math.floor(delta / 3600) % 24;
+                        delta -= hours * 3600;
+                        var minutes = Math.floor(delta / 60) % 60;
+                        delta -= minutes * 60;
+                        var seconds = Math.round(delta % 60);
+                        var str = `good funo it has been a total of ${days} days ${hours} hours ${minutes} minutes ${seconds} seconds since your last drink\nplease do not drink you get very annoying and i get worried for your mental health`;
                         sendWebhook("flaps", str, msg.channel);
                     }
                     break;
