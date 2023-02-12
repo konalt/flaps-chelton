@@ -1594,6 +1594,15 @@ async function onMessage(msg, isRetry = false) {
                         sendWebhook("flaps", str, msg.channel);
                     }
                     break;
+                case "!setlastdrink":
+                    fs.writeFile(
+                        "./lastdrink.txt",
+                        new Date().toISOString(),
+                        () => {
+                            sendWebhook("flaps", "for fucks sake", msg.channel);
+                        }
+                    );
+                    break;
                 case "!hexcode":
                     if (msg.attachments.first()) {
                         getHexCode(
