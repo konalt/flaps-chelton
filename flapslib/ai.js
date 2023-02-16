@@ -1488,7 +1488,7 @@ function dalle2Promise(data, big = false, img2img) {
     return new Promise(async (resl, rej) => {
         if (data.img2img) big = true;
         var size = big ? 1024 : 512;
-        if (data.img2img) size = 512;
+        if (data.img) size = 512;
         var body = {
             num_images: big ? 1 : 4,
             width: size,
