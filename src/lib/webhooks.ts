@@ -90,7 +90,7 @@ export function sendWebhook(
         let user: WebhookBot = hooks.get(id);
         baseSend(
             url + "?wait=true",
-            content,
+            user?.quirk ? user?.quirk(content) : content,
             user?.name || "wh:" + id,
             user?.avatar || "https://konalt.us.to/flaps/avatars/" + id + ".png",
             buffer,
