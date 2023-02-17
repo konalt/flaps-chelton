@@ -1,4 +1,5 @@
 import { RedditListing, RedditPost } from "../types";
+import fetch from "node-fetch";
 
 export function get100Posts(subreddit: string): Promise<RedditPost[]> {
     return new Promise((res, rej) => {

@@ -1,9 +1,12 @@
 import https from "https";
 import fs from "fs";
 
-const download = function (url, dest): Promise<Buffer | null> {
+export const downloadPromise = function (
+    url: string,
+    dest: string | null = null
+): Promise<Buffer | null> {
     return new Promise((resolve, reject) => {
-        if (dest == "dataurl") {
+        if (dest == null) {
             https
                 .get(url, function (res) {
                     var data: Buffer[] = [];
@@ -40,5 +43,3 @@ const download = function (url, dest): Promise<Buffer | null> {
         }
     });
 };
-
-export { download as downloadPromise };

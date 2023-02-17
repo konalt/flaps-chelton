@@ -224,7 +224,7 @@ function typesMatch(inTypes, requiredTypes) {
     return ok;
 }
 
-function tenorURLToGifURL(url: string) {
+function tenorURLToGifURL(url: string): Promise<string> {
     var searchString = '<meta class="dynamic" name="twitter:image" content="';
     return new Promise((resl) => {
         fetch(url)
