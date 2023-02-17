@@ -34,6 +34,7 @@ const client = new Client({
         "MessageContent",
         "Guilds",
         "GuildPresences",
+        "DirectMessages",
     ],
 });
 
@@ -131,6 +132,7 @@ function logMessage(
 }
 
 client.on("messageCreate", (msg) => {
+    if (msg.author.bot) return;
     if (!(msg.channel instanceof TextChannel)) {
         msg.reply("this mf bot dont support dms get the fuck outta here");
         return;
