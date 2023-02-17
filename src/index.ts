@@ -386,7 +386,7 @@ client.on("messageCreate", (msg) => {
         let command = commands.find((cmd) => cmd.id == commandId);
         if (command) {
             commandRan = true;
-            if (command.needs.length > 0) {
+            if (command.needs && command.needs.length > 0) {
                 getSources(msg, command.needs).then(async (srcs: string[]) => {
                     let bufs = await Promise.all(srcs.map((s) => readFile(s)));
                     command.execute(commandArgs, bufs, msg);
