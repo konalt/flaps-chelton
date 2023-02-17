@@ -306,6 +306,7 @@ canvas.registerFont("fonts/vcr.ttf", {
 });
 canvas.registerFont("fonts/tate.ttf", { family: "Tate" });
 canvas.registerFont("fonts/spotify.otf", { family: "Spotify" });
+canvas.registerFont("fonts/arial.ttf", { family: "Arial" });
 
 var errChannel;
 

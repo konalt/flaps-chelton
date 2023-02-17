@@ -312,7 +312,8 @@ async function caption2(input, output, options) {
     var emojiReplacer = "xx";
     var emojiRegex = /(?=\p{Emoji})(?=[\D])(?=[^\*])/gu;
     var customEmojiRegex = /(<a?)?:\w+:(\d+>)/g;
-    var txtW = (txt) => getTextWidth(fontName, fontSize, txt);
+    var fontChangeRegex = /\*[\w\d]+\*/g;
+    var txtW = (txt, fnt = fontName) => getTextWidth(fnt, fontSize, txt);
     var emojiSize = fontSize * advanced.emojisize;
     var fixChar = (c) =>
         c
@@ -352,6 +353,8 @@ async function caption2(input, output, options) {
     var customEmojis = text.match(customEmojiRegex) || [];
     var emojis = customEmojis.map((x) => [x, true]);
     var newLines = [];
+    var mods = [];
+    var lindex = 0;
     lines.forEach((line) => {
         var lineYOffset = txtW(
             line[1].replace(customEmojiRegex, emojiReplacer)
@@ -363,6 +366,19 @@ async function caption2(input, output, options) {
             var chars = [];
             var cached = "";
             var writingCache = false;
+            var ml = mods.length;
+            if (word.startsWith("*")) {
+                mods.push([parseInt(lindex + ml).toString(), "FontVCR"]);
+                word = word.substring(1);
+            }
+            if (word.endsWith("*")) {
+                mods.push([
+                    parseInt(lindex + word.length - 1 + ml).toString(),
+                    "FontDefault",
+                ]);
+                word = word.substring(word.length - 1);
+            }
+            var mod = mods.find((m) => m[0] == lindex);
             Array.from(word).forEach((char) => {
                 if (char == "<") {
                     writingCache = true;
@@ -377,6 +393,7 @@ async function caption2(input, output, options) {
                     chars.push(`${cached}`);
                     cached = "";
                 }
+                lindex++;
             });
             chars.forEach((char) => {
                 if (char.match(emojiRegex)) {
@@ -385,7 +402,17 @@ async function caption2(input, output, options) {
                 } else if (char.match(customEmojiRegex)) {
                     newWord.push([emojiSize, char]);
                 } else {
-                    newWord.push([txtW(char), fixChar(char)]);
+                    newWord.push([
+                        txtW(
+                            char,
+                            mod
+                                ? mod[1] == "FontVCR"
+                                    ? "Arial"
+                                    : fontName
+                                : fontName
+                        ),
+                        fixChar(char),
+                    ]);
                 }
             });
             newWords.push(newWord);
@@ -418,8 +445,10 @@ async function caption2(input, output, options) {
     },pad=width=${Math.round(videoWidth / 2) * 2}:height=${
         Math.round(videoHeight / 2) * 2 + barHeight
     }:x=0:y=${barHeight}:color=${advanced.invert ? "black" : "white"},`;
+    var cusevcr = false;
     newLines.forEach((line, index) => {
         var charOffset = videoWidth / 2 - line[0] / 2;
+        var lindex = 0;
         line[1].forEach((word) => {
             word.forEach((char) => {
                 if (
@@ -433,11 +462,15 @@ async function caption2(input, output, options) {
                     charOffset += char[0];
                     return;
                 }
+                var mod = mods.find((m) => m[0] == lindex);
+                if (mod && mod[1] == "FontVCR") cusevcr = true;
+                if (mod && mod[1] == "FontDefault") cusevcr = false;
                 filter += `drawtext=fontfile=fonts/${
-                    advanced.vcrosdmono ? "vcr.ttf" : "futura.otf"
+                    cusevcr ? "arial.ttf" : "futura.otf"
                 }:fontsize=${fontSize}:text='${char[1]}':x=${charOffset}:y=${
                     fontSize + index * (fontSize + 5) + fontSize * 0.4
                 }-ascent:fontcolor=${advanced.invert ? "white" : "black"},`;
+                lindex++;
                 charOffset += char[0];
             });
             charOffset += txtW(" ");
