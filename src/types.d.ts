@@ -1,5 +1,6 @@
 export interface FlapsCommand {
     id: string;
+    aliases?: string[];
     name: string;
     desc?: string;
     execute: Function;
