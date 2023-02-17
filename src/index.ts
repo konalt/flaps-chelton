@@ -13,6 +13,7 @@ import { hooks, sendWebhook, updateUsers } from "./lib/webhooks";
 import { Color, esc, log } from "./lib/logger";
 import { FlapsCommand, WebhookBot } from "./types";
 import { downloadPromise } from "./lib/download";
+import { uuidv4 } from "./lib/utils";
 
 log("Loading settings...", "start");
 config();
@@ -173,18 +174,6 @@ function autoReact(msg: Message) {
     if (f.includes("copper")) {
         sendWebhook("flaps", "copper you say?", msg.channel as TextChannel);
     }
-}
-
-function uuidv4() {
-    let s = (n = 1) =>
-        n == 1
-            ? Math.floor(Math.random() * 65535)
-                  .toString(16)
-                  .padStart(4, "0")
-            : Math.floor(Math.random() * 65535)
-                  .toString(16)
-                  .padStart(4, "0") + s(n - 1);
-    return [s(2), s(), s(), s(), s(3)].join("-");
 }
 
 var types = {
