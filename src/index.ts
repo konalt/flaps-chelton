@@ -4,6 +4,7 @@ import {
     Collection,
     Partials,
     PresenceData,
+    TextChannel,
 } from "discord.js";
 import { config } from "dotenv";
 import { readFile, readdir } from "fs/promises";
@@ -63,6 +64,27 @@ client.on("ready", () => {
                 status: "online",
             });
         });
+});
+
+const COMMAND_PREFIX = "!";
+
+client.on("messageCreate", (msg) => {
+    if (!(msg.channel instanceof TextChannel)) {
+        msg.reply("this mf bot dont support dms get the fuck outta here");
+        return;
+    }
+    if (msg.content.startsWith(COMMAND_PREFIX)) {
+        let commandId = msg.content
+            .split(" ")[0]
+            .substring(COMMAND_PREFIX.length);
+        let commandArgs = msg.content.split(" ").slice(1);
+        let commandArgString = msg.content.split(" ").slice(1).join(" ");
+
+        let command = commands.find((cmd) => cmd.id == commandId);
+        if (command) {
+            command.execute(commandArgs, msg);
+        }
+    }
 });
 
 let commands: Collection<string, FlapsCommand> = new Collection();

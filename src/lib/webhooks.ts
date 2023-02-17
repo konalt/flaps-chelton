@@ -2,6 +2,8 @@ import { GuildChannel } from "discord.js";
 import { TextChannel } from "discord.js";
 import { TextBasedChannel } from "discord.js";
 import { PathLike, readFileSync } from "fs";
+import fetch from "node-fetch";
+import FormData from "form-data";
 
 const defaultContent = "No Content";
 const defaultUsername = "No Username";
@@ -29,9 +31,9 @@ function baseSend(
             tts,
         })
     );
-    fetch("", {
+    fetch(url, {
         method: "POST",
-        body: form,
+        body: form as unknown as URLSearchParams,
     });
 }
 

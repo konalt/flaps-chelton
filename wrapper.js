@@ -1,6 +1,6 @@
 const cp = require("child_process");
 const fs = require("fs");
-const fetch = require("node-fetch");
+const fetch = import("node-fetch");
 
 var lastNL = true;
 var lastLogCount = 20;
