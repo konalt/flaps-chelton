@@ -13,9 +13,8 @@ import { hooks, sendWebhook, updateUsers } from "./lib/webhooks";
 import { Color, esc, log } from "./lib/logger";
 import { FlapsCommand, WebhookBot } from "./types";
 
-log("Loading data...", "start");
+log("Loading settings...", "start");
 config();
-log("Dotenv loaded.", "start");
 
 const client = new Client({
     partials: [
@@ -170,6 +169,9 @@ function autoReact(msg: Message) {
                 (emoji) => emoji.name === "828274359076126760"
             )
         );
+    if (f.includes("copper")) {
+        sendWebhook("flaps", "copper you say?", msg.channel as TextChannel);
+    }
 }
 
 client.on("messageCreate", (msg) => {
@@ -213,12 +215,10 @@ client.on("messageCreate", (msg) => {
 let commands: Collection<string, FlapsCommand> = new Collection();
 let flags: Collection<string, string> = new Collection();
 
-log("Reading commands...", "start");
-
+log("Loading commands...", "start");
 readdir(__dirname + "/commands", {
     withFileTypes: true,
 }).then(async (files) => {
-    log("Parsing commands...", "start");
     let fileNames = files.map((file) => file.name.split(".")[0]);
     for (const file of fileNames) {
         let command = require("./commands/" + file) as FlapsCommand;
