@@ -8,7 +8,7 @@ import {
 } from "discord.js";
 import { config } from "dotenv";
 import { readFile, readdir } from "fs/promises";
-import { updateUsers } from "./lib/webhooks";
+import { hooks, sendWebhook, updateUsers } from "./lib/webhooks";
 import { FlapsCommand, WebhookBot } from "./types";
 
 console.log("[start] Loading data...");
@@ -68,11 +68,20 @@ client.on("ready", () => {
 });
 
 const COMMAND_PREFIX = "!";
+const WH_PREFIX = "<";
 
 client.on("messageCreate", (msg) => {
     if (!(msg.channel instanceof TextChannel)) {
         msg.reply("this mf bot dont support dms get the fuck outta here");
         return;
+    }
+    if (msg.content.startsWith(WH_PREFIX)) {
+        let id = msg.content.split(" ")[0].substring(WH_PREFIX.length);
+        let content = msg.content.split(" ").slice(1).join(" ");
+        if (hooks.get(id)) {
+            sendWebhook(id, content, msg.channel);
+            msg.delete();
+        }
     }
     if (msg.content.startsWith(COMMAND_PREFIX)) {
         let commandId = msg.content

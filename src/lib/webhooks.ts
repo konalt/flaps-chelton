@@ -64,7 +64,7 @@ function getWebhookURL(channel: TextChannel): Promise<string> {
     });
 }
 
-let hooks: Collection<string, WebhookBot> = new Collection();
+export let hooks: Collection<string, WebhookBot> = new Collection();
 
 export function updateUsers(): Promise<void> {
     return new Promise((res, rej) => {
