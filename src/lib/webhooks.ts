@@ -6,6 +6,7 @@ import fetch from "node-fetch";
 import FormData from "form-data";
 import { WebhookBot } from "../types";
 import { readdir } from "fs/promises";
+import { log } from "./logger";
 
 const defaultContent = "No Content";
 const defaultUsername = "No Username";
@@ -68,10 +69,10 @@ export let hooks: Collection<string, WebhookBot> = new Collection();
 
 export function updateUsers(): Promise<void> {
     return new Promise((res, rej) => {
+        log("Loading webhook bots...", "start");
         readdir(__dirname + "/../hooks", {
             withFileTypes: true,
         }).then(async (files) => {
-            console.log("[start] Parsing commands...");
             let fileNames = files.map((file) => file.name.split(".")[0]);
             for (const file of fileNames) {
                 let hook = require("../hooks/" + file) as WebhookBot;
