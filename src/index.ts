@@ -12,6 +12,7 @@ import { readFile, readdir } from "fs/promises";
 import { hooks, sendWebhook, updateUsers } from "./lib/webhooks";
 import { Color, esc, log } from "./lib/logger";
 import { FlapsCommand, WebhookBot } from "./types";
+import { downloadPromise } from "./lib/download";
 
 log("Loading settings...", "start");
 config();
@@ -174,6 +175,186 @@ function autoReact(msg: Message) {
     }
 }
 
+function uuidv4() {
+    let s = (n = 1) =>
+        n == 1
+            ? Math.floor(Math.random() * 65535)
+                  .toString(16)
+                  .padStart(4, "0")
+            : Math.floor(Math.random() * 65535)
+                  .toString(16)
+                  .padStart(4, "0") + s(n - 1);
+    return [s(2), s(), s(), s(), s(3)].join("-");
+}
+
+var types = {
+    image: ["image/png", "image/jpeg", "image/webp"],
+    video: ["video/mp4", "video/x-matroska"],
+    text: ["text/plain"],
+    json: ["application/json"],
+    gif: ["image/gif"],
+    audio: ["audio/mpeg", "audio/aac"],
+};
+
+function getTypeSingular(ct) {
+    var type = "unknown";
+    Object.entries(types).forEach((a) => {
+        if (a[1].includes(ct)) type = a[0];
+    });
+    return type;
+}
+
+function getTypes(atts) {
+    return atts.map((att) => {
+        var ct = att.contentType;
+        var type = "unknown";
+        Object.entries(types).forEach((a) => {
+            if (a[1].includes(ct)) type = a[0];
+        });
+        return type;
+    });
+}
+
+function typesMatch(inTypes, requiredTypes) {
+    var ok = true;
+    requiredTypes.forEach((type, i) => {
+        var typelist = type.split("/");
+        if (!typelist.includes(inTypes[i])) ok = false;
+    });
+    return ok;
+}
+
+function tenorURLToGifURL(url: string) {
+    var searchString = '<meta class="dynamic" name="twitter:image" content="';
+    return new Promise((resl) => {
+        fetch(url)
+            .then((r) => r.text())
+            .then((data) => {
+                var newURL = data
+                    .substring(data.indexOf(searchString) + searchString.length)
+                    .split('"')[0];
+                resl(newURL);
+            });
+    });
+}
+
+function getSourcesWithAttachments(msg, types) {
+    return new Promise((resolve, reject) => {
+        function l2(msg) {
+            var atts = msg.attachments.first(types.length);
+            var attTypes = getTypes(atts);
+            if (!atts[0]) {
+                if (msg.content.startsWith("https://tenor.com/")) {
+                    var type = "gif";
+                    if (typesMatch([type], types)) {
+                        tenorURLToGifURL(msg.content).then((url) => {
+                            var id = uuidv4().replace(/-/gi, "");
+                            downloadPromise(
+                                url,
+                                "images/cache/" + id + "." + ext
+                            ).then(async () => {
+                                var name = "images/cache/" + id + ".gif";
+                                //var dimensions = await getVideoDimensions(name);
+                                resolve([
+                                    [
+                                        {
+                                            width: 0, //dimensions[0],
+                                            height: 0, //dimensions[1],
+                                        },
+                                        id + ".gif",
+                                    ],
+                                ]);
+                            });
+                        });
+                    } else {
+                        reject(
+                            "Type Error (Attempted Tenor):\n" +
+                                getTypeMessage(["gif"], types)
+                        );
+                    }
+                } else if (
+                    msg.content.startsWith("https://cdn.discordapp.com/") ||
+                    msg.content.startsWith("https://media.discordapp.net/")
+                ) {
+                    var filename = msg.content.split(" ")[0].split("/")[
+                        msg.content.split("/").length - 1
+                    ];
+                    var type = getTypeSingular(lookup(filename));
+                    var ext =
+                        filename.split(".")[filename.split(".").length - 1];
+                    if (typesMatch([type], types)) {
+                        var id = uuidv4().replace(/-/gi, "");
+                        var npath = id + "." + ext;
+                        var zpath = "images/cache/" + npath;
+                        downloadPromise(msg.content.split(" ")[0], zpath).then(
+                            async () => {
+                                var dimensions = await getVideoDimensions(
+                                    zpath
+                                );
+                                resolve([
+                                    [
+                                        {
+                                            width: dimensions[0],
+                                            height: dimensions[1],
+                                        },
+                                        npath,
+                                    ],
+                                ]);
+                            }
+                        );
+                    } else {
+                        reject(
+                            "Type Error (Attempted Discord):\n" +
+                                getTypeMessage(["gif"], types)
+                        );
+                    }
+                } else {
+                    reject("No source found (content:" + msg.content + ")");
+                }
+            } else if (!typesMatch(attTypes, types)) {
+                reject("Type Error:\n" + getTypeMessage(attTypes, types));
+            } else {
+                var ids = atts.map(() => uuidv4().replace(/-/gi, ""));
+                var exts = atts.map((att) => "." + att.url.split(".").pop());
+                var proms = atts.map((att, i) =>
+                    downloadPromise(att.url, "images/cache/" + ids[i] + exts[i])
+                );
+                Promise.all(proms).then(() => {
+                    resolve(
+                        atts.map((att, i) => [
+                            att,
+                            "images/cache/" + ids[i] + exts[i],
+                        ])
+                    );
+                });
+            }
+        }
+        if (!msg.attachments.first()) {
+            if (!msg.reference) {
+                reject("No source found");
+            } else {
+                msg.fetchReference().then((ref) => {
+                    l2(ref);
+                });
+            }
+        } else {
+            l2(msg);
+        }
+    });
+}
+
+function getSources(msg, types) {
+    return new Promise((resolve, reject) => {
+        getSourcesWithAttachments(msg, types)
+            .then((data: string[]) => {
+                resolve(data.map((x) => x[1]));
+            })
+            .catch((r) => {
+                reject(r);
+            });
+    });
+}
+
 client.on("messageCreate", (msg) => {
     if (msg.author.bot) return;
     if (!(msg.channel instanceof TextChannel)) {
@@ -205,7 +386,14 @@ client.on("messageCreate", (msg) => {
         let command = commands.find((cmd) => cmd.id == commandId);
         if (command) {
             commandRan = true;
-            command.execute(commandArgs, msg);
+            if (command.needs.length > 0) {
+                getSources(msg, command.needs).then(async (srcs: string[]) => {
+                    let bufs = await Promise.all(srcs.map((s) => readFile(s)));
+                    command.execute(commandArgs, bufs, msg);
+                });
+            } else {
+                command.execute(commandArgs, null, msg);
+            }
         }
     }
 
@@ -236,3 +424,14 @@ readdir(__dirname + "/commands", {
         });
     });
 });
+function getTypeMessage(arg0: string[], types: any) {
+    throw new Error("Function not implemented.");
+}
+
+function getVideoDimensions(zpath: string) {
+    throw new Error("Function not implemented.");
+}
+
+function lookup(filename: any): any {
+    throw new Error("Function not implemented.");
+}

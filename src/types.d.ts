@@ -1,9 +1,12 @@
+import { Message } from "discord.js";
+
 export interface FlapsCommand {
     id: string;
     aliases?: string[];
     name: string;
     desc?: string;
-    execute: Function;
+    needs?: string[];
+    execute: (args: string[], buf: Buffer[] | null, msg: Message) => void;
 }
 export interface WebhookBot {
     id: string;
