@@ -3,6 +3,7 @@ import { createCanvas } from "canvas";
 import { TextChannel } from "discord.js";
 import { Message } from "discord.js";
 import animethink from "../lib/canvas/animethink";
+import { getFileName } from "../lib/utils";
 import { sendWebhook } from "../lib/webhooks";
 import { FlapsCommand } from "../types";
 
@@ -19,7 +20,7 @@ module.exports = {
                 "",
                 msg.channel as TextChannel,
                 out,
-                "image.png"
+                getFileName("Canvas_AnimeThink", "png")
             );
         });
     },

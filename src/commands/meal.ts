@@ -1,6 +1,6 @@
 import { FlapsCommand } from "../types";
 import { get100Posts } from "../lib/reddit";
-import { sample } from "../lib/utils";
+import { getFileName, sample } from "../lib/utils";
 import { downloadPromise } from "../lib/download";
 import { sendWebhook } from "../lib/webhooks";
 import { TextChannel } from "discord.js";
@@ -29,7 +29,7 @@ module.exports = {
                     "",
                     msg.channel as TextChannel,
                     buf,
-                    "DeliciousMeal.png"
+                    getFileName("Reddit_Meal", "png")
                 );
             });
         });
