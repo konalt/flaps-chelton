@@ -5,6 +5,7 @@ import { getFileExt, twemojiURL, uuidv4 } from "../utils";
 import { downloadPromise } from "../download";
 import { ffmpegBuffer, file } from "./ffmpeg";
 import getTextWidth from "../canvas/getTextWidth";
+import { getVideoDimensions } from "./getVideoDimensions";
 
 async function caption2(
     buffers: [Buffer, string][],
@@ -18,8 +19,9 @@ async function caption2(
         emojisize: 1.3,
         vcrosdmono: false,
     };
-    var videoHeight = options.h;
-    var videoWidth = options.w;
+    let dims = await getVideoDimensions(buffers[0][1]);
+    var videoHeight = dims[1];
+    var videoWidth = dims[0];
     videoWidth = Math.round(videoWidth / 2) * 2;
     videoHeight = Math.round(videoHeight / 2) * 2;
     var text = options.text;

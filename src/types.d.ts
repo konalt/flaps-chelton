@@ -41,6 +41,4 @@ export interface StableDiffusionOptions {
 
 export interface Caption2Options {
     text: string;
-    h: number;
-    w: number;
 }

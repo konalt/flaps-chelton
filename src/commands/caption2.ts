@@ -16,8 +16,6 @@ module.exports = {
 
         caption2(buffers, {
             text: args.join(" "),
-            w: 512,
-            h: 512,
         }).then((out: Buffer) => {
             sendWebhook(
                 "ffmpeg",

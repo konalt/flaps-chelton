@@ -4,9 +4,10 @@ import { extension } from "mime-types";
 import { Color, esc, log } from "../logger";
 import { uuidv4 } from "../utils";
 import { join } from "path";
+import { stdout } from "process";
 
 const extraArgs = "";
-const ffmpegVerbose = true;
+const ffmpegVerbose = false;
 
 export function file(pathstr: string) {
     return join(".", pathstr.includes("images") ? "" : "images", pathstr);
@@ -49,7 +50,6 @@ export function ffmpeg(args: string, quiet = false) {
         var startTime = Date.now();
         var newargs =
             extraArgs + " " + (ffmpegVerbose ? "" : "-v warning ") + args;
-        console.log(newargs);
         var ffmpegInstance = spawn("ffmpeg", newargs.trim().split(" "), {
             shell: true,
         });
@@ -84,6 +84,44 @@ export function ffmpeg(args: string, quiet = false) {
                         "ffmpeg"
                     );
                 reject(b);
+            }
+        });
+    });
+}
+
+export async function ffprobe(args: string): Promise<string> {
+    return new Promise((resolve, reject) => {
+        var quiet = false;
+        var startTime = Date.now();
+        var ffmpegInstance = spawn("ffprobe", args.split(" "), {
+            shell: true,
+        });
+        var body = "";
+        ffmpegInstance.stdout.on("data", (c) => {
+            body += c;
+        });
+        ffmpegInstance.stderr.on("data", (c) => {
+            stdout.write("[ffprobe] " + c);
+        });
+        ffmpegInstance.on("exit", (code) => {
+            if (code == 0 && !quiet) {
+                if (!quiet)
+                    log(
+                        `${esc(Color.Green)}Completed in ${esc(
+                            Color.BrightCyan
+                        )}${Date.now() - startTime}ms`,
+                        "ffprobe"
+                    );
+                resolve(body);
+            } else {
+                if (!quiet)
+                    log(
+                        `${esc(Color.Red)}Failed in ${esc(Color.BrightCyan)}${
+                            Date.now() - startTime
+                        }ms`,
+                        "ffprobe"
+                    );
+                reject(body);
             }
         });
     });
