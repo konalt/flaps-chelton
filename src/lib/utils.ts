@@ -1,3 +1,8 @@
+import { TextChannel } from "discord.js";
+import { downloadPromise } from "./download";
+import { get100Posts } from "./reddit";
+import { sendWebhook } from "./webhooks";
+
 export function uuidv4() {
     let s = (n = 1) =>
         n == 1
@@ -22,4 +27,26 @@ export function getFileName(type: string, ext: string = "helo"): string {
         "." +
         ext
     );
+}
+
+export function randomRedditImage(subreddit: string): Promise<Buffer> {
+    return new Promise((res, rej) => {
+        get100Posts(subreddit).then((posts) => {
+            posts = posts
+                .filter((p) => {
+                    return (
+                        p.data.post_hint == "image" &&
+                        p.data.url_overridden_by_dest
+                    );
+                })
+                .map((p) => {
+                    return p.data.url_overridden_by_dest;
+                });
+            let post = sample(posts);
+            downloadPromise(post).then((buf) => {
+                if (buf == null) return;
+                res(buf);
+            });
+        });
+    });
 }
