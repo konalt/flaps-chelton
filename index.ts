@@ -1,21 +1,32 @@
-import { Client } from "discord.js";
+import { Client, Partials } from "discord.js";
 import { config } from "dotenv";
 
 console.log("[start] Loading...");
 config();
+console.log("[start] .Env file read");
 
 const client = new Client({
-    partials: ["MESSAGE", "CHANNEL", "REACTION", "GUILD_MEMBER", "USER"],
+    partials: [
+        Partials.Message,
+        Partials.Channel,
+        Partials.Reaction,
+        Partials.GuildMember,
+        Partials.User,
+    ],
     intents: [
-        "GUILD_MEMBERS",
-        "GUILD_MESSAGES",
-        "GUILD_MESSAGE_REACTIONS",
-        "GUILD_VOICE_STATES",
-        "GUILD_WEBHOOKS",
-        "MESSAGE_CONTENT",
-        "GUILDS",
-        "GUILD_PRESENCES",
-    ], // why
+        "GuildMembers",
+        "GuildMessages",
+        "GuildMessageReactions",
+        "GuildVoiceStates",
+        "GuildWebhooks",
+        "MessageContent",
+        "Guilds",
+        "GuildPresences",
+    ],
 });
 
-client.login();
+client.on("ready", () => {
+    console.log("[start] Logged in!");
+});
+
+client.login(process.env.DISCORD_TOKEN || "NoTokenProvided");

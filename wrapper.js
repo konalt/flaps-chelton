@@ -1,15 +1,14 @@
 const cp = require("child_process");
 const fs = require("fs");
 const fetch = require("node-fetch");
-const { log, esc, Color } = require("./flapslib/log");
 
 var lastNL = true;
 var lastLogCount = 20;
 var lastLog = [];
 
 function run() {
-    log(`${esc(Color.White)}Starting flaps...`, "watchdog");
-    var proc = cp.spawn("node", "main.js".split(" "));
+    console.log(`Starting flaps...`);
+    var proc = cp.spawn("node", "index.js".split(" "));
     proc.stdout.on("data", (data) => {
         process.stdout.write(data);
         lastNL = data.toString().endsWith("\n");
@@ -24,7 +23,7 @@ function run() {
         lastLog.push(data.toString());
     });
     proc.on("close", (code) => {
-        log(`${esc(Color.White)}Exit with code ${code}`, "");
+        console.log(`Exit with code ${code}`);
         sendError();
         lastLog = [];
         lastNL = true;
