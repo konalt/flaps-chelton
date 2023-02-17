@@ -30,3 +30,11 @@ export interface RedditPost {
     kind: "t3";
     data: Record<string, any>;
 }
+
+export interface StableDiffusionOptions {
+    img2img?: boolean;
+    img?: string;
+    mask?: string;
+    prompt: string;
+    inpaint?: boolean;
+}

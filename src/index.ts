@@ -385,7 +385,7 @@ client.on("messageCreate", (msg) => {
 
     let commandRan = false;
     if (msg.content.startsWith(COMMAND_PREFIX)) {
-        let command = commands.find((cmd) => cmd.id == commandId);
+        let command = commands.find((cmd) => cmd.aliases.includes(commandId));
         if (command) {
             commandRan = true;
             if (command.needs && command.needs.length > 0) {
@@ -412,6 +412,8 @@ readdir(__dirname + "/commands", {
     let fileNames = files.map((file) => file.name.split(".")[0]);
     for (const file of fileNames) {
         let command = require("./commands/" + file) as FlapsCommand;
+        if (typeof command.aliases === "undefined") command.aliases = [];
+        command.aliases.push(command.id);
         commands.set(command.id, command);
     }
 
