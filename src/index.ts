@@ -42,6 +42,18 @@ const client = new Client({
 client.on("ready", () => {
     log("Logged in!", "start");
 
+    client.user.setPresence({
+        activities: [
+            {
+                name: "commands!",
+                type: ActivityType.Listening,
+                url: "https://konalt.us.to/g",
+            },
+        ],
+        afk: true,
+        status: "online",
+    });
+
     readFile("saved_status.txt")
         .then((b) => b.toString("utf-8"))
         .then((statusData) => {
@@ -56,18 +68,19 @@ client.on("ready", () => {
                         .join("")
                 ];
             let name = statusData.split(" ").slice(1).join(" ");
-
-            client.user?.setPresence({
-                activities: [
-                    {
-                        name,
-                        type: statusType,
-                        url: "https://konalt.us.to/",
-                    },
-                ],
-                afk: false,
-                status: "online",
-            });
+            setTimeout(() => {
+                client.user.setPresence({
+                    activities: [
+                        {
+                            name,
+                            type: statusType,
+                            url: "https://konalt.us.to/",
+                        },
+                    ],
+                    afk: false,
+                    status: "online",
+                });
+            }, 3000);
         });
 });
 
