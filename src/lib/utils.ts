@@ -50,3 +50,16 @@ export function randomRedditImage(subreddit: string): Promise<Buffer> {
         });
     });
 }
+
+export function getFileExt(path: string) {
+    return path.split(".")[path.split(".").length - 1];
+}
+
+export function twemojiURL(emoji: string) {
+    var cp = emoji.codePointAt(0).toString(16);
+    return (
+        "https://cdnjs.cloudflare.com/ajax/libs/twemoji/14.0.2/72x72/" +
+        cp +
+        ".png"
+    );
+}

@@ -38,3 +38,9 @@ export interface StableDiffusionOptions {
     prompt: string;
     inpaint?: boolean;
 }
+
+export interface Caption2Options {
+    text: string;
+    h: number;
+    w: number;
+}

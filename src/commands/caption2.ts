@@ -4,25 +4,27 @@ import { ffmpegBuffer } from "../lib/ffmpeg/ffmpeg";
 import { getFileExt, getFileName } from "../lib/utils";
 import { sendWebhook } from "../lib/webhooks";
 import { FlapsCommand } from "../types";
+import caption2 from "../lib/ffmpeg/caption2";
 
 module.exports = {
-    id: "hflip",
-    name: "Horizontal Flip",
-    desc: "Testing command for FFMpeg.",
-    needs: ["image/video"],
+    id: "caption2",
+    name: "Caption2",
+    desc: "Adds a Futura caption to a video, image, or gif.",
+    needs: ["image/video/gif"],
     async execute(args: string[], buffers: [Buffer, string][], msg: Message) {
         if (!buffers) return;
-        ffmpegBuffer(
-            "-i $BUF0 -vf hflip $OUT",
-            buffers,
-            getFileExt(buffers[0][1])
-        ).then((out: Buffer) => {
+
+        caption2(buffers, {
+            text: args.join(" "),
+            w: 512,
+            h: 512,
+        }).then((out: Buffer) => {
             sendWebhook(
                 "ffmpeg",
                 "",
                 msg.channel as TextChannel,
                 out,
-                getFileName("Effect_HFlip", getFileExt(buffers[0][1]))
+                getFileName("Effect_Caption2", getFileExt(buffers[0][1]))
             );
         });
     },

@@ -14,6 +14,7 @@ import { Color, esc, log } from "./lib/logger";
 import { FlapsCommand, WebhookBot } from "./types";
 import { downloadPromise } from "./lib/download";
 import { uuidv4 } from "./lib/utils";
+import { registerFont } from "canvas";
 
 log("Loading settings...", "start");
 config();
@@ -406,6 +407,22 @@ client.on("messageCreate", (msg) => {
 
 let commands: Collection<string, FlapsCommand> = new Collection();
 let flags: Collection<string, string> = new Collection();
+
+log("Loading fonts...", "start");
+registerFont("fonts/dog.otf", { family: "Fuckedup" });
+registerFont("fonts/homodog.otf", { family: "Homodog" });
+registerFont("fonts/weezer.otf", { family: "Weezer" });
+registerFont("fonts/futura.otf", {
+    family: "Futura",
+    weight: "400",
+});
+registerFont("fonts/vcr.ttf", {
+    family: "VCR OSD Mono",
+    weight: "400",
+});
+registerFont("fonts/tate.ttf", { family: "Tate" });
+registerFont("fonts/spotify.otf", { family: "Spotify" });
+registerFont("fonts/arial.ttf", { family: "Arial" });
 
 log("Loading commands...", "start");
 readdir(__dirname + "/commands", {

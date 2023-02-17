@@ -6,9 +6,9 @@ import { uuidv4 } from "../utils";
 import { join } from "path";
 
 const extraArgs = "";
-const ffmpegVerbose = false;
+const ffmpegVerbose = true;
 
-function file(pathstr: string) {
+export function file(pathstr: string) {
     return join(".", pathstr.includes("images") ? "" : "images", pathstr);
 }
 export function ffmpegBuffer(
