@@ -4,3 +4,9 @@ export interface FlapsCommand {
     desc?: string;
     execute: Function;
 }
+export interface WebhookBot {
+    id: string;
+    name: string;
+    avatar: string;
+    quirk?: (inContent: string) => string;
+}

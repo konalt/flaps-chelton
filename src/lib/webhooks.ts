@@ -1,9 +1,11 @@
-import { GuildChannel } from "discord.js";
+import { Collection, GuildChannel } from "discord.js";
 import { TextChannel } from "discord.js";
 import { TextBasedChannel } from "discord.js";
 import { PathLike, readFileSync } from "fs";
 import fetch from "node-fetch";
 import FormData from "form-data";
+import { WebhookBot } from "../types";
+import { readdir } from "fs/promises";
 
 const defaultContent = "No Content";
 const defaultUsername = "No Username";
@@ -62,8 +64,27 @@ function getWebhookURL(channel: TextChannel): Promise<string> {
     });
 }
 
+let hooks: Collection<string, WebhookBot> = new Collection();
+
+export function updateUsers(): Promise<void> {
+    return new Promise((res, rej) => {
+        readdir(__dirname + "/../hooks", {
+            withFileTypes: true,
+        }).then(async (files) => {
+            console.log("[start] Parsing commands...");
+            let fileNames = files.map((file) => file.name.split(".")[0]);
+            for (const file of fileNames) {
+                let hook = require("../hooks/" + file) as WebhookBot;
+                hooks.set(hook.id, hook);
+            }
+            res();
+        });
+    });
+}
+
 export function sendWebhook(id: string, content: string, channel: TextChannel) {
     getWebhookURL(channel).then((url: string) => {
-        baseSend(url, content, id);
+        let user: WebhookBot = hooks.get(id);
+        baseSend(url, content, user.name, user.avatar);
     });
 }

@@ -8,7 +8,8 @@ import {
 } from "discord.js";
 import { config } from "dotenv";
 import { readFile, readdir } from "fs/promises";
-import { FlapsCommand } from "./types";
+import { updateUsers } from "./lib/webhooks";
+import { FlapsCommand, WebhookBot } from "./types";
 
 console.log("[start] Loading data...");
 config();
@@ -101,6 +102,9 @@ readdir(__dirname + "/commands", {
         commands.set(command.id, command);
     }
 
-    console.log("[start] Logging in...");
-    client.login(process.env.DISCORD_TOKEN || "NoTokenProvided");
+    console.log("[start] Loading webhook bots...");
+    updateUsers().then(() => {
+        console.log("[start] Logging in...");
+        client.login(process.env.DISCORD_TOKEN || "NoTokenProvided");
+    });
 });
