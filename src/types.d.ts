@@ -14,3 +14,19 @@ export interface WebhookBot {
     avatar?: string;
     quirk?: (inContent: string) => string;
 }
+
+export interface RedditListing {
+    kind: "Listing";
+    data: RedditListingData;
+}
+export interface RedditListingData {
+    after: string | null;
+    dist: number;
+    modhash: string;
+    geo_filter: any;
+    children: RedditPost[];
+}
+export interface RedditPost {
+    kind: "t3";
+    data: Record<string, any>;
+}
