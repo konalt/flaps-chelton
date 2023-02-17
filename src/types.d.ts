@@ -6,7 +6,7 @@ export interface FlapsCommand {
     name: string;
     desc?: string;
     needs?: string[];
-    execute: (args: string[], buf: Buffer[] | null, msg: Message) => void;
+    execute: (args: string[], buf: [Buffer, string][], msg: Message) => void;
 }
 export interface WebhookBot {
     id: string;

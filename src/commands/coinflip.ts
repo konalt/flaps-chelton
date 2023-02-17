@@ -7,7 +7,7 @@ module.exports = {
     id: "coinflip",
     name: "Flip a Coin",
     desc: "Simulates a coin flip.",
-    execute(args: string[], bufs: Buffer[] | null, msg: Message) {
+    execute(args: string[], bufs: [Buffer, string][], msg: Message) {
         sendWebhook(
             "flaps",
             Math.round(Math.random()) == 0 ? "tails" : "heads",

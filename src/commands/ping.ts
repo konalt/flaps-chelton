@@ -7,7 +7,7 @@ module.exports = {
     id: "ping",
     name: "Ping",
     desc: "Basic command to test flaps. Similar to !yougoodslime in FlapsV1.",
-    execute(args: string[], bufs: Buffer[] | null, msg: Message) {
+    execute(args: string[], bufs: [Buffer, string][], msg: Message) {
         sendWebhook(
             "flaps",
             `Pong!\nYour arguments are: damn ${args.join(",")}`,

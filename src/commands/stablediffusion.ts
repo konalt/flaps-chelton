@@ -11,7 +11,7 @@ module.exports = {
     aliases: ["dalle2"],
     name: "Stable Diffusion",
     desc: "Generates an image with Stable Diffusion.",
-    execute(args: string[], bufs: Buffer[] | null, msg: Message) {
+    execute(args: string[], bufs: [Buffer, string][], msg: Message) {
         if (args.length == 0) {
             return sendWebhook(
                 "flaps",

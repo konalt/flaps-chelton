@@ -7,7 +7,7 @@ module.exports = {
     id: "riggedcoinflip",
     name: "Flip a Coin",
     desc: "Simulates a coin flip. ||Will always be heads.||",
-    execute(args: string[], bufs: Buffer[] | null, msg: Message) {
+    execute(args: string[], bufs: [Buffer, string][], msg: Message) {
         sendWebhook("flaps", "heads", msg.channel as TextChannel);
     },
 } satisfies FlapsCommand;

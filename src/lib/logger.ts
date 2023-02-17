@@ -19,7 +19,7 @@ export enum Color {
 
 export const esc = (n) => "\x1b[" + n + "m";
 
-export const log = (text = "Text Here", sub = null) => {
+export const log = (text = "Text Here", sub: string | null = null) => {
     console.log(
         (sub
             ? `${esc(Color.White)}[${sub}]${esc(0)} `

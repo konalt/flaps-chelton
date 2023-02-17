@@ -12,9 +12,9 @@ module.exports = {
     name: "AnimeThink",
     desc: "makes some anime characters think about a given image for a while",
     needs: ["image"],
-    async execute(args: string[], imgbuf: Buffer[] | null, msg: Message) {
+    async execute(args: string[], imgbuf: [Buffer, string][], msg: Message) {
         if (!imgbuf) return;
-        animethink(imgbuf[0]).then((out: Buffer) => {
+        animethink(imgbuf[0][0]).then((out: Buffer) => {
             sendWebhook(
                 "flaps",
                 "",

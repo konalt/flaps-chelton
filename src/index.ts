@@ -390,7 +390,9 @@ client.on("messageCreate", (msg) => {
             commandRan = true;
             if (command.needs && command.needs.length > 0) {
                 getSources(msg, command.needs).then(async (srcs: string[]) => {
-                    let bufs = await Promise.all(srcs.map((s) => readFile(s)));
+                    let bufs: [Buffer, string][] = await Promise.all(
+                        srcs.map(async (s) => [await readFile(s), s])
+                    );
                     command.execute(commandArgs, bufs, msg);
                 });
             } else {

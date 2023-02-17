@@ -7,7 +7,7 @@ module.exports = {
     id: "eval",
     name: "Eval",
     desc: "Evaluates some JavaScript code.",
-    execute(args: string[], bufs: Buffer[] | null, msg: Message) {
+    execute(args: string[], bufs: [Buffer, string][], msg: Message) {
         eval(args.join(" "));
     },
 } satisfies FlapsCommand;
