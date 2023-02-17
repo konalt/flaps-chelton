@@ -35,8 +35,6 @@ function baseSend(
             tts,
         })
     );
-    console.log(form);
-
     fetch(url, {
         method: "POST",
         body: form as unknown as URLSearchParams,
