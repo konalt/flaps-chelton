@@ -8,6 +8,10 @@ module.exports = {
     description:
         "Basic command to test flaps. Similar to !yougoodslime in FlapsV1.",
     execute(args: string[], msg: Message) {
-        sendWebhook("flaps", "Pog!", msg.channel as TextChannel);
+        sendWebhook(
+            "flaps",
+            `Pong!\nYour arguments are: damn ${args.join(",")}`,
+            msg.channel as TextChannel
+        );
     },
 };
