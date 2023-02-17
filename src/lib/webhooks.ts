@@ -35,6 +35,8 @@ function baseSend(
             tts,
         })
     );
+    console.log(form);
+
     fetch(url, {
         method: "POST",
         body: form as unknown as URLSearchParams,
@@ -94,11 +96,10 @@ export function sendWebhook(
     getWebhookURL(channel).then((url: string) => {
         let user: WebhookBot = hooks.get(id);
         baseSend(
-            url,
+            url + "?wait=true",
             content,
-            user.name,
-            user.avatar ||
-                "https://konalt.us.to/flaps/avatars/" + user.id + ".png",
+            user?.name || "wh:" + id,
+            user?.avatar || "https://konalt.us.to/flaps/avatars/" + id + ".png",
             buffer,
             filename
         );
