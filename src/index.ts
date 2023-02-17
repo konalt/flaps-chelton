@@ -131,6 +131,47 @@ function logMessage(
     );
 }
 
+function autoReact(msg: Message) {
+    let f: string[] = [];
+    flags.forEach((val, key) => {
+        if (msg.content.toLowerCase().includes(val) && !f.includes(key))
+            f.push(key);
+    });
+    if (f.includes("rember")) {
+        f = f.filter((x) => x != "forgor");
+    }
+    if (f.includes("political"))
+        msg.react(
+            client.emojis.cache.find((emoji) => emoji.name === "political")
+        );
+    if (f.includes("forgor")) msg.react("💀");
+    if (f.includes("rember")) msg.react("😁");
+    if (f.includes("trans")) msg.react("🏳️‍⚧️");
+    if (f.includes("literally"))
+        msg.react(
+            client.emojis.cache.find((emoji) => emoji.name === "literally1984")
+        );
+    if (f.includes("bone"))
+        msg.react(
+            client.emojis.cache.find(
+                (emoji) => emoji.name === "BAD_TO_THE_BONE"
+            )
+        );
+    if (f.includes("selfie")) {
+        if (Math.random() > 0.5) {
+            msg.react("👍");
+        } else {
+            msg.react("👎");
+        }
+    }
+    if (f.includes("hello"))
+        msg.react(
+            client.emojis.cache.find(
+                (emoji) => emoji.name === "828274359076126760"
+            )
+        );
+}
+
 client.on("messageCreate", (msg) => {
     if (msg.author.bot) return;
     if (!(msg.channel instanceof TextChannel)) {
@@ -153,6 +194,8 @@ client.on("messageCreate", (msg) => {
             sendWebhook(id, content, msg.channel);
             msg.delete();
         }
+    } else {
+        autoReact(msg);
     }
 
     let commandRan = false;
@@ -168,6 +211,7 @@ client.on("messageCreate", (msg) => {
 });
 
 let commands: Collection<string, FlapsCommand> = new Collection();
+let flags: Collection<string, string> = new Collection();
 
 log("Reading commands...", "start");
 
@@ -181,9 +225,14 @@ readdir(__dirname + "/commands", {
         commands.set(command.id, command);
     }
 
-    log("Loading webhook bots...", "start");
-    updateUsers().then(() => {
-        log("Logging in...", "start");
-        client.login(process.env.DISCORD_TOKEN || "NoTokenProvided");
+    log("Loading autoreact flags...", "start");
+    readFile("flags.txt", { encoding: "utf-8" }).then((flagtext) => {
+        for (const line of flagtext.split("\n")) {
+            flags.set(line.split(" ")[1], line.split(" ")[0]);
+        }
+        updateUsers().then(() => {
+            log("Logging in...", "start");
+            client.login(process.env.DISCORD_TOKEN || "NoTokenProvided");
+        });
     });
 });
