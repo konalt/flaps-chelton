@@ -12,18 +12,19 @@ const defaultContent = "No Content";
 const defaultUsername = "No Username";
 const defaultAvatar =
     "https://media.discordapp.net/attachments/838732607344214019/1075967910696210492/flapjpg.jpg";
-const defaultTts = false;
+const defaultTTS = false;
 function baseSend(
     url: string,
     content: string = defaultContent,
     username: string = defaultUsername,
     avatar_url: string = defaultAvatar,
-    file: PathLike | null = null,
-    tts: boolean = defaultTts
+    buf: Buffer | null = null,
+    filename: string | null = null,
+    tts: boolean = defaultTTS
 ) {
     let form = new FormData();
-    if (file !== null) {
-        form.append("file0", new Blob([readFileSync(file)]), file.toString());
+    if (filename !== null) {
+        form.append("file0", buf, filename);
     }
     form.append(
         "payload_json",
@@ -83,7 +84,13 @@ export function updateUsers(): Promise<void> {
     });
 }
 
-export function sendWebhook(id: string, content: string, channel: TextChannel) {
+export function sendWebhook(
+    id: string,
+    content: string,
+    channel: TextChannel,
+    buffer: Buffer | null = null,
+    filename: string | null = null
+) {
     getWebhookURL(channel).then((url: string) => {
         let user: WebhookBot = hooks.get(id);
         baseSend(
@@ -91,7 +98,9 @@ export function sendWebhook(id: string, content: string, channel: TextChannel) {
             content,
             user.name,
             user.avatar ||
-                "https://konalt.us.to/flaps/avatars/" + user.id + ".png"
+                "https://konalt.us.to/flaps/avatars/" + user.id + ".png",
+            buffer,
+            filename
         );
     });
 }
