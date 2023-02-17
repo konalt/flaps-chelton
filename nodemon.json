@@ -1,3 +1,3 @@
 {
-    "ignore": ["**/*.js", "retrycache.json"]
+    "ignore": ["**/*.ts", "retrycache.json"]
 }

@@ -8,7 +8,7 @@ var lastLog = [];
 
 function run() {
     console.log(`Starting flaps...`);
-    var proc = cp.spawn("node", "index.js".split(" "));
+    var proc = cp.spawn("node", "dist/index.js".split(" "));
     proc.stdout.on("data", (data) => {
         process.stdout.write(data);
         lastNL = data.toString().endsWith("\n");
