@@ -4,9 +4,8 @@
         "module": "commonjs",
         "esModuleInterop": true,
         "moduleResolution": "node",
-        "outDir": "dist"
+        "outDir": "dist",
+        "rootDir": "src"
     },
-    "include": [
-        "*.ts"
-    ],
+    "compileOnSave": true
 }

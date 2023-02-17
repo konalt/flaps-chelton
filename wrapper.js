@@ -32,6 +32,7 @@ function run() {
 }
 
 function sendError() {
+    return;
     var url = fs.readFileSync("./errorhook.txt").toString();
     fetch(url, {
         method: "POST",

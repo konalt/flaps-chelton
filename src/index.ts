@@ -1,10 +1,17 @@
-import { ActivityType, Client, Partials, PresenceData } from "discord.js";
+import {
+    ActivityType,
+    Client,
+    Collection,
+    Partials,
+    PresenceData,
+} from "discord.js";
 import { config } from "dotenv";
-import { readFile } from "fs/promises";
+import { readFile, readdir } from "fs/promises";
+import { FlapsCommand } from "./types";
 
-console.log("[start] Loading...");
+console.log("[start] Loading data...");
 config();
-console.log("[start] .Env file read");
+console.log("[start] Dotenv loaded.");
 
 const client = new Client({
     partials: [
@@ -44,9 +51,7 @@ client.on("ready", () => {
                 ];
             let name = statusData.split(" ").slice(1).join(" ");
 
-            console.log({ statusType, name });
-
-            client.user.setPresence({
+            client.user?.setPresence({
                 activities: [
                     {
                         name,
@@ -60,4 +65,20 @@ client.on("ready", () => {
         });
 });
 
-client.login(process.env.DISCORD_TOKEN || "NoTokenProvided");
+let commands: Collection<string, FlapsCommand> = new Collection();
+
+console.log("[start] Reading commands...");
+
+readdir(__dirname + "/commands", {
+    withFileTypes: true,
+}).then(async (files) => {
+    console.log("[start] Parsing commands...");
+    let fileNames = files.map((file) => file.name.split(".")[0]);
+    for (const file of fileNames) {
+        let command = require("./commands/" + file) as FlapsCommand;
+        commands.set(command.id, command);
+    }
+
+    console.log("[start] Logging in...");
+    client.login(process.env.DISCORD_TOKEN || "NoTokenProvided");
+});
