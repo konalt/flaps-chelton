@@ -85,6 +85,12 @@ export function updateUsers(): Promise<void> {
 export function sendWebhook(id: string, content: string, channel: TextChannel) {
     getWebhookURL(channel).then((url: string) => {
         let user: WebhookBot = hooks.get(id);
-        baseSend(url, content, user.name, user.avatar);
+        baseSend(
+            url,
+            content,
+            user.name,
+            user.avatar ||
+                "https://konalt.us.to/flaps/avatars/" + user.id + ".png"
+        );
     });
 }
