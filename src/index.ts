@@ -457,18 +457,26 @@ registerFont("fonts/tate.ttf", { family: "Tate" });
 registerFont("fonts/spotify.otf", { family: "Spotify" });
 registerFont("fonts/arial.ttf", { family: "Arial" });
 
-log("Loading commands...", "start");
-readdir(__dirname + "/commands", {
-    withFileTypes: true,
-}).then(async (files) => {
-    let fileNames = files.map((file) => file.name.split(".")[0]);
-    for (const file of fileNames) {
-        let command = require("./commands/" + file) as FlapsCommand;
-        if (typeof command.aliases === "undefined") command.aliases = [];
-        command.aliases.push(command.id);
-        commands.set(command.id, command);
+async function readCommandDir(dir: string) {
+    const files = await readdir(dir, {
+        withFileTypes: true,
+    });
+    for (const file of files) {
+        if (file.isDirectory()) {
+            await readCommandDir(dir + "/" + file.name);
+        } else {
+            let command = require(dir +
+                "/" +
+                file.name.split(".")[0]) as FlapsCommand;
+            if (typeof command.aliases === "undefined") command.aliases = [];
+            command.aliases.push(command.id);
+            commands.set(command.id, command);
+        }
     }
+}
 
+log("Loading commands...", "start");
+readCommandDir(__dirname + "/commands").then(() => {
     log("Loading autoreact flags...", "start");
     readFile("flags.txt", { encoding: "utf-8" }).then((flagtext) => {
         for (const line of flagtext.split("\n")) {

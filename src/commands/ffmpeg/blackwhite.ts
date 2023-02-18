@@ -1,8 +1,8 @@
 import { TextChannel } from "discord.js";
-import handleFFmpeg from "../lib/ffmpeg/handleFFmpeg";
-import blackwhite from "../lib/ffmpeg/blackwhite";
-import { getFileExt, getFileName } from "../lib/utils";
-import { FlapsCommand } from "../types";
+import handleFFmpeg from "../../lib/ffmpeg/handleFFmpeg";
+import blackwhite from "../../lib/ffmpeg/blackwhite";
+import { getFileExt, getFileName } from "../../lib/utils";
+import { FlapsCommand } from "../../types";
 
 module.exports = {
     id: "blackwhite",

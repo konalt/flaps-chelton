@@ -1,8 +1,8 @@
 import { TextChannel } from "discord.js";
-import handleFFmpeg from "../lib/ffmpeg/handleFFmpeg";
-import reencode from "../lib/ffmpeg/reencode";
-import { getFileExt, getFileName } from "../lib/utils";
-import { FlapsCommand } from "../types";
+import handleFFmpeg from "../../lib/ffmpeg/handleFFmpeg";
+import reencode from "../../lib/ffmpeg/reencode";
+import { getFileExt, getFileName } from "../../lib/utils";
+import { FlapsCommand } from "../../types";
 
 module.exports = {
     id: "reencode",

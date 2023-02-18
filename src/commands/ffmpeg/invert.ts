@@ -1,8 +1,8 @@
 import { TextChannel } from "discord.js";
-import handleFFmpeg from "../lib/ffmpeg/handleFFmpeg";
-import invert from "../lib/ffmpeg/invert";
-import { getFileExt, getFileName } from "../lib/utils";
-import { FlapsCommand } from "../types";
+import handleFFmpeg from "../../lib/ffmpeg/handleFFmpeg";
+import invert from "../../lib/ffmpeg/invert";
+import { getFileExt, getFileName } from "../../lib/utils";
+import { FlapsCommand } from "../../types";
 
 module.exports = {
     id: "invert",

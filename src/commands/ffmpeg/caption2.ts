@@ -1,11 +1,11 @@
 import { TextChannel } from "discord.js";
 import { Message } from "discord.js";
-import { ffmpegBuffer } from "../lib/ffmpeg/ffmpeg";
-import handleFFmpeg from "../lib/ffmpeg/handleFFmpeg";
-import { getFileExt, getFileName } from "../lib/utils";
-import { sendWebhook } from "../lib/webhooks";
-import { FlapsCommand } from "../types";
-import caption2 from "../lib/ffmpeg/caption2";
+import { ffmpegBuffer } from "../../lib/ffmpeg/ffmpeg";
+import handleFFmpeg from "../../lib/ffmpeg/handleFFmpeg";
+import { getFileExt, getFileName } from "../../lib/utils";
+import { sendWebhook } from "../../lib/webhooks";
+import { FlapsCommand } from "../../types";
+import caption2 from "../../lib/ffmpeg/caption2";
 
 module.exports = {
     id: "caption2",
