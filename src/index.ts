@@ -248,7 +248,7 @@ function getTypes(atts) {
     });
 }
 
-function typesMatch(inTypes, requiredTypes) {
+function typesMatch(inTypes: string[], requiredTypes: string[]) {
     var ok = true;
     requiredTypes.forEach((type, i) => {
         var typelist = type.split("/");
@@ -261,8 +261,8 @@ function tenorURLToGifURL(url: string): Promise<string> {
     var searchString = '<meta class="dynamic" name="twitter:image" content="';
     return new Promise((resl) => {
         fetch(url)
-            .then((r) => r.text())
-            .then((data) => {
+            .then((r: Response) => r.text())
+            .then((data: string) => {
                 var newURL = data
                     .substring(data.indexOf(searchString) + searchString.length)
                     .split('"')[0];
@@ -271,9 +271,9 @@ function tenorURLToGifURL(url: string): Promise<string> {
     });
 }
 
-function getSourcesWithAttachments(msg, types) {
+function getSourcesWithAttachments(msg: Message, types: string[]) {
     return new Promise((resolve, reject) => {
-        function l2(msg) {
+        function l2(msg: Message) {
             var atts = msg.attachments.first(types.length);
             var attTypes = getTypes(atts);
             if (!atts[0]) {
@@ -284,17 +284,17 @@ function getSourcesWithAttachments(msg, types) {
                             var id = uuidv4().replace(/-/gi, "");
                             downloadPromise(
                                 url,
-                                "images/cache/" + id + "." + ext
+                                "images/cache/" + id + ".gif"
                             ).then(async () => {
                                 var name = "images/cache/" + id + ".gif";
                                 var dimensions = await getVideoDimensions(name);
                                 resolve([
                                     [
                                         {
-                                            width: 0, //dimensions[0],
-                                            height: 0, //dimensions[1],
+                                            width: dimensions[0],
+                                            height: dimensions[1],
                                         },
-                                        id + ".gif",
+                                        name,
                                     ],
                                 ]);
                             });
@@ -376,7 +376,7 @@ function getSourcesWithAttachments(msg, types) {
     });
 }
 
-function getSources(msg, types) {
+function getSources(msg: Message, types: string[]) {
     return new Promise((resolve, reject) => {
         getSourcesWithAttachments(msg, types)
             .then((data: string[]) => {
