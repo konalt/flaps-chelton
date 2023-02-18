@@ -13,7 +13,6 @@ module.exports = {
     needs: ["image/video/gif"],
     async execute(args: string[], buffers: [Buffer, string][], msg: Message) {
         if (!buffers) return;
-
         caption2(buffers, {
             text: args.join(" "),
         }).then((out: Buffer) => {
