@@ -13,7 +13,7 @@ import { hooks, sendWebhook, updateUsers } from "./lib/webhooks";
 import { Color, esc, log } from "./lib/logger";
 import { FlapsCommand, WebhookBot } from "./types";
 import { downloadPromise } from "./lib/download";
-import { uuidv4 } from "./lib/utils";
+import { time, uuidv4 } from "./lib/utils";
 import { registerFont } from "canvas";
 import fetch from "node-fetch";
 import { getVideoDimensions } from "./lib/ffmpeg/getVideoDimensions";
@@ -118,14 +118,6 @@ client.on("ready", async () => {
 const COMMAND_PREFIX = "!";
 const WH_PREFIX = "<";
 
-function time() {
-    var d = new Date();
-    var h = d.getHours().toString().padStart(2, "0");
-    var m = d.getMinutes().toString().padStart(2, "0");
-    var s = d.getSeconds().toString().padStart(2, "0");
-    return [h, m, s].join(":");
-}
-
 function idFromName(name: string) {
     return hooks.find((h) => h.name == name).id || "flaps";
 }
@@ -138,7 +130,6 @@ function logMessage(
     startTime: number
 ) {
     if (!(msg.channel instanceof TextChannel)) return;
-    let timeStr = `${esc(Color.DarkGrey)}[${time()}]`;
     let channel = `${esc(Color.Yellow)}<#${msg.channel.name}>`;
     let user = `${
         msg.author.bot && msg.author.discriminator == "0000"
@@ -168,7 +159,7 @@ function logMessage(
     let processTime = `${esc(Color.DarkGrey)}<${Date.now() - startTime}ms>`;
 
     log(
-        `${timeStr} ${channel} ${user} ${contentColor}${content} ${processTime}`.replace(
+        `${channel} ${user} ${contentColor}${content} ${processTime}`.replace(
             / {2,}/g,
             " "
         ),
@@ -419,14 +410,25 @@ client.on("messageCreate", (msg) => {
         let command = commands.find((cmd) => cmd.aliases.includes(commandId));
         if (command) {
             commandRan = true;
+
             if (command.needs && command.needs.length > 0) {
                 getSources(msg, command.needs).then(async (srcs: string[]) => {
                     let bufs: [Buffer, string][] = await Promise.all(
                         srcs.map(async (s) => [await readFile(s), s])
                     );
+                    log(
+                        `Running command ${esc(Color.Cyan)}${command.id} ${esc(
+                            Color.DarkGrey
+                        )}(Att. Down)`,
+                        "cmd"
+                    );
                     command.execute(commandArgs, bufs, msg);
                 });
             } else {
+                log(
+                    `Running command ${esc(Color.BrightCyan)}${command.id}`,
+                    "cmd"
+                );
                 command.execute(commandArgs, null, msg);
             }
         }

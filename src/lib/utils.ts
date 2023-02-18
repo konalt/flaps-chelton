@@ -63,3 +63,11 @@ export function twemojiURL(emoji: string) {
         ".png"
     );
 }
+
+export function time() {
+    var d = new Date();
+    var h = d.getHours().toString().padStart(2, "0");
+    var m = d.getMinutes().toString().padStart(2, "0");
+    var s = d.getSeconds().toString().padStart(2, "0");
+    return [h, m, s].join(":");
+}

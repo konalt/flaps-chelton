@@ -1,4 +1,7 @@
+import { time } from "./utils";
+
 export enum Color {
+    Reset = 0,
     Black = 30,
     Red = 31,
     Green = 32,
@@ -17,12 +20,12 @@ export enum Color {
     White = 97,
 }
 
-export const esc = (n) => "\x1b[" + n + "m";
+export const esc = (n: number) => "\x1b[" + n.toString() + "m";
 
 export const log = (text = "Text Here", sub: string | null = null) => {
     console.log(
         (sub
-            ? `${esc(Color.White)}[${sub}]${esc(0)} `
+            ? `${esc(Color.White)}[${sub}] [${time()}]${esc(0)} `
             : `${esc(Color.White)}`) +
             text +
             esc(0)
