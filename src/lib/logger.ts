@@ -25,7 +25,9 @@ export const esc = (n: number) => "\x1b[" + n.toString() + "m";
 export const log = (text = "Text Here", sub: string | null = null) => {
     console.log(
         (sub
-            ? `${esc(Color.White)}[${sub}] [${time()}]${esc(0)} `
+            ? `${esc(Color.White)}[${sub}] ${esc(
+                  Color.DarkGrey
+              )}[${time()}]${esc(0)} `
             : `${esc(Color.White)}`) +
             text +
             esc(0)
