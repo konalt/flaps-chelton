@@ -2,7 +2,7 @@ import { spawn } from "child_process";
 import { readFile, writeFileSync } from "fs";
 import { extension } from "mime-types";
 import { Color, esc, log } from "../logger";
-import { uuidv4 } from "../utils";
+import { getFileExt, uuidv4 } from "../utils";
 import { join } from "path";
 import { stdout } from "process";
 
@@ -17,7 +17,7 @@ export function file(pathstr: string) {
 export function ffmpegBuffer(
     args: string,
     buffers: [Buffer, string][],
-    outExt: string
+    outExt: string | null = null
 ): Promise<Buffer> {
     return new Promise((res, rej) => {
         var opId = uuidv4();
@@ -31,6 +31,7 @@ export function ffmpegBuffer(
                     buf[1].split(".")[buf[1].split(".").length - 1]
             );
         });
+        if (!outExt) outExt = getFileExt(buffers[0][1]);
         var outFile = file("/cache/BUF_" + opId + "_FINAL." + outExt);
         files.forEach((filename, i) => {
             writeFileSync(filename, buffers[i][0]);
