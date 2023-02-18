@@ -17,6 +17,14 @@ import { uuidv4 } from "./lib/utils";
 import { registerFont } from "canvas";
 import fetch from "node-fetch";
 import { getVideoDimensions } from "./lib/ffmpeg/getVideoDimensions";
+import {
+    AudioPlayer,
+    createAudioPlayer,
+    createAudioResource,
+    DiscordGatewayAdapterCreator,
+    joinVoiceChannel,
+    VoiceConnection,
+} from "@discordjs/voice";
 
 log("Loading settings...", "start");
 config();
@@ -42,8 +50,28 @@ const client = new Client({
     ],
 });
 
-client.on("ready", () => {
-    log("Logged in!", "start");
+export const voiceConnections: Collection<string, VoiceConnection> =
+    new Collection();
+export const voicePlayers: Collection<string, AudioPlayer> = new Collection();
+
+client.on("ready", async () => {
+    log("Logged in, entering voice...", "start");
+    let gs = await client.guilds.fetch();
+    for (const [guildi, guildp] of gs) {
+        let guild = await guildp.fetch();
+        let vc = guild.channels.cache.find((c) => c.isVoiceBased());
+        if (!vc) continue;
+        let conn = joinVoiceChannel({
+            channelId: vc.id,
+            guildId: guildi,
+            adapterCreator:
+                guild.voiceAdapterCreator as DiscordGatewayAdapterCreator,
+        });
+        let ply = createAudioPlayer();
+        conn.subscribe(ply);
+        voicePlayers.set(guildi, ply);
+        voiceConnections.set(guildi, conn);
+    }
 
     client.user.setPresence({
         activities: [
