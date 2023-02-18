@@ -88,6 +88,14 @@ export function sendWebhook(
 ) {
     getWebhookURL(channel).then((url: string) => {
         let user: WebhookBot = hooks.get(id);
+        // if file is over 8mb, send failsafe
+        // TODO: when express is done, make this send a link instead
+        if (buffer && Buffer.byteLength(buffer) > 8e6) {
+            buffer = null;
+            filename = null;
+            content +=
+                "\n(This message originally contained a file, but the file was over 8MB in size.)";
+        }
         baseSend(
             url + "?wait=true",
             user?.quirk ? user?.quirk(content) : content,
