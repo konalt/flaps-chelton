@@ -9,6 +9,8 @@ import { stdout } from "process";
 const extraArgs = "";
 const ffmpegVerbose = false;
 
+export const preset = "ultrafast";
+
 export function file(pathstr: string) {
     return join(".", pathstr.includes("images") ? "" : "images", pathstr);
 }
