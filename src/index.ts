@@ -15,6 +15,8 @@ import { FlapsCommand, WebhookBot } from "./types";
 import { downloadPromise } from "./lib/download";
 import { uuidv4 } from "./lib/utils";
 import { registerFont } from "canvas";
+import fetch from "node-fetch";
+import { getVideoDimensions } from "./lib/ffmpeg/getVideoDimensions";
 
 log("Loading settings...", "start");
 config();
@@ -257,7 +259,7 @@ function getSourcesWithAttachments(msg, types) {
                                 "images/cache/" + id + "." + ext
                             ).then(async () => {
                                 var name = "images/cache/" + id + ".gif";
-                                //var dimensions = await getVideoDimensions(name);
+                                var dimensions = await getVideoDimensions(name);
                                 resolve([
                                     [
                                         {
@@ -448,10 +450,6 @@ readdir(__dirname + "/commands", {
     });
 });
 function getTypeMessage(arg0: string[], types: any) {
-    throw new Error("Function not implemented.");
-}
-
-function getVideoDimensions(zpath: string) {
     throw new Error("Function not implemented.");
 }
 
