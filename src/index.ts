@@ -1,5 +1,6 @@
 import {
     ActivityType,
+    Attachment,
     Client,
     Collection,
     Message,
@@ -220,7 +221,7 @@ var types = {
     audio: ["audio/mpeg", "audio/aac"],
 };
 
-function getTypeSingular(ct) {
+function getTypeSingular(ct: string) {
     var type = "unknown";
     Object.entries(types).forEach((a) => {
         if (a[1].includes(ct)) type = a[0];
@@ -228,7 +229,7 @@ function getTypeSingular(ct) {
     return type;
 }
 
-function getTypes(atts) {
+function getTypes(atts: Attachment[]) {
     return atts.map((att) => {
         var ct = att.contentType;
         var type = "unknown";
