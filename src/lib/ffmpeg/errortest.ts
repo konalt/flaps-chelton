@@ -1,0 +1,10 @@
+import { ffmpegBuffer, preset } from "./ffmpeg";
+
+export default async function invert(
+    buffers: [Buffer, string][]
+): Promise<Buffer> {
+    return ffmpegBuffer(
+        `-i $BUF0 -filter_complex sdfjisdjidsg -vf sdfjsfjd -c:v dfksdfkj $OUT`,
+        buffers
+    );
+}

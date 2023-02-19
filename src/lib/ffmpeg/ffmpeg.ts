@@ -7,7 +7,7 @@ import { join } from "path";
 import { stdout } from "process";
 
 const extraArgs = "";
-const ffmpegVerbose = true;
+const ffmpegVerbose = false;
 
 export const preset = "ultrafast";
 
@@ -45,7 +45,7 @@ export function ffmpegBuffer(
                 if (e) return rej(e);
                 res(data);
             });
-        });
+        }, rej);
     });
 }
 export function ffmpeg(args: string, quiet = false) {
@@ -65,7 +65,7 @@ export function ffmpeg(args: string, quiet = false) {
                 "ffmpeg"
             );
         ffmpegInstance.stdout.on("data", (c) => {
-            b += c;
+            //b += c;
         });
         ffmpegInstance.stderr.on("data", (c) => {
             b += c;
