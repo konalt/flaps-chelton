@@ -1,4 +1,5 @@
 import { Attachment, TextChannel } from "discord.js";
+import { RGBColor } from "../types";
 import { downloadPromise } from "./download";
 import { get100Posts } from "./reddit";
 import { sendWebhook } from "./webhooks";
@@ -103,4 +104,13 @@ export function getTypes(atts: Attachment[]) {
 // really shitty hack because theres no nameof() operator
 export function getFunctionName(fn: Function) {
     return fn.toString().split(" ")[1].split("(")[0];
+}
+
+export function rgbtohex(rgb: RGBColor) {
+    return (
+        "#" +
+        rgb.r.toString(16).padStart(2, "0") +
+        rgb.g.toString(16).padStart(2, "0") +
+        rgb.b.toString(16).padStart(2, "0")
+    );
 }

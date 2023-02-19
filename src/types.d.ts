@@ -46,3 +46,9 @@ export interface TrimOptions {
     start: number;
     end: number;
 }
+
+export interface RGBColor {
+    r: number;
+    g: number;
+    b: number;
+}
