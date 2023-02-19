@@ -1,3 +1,7 @@
+import { Color, esc, log } from "./lib/logger";
+import { config } from "dotenv";
+log("Loading settings...", "start");
+config();
 import {
     ActivityType,
     Attachment,
@@ -8,10 +12,8 @@ import {
     PresenceData,
     TextChannel,
 } from "discord.js";
-import { config } from "dotenv";
 import { readFile, readdir } from "fs/promises";
 import { hooks, sendWebhook, updateUsers } from "./lib/webhooks";
-import { Color, esc, log } from "./lib/logger";
 import { FlapsCommand, WebhookBot } from "./types";
 import { downloadPromise } from "./lib/download";
 import { getTypes, getTypeSingular, time, uuidv4 } from "./lib/utils";
@@ -28,9 +30,6 @@ import {
 } from "@discordjs/voice";
 import { lookup } from "mime-types";
 import initializeWebServer from "./lib/web";
-
-log("Loading settings...", "start");
-config();
 
 const client = new Client({
     partials: [
