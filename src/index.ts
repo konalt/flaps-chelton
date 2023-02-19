@@ -408,7 +408,9 @@ client.on("messageCreate", (msg) => {
 
     let commandRan = false;
     if (msg.content.startsWith(COMMAND_PREFIX)) {
-        let command = commands.find((cmd) => cmd.aliases.includes(commandId));
+        let command = commands.find((cmd) =>
+            cmd.aliases.includes(commandId.toLowerCase())
+        );
         if (command) {
             commandRan = true;
 
