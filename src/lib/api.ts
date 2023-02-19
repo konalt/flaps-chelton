@@ -1,5 +1,6 @@
 import { Router } from "express";
 import { StableDiffusionOptions } from "../types";
+import { question } from "./ai/question";
 import stablediffusion from "./ai/stablediffusion";
 
 const router = Router({
@@ -31,6 +32,12 @@ router.post("/inpaint", (req, res) => {
         .catch((err) => {
             res.status(500).contentType("text/plain").send(err);
         });
+});
+
+router.post("/question", (req, res) => {
+    question(req.body.question).then((answer) => {
+        res.contentType("txt").send(answer);
+    });
 });
 
 export default router;

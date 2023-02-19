@@ -1,7 +1,7 @@
 function question() {
     var t = $("#question").val();
     axios
-        .post("https://konalt.us.to:4930/flaps_api/question", {
+        .post("https://flaps.us.to/api/question", {
             question: t,
         })
         .then((res) => {
