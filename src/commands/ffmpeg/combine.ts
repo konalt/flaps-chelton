@@ -1,7 +1,12 @@
 import { TextChannel } from "discord.js";
 import { Message } from "discord.js";
 import { ffmpegBuffer } from "../../lib/ffmpeg/ffmpeg";
-import { getFileExt, getFileName, getTypeSingular } from "../../lib/utils";
+import {
+    getFileExt,
+    getFileName,
+    getFunctionName,
+    getTypeSingular,
+} from "../../lib/utils";
 import { sendWebhook } from "../../lib/webhooks";
 import { FlapsCommand } from "../../types";
 import { lookup } from "mime-types";
@@ -137,6 +142,8 @@ module.exports = {
         let type2 = getTypeSingular(lookup(buffers[1][1]));
 
         let op = combineOperation(type1, type2);
+
+        console.log(getFunctionName(op));
 
         if (op == null) {
             return sendWebhook(

@@ -1,7 +1,7 @@
 import { ffmpegBuffer, preset } from "./ffmpeg";
 import { getVideoDimensions, getVideoLength } from "./getVideoDimensions";
 
-export default async function invert(
+export default async function stack(
     buffers: [Buffer, string][]
 ): Promise<Buffer> {
     let dims1 = await getVideoDimensions(buffers[0][1]);

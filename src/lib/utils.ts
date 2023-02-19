@@ -99,3 +99,7 @@ export function getTypes(atts: Attachment[]) {
         return type;
     });
 }
+
+export function getFunctionName(fn: Function) {
+    return fn.toString().split(" ")[1].split("(")[0];
+}

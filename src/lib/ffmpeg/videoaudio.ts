@@ -1,6 +1,6 @@
 import { ffmpegBuffer, preset } from "./ffmpeg";
 
-export default async function invert(
+export default async function videoaudio(
     buffers: [Buffer, string][]
 ): Promise<Buffer> {
     return ffmpegBuffer(

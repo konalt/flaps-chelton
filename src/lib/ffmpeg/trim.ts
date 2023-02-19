@@ -1,7 +1,7 @@
 import { TrimOptions } from "../../types";
 import { ffmpegBuffer, preset } from "./ffmpeg";
 
-export default async function invert(
+export default async function trim(
     buffers: [Buffer, string][],
     options: TrimOptions
 ): Promise<Buffer> {

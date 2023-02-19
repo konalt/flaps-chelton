@@ -1,7 +1,7 @@
 import { ffmpegBuffer, preset } from "./ffmpeg";
 import { getVideoDimensions, getVideoLength } from "./getVideoDimensions";
 
-export default async function invert(
+export default async function audioimage(
     buffers: [Buffer, string][]
 ): Promise<Buffer> {
     let dur = await getVideoLength(buffers[0][1]);

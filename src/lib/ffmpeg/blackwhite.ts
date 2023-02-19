@@ -1,6 +1,6 @@
 import { ffmpegBuffer, preset } from "./ffmpeg";
 
-export default async function invert(
+export default async function blackwhite(
     buffers: [Buffer, string][]
 ): Promise<Buffer> {
     return ffmpegBuffer(
