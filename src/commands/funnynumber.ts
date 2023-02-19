@@ -10,8 +10,8 @@ module.exports = {
     desc: "Gets the funny number of a character.",
     execute(args: string[], bufs: [Buffer, string][], msg: Message) {
         var x = "";
-        if (args[1]) {
-            x = msg.content.split(" ").slice(1).join("_");
+        if (args[0]) {
+            x = args.join("_");
         } else {
             x = "calamitas".split(" ").join("_");
         }
