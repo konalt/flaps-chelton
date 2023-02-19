@@ -34,6 +34,14 @@ export default function initializeWebServer(): Promise<void> {
             }
         });
 
+        app.use((req, res, next) => {
+            res.set("Access-Control-Allow-Origin", "*");
+            res.set("Access-Control-Allow-Headers", "*");
+            res.set("Server", "FlapsChelton");
+            res.set("Connection", "Keep-Alive");
+            next();
+        });
+
         app.use(express.urlencoded({ extended: true }));
         app.use(express.json({ limit: "50mb" }));
         app.use("/api", apiRouter);
