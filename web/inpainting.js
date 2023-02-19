@@ -24,7 +24,7 @@ function dalle2() {
     var maskURL = canvas2.toDataURL("image/png");
     axios
         .post(
-            "https://konalt.us.to:4930/flaps_api/inpaint",
+            "https://flaps.us.to/api/inpaint",
             {
                 prompt: t,
                 img: imgURL,
@@ -128,7 +128,7 @@ canvas.addEventListener(
     "mouseup",
     (e) => ((isMouseHeld = false), (x = e.offsetX), (y = e.offsetY))
 );
-document.addEventListener("mouseup", (e) => (isMouseHeld = false));
+document.addEventListener("mouseup", () => (isMouseHeld = false));
 canvas.addEventListener("mousemove", (e) => ((x = e.offsetX), (y = e.offsetY)));
 
 function update() {
