@@ -27,6 +27,7 @@ import {
     VoiceConnection,
 } from "@discordjs/voice";
 import { lookup } from "mime-types";
+import initializeWebServer from "./lib/web";
 
 log("Loading settings...", "start");
 config();
@@ -458,8 +459,11 @@ readCommandDir(__dirname + "/commands").then(() => {
             flags.set(line.split(" ")[1], line.split(" ")[0]);
         }
         updateUsers().then(() => {
-            log("Logging in...", "start");
-            client.login(process.env.DISCORD_TOKEN || "NoTokenProvided");
+            log("Starting web server...", "start");
+            initializeWebServer().then(() => {
+                log("Logging in...", "start");
+                client.login(process.env.DISCORD_TOKEN || "NoTokenProvided");
+            });
         });
     });
 });
