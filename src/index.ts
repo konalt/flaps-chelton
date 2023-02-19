@@ -12,7 +12,7 @@ import {
     PresenceData,
     TextChannel,
 } from "discord.js";
-import { readFile, readdir } from "fs/promises";
+import { readFile, readdir, writeFile } from "fs/promises";
 import { hooks, sendWebhook, updateUsers } from "./lib/webhooks";
 import { FlapsCommand, WebhookBot } from "./types";
 import { downloadPromise } from "./lib/download";
@@ -354,7 +354,7 @@ function getSources(msg: Message, types: string[]) {
     });
 }
 
-client.on("messageCreate", (msg) => {
+export async function onMessage(msg: Message) {
     if (msg.author.bot) return;
     if (!(msg.channel instanceof TextChannel)) {
         msg.reply("this mf bot dont support dms get the fuck outta here");
@@ -386,6 +386,18 @@ client.on("messageCreate", (msg) => {
             cmd.aliases.includes(commandId.toLowerCase())
         );
         if (command) {
+            if (commandId !== "retry") {
+                let retryables = JSON.parse(
+                    (await readFile("retrycache.json")).toString()
+                );
+                if (retryables[msg.author.id] != msg.id) {
+                    retryables[msg.author.id] = msg.id;
+                    await writeFile(
+                        "retrycache.json",
+                        JSON.stringify(retryables)
+                    );
+                }
+            }
             commandRan = true;
 
             if (command.needs && command.needs.length > 0) {
@@ -393,26 +405,21 @@ client.on("messageCreate", (msg) => {
                     let bufs: [Buffer, string][] = await Promise.all(
                         srcs.map(async (s) => [await readFile(s), s])
                     );
-                    log(
-                        `Running command ${esc(Color.Cyan)}${command.id} ${esc(
-                            Color.DarkGrey
-                        )}(Att. Down)`,
-                        "cmd"
-                    );
                     command.execute(commandArgs, bufs, msg);
                 });
             } else {
-                log(
-                    `Running command ${esc(Color.BrightCyan)}${command.id}`,
-                    "cmd"
-                );
                 command.execute(commandArgs, null, msg);
             }
         }
     }
 
     logMessage(msg, commandRan, webhookUsed, commandArgs, startTime);
-});
+    if (commandRan) {
+        log(`Running command ${esc(Color.BrightCyan)}${commandId}`, "cmd");
+    }
+}
+
+client.on("messageCreate", onMessage);
 
 let commands: Collection<string, FlapsCommand> = new Collection();
 let flags: Collection<string, string> = new Collection();
