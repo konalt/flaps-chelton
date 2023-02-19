@@ -7,9 +7,12 @@ const router = Router({
 });
 
 router.post("/dalle2", (req, res) => {
-    stablediffusion({
-        prompt: req.body.prompt,
-    })
+    stablediffusion(
+        {
+            prompt: req.body.prompt,
+        },
+        req.body.single || false
+    )
         .then((buf) => {
             res.contentType("image/png").send(buf);
         })
