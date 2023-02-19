@@ -2,6 +2,7 @@ import { TextChannel } from "discord.js";
 import { Message } from "discord.js";
 import { ffmpegBuffer } from "../../lib/ffmpeg/ffmpeg";
 import handleFFmpeg from "../../lib/ffmpeg/handleFFmpeg";
+import handleFFmpegCatch from "../../lib/ffmpeg/handleFFmpegCatch";
 import { getFileExt, getFileName } from "../../lib/utils";
 import { sendWebhook } from "../../lib/webhooks";
 import { FlapsCommand } from "../../types";
@@ -20,7 +21,8 @@ module.exports = {
             handleFFmpeg(
                 getFileName("Effect_Caption2", getFileExt(buffers[0][1])),
                 msg.channel as TextChannel
-            )
+            ),
+            handleFFmpegCatch(msg.channel)
         );
     },
 } satisfies FlapsCommand;

@@ -3,6 +3,7 @@ import handleFFmpeg from "../../lib/ffmpeg/handleFFmpeg";
 import imgfade from "../../lib/ffmpeg/imgfade";
 import { getFileExt, getFileName } from "../../lib/utils";
 import { FlapsCommand } from "../../types";
+import handleFFmpegCatch from "../../lib/ffmpeg/handleFFmpegCatch";
 
 module.exports = {
     id: "imgfade",
@@ -14,7 +15,8 @@ module.exports = {
             handleFFmpeg(
                 getFileName("Effect_Invert", getFileExt(buf[0][1])),
                 msg.channel as TextChannel
-            )
+            ),
+            handleFFmpegCatch(msg.channel)
         );
     },
 } satisfies FlapsCommand;

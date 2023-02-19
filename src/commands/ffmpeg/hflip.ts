@@ -4,6 +4,7 @@ import { ffmpegBuffer } from "../../lib/ffmpeg/ffmpeg";
 import { getFileExt, getFileName } from "../../lib/utils";
 import { sendWebhook } from "../../lib/webhooks";
 import { FlapsCommand } from "../../types";
+import handleFFmpegCatch from "../../lib/ffmpeg/handleFFmpegCatch";
 
 module.exports = {
     id: "hflip",
@@ -24,6 +25,6 @@ module.exports = {
                 out,
                 getFileName("Effect_HFlip", getFileExt(buffers[0][1]))
             );
-        });
+        }, handleFFmpegCatch(msg.channel));
     },
 } satisfies FlapsCommand;

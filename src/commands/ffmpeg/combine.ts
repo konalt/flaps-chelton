@@ -16,6 +16,7 @@ import gifaudio from "../../lib/ffmpeg/gifaudio";
 import audiogif from "../../lib/ffmpeg/audiogif";
 import stack from "../../lib/ffmpeg/stack";
 import handleFFmpeg from "../../lib/ffmpeg/handleFFmpeg";
+import handleFFmpegCatch from "../../lib/ffmpeg/handleFFmpegCatch";
 
 function combineOperation(
     type1: string,
@@ -149,7 +150,8 @@ module.exports = {
             handleFFmpeg(
                 getFileName("Effect_Combine", combineExt(type1, type2)),
                 msg.channel as TextChannel
-            )
+            ),
+            handleFFmpegCatch(msg.channel)
         );
     },
 } satisfies FlapsCommand;

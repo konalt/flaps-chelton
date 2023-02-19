@@ -3,6 +3,7 @@ import handleFFmpeg from "../../lib/ffmpeg/handleFFmpeg";
 import reencode from "../../lib/ffmpeg/reencode";
 import { getFileExt, getFileName } from "../../lib/utils";
 import { FlapsCommand } from "../../types";
+import handleFFmpegCatch from "../../lib/ffmpeg/handleFFmpegCatch";
 
 module.exports = {
     id: "reencode",
@@ -14,7 +15,8 @@ module.exports = {
             handleFFmpeg(
                 getFileName("Effect_ReEncode", getFileExt(buf[0][1])),
                 msg.channel as TextChannel
-            )
+            ),
+            handleFFmpegCatch(msg.channel)
         );
     },
 } satisfies FlapsCommand;
