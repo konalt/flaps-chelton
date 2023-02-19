@@ -14,7 +14,7 @@ import { hooks, sendWebhook, updateUsers } from "./lib/webhooks";
 import { Color, esc, log } from "./lib/logger";
 import { FlapsCommand, WebhookBot } from "./types";
 import { downloadPromise } from "./lib/download";
-import { time, uuidv4 } from "./lib/utils";
+import { getTypes, getTypeSingular, time, uuidv4 } from "./lib/utils";
 import { registerFont } from "canvas";
 import fetch from "node-fetch";
 import { getVideoDimensions } from "./lib/ffmpeg/getVideoDimensions";
@@ -26,6 +26,7 @@ import {
     joinVoiceChannel,
     VoiceConnection,
 } from "@discordjs/voice";
+import { lookup } from "mime-types";
 
 log("Loading settings...", "start");
 config();
@@ -210,34 +211,6 @@ function autoReact(msg: Message) {
     if (f.includes("copper")) {
         sendWebhook("flaps", "copper you say?", msg.channel as TextChannel);
     }
-}
-
-var types = {
-    image: ["image/png", "image/jpeg", "image/webp"],
-    video: ["video/mp4", "video/x-matroska"],
-    text: ["text/plain"],
-    json: ["application/json"],
-    gif: ["image/gif"],
-    audio: ["audio/mpeg", "audio/aac"],
-};
-
-function getTypeSingular(ct: string) {
-    var type = "unknown";
-    Object.entries(types).forEach((a) => {
-        if (a[1].includes(ct)) type = a[0];
-    });
-    return type;
-}
-
-function getTypes(atts: Attachment[]) {
-    return atts.map((att) => {
-        var ct = att.contentType;
-        var type = "unknown";
-        Object.entries(types).forEach((a) => {
-            if (a[1].includes(ct)) type = a[0];
-        });
-        return type;
-    });
 }
 
 function typesMatch(inTypes: string[], requiredTypes: string[]) {
@@ -490,10 +463,6 @@ readCommandDir(__dirname + "/commands").then(() => {
         });
     });
 });
-function getTypeMessage(arg0: string[], types: any) {
-    throw new Error("Function not implemented.");
-}
-
-function lookup(filename: any): any {
+function getTypeMessage(attTypes: string[], types: string[]) {
     throw new Error("Function not implemented.");
 }

@@ -1,4 +1,4 @@
-import { TextChannel } from "discord.js";
+import { Attachment, TextChannel } from "discord.js";
 import { downloadPromise } from "./download";
 import { get100Posts } from "./reddit";
 import { sendWebhook } from "./webhooks";
@@ -70,4 +70,32 @@ export function time() {
     var m = d.getMinutes().toString().padStart(2, "0");
     var s = d.getSeconds().toString().padStart(2, "0");
     return [h, m, s].join(":");
+}
+
+export const types = {
+    image: ["image/png", "image/jpeg", "image/webp"],
+    video: ["video/mp4", "video/x-matroska"],
+    text: ["text/plain"],
+    json: ["application/json"],
+    gif: ["image/gif"],
+    audio: ["audio/mpeg", "audio/aac"],
+};
+
+export function getTypeSingular(ct: string) {
+    var type = "unknown";
+    Object.entries(types).forEach((a) => {
+        if (a[1].includes(ct)) type = a[0];
+    });
+    return type;
+}
+
+export function getTypes(atts: Attachment[]) {
+    return atts.map((att) => {
+        var ct = att.contentType;
+        var type = "unknown";
+        Object.entries(types).forEach((a) => {
+            if (a[1].includes(ct)) type = a[0];
+        });
+        return type;
+    });
 }

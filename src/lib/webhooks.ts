@@ -1,4 +1,13 @@
-import { Collection, GuildChannel } from "discord.js";
+import {
+    Collection,
+    DMChannel,
+    GuildChannel,
+    NewsChannel,
+    PartialDMChannel,
+    PrivateThreadChannel,
+    PublicThreadChannel,
+    VoiceChannel,
+} from "discord.js";
 import { TextChannel } from "discord.js";
 import { TextBasedChannel } from "discord.js";
 import { PathLike, readFileSync } from "fs";
@@ -82,11 +91,11 @@ export function updateUsers(): Promise<void> {
 export function sendWebhook(
     id: string,
     content: string,
-    channel: TextChannel,
+    channel: TextBasedChannel,
     buffer: Buffer | null = null,
     filename: string | null = null
 ) {
-    getWebhookURL(channel).then((url: string) => {
+    getWebhookURL(channel as TextChannel).then((url: string) => {
         let user: WebhookBot = hooks.get(id);
         // if file is over 8mb, send failsafe
         // TODO: when express is done, make this send a link instead

@@ -7,27 +7,20 @@
         "jquery": true
     },
     "extends": "eslint:recommended",
-    "overrides": [
-    ],
+    "overrides": [],
     "parserOptions": {
         "ecmaVersion": "latest"
     },
     "rules": {
-        "no-useless-escape":"off",
-        "no-redeclare":"off",
-"no-unused-vars": [
-  "warn",
-  { 
-    "argsIgnorePattern": "^_",
-    "varsIgnorePattern": "^_",
-    "caughtErrorsIgnorePattern": "^_"
-  }
-],
-"no-undef": [
-  "error",
-  { 
-    "varsIgnorePattern": "axios"
-  }
-]
+        "no-useless-escape": "off",
+        "no-redeclare": "off",
+        "no-unused-vars": [
+            "warn",
+            {
+                "argsIgnorePattern": "^_",
+                "varsIgnorePattern": "^_",
+                "caughtErrorsIgnorePattern": "^_"
+            }
+        ]
     }
 }

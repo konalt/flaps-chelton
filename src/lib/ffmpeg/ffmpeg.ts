@@ -7,7 +7,7 @@ import { join } from "path";
 import { stdout } from "process";
 
 const extraArgs = "";
-const ffmpegVerbose = false;
+const ffmpegVerbose = true;
 
 export const preset = "ultrafast";
 
@@ -56,6 +56,8 @@ export function ffmpeg(args: string, quiet = false) {
         var ffmpegInstance = spawn("ffmpeg", newargs.trim().split(" "), {
             shell: true,
         });
+        if (ffmpegVerbose)
+            log(`Launch Args: ${esc(Color.White)}` + newargs, "ffmpeg");
         var b = "";
         if (!quiet)
             log(
