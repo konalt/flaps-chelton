@@ -100,6 +100,7 @@ export function getTypes(atts: Attachment[]) {
     });
 }
 
+// really shitty hack because theres no nameof() operator
 export function getFunctionName(fn: Function) {
     return fn.toString().split(" ")[1].split("(")[0];
 }
