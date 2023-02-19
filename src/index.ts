@@ -226,14 +226,15 @@ function typesMatch(inTypes: string[], requiredTypes: string[]) {
 function tenorURLToGifURL(url: string): Promise<string> {
     var searchString = '<meta class="dynamic" name="twitter:image" content="';
     return new Promise((resl) => {
-        fetch(url)
-            .then((r: Response) => r.text())
-            .then((data: string) => {
+        /* @ts-ignore */
+        fetch(url).then((value: Response) => {
+            value.text().then((data) => {
                 var newURL = data
                     .substring(data.indexOf(searchString) + searchString.length)
                     .split('"')[0];
                 resl(newURL);
             });
+        });
     });
 }
 
