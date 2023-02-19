@@ -17,6 +17,8 @@ import { WebhookBot } from "../types";
 import { readdir } from "fs/promises";
 import { log } from "./logger";
 import { users } from "./users";
+import { writeFile } from "fs/promises";
+import { file } from "./ffmpeg/ffmpeg";
 
 const defaultContent = "No Content";
 const defaultUsername = "No Username";
@@ -95,15 +97,18 @@ export function sendWebhook(
     buffer: Buffer | null = null,
     filename: string | null = null
 ) {
-    getWebhookURL(channel as TextChannel).then((url: string) => {
+    getWebhookURL(channel as TextChannel).then(async (url: string) => {
         let user: WebhookBot = hooks.get(id);
         // if file is over 8mb, send failsafe
-        // TODO: when express is done, make this send a link instead
         if (buffer && Buffer.byteLength(buffer) > 8e6) {
+            await writeFile(file("cache/" + filename), buffer).then(() => {
+                content +=
+                    "\n(This message originally contained a file, but the file was over 8MB in size.\nLink: https://flaps.us.to/cache/" +
+                    filename +
+                    " )";
+            });
             buffer = null;
             filename = null;
-            content +=
-                "\n(This message originally contained a file, but the file was over 8MB in size.)";
         }
         baseSend(
             url + "?wait=true",
