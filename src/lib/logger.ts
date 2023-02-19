@@ -27,7 +27,7 @@ export const log = (text = "Text Here", sub: string | null = null) => {
         (sub
             ? `${esc(Color.White)}[${sub}] ${esc(
                   Color.DarkGrey
-              )}[${time()}]${esc(0)} `
+              )}[${time()}]${esc(Color.White)} `
             : `${esc(Color.White)}`) +
             text +
             esc(0)
