@@ -296,7 +296,7 @@ function getSourcesWithAttachments(msg: Message, types: string[]) {
                                             width: dimensions[0],
                                             height: dimensions[1],
                                         },
-                                        npath,
+                                        zpath,
                                     ],
                                 ]);
                             }
