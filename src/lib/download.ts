@@ -43,3 +43,45 @@ export const downloadPromise = function (
         }
     });
 };
+
+export const download = function (
+    url: string,
+    dest: string,
+    cb: (err: boolean, buffer: Buffer) => {}
+) {
+    if (dest == "dataurl") {
+        https
+            .get(url, function (res) {
+                var data = [];
+
+                res.on("data", function (chunk) {
+                    data.push(chunk);
+                }).on("end", function () {
+                    var buffer = Buffer.concat(data);
+                    cb(false, buffer);
+                });
+            })
+            .on("error", function (err) {
+                fs.unlink(dest, () => {});
+                if (cb) cb(true, null);
+            });
+    } else {
+        var file = fs.createWriteStream(dest);
+        https
+            .get(url, function (response) {
+                if (response.statusCode != 200) {
+                    return cb(true, null);
+                }
+                response.pipe(file);
+                file.on("finish", function () {
+                    file.close(() => {
+                        cb(false, null);
+                    });
+                });
+            })
+            .on("error", function (err) {
+                fs.unlink(dest, () => {});
+                if (cb) cb(true, null);
+            });
+    }
+};
