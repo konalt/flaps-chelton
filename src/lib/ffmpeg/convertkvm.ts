@@ -2,6 +2,7 @@ import { TrimOptions } from "../../types";
 import { ffmpegBuffer, file, preset } from "./ffmpeg";
 import { existsSync } from "fs";
 import { createCanvas, loadImage } from "canvas";
+import { getVideoDimensions } from "./getVideoDimensions";
 
 function binaryStringToBuffer(string: string) {
     const groups = string.match(/[01]{8}/g) ?? [];
@@ -33,14 +34,24 @@ function himem_stringify(arr: boolean[][]) {
 export default async function convertkvm(
     buffers: [Buffer, string][]
 ): Promise<Buffer> {
-    return new Promise((res, rej) => {
+    return new Promise(async (res, rej) => {
+        var dims = await getVideoDimensions(buffers[0][1]);
+        var w = 0,
+            h = 0;
+        if (dims[0] > dims[1]) {
+            w = 255;
+            h = Math.round(255 * (dims[1] / dims[0]));
+        } else {
+            w = Math.round(255 * (dims[0] / dims[1]));
+            h = 255;
+        }
         ffmpegBuffer(
-            `-i $BUF0 -framerate 20 -vf scale=320:240 $OUT`,
+            `-i $BUF0 -framerate 20 -vf scale=${w}:${h} $OUT`,
             buffers,
             "%04d.png",
             true
         ).then(async (filename) => {
-            var canvas = createCanvas(320, 240);
+            var canvas = createCanvas(w, h);
             var ctx = canvas.getContext("2d");
             var images: boolean[][] = [];
             var i = 1;
@@ -60,7 +71,7 @@ export default async function convertkvm(
                 i++;
                 var image = await loadImage(path);
                 ctx.drawImage(image, 0, 0);
-                var data = ctx.getImageData(0, 0, 320, 240);
+                var data = ctx.getImageData(0, 0, w, h);
                 var compressedData: boolean[] = [];
                 var d = data.data;
                 for (var j = 0; j < d.length; j += 4) {
@@ -71,6 +82,8 @@ export default async function convertkvm(
                 console.log(i + " done.");
             }
             var compressed = compress(himem_stringify(images));
+            compressed[0] = w;
+            compressed[1] = h;
             res(compressed);
         });
     });
