@@ -17,8 +17,9 @@ export function file(pathstr: string) {
 export function ffmpegBuffer(
     args: string,
     buffers: [Buffer, string][],
-    outExt: string | null = null
-): Promise<Buffer> {
+    outExt: string | null = null,
+    noFileReturn: boolean = false
+): Promise<Buffer | string> {
     return new Promise((res, rej) => {
         var opId = uuidv4();
         var files = buffers.map((buf, n) => {
@@ -41,10 +42,14 @@ export function ffmpegBuffer(
         });
         args = args.replace(/\$OUT/g, outFile);
         ffmpeg(args).then(() => {
-            readFile(outFile, (e, data) => {
-                if (e) return rej(e);
-                res(data);
-            });
+            if (!noFileReturn) {
+                readFile(outFile, (e, data) => {
+                    if (e) return rej(e);
+                    res(data);
+                });
+            } else {
+                res(outFile);
+            }
         }, rej);
     });
 }
