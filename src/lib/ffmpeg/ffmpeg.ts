@@ -14,11 +14,29 @@ export const preset = "ultrafast";
 export function file(pathstr: string) {
     return join(".", pathstr.includes("images") ? "" : "images", pathstr);
 }
-export function ffmpegBuffer(
+function ffmpegBuffer(
     args: string,
     buffers: [Buffer, string][],
-    outExt: string | null = null,
-    noFileReturn: boolean = false
+    outExt?: string,
+    noFileReturn?: false
+): Promise<Buffer>;
+function ffmpegBuffer(
+    args: string,
+    buffers: [Buffer, string][],
+    outExt?: string,
+    noFileReturn?: true
+): Promise<string>;
+function ffmpegBuffer(
+    args: string,
+    buffers: [Buffer, string][],
+    outExt?: string,
+    noFileReturn?: any
+): Promise<Buffer>;
+function ffmpegBuffer(
+    args: string,
+    buffers: [Buffer, string][],
+    outExt?: string,
+    noFileReturn?: boolean
 ): Promise<Buffer | string> {
     return new Promise((res, rej) => {
         var opId = uuidv4();
@@ -53,6 +71,7 @@ export function ffmpegBuffer(
         }, rej);
     });
 }
+export { ffmpegBuffer };
 export function ffmpeg(args: string, quiet = false) {
     return new Promise((resolve, reject) => {
         var startTime = Date.now();
