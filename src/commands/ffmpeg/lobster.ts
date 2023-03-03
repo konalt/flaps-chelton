@@ -11,7 +11,9 @@ module.exports = {
     desc: "lob er",
     needs: ["image"],
     execute(args, buf, msg) {
-        lobster(buf).then(
+        lobster(buf, {
+            text: args.length > 0 ? args.join(" ") : "give me text",
+        }).then(
             handleFFmpeg(getFileName("Effect_Lobster", "mp4"), msg.channel),
             handleFFmpegCatch(msg.channel)
         );

@@ -7,7 +7,7 @@ import { join } from "path";
 import { stdout } from "process";
 
 const extraArgs = "";
-const ffmpegVerbose = false;
+const ffmpegVerbose = true;
 
 export const preset = "ultrafast";
 
