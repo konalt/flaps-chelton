@@ -19,7 +19,7 @@ module.exports = {
             end: parseFloat(args[1]),
         }).then(
             handleFFmpeg(
-                getFileName("Effect_Caption2", getFileExt(buffers[0][1])),
+                getFileName("Effect_Trim", getFileExt(buffers[0][1])),
                 msg.channel as TextChannel
             ),
             handleFFmpegCatch(msg.channel)
