@@ -65,7 +65,6 @@ export default (data: StableDiffusionOptions, big = false): Promise<Buffer> => {
         }
 
         fetch("https://playgroundai.com/api/models", {
-            credentials: "include",
             headers: {
                 "User-Agent":
                     "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:105.0) Gecko/20100101 Firefox/105.0",
@@ -78,10 +77,8 @@ export default (data: StableDiffusionOptions, big = false): Promise<Buffer> => {
                 "Sec-GPC": "1",
                 cookie: process.env.PLAYGROUND_COOKIE,
             },
-            referrer: "https://playgroundai.com/api/models",
             body: JSON.stringify(body),
             method: "POST",
-            mode: "cors",
         })
             .then((resp) => resp.text())
             .then(async (res3) => {
