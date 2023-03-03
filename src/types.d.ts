@@ -46,6 +46,9 @@ export interface TrimOptions {
     start: number;
     end: number;
 }
+export interface SpeedOptions {
+    speed: number;
+}
 
 export interface RGBColor {
     r: number;
