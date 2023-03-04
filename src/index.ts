@@ -416,12 +416,16 @@ export async function onMessage(msg: Message) {
             commandRan = true;
 
             if (command.needs && command.needs.length > 0) {
-                getSources(msg, command.needs).then(async (srcs: string[]) => {
-                    let bufs: [Buffer, string][] = await Promise.all(
-                        srcs.map(async (s) => [await readFile(s), s])
-                    );
-                    command.execute(commandArgs, bufs, msg);
-                });
+                getSources(msg, command.needs)
+                    .then(async (srcs: string[]) => {
+                        let bufs: [Buffer, string][] = await Promise.all(
+                            srcs.map(async (s) => [await readFile(s), s])
+                        );
+                        command.execute(commandArgs, bufs, msg);
+                    })
+                    .catch((r) => {
+                        sendWebhook("flaps", r, msg.channel);
+                    });
             } else {
                 command.execute(commandArgs, null, msg);
             }
@@ -569,6 +573,33 @@ readCommandDir(__dirname + "/commands").then(() => {
         });
     });
 });
-function getTypeMessage(attTypes: string[], types: string[]) {
-    throw new Error("Function not implemented.");
+function getTypeMessage(inTypes: string[], reqTypes: string[]) {
+    var maxWidthIn = inTypes.reduce((a, b) =>
+        a.length > b.length ? a : b
+    ).length;
+    if (maxWidthIn < "SUPPLIED".length) maxWidthIn = "SUPPLIED".length;
+    var maxWidthReq = reqTypes.reduce((a, b) =>
+        a.length > b.length ? a : b
+    ).length;
+    if (maxWidthReq < "REQUIRED".length) maxWidthReq = "REQUIRED".length;
+    var out = [
+        [
+            "REQUIRED".padEnd(maxWidthReq),
+            "SUPPLIED".padEnd(maxWidthIn),
+            "STATUS",
+        ]
+            .join(" | ")
+            .trim(),
+        ["-".repeat(maxWidthIn + maxWidthReq + 3 + 3 + 6)],
+    ];
+
+    reqTypes.forEach((reqType, i) => {
+        var inType = inTypes[i];
+        var s = [];
+        s.push(reqType.padEnd(maxWidthReq, " "));
+        s.push(inType.padEnd(maxWidthIn, " "));
+        s.push(reqType.split("/").includes(inType) ? "OK" : "ERR");
+        out.push(s.join(" | ").trim());
+    });
+    return "```\n" + out.join("\n") + "\n```";
 }
