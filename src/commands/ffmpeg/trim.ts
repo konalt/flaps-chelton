@@ -14,15 +14,18 @@ module.exports = {
     desc: "Trims a video or audio clip.",
     needs: ["video/audio"],
     async execute(args: string[], buffers: [Buffer, string][], msg: Message) {
-        trim(buffers, {
-            start: parseFloat(args[0]),
-            end: parseFloat(args[1]),
-        }).then(
-            handleFFmpeg(
-                getFileName("Effect_Trim", getFileExt(buffers[0][1])),
-                msg.channel as TextChannel
-            ),
-            handleFFmpegCatch(msg.channel)
-        );
+        return new Promise((res, rej) => {
+            trim(buffers, {
+                start: parseFloat(args[0]),
+                end: parseFloat(args[1]),
+            }).then(
+                handleFFmpeg(
+                    getFileName("Effect_Trim", getFileExt(buffers[0][1])),
+                    msg.channel as TextChannel,
+                    res
+                ),
+                handleFFmpegCatch(msg.channel, res)
+            );
+        });
     },
 } satisfies FlapsCommand;

@@ -12,12 +12,15 @@ module.exports = {
     desc: "Reverses a video or audio file.",
     needs: ["video/audio"],
     execute(args, buf, msg) {
-        reverse(buf).then(
-            handleFFmpeg(
-                getFileName("Effect_Reverse", getFileExt(buf[0][1])),
-                msg.channel as TextChannel
-            ),
-            handleFFmpegCatch(msg.channel)
-        );
+        return new Promise((res, rej) => {
+            reverse(buf).then(
+                handleFFmpeg(
+                    getFileName("Effect_Reverse", getFileExt(buf[0][1])),
+                    msg.channel as TextChannel,
+                    res
+                ),
+                handleFFmpegCatch(msg.channel, res)
+            );
+        });
     },
 } satisfies FlapsCommand;

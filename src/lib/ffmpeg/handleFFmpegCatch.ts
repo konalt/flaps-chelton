@@ -1,10 +1,13 @@
 import { TextBasedChannel, TextChannel } from "discord.js";
+import { FlapsCommandResponse } from "../../types";
+import { makeMessageResp } from "../utils";
 import { sendWebhook } from "../webhooks";
 
 export default function handleFFmpegCatch(
-    channel: TextBasedChannel
+    channel: TextBasedChannel,
+    resolveFn: (resp: FlapsCommandResponse) => void
 ): (error: string) => void {
     return function handler(error: string) {
-        sendWebhook("ffmpeg", error, channel);
+        resolveFn(makeMessageResp("ffmpeg", error, channel));
     };
 }

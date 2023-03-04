@@ -3,7 +3,7 @@ import { ffmpeg, file } from "./ffmpeg/ffmpeg";
 import { sendWebhook } from "./webhooks";
 import { download } from "./download";
 import { join } from "path";
-import { getFileName } from "./utils";
+import { getFileExt, getFileName, makeMessageResp } from "./utils";
 import { readFile } from "fs/promises";
 
 function looparg(name: string) {
@@ -112,198 +112,158 @@ function concat(input: string[], output: string) {
 var segmentLength = 60000 / 70 / 1000;
 var verbose = true;
 
-async function versus(msg: Message) {
-    if (msg.attachments.first(2)[1]) {
-        var att = msg.attachments.first(2);
-        download(
-            att[0].url,
-            file(
-                "../versus/img1." +
-                    att[0].url.split(".")[att[0].url.split(".").length - 1]
-            ),
-            async () => {
-                download(
-                    att[1].url,
-                    file(
-                        "../versus/img2." +
-                            att[1].url.split(".")[
-                                att[1].url.split(".").length - 1
-                            ]
-                    ),
-                    async () => {
-                        var inputs = [
-                            "versus/img1." +
-                                att[0].url.split(".")[
-                                    att[0].url.split(".").length - 1
-                                ],
-                            "versus/img2." +
-                                att[1].url.split(".")[
-                                    att[1].url.split(".").length - 1
-                                ],
-                        ];
-                        var isLong = msg.content.startsWith("!vs2");
-                        var segmentLengths = [70, 80];
-                        if (isLong) {
-                            segmentLengths = [70];
-                        }
-                        var audio = Math.floor(
-                            Math.random() * segmentLengths.length
-                        );
-                        segmentLength = 60000 / segmentLengths[audio] / 1000;
-                        if (isLong) audio = 2;
-                        var names = msg.content
-                            .split(" ")
-                            .slice(1)
-                            .join(" ")
-                            .split(":");
-                        var forceWin = names[2];
-                        var vi = 0;
-
-                        await createBothVideo(inputs, "versus/" + vi++, names);
-
-                        var stats = [
-                            "Speed",
-                            "Agility",
-                            "Strength",
-                            "Size",
-                            "Weaponry",
-                            "Diplomacy",
-                            "Comedy",
-                        ];
-                        if (isLong) {
-                            stats = [
-                                "Speed",
-                                "Agility",
-                                "Strength",
-                                "Size",
-                                "Weaponry",
-                                "Diplomacy",
-                                "Comedy",
-                                "Warfare",
-                                "Power",
-                                "Straight",
-                                "Disgust",
-                                "Buffness",
-                                "Royal",
-                                "Cute",
-                                "Has Simps",
-                                "Scary",
-                                "Willpower",
-                                "Gamer",
-                                "Bitches",
-                                "Streetsmart",
-                                "Booksmart",
-                                "Meth Cook",
-                                "Legal",
-                                "Lawyer",
-                                "Hot",
-                                "Nose Size",
-                                "Annoying",
-                                "Shitty",
-                                "Age",
-                                "Width",
-                                "Height",
-                                "Intel",
-                                "Race",
-                                "Politics",
-                                "Hand Size",
-                                "Funo Hate",
-                                "Landlubber",
-                                "Coolness",
-                                "Depth",
-                                "Health",
-                                "Chadness",
-                                "Non-brit",
-                                "Music",
-                                "Education",
-                                "Heists",
-                                "TF2 Level",
-                                "Based",
-                                "Cringe",
-                                "Smart",
-                            ];
-                        }
-                        var scores = [0, 0];
-                        for (let i = 0; i < stats.length; i++) {
-                            const stat = stats[i];
-                            await createStatVideo(inputs, "versus/" + vi++, {
-                                stat: stat,
-                            });
-                            var chosenSide =
-                                forceWin == "0" || forceWin == "1"
-                                    ? parseInt(forceWin)
-                                    : Math.floor(Math.random() * 2);
-                            scores[chosenSide]++;
-                            await createScoreVideo(
-                                inputs[chosenSide],
-                                "versus/" + vi++,
-                                {
-                                    curScore: scores.join("-"),
-                                }
-                            );
-                        }
-
-                        await createWinnerVideo(inputs, "versus/" + vi++);
-
-                        var winner = 0;
-                        if (scores[1] > scores[0]) winner = 1;
-                        if (scores[1] == scores[0]) winner = 2;
-                        var lobster = false;
-                        if (winner == 2) {
-                            await createTieVideo(inputs, "versus/" + vi++);
-                            lobster = false;
-                        } else {
-                            if (Math.random() < 0.9) {
-                                await createScoreVideo(
-                                    inputs[winner],
-                                    "versus/" + vi++,
-                                    {
-                                        curScore:
-                                            winner == 2 ? "Tie" : names[winner],
-                                    }
-                                );
-                            } else {
-                                lobster = true;
-                                await createScoreVideo(
-                                    "versus/lober.png",
-                                    "versus/" + vi++,
-                                    {
-                                        curScore: "lober",
-                                    }
-                                );
-                            }
-                        }
-
-                        await concat(
-                            Array.from(Array(vi++).keys()).map(
-                                (i) => "versus/" + i
-                            ),
-                            "versus/" + "out_noaudio"
-                        );
-                        await addAudio(
-                            [
-                                "versus/" + "out_noaudio",
-                                "versus/" + "audio" + audio,
-                            ],
-                            "versus/" + "out",
-                            lobster,
-                            vi * segmentLength - segmentLength
-                        );
-
-                        sendWebhook(
-                            "flaps",
-                            "",
-                            msg.channel,
-                            await readFile("versus/out.mp4"),
-                            getFileName("Effect_VS", "mp4")
-                        );
-                    }
-                );
+async function versus(
+    buffers: [Buffer, string][],
+    names: string[],
+    isLong: boolean
+) {
+    return new Promise(async (res, rej) => {
+        if (buffers[1]) {
+            var segmentLengths = [70, 80];
+            if (isLong) {
+                segmentLengths = [70];
             }
-        );
-    } else {
-        sendWebhook("flaps", "i need 2 images and 2 names", msg.channel);
-    }
+            var audio = Math.floor(Math.random() * segmentLengths.length);
+            segmentLength = 60000 / segmentLengths[audio] / 1000;
+            if (isLong) audio = 2;
+            var forceWin = names[2];
+            var vi = 0;
+
+            var inputs = [
+                "versus/img1." + getFileExt(buffers[0][1]),
+                "versus/img2." + getFileExt(buffers[1][1]),
+            ];
+
+            await createBothVideo(inputs, "versus/" + vi++, names);
+
+            var stats = [
+                "Speed",
+                "Agility",
+                "Strength",
+                "Size",
+                "Weaponry",
+                "Diplomacy",
+                "Comedy",
+            ];
+            if (isLong) {
+                stats = [
+                    "Speed",
+                    "Agility",
+                    "Strength",
+                    "Size",
+                    "Weaponry",
+                    "Diplomacy",
+                    "Comedy",
+                    "Warfare",
+                    "Power",
+                    "Straight",
+                    "Disgust",
+                    "Buffness",
+                    "Royal",
+                    "Cute",
+                    "Has Simps",
+                    "Scary",
+                    "Willpower",
+                    "Gamer",
+                    "Bitches",
+                    "Streetsmart",
+                    "Booksmart",
+                    "Meth Cook",
+                    "Legal",
+                    "Lawyer",
+                    "Hot",
+                    "Nose Size",
+                    "Annoying",
+                    "Shitty",
+                    "Age",
+                    "Width",
+                    "Height",
+                    "Intel",
+                    "Race",
+                    "Politics",
+                    "Hand Size",
+                    "Funo Hate",
+                    "Landlubber",
+                    "Coolness",
+                    "Depth",
+                    "Health",
+                    "Chadness",
+                    "Non-brit",
+                    "Music",
+                    "Education",
+                    "Heists",
+                    "TF2 Level",
+                    "Based",
+                    "Cringe",
+                    "Smart",
+                ];
+            }
+            var scores = [0, 0];
+            for (let i = 0; i < stats.length; i++) {
+                const stat = stats[i];
+                await createStatVideo(inputs, "versus/" + vi++, {
+                    stat: stat,
+                });
+                var chosenSide =
+                    forceWin == "0" || forceWin == "1"
+                        ? parseInt(forceWin)
+                        : Math.floor(Math.random() * 2);
+                scores[chosenSide]++;
+                await createScoreVideo(inputs[chosenSide], "versus/" + vi++, {
+                    curScore: scores.join("-"),
+                });
+            }
+
+            await createWinnerVideo(inputs, "versus/" + vi++);
+
+            var winner = 0;
+            if (scores[1] > scores[0]) winner = 1;
+            if (scores[1] == scores[0]) winner = 2;
+            var lobster = false;
+            if (winner == 2) {
+                await createTieVideo(inputs, "versus/" + vi++);
+                lobster = false;
+            } else {
+                if (Math.random() < 0.9) {
+                    await createScoreVideo(inputs[winner], "versus/" + vi++, {
+                        curScore: winner == 2 ? "Tie" : names[winner],
+                    });
+                } else {
+                    lobster = true;
+                    await createScoreVideo(
+                        "versus/lober.png",
+                        "versus/" + vi++,
+                        {
+                            curScore: "lober",
+                        }
+                    );
+                }
+            }
+
+            await concat(
+                Array.from(Array(vi++).keys()).map((i) => "versus/" + i),
+                "versus/" + "out_noaudio"
+            );
+            await addAudio(
+                ["versus/" + "out_noaudio", "versus/" + "audio" + audio],
+                "versus/" + "out",
+                lobster,
+                vi * segmentLength - segmentLength
+            );
+
+            res(
+                makeMessageResp(
+                    "flaps",
+                    "",
+                    null,
+                    await readFile("versus/out.mp4"),
+                    getFileName("Effect_VS", "mp4")
+                )
+            );
+        } else {
+            res(makeMessageResp("flaps", "i need 2 images and 2 names"));
+        }
+    });
 }
 
 export default versus;

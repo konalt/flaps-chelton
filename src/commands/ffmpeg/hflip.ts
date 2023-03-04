@@ -9,22 +9,23 @@ import handleFFmpegCatch from "../../lib/ffmpeg/handleFFmpegCatch";
 module.exports = {
     id: "hflip",
     name: "Horizontal Flip",
-    desc: "Testing command for FFMpeg.",
+    desc: "Flips an image or video horizontally.",
     needs: ["image/video"],
     async execute(args: string[], buffers: [Buffer, string][], msg: Message) {
-        if (!buffers) return;
-        ffmpegBuffer(
-            "-i $BUF0 -vf hflip $OUT",
-            buffers,
-            getFileExt(buffers[0][1])
-        ).then((out: Buffer) => {
-            sendWebhook(
-                "ffmpeg",
-                "",
-                msg.channel as TextChannel,
-                out,
-                getFileName("Effect_HFlip", getFileExt(buffers[0][1]))
-            );
-        }, handleFFmpegCatch(msg.channel));
+        return new Promise((res, rej) => {
+            ffmpegBuffer(
+                "-i $BUF0 -vf hflip $OUT",
+                buffers,
+                getFileExt(buffers[0][1])
+            ).then((out: Buffer) => {
+                sendWebhook(
+                    "ffmpeg",
+                    "",
+                    msg.channel as TextChannel,
+                    out,
+                    getFileName("Effect_HFlip", getFileExt(buffers[0][1]))
+                );
+            }, handleFFmpegCatch(msg.channel, res));
+        });
     },
 } satisfies FlapsCommand;

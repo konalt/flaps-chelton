@@ -12,12 +12,15 @@ module.exports = {
     desc: "Don't know how to describe this command.",
     needs: ["video"],
     execute(args, buf, msg) {
-        perseverantia(buf).then(
-            handleFFmpeg(
-                getFileName("Effect_Perseverantia", getFileExt(buf[0][1])),
-                msg.channel as TextChannel
-            ),
-            handleFFmpegCatch(msg.channel)
-        );
+        return new Promise((res, rej) => {
+            perseverantia(buf).then(
+                handleFFmpeg(
+                    getFileName("Effect_Perseverantia", getFileExt(buf[0][1])),
+                    msg.channel as TextChannel,
+                    res
+                ),
+                handleFFmpegCatch(msg.channel, res)
+            );
+        });
     },
 } satisfies FlapsCommand;

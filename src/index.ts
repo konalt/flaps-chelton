@@ -16,7 +16,7 @@ import {
 import { readFile, readdir, writeFile } from "fs/promises";
 import { readFileSync, writeFileSync, existsSync } from "fs";
 import { hooks, sendWebhook, updateUsers } from "./lib/webhooks";
-import { FlapsCommand, WebhookBot } from "./types";
+import { CommandResponseType, FlapsCommand, WebhookBot } from "./types";
 import { downloadPromise } from "./lib/download";
 import { getTypes, getTypeSingular, time, uuidv4 } from "./lib/utils";
 import { registerFont } from "canvas";
@@ -422,13 +422,39 @@ export async function onMessage(msg: Message) {
                         let bufs: [Buffer, string][] = await Promise.all(
                             srcs.map(async (s) => [await readFile(s), s])
                         );
-                        command.execute(commandArgs, bufs, msg);
+                        command
+                            .execute(commandArgs, bufs, msg)
+                            .then((response) => {
+                                switch (response.type) {
+                                    case CommandResponseType.Message:
+                                        sendWebhook(
+                                            response.id,
+                                            response.content,
+                                            msg.channel,
+                                            response.buffer,
+                                            response.filename
+                                        );
+                                        break;
+                                }
+                            });
                     })
                     .catch((r) => {
                         sendWebhook("flaps", r, msg.channel);
                     });
             } else {
-                command.execute(commandArgs, null, msg);
+                command.execute(commandArgs, null, msg).then((response) => {
+                    switch (response.type) {
+                        case CommandResponseType.Message:
+                            sendWebhook(
+                                response.id,
+                                response.content,
+                                msg.channel,
+                                response.buffer,
+                                response.filename
+                            );
+                            break;
+                    }
+                });
             }
         }
     }

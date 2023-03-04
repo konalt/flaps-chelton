@@ -12,12 +12,15 @@ module.exports = {
     needs: ["image/video/gif"],
     aliases: ["blackandwhite", "monochrome", "bw"],
     execute(args, buf, msg) {
-        blackwhite(buf).then(
-            handleFFmpeg(
-                getFileName("Effect_BlackWhite", getFileExt(buf[0][1])),
-                msg.channel as TextChannel
-            ),
-            handleFFmpegCatch(msg.channel)
-        );
+        return new Promise((res, rej) => {
+            blackwhite(buf).then(
+                handleFFmpeg(
+                    getFileName("Effect_BlackWhite", getFileExt(buf[0][1])),
+                    msg.channel,
+                    res
+                ),
+                handleFFmpegCatch(msg.channel, res)
+            );
+        });
     },
 } satisfies FlapsCommand;

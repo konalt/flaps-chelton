@@ -10,13 +10,16 @@ module.exports = {
     name: "Compress",
     desc: "Compresses a video a comical amount.",
     needs: ["video"],
-    execute(args, buf, msg) {
-        compress(buf).then(
-            handleFFmpeg(
-                getFileName("Effect_Compress", getFileExt(buf[0][1])),
-                msg.channel as TextChannel
-            ),
-            handleFFmpegCatch(msg.channel)
-        );
+    async execute(args, buf, msg) {
+        return new Promise((res, rej) => {
+            compress(buf).then(
+                handleFFmpeg(
+                    getFileName("Effect_Compress", getFileExt(buf[0][1])),
+                    msg.channel as TextChannel,
+                    res
+                ),
+                handleFFmpegCatch(msg.channel, res)
+            );
+        });
     },
 } satisfies FlapsCommand;

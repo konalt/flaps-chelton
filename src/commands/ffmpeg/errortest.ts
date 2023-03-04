@@ -11,12 +11,15 @@ module.exports = {
     desc: "Forces FFMpeg to throw an error.",
     needs: ["image/video/gif/audio"],
     execute(args, buf, msg) {
-        errortest(buf).then(
-            handleFFmpeg(
-                getFileName("Effect_ERR", getFileExt(buf[0][1])),
-                msg.channel
-            ),
-            handleFFmpegCatch(msg.channel)
-        );
+        return new Promise((res, rej) => {
+            errortest(buf).then(
+                handleFFmpeg(
+                    getFileName("Effect_ERR", getFileExt(buf[0][1])),
+                    msg.channel,
+                    res
+                ),
+                handleFFmpegCatch(msg.channel, res)
+            );
+        });
     },
 } satisfies FlapsCommand;

@@ -13,12 +13,15 @@ module.exports = {
     desc: "Makes a guy say Holy Moly.",
     needs: ["image"],
     execute(args, buf, msg) {
-        holymoly(buf).then(
-            handleFFmpeg(
-                getFileName("Effect_CookingVideo", "mp4"),
-                msg.channel as TextChannel
-            ),
-            handleFFmpegCatch(msg.channel)
-        );
+        return new Promise((res, rej) => {
+            holymoly(buf).then(
+                handleFFmpeg(
+                    getFileName("Effect_CookingVideo", "mp4"),
+                    msg.channel as TextChannel,
+                    res
+                ),
+                handleFFmpegCatch(msg.channel, res)
+            );
+        });
     },
 } satisfies FlapsCommand;

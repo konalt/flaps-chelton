@@ -12,12 +12,15 @@ module.exports = {
     aliases: ["thehorror"],
     needs: ["image"],
     execute(args, buf, msg) {
-        dud(buf).then(
-            handleFFmpeg(
-                getFileName("Effect_Dud", "mp4"),
-                msg.channel as TextChannel
-            ),
-            handleFFmpegCatch(msg.channel)
-        );
+        return new Promise((res, rej) => {
+            dud(buf).then(
+                handleFFmpeg(
+                    getFileName("Effect_Dud", "mp4"),
+                    msg.channel as TextChannel,
+                    res
+                ),
+                handleFFmpegCatch(msg.channel, res)
+            );
+        });
     },
 } satisfies FlapsCommand;

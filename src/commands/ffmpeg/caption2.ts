@@ -14,14 +14,17 @@ module.exports = {
     desc: "Adds a Futura caption to a video, image, or gif.",
     needs: ["image/video/gif"],
     async execute(args: string[], buffers: [Buffer, string][], msg: Message) {
-        caption2(buffers, {
-            text: args.join(" "),
-        }).then(
-            handleFFmpeg(
-                getFileName("Effect_Caption2", getFileExt(buffers[0][1])),
-                msg.channel as TextChannel
-            ),
-            handleFFmpegCatch(msg.channel)
-        );
+        return new Promise((res, rej) => {
+            caption2(buffers, {
+                text: args.join(" "),
+            }).then(
+                handleFFmpeg(
+                    getFileName("Effect_Caption2", getFileExt(buffers[0][1])),
+                    msg.channel as TextChannel,
+                    res
+                ),
+                handleFFmpegCatch(msg.channel, res)
+            );
+        });
     },
 } satisfies FlapsCommand;

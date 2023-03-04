@@ -139,32 +139,35 @@ module.exports = {
     desc: "Combines two files. See how TODAY in src/commands/ffmpeg/combine.ts#combineOperation!",
     needs: ["image/video/audio/gif", "image/video/audio/gif"],
     async execute(args: string[], buffers: [Buffer, string][], msg: Message) {
-        let type1 = getTypeSingular(lookup(buffers[0][1]));
-        let type2 = getTypeSingular(lookup(buffers[1][1]));
+        return new Promise((res, rej) => {
+            let type1 = getTypeSingular(lookup(buffers[0][1]));
+            let type2 = getTypeSingular(lookup(buffers[1][1]));
 
-        let op = combineOperation(type1, type2);
+            let op = combineOperation(type1, type2);
 
-        log(
-            `${esc(Color.White)}Using combine function ${esc(
-                Color.BrightBlue
-            )}${getFunctionName(op)}`,
-            "combine"
-        );
-
-        if (op == null) {
-            return sendWebhook(
-                "ffmpeg",
-                `how do you expect me to combine ${type1} and ${type2}`,
-                msg.channel
+            log(
+                `${esc(Color.White)}Using combine function ${esc(
+                    Color.BrightBlue
+                )}${getFunctionName(op)}`,
+                "combine"
             );
-        }
 
-        op(buffers).then(
-            handleFFmpeg(
-                getFileName("Effect_Combine", combineExt(type1, type2)),
-                msg.channel as TextChannel
-            ),
-            handleFFmpegCatch(msg.channel)
-        );
+            if (op == null) {
+                return sendWebhook(
+                    "ffmpeg",
+                    `how do you expect me to combine ${type1} and ${type2}`,
+                    msg.channel
+                );
+            }
+
+            op(buffers).then(
+                handleFFmpeg(
+                    getFileName("Effect_Combine", combineExt(type1, type2)),
+                    msg.channel as TextChannel,
+                    res
+                ),
+                handleFFmpegCatch(msg.channel, res)
+            );
+        });
     },
 } satisfies FlapsCommand;

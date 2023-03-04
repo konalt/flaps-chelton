@@ -14,14 +14,17 @@ module.exports = {
     desc: "Changes the speed of a video or audio clip.",
     needs: ["video/audio"],
     async execute(args: string[], buffers: [Buffer, string][], msg: Message) {
-        speed(buffers, {
-            speed: parseFloat(args[0]),
-        }).then(
-            handleFFmpeg(
-                getFileName("Effect_Speed", getFileExt(buffers[0][1])),
-                msg.channel as TextChannel
-            ),
-            handleFFmpegCatch(msg.channel)
-        );
+        return new Promise((res, rej) => {
+            speed(buffers, {
+                speed: parseFloat(args[0]),
+            }).then(
+                handleFFmpeg(
+                    getFileName("Effect_Speed", getFileExt(buffers[0][1])),
+                    msg.channel as TextChannel,
+                    res
+                ),
+                handleFFmpegCatch(msg.channel, res)
+            );
+        });
     },
 } satisfies FlapsCommand;

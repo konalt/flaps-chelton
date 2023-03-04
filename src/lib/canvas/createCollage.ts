@@ -1,11 +1,11 @@
-import { loadImage, createCanvas } from "canvas";
+import { loadImage, createCanvas, Image } from "canvas";
 
 export default (buffers: Buffer[]): Promise<Buffer> => {
     return new Promise(async (resolve, reject) => {
         if (!buffers[0]) return reject("An array of image buffers is required");
         let imgSize = 512;
         var proms = buffers.map((buf) => {
-            return new Promise((resolve) => {
+            return new Promise<Image>((resolve) => {
                 loadImage(buf).then((img) => {
                     resolve(img);
                 });

@@ -1,5 +1,5 @@
 import { uuidv4 } from "../utils";
-import canvas from "canvas";
+import canvas, { CanvasRenderingContext2D } from "canvas";
 import { loadImage } from "canvas";
 import { createCanvas } from "canvas";
 
@@ -63,7 +63,7 @@ export default (buf: Buffer | null, text: string): Promise<Buffer> => {
         ctx.font = "normal normal bolder " + homodog.height / 7 + "px Homodog";
         ctx.lineWidth = homodog.height / 240;
         todo(
-            ctx,
+            ctx as CanvasRenderingContext2D,
             text,
             homodog.width,
             homodog.height,

@@ -12,12 +12,15 @@ module.exports = {
     desc: "Fades in a jumpscare on a cooking video.",
     needs: ["image"],
     execute(args, buf, msg) {
-        cookingVideo(buf).then(
-            handleFFmpeg(
-                getFileName("Effect_CookingVideo", "mp4"),
-                msg.channel as TextChannel
-            ),
-            handleFFmpegCatch(msg.channel)
-        );
+        return new Promise((res, rej) => {
+            cookingVideo(buf).then(
+                handleFFmpeg(
+                    getFileName("Effect_CookingVideo", "mp4"),
+                    msg.channel as TextChannel,
+                    res
+                ),
+                handleFFmpegCatch(msg.channel, res)
+            );
+        });
     },
 } satisfies FlapsCommand;

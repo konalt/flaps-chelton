@@ -11,12 +11,15 @@ module.exports = {
     desc: "Converts a video to a GIF.",
     needs: ["video"],
     execute(args, buf, msg) {
-        videogif(buf).then(
-            handleFFmpeg(
-                getFileName("Effect_VideoGif", "gif"),
-                msg.channel as TextChannel
-            ),
-            handleFFmpegCatch(msg.channel)
-        );
+        return new Promise((res, rej) => {
+            videogif(buf).then(
+                handleFFmpeg(
+                    getFileName("Effect_VideoGif", "gif"),
+                    msg.channel as TextChannel,
+                    res
+                ),
+                handleFFmpegCatch(msg.channel, res)
+            );
+        });
     },
 } satisfies FlapsCommand;

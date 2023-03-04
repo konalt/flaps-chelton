@@ -15,9 +15,15 @@ module.exports = {
     desc: "Converts a video into a KVM (Konalt Video Monochrome)",
     needs: ["video"],
     async execute(args: string[], buffers: [Buffer, string][], msg: Message) {
-        convertkvm(buffers).then(
-            handleFFmpeg(getFileName("Effect_KVMConv", "kvm"), msg.channel),
-            handleFFmpegCatch(msg.channel)
-        );
+        return new Promise((res, rej) => {
+            convertkvm(buffers).then(
+                handleFFmpeg(
+                    getFileName("Effect_KVMConv", "kvm"),
+                    msg.channel,
+                    res
+                ),
+                handleFFmpegCatch(msg.channel, res)
+            );
+        });
     },
 } satisfies FlapsCommand;

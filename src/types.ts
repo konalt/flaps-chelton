@@ -1,4 +1,4 @@
-import { Message } from "discord.js";
+import { Message, TextBasedChannel } from "discord.js";
 
 export interface FlapsCommand {
     id: string;
@@ -6,7 +6,23 @@ export interface FlapsCommand {
     name: string;
     desc?: string;
     needs?: string[];
-    execute: (args: string[], buf: [Buffer, string][], msg: Message) => void;
+    execute: (
+        args: string[],
+        buf: [Buffer, string][],
+        msg: Message
+    ) => Promise<FlapsCommandResponse>;
+}
+export type FlapsCommandResponse = FlapsMessageCommandResponse;
+export interface FlapsMessageCommandResponse {
+    type: CommandResponseType;
+    id: string;
+    content: string;
+    channel: TextBasedChannel;
+    buffer: Buffer | null;
+    filename: string | null;
+}
+export enum CommandResponseType {
+    Message,
 }
 export interface WebhookBot {
     id: string;

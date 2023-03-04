@@ -1,5 +1,4 @@
-import { Attachment, TextChannel } from "discord.js";
-import { RGBColor } from "../types";
+import { Attachment, TextBasedChannel, TextChannel } from "discord.js";
 import { downloadPromise } from "./download";
 import { get100Posts } from "./reddit";
 import { sendWebhook } from "./webhooks";
@@ -106,11 +105,28 @@ export function getFunctionName(fn: Function) {
     return fn.toString().split(" ")[1].split("(")[0];
 }
 
-export function rgbtohex(rgb: RGBColor) {
+export function rgbtohex(rgb: { r: number; g: number; b: number }) {
     return (
         "#" +
         rgb.r.toString(16).padStart(2, "0") +
         rgb.g.toString(16).padStart(2, "0") +
         rgb.b.toString(16).padStart(2, "0")
     );
+}
+
+export function makeMessageResp(
+    id: string,
+    content: string,
+    channel: TextBasedChannel | null = null,
+    buffer: Buffer | null = null,
+    filename: string | null = null
+) {
+    return {
+        id,
+        content,
+        channel,
+        buffer,
+        filename,
+        type: 0,
+    };
 }

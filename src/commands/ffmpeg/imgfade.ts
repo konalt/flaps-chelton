@@ -11,12 +11,15 @@ module.exports = {
     desc: "Fades an image onto a video.",
     needs: ["video", "image/video"],
     execute(args, buf, msg) {
-        imgfade(buf).then(
-            handleFFmpeg(
-                getFileName("Effect_Invert", getFileExt(buf[0][1])),
-                msg.channel as TextChannel
-            ),
-            handleFFmpegCatch(msg.channel)
-        );
+        return new Promise((res, rej) => {
+            imgfade(buf).then(
+                handleFFmpeg(
+                    getFileName("Effect_Invert", getFileExt(buf[0][1])),
+                    msg.channel as TextChannel,
+                    res
+                ),
+                handleFFmpegCatch(msg.channel, res)
+            );
+        });
     },
 } satisfies FlapsCommand;
