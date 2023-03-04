@@ -14,7 +14,7 @@ export default (data: StableDiffusionOptions, big = false): Promise<Buffer> => {
             width: size,
             height: size,
             prompt: data.prompt,
-            modelType: "stable-diffusion-2",
+            modelType: "stable-diffusion",
             isPrivate: true,
             batchId: Math.floor(Math.random() * 1e7).toString(36),
             generateVariants: false,
