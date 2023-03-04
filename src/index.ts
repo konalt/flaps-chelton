@@ -219,7 +219,7 @@ function typesMatch(inTypes: string[], requiredTypes: string[]) {
     var ok = true;
     requiredTypes.forEach((type, i) => {
         var typelist = type.split("/");
-        if (!typelist.includes(inTypes[i])) ok = false;
+        if (!typelist.includes(inTypes[i]) && !type.endsWith("?")) ok = false;
     });
     return ok;
 }
@@ -244,7 +244,7 @@ function getSourcesWithAttachments(msg: Message, types: string[]) {
         function l2(msg: Message) {
             var atts = msg.attachments.first(types.length);
             var attTypes = getTypes(atts);
-            if (!atts[0]) {
+            if (!atts[0] && !types[0].endsWith("?")) {
                 if (msg.content.startsWith("https://tenor.com/")) {
                     var type = "gif";
                     if (typesMatch([type], types)) {
@@ -330,7 +330,7 @@ function getSourcesWithAttachments(msg: Message, types: string[]) {
                 });
             }
         }
-        if (!msg.attachments.first()) {
+        if (!msg.attachments.first() && !types[0].endsWith("?")) {
             if (!msg.reference) {
                 reject("No source found");
             } else {
