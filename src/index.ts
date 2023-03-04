@@ -10,9 +10,11 @@ import {
     Message,
     Partials,
     PresenceData,
+    TextBasedChannel,
     TextChannel,
 } from "discord.js";
 import { readFile, readdir, writeFile } from "fs/promises";
+import { readFileSync, writeFileSync, existsSync } from "fs";
 import { hooks, sendWebhook, updateUsers } from "./lib/webhooks";
 import { FlapsCommand, WebhookBot } from "./types";
 import { downloadPromise } from "./lib/download";
@@ -367,6 +369,19 @@ export async function onMessage(msg: Message) {
     let commandArgs = msg.content.split(" ").slice(1);
     let commandArgString = msg.content.split(" ").slice(1).join(" ");
 
+    if (isMidnightActive) {
+        var mem = await msg.guild.members.fetch(msg.member);
+        if (
+            msg.content.toLowerCase().includes(midnightText) &&
+            isMidnightActive &&
+            !msg.author.bot &&
+            !doneUsers.includes(mem.id)
+        ) {
+            doneUsers.push(mem.id);
+            msg.react("👍");
+        }
+    }
+
     let webhookUsed = false;
     if (msg.content.startsWith(WH_PREFIX)) {
         let id = msg.content.split(" ")[0].substring(WH_PREFIX.length);
@@ -459,6 +474,46 @@ async function readCommandDir(dir: string) {
     }
 }
 
+var doneUsers = [];
+var isMidnightActive = false;
+var midnightText = "midnight";
+export async function midnight(channel: TextChannel) {
+    sendWebhook("flaps", "midnight", channel);
+    var members = await channel.guild.members.fetch();
+    var usersRequired = [];
+    for (const member of members) {
+        if (member[1].presence && !member[1].user.bot) {
+            if (member[1].presence.status != "offline") {
+                usersRequired.push(member[0]);
+            }
+        }
+    }
+    isMidnightActive = true;
+    setTimeout(() => {
+        var nonusers = usersRequired.filter((x) => !doneUsers.includes(x));
+        if (nonusers.length > 0) {
+            sendWebhook(
+                "flaps",
+                "<@" +
+                    nonusers.join(">, <@") +
+                    ">" +
+                    ". YOU FUCKER" +
+                    (nonusers.length > 1 ? "S" : "") +
+                    ". YOU MISS THE MIDNIGH !!!!",
+                channel
+            );
+        } else {
+            sendWebhook(
+                "flaps",
+                "good job everyone. another great day.",
+                channel
+            );
+        }
+        isMidnightActive = false;
+        doneUsers = [];
+    }, 60 * 1000); // 1 min
+}
+
 log("Loading commands...", "start");
 readCommandDir(__dirname + "/commands").then(() => {
     log("Loading autoreact flags...", "start");
@@ -468,6 +523,45 @@ readCommandDir(__dirname + "/commands").then(() => {
         }
         updateUsers().then(() => {
             log("Starting web server...", "start");
+            setInterval(() => {
+                var d = new Date();
+                if (
+                    d.getMinutes() == 0 &&
+                    d.getHours() == 0 &&
+                    d.getSeconds() < 1
+                ) {
+                    midnight(
+                        client.channels.cache.get(
+                            "882743320554643476"
+                        ) as TextChannel
+                    );
+                }
+                if (!existsSync("scal_allowtime.txt"))
+                    writeFileSync("scal_allowtime.txt", "no");
+                if (
+                    d.getMinutes() == 39 &&
+                    d.getSeconds() < 1 &&
+                    readFileSync("scal_allowtime.txt").toString() == "yes"
+                ) {
+                    writeFileSync("scal_allowtime.txt", "no");
+                    sendWebhook(
+                        "scal",
+                        "TIME\nHAHAHAHH",
+                        client.channels.cache.get(
+                            "882743320554643476"
+                        ) as TextBasedChannel
+                    );
+                }
+                if (Math.random() < 1 / 100000) {
+                    sendWebhook(
+                        "nick",
+                        "pills here",
+                        client.channels.cache.get(
+                            "882743320554643476"
+                        ) as TextBasedChannel
+                    );
+                }
+            }, 1000);
             initializeWebServer().then(() => {
                 log("Logging in...", "start");
                 client.login(process.env.DISCORD_TOKEN || "NoTokenProvided");
