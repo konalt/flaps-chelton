@@ -76,6 +76,7 @@ client.on("ready", async () => {
         voicePlayers.set(guildi, ply);
         voiceConnections.set(guildi, conn);
     }
+    log(`${esc(Color.BrightGreen)}Listening for commands!`, "start");
 
     client.user.setPresence({
         activities: [
