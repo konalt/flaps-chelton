@@ -467,7 +467,7 @@ export async function onMessage(msg: Message) {
 
 client.on("messageCreate", onMessage);
 
-let commands: Collection<string, FlapsCommand> = new Collection();
+export let commands: Collection<string, FlapsCommand> = new Collection();
 let flags: Collection<string, string> = new Collection();
 
 log("Loading fonts...", "start");

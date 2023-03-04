@@ -130,3 +130,11 @@ export function makeMessageResp(
         type: 0,
     };
 }
+
+export function dataURLToBuffer(url: string) {
+    return Buffer.from(url.split(",")[1], "base64");
+}
+
+export function bufferToDataURL(buffer: Buffer, type: string) {
+    return "data:" + type + ";base64," + buffer.toString("base64");
+}
