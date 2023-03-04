@@ -13,20 +13,20 @@ hr {
     border-color: #333;
 }
 
-input[type='text'] {
+input[type="text"] {
     width: 350px;
     margin-right: 5px;
 }
 
-input[type='text'].wide {
+input[type="text"].wide {
     width: 512px;
 }
 
-input[type='submit'] {
+input[type="submit"] {
     font-size: x-large;
 }
 
-input[type='file'] {
+input[type="file"] {
     font-size: medium;
     margin: 0 -5px;
 }
@@ -153,4 +153,8 @@ div#userinfo img#useravatar {
 div#userinfo p {
     margin: 2.5px;
     line-height: calc(normal - 5px);
+}
+
+.outtxt {
+    font-size: 16px;
 }

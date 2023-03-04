@@ -83,15 +83,21 @@ router.post("/runcmd", (req, res) => {
                             channel: null,
                             filename: response.filename,
                             content: response.content,
-                            buffer: bufferToDataURL(
-                                response.buffer,
-                                lookup(response.filename)
-                            ),
+                            buffer: response.buffer
+                                ? bufferToDataURL(
+                                      response.buffer,
+                                      lookup(response.filename)
+                                  )
+                                : null,
                         });
                         break;
                 }
             });
     }
+});
+
+router.get("/commands", (req, res) => {
+    res.json(commands);
 });
 
 export default router;
