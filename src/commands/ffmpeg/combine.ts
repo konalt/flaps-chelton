@@ -44,7 +44,7 @@ function combineOperation(
         case "video":
             switch (type2) {
                 case "image":
-                    return audioimage;
+                    return stack;
                 case "video":
                     return stitch;
                 case "audio":
