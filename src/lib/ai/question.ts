@@ -14,7 +14,7 @@ export function setSanity(n: number) {
     temperatureOverride = n;
 }
 
-export function question(question: string) {
+export function question(question: string): Promise<string> {
     return new Promise(async (res, rej) => {
         let monsoonData = await readFile("monsoon.txt", "utf-8");
         monsoonPre = [
