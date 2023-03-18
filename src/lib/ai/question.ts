@@ -6,6 +6,14 @@ import { readFile } from "fs/promises";
 
 export let monsoonPre = [1, "flaps", "I'm an AI."];
 
+let temperatureOverride = -1;
+
+export function setSanity(n: number) {
+    if (typeof n !== "number" || !n) return;
+    if ((n < 0 || n > 2) && n !== -1) return;
+    temperatureOverride = n;
+}
+
 export function question(question: string) {
     return new Promise(async (res, rej) => {
         let monsoonData = await readFile("monsoon.txt", "utf-8");
@@ -24,8 +32,11 @@ export function question(question: string) {
             .createCompletion({
                 model: model,
                 prompt: `${monsoonPre[2]}\nQ: ${question}\nA:`,
-                temperature: 1,
-                max_tokens: 100,
+                temperature:
+                    temperatureOverride == -1
+                        ? Number(monsoonPre[0])
+                        : temperatureOverride,
+                max_tokens: 64,
                 top_p: 1,
                 frequency_penalty: 0,
                 presence_penalty: 0,
