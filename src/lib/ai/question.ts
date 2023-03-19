@@ -43,6 +43,9 @@ export function question(question: string): Promise<string> {
             })
             .then((resp) => {
                 res(resp.data.choices[0].text.split("Q:")[0].trim());
+            })
+            .catch((resp) => {
+                res(resp);
             });
     });
 }
