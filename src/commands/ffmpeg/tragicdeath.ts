@@ -11,14 +11,17 @@ module.exports = {
     execute(args, buf, msg) {
         return new Promise((res, rej) => {
             question(
-                "finish the sentence comedically:\nme tragically dying after"
+                "finish the sentence comedically, without adding any funny comments afterwards:\nme tragically dying after"
             ).then((answer: string) => {
                 caption2(
                     [[readFileSync(file("images/sam.mp4")), "images/sam.mp4"]],
                     {
-                        text: answer.startsWith("me tragically dying after")
+                        text: (answer
+                            .toLowerCase()
+                            .startsWith("me tragically dying after")
                             ? answer
-                            : "me tragically dying after " + answer,
+                            : "me tragically dying after " + answer
+                        ).replace(/\./g, ""),
                     }
                 ).then((buf: Buffer) => {
                     res(
