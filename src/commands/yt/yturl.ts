@@ -42,12 +42,15 @@ module.exports = {
                         ".mp3"
                     ).split(" ")
                 );
+                var txt = "";
+                ytProcess.stdout.on("data", (data) => (txt += data));
+                ytProcess.stderr.on("data", (data) => (txt += data));
                 ytProcess.on("close", (code) => {
                     if (code == 1) {
                         res(
                             makeMessageResp(
                                 "flaps",
-                                "Error downloading youtube URL."
+                                "Error downloading youtube URL.\n" + txt
                             )
                         );
                     } else {
