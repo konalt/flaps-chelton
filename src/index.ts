@@ -24,10 +24,12 @@ import fetch from "node-fetch";
 import { getVideoDimensions } from "./lib/ffmpeg/getVideoDimensions";
 import {
     AudioPlayer,
+    AudioPlayerStatus,
     createAudioPlayer,
     createAudioResource,
     DiscordGatewayAdapterCreator,
     joinVoiceChannel,
+    NoSubscriberBehavior,
     VoiceConnection,
 } from "@discordjs/voice";
 import { lookup } from "mime-types";
@@ -71,7 +73,11 @@ client.on("ready", async () => {
             adapterCreator:
                 guild.voiceAdapterCreator as DiscordGatewayAdapterCreator,
         });
-        let ply = createAudioPlayer();
+        let ply = createAudioPlayer({
+            behaviors: {
+                noSubscriber: NoSubscriberBehavior.Play,
+            },
+        });
         conn.subscribe(ply);
         voicePlayers.set(guildi, ply);
         voiceConnections.set(guildi, conn);
