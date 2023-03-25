@@ -3,7 +3,7 @@ import { createCanvas } from "canvas";
 import { cahWhiteCard } from "../cah";
 import { sample } from "../utils";
 
-export default (): Promise<Buffer> => {
+export default (funny: boolean): Promise<Buffer> => {
     return new Promise(async (resolve, reject) => {
         var w = 960,
             h = 540,
@@ -30,7 +30,7 @@ export default (): Promise<Buffer> => {
         var c = createCanvas(w, h);
         var ctx = c.getContext("2d");
         ctx.drawImage(image, 0, 0, w, h);
-        var card = cahWhiteCard(false).replace(/__/g, "");
+        var card = cahWhiteCard(funny).replace(/__/g, "");
         ctx.fillStyle = "white";
         ctx.lineWidth = (h * fontScaleFactor) / 25;
         ctx.strokeStyle = "black";

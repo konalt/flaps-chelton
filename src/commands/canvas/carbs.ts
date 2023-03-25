@@ -10,7 +10,7 @@ module.exports = {
     desc: "Carbs against Hubaniby",
     execute(args, buf, msg) {
         return new Promise((res, rej) => {
-            carbs().then((out) => {
+            carbs(args[0] == "funny").then((out) => {
                 res(
                     makeMessageResp(
                         "flaps",
