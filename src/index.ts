@@ -33,7 +33,7 @@ import {
 import { lookup } from "mime-types";
 import initializeWebServer from "./lib/web";
 
-const client = new Client({
+export const client: Client = new Client({
     partials: [
         Partials.Message,
         Partials.Channel,
