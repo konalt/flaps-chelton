@@ -23,7 +23,7 @@ module.exports = {
                         "",
                         msg.channel as TextChannel,
                         buf,
-                        getFileName("Reddit_Meal", "png")
+                        getFileName("Reddit_BadHaircut", "png")
                     )
                 );
             });
