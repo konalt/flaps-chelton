@@ -19,7 +19,7 @@ module.exports = {
             randomRedditImage("StupidFood").then((buf) => {
                 res(
                     makeMessageResp(
-                        "flaps",
+                        "lamazzu",
                         "",
                         msg.channel as TextChannel,
                         buf,
