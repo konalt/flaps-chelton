@@ -16,7 +16,8 @@ module.exports = {
     async execute(args: string[], buffers: [Buffer, string][], msg: Message) {
         return new Promise((res, rej) => {
             caption(buffers, {
-                text: args.join(" "),
+                text: args.slice(isNaN(parseFloat(args[0])) ? 0 : 1).join(" "),
+                fontsize: parseFloat(args[0]) || 30,
             }).then(
                 handleFFmpeg(
                     getFileName("Effect_Caption", getFileExt(buffers[0][1])),

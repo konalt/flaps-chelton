@@ -1,14 +1,14 @@
 import { writeFile } from "fs/promises";
 import { getVideoDimensions } from "./getVideoDimensions";
-import { Caption2Options } from "../../types";
+import { CaptionOptions } from "../../types";
 import { uuidv4 } from "../utils";
 import { ffmpegBuffer, file, preset } from "./ffmpeg";
 
 export default async function caption(
     buffers: [Buffer, string][],
-    options: Caption2Options
+    options: CaptionOptions
 ): Promise<Buffer> {
-    let cFontSize = 30;
+    let cFontSize = options.fontsize;
     let fontSize =
         (await getVideoDimensions(file(buffers[0][1])))[1] *
         0.1 *

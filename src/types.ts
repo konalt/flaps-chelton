@@ -58,6 +58,10 @@ export interface StableDiffusionOptions {
 export interface Caption2Options {
     text: string;
 }
+export interface CaptionOptions {
+    text: string;
+    fontsize: number;
+}
 export interface TrimOptions {
     start: number;
     end: number;
