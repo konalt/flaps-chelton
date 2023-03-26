@@ -481,14 +481,14 @@ export async function onMessage(msg: Message) {
 }
 
 // fuck you node
-process.on("unhandledRejection", (reason, p) => {
+process.on("unhandledRejection", (reason: any, p) => {
     log(
         `unhandled rejection. reason: ${esc(Color.BrightRed)}${reason}`,
         "promise"
     );
     sendWebhook(
         "flapserrors",
-        `Unhandled promise rejection.\nReason: \`${reason}\``,
+        `Unhandled promise rejection.\nReason: \`${reason.stack}\``,
         errorChannel
     );
 });
