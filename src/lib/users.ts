@@ -674,6 +674,10 @@ export const users: WebhookBot[] = [
         id: "commando",
         name: "commadno",
     },
+    {
+        id: "dictionary",
+        name: "My First Dictionary!",
+    },
 ];
 
 function spamtonify(text: string): string {
