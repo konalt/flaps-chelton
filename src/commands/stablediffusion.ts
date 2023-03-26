@@ -8,7 +8,7 @@ import { getFileName, makeMessageResp } from "../lib/utils";
 
 module.exports = {
     id: "stablediffusion",
-    aliases: ["dalle2"],
+    aliases: ["dalle2", "dalle"],
     name: "Stable Diffusion",
     desc: "Generates an image with Stable Diffusion.",
     execute(args: string[], bufs: [Buffer, string][], msg: Message) {
