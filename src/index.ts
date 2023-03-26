@@ -18,7 +18,13 @@ import { readFileSync, writeFileSync, existsSync } from "fs";
 import { hooks, sendWebhook, updateUsers } from "./lib/webhooks";
 import { CommandResponseType, FlapsCommand, WebhookBot } from "./types";
 import { downloadPromise } from "./lib/download";
-import { getTypes, getTypeSingular, time, uuidv4 } from "./lib/utils";
+import {
+    getFunctionName,
+    getTypes,
+    getTypeSingular,
+    time,
+    uuidv4,
+} from "./lib/utils";
 import { registerFont } from "canvas";
 import fetch from "node-fetch";
 import { getVideoDimensions } from "./lib/ffmpeg/getVideoDimensions";
@@ -363,6 +369,8 @@ function getSources(msg: Message, types: string[]) {
     });
 }
 
+let errorChannel: TextBasedChannel;
+
 export async function onMessage(msg: Message) {
     if (msg.author.bot) return;
     if (!(msg.channel instanceof TextChannel)) {
@@ -421,6 +429,7 @@ export async function onMessage(msg: Message) {
                 }
             }
             commandRan = true;
+            errorChannel = msg.channel;
 
             if (command.needs && command.needs.length > 0) {
                 getSources(msg, command.needs)
@@ -470,6 +479,19 @@ export async function onMessage(msg: Message) {
         log(`Running command ${esc(Color.BrightCyan)}${commandId}`, "cmd");
     }
 }
+
+// fuck you node
+process.on("unhandledRejection", (reason, p) => {
+    log(
+        `unhandled rejection. reason: ${esc(Color.BrightRed)}${reason}`,
+        "promise"
+    );
+    sendWebhook(
+        "flapserrors",
+        `Unhandled promise rejection.\nReason: \`${reason}\``,
+        errorChannel
+    );
+});
 
 client.on("messageCreate", onMessage);
 
