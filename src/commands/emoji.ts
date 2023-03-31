@@ -10,7 +10,7 @@ module.exports = {
     async execute(args, buf, msg) {
         return new Promise(async (res, rej) => {
             function s(url: string, gif: boolean, name: string) {
-                downloadPromise(url, "dataurl").then((emoji) => {
+                downloadPromise(url).then((emoji) => {
                     res(
                         makeMessageResp(
                             "flaps",
