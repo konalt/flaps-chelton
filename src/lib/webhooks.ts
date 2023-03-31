@@ -49,7 +49,7 @@ function baseSend(
     );
     fetch(url, {
         method: "POST",
-        body: form as unknown as URLSearchParams,
+        body: form,
     });
 }
 
