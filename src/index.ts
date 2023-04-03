@@ -16,12 +16,18 @@ import {
 import { readFile, readdir, writeFile } from "fs/promises";
 import { readFileSync, writeFileSync, existsSync } from "fs";
 import { hooks, sendWebhook, updateUsers } from "./lib/webhooks";
-import { CommandResponseType, FlapsCommand, WebhookBot } from "./types";
+import {
+    CommandResponseType,
+    FlapsCommand,
+    FlapsCommandResponse,
+    WebhookBot,
+} from "./types";
 import { downloadPromise } from "./lib/download";
 import {
     getFunctionName,
     getTypes,
     getTypeSingular,
+    makeMessageResp,
     time,
     uuidv4,
 } from "./lib/utils";
@@ -38,8 +44,9 @@ import {
     NoSubscriberBehavior,
     VoiceConnection,
 } from "@discordjs/voice";
-import { lookup } from "mime-types";
+import { contentType, lookup } from "mime-types";
 import initializeWebServer from "./lib/web";
+import { file } from "./lib/ffmpeg/ffmpeg";
 
 export const client: Client = new Client({
     partials: [
@@ -293,7 +300,7 @@ function getSourcesWithAttachments(msg: Message, types: string[]) {
                     var filename = msg.content.split(" ")[0].split("/")[
                         msg.content.split("/").length - 1
                     ];
-                    var type = getTypeSingular(lookup(filename));
+                    var type = getTypeSingular(lookup(filename) || "unknown");
                     var ext =
                         filename.split(".")[filename.split(".").length - 1];
                     if (typesMatch([type], types)) {
@@ -357,7 +364,7 @@ function getSourcesWithAttachments(msg: Message, types: string[]) {
     });
 }
 
-function getSources(msg: Message, types: string[]) {
+function getSources(msg: Message, types: string[]): Promise<string[]> {
     return new Promise((resolve, reject) => {
         getSourcesWithAttachments(msg, types)
             .then((data: string[]) => {
@@ -412,66 +419,113 @@ export async function onMessage(msg: Message) {
 
     let commandRan = false;
     if (msg.content.startsWith(COMMAND_PREFIX)) {
-        let command = commands.find((cmd) =>
-            cmd.aliases.includes(commandId.toLowerCase())
+        let commandChain: [string, string[]][] = msg.content
+            .split("==>")
+            .map((cmdtxt) => [
+                cmdtxt.trim().split(" ")[0].substring(COMMAND_PREFIX.length),
+                cmdtxt.trim().split(" ").slice(1),
+            ]);
+        console.log(commandChain);
+        let defatts: Collection<string, Attachment> = msg.attachments;
+        let lastresp: FlapsCommandResponse = makeMessageResp(
+            "flapserrors",
+            "Command did not return a FlapsCommandResponse."
         );
-        if (command) {
-            if (commandId !== "retry") {
-                let retryables = JSON.parse(
-                    (await readFile("retrycache.json")).toString()
-                );
-                if (retryables[msg.author.id] != msg.id) {
-                    retryables[msg.author.id] = msg.id;
-                    await writeFile(
-                        "retrycache.json",
-                        JSON.stringify(retryables)
-                    );
-                }
-            }
-            commandRan = true;
-            errorChannel = msg.channel;
+        for (const info of commandChain) {
+            let commandId = info[0];
+            let commandArgs = info[1];
 
-            if (command.needs && command.needs.length > 0) {
-                getSources(msg, command.needs)
-                    .then(async (srcs: string[]) => {
-                        let bufs: [Buffer, string][] = await Promise.all(
-                            srcs.map(async (s) => [await readFile(s), s])
+            let command = commands.find((cmd) =>
+                cmd.aliases.includes(commandId.toLowerCase())
+            );
+
+            if (command) {
+                if (commandId !== "retry") {
+                    let retryables = JSON.parse(
+                        (await readFile("retrycache.json")).toString()
+                    );
+                    if (retryables[msg.author.id] != msg.id) {
+                        retryables[msg.author.id] = msg.id;
+                        await writeFile(
+                            "retrycache.json",
+                            JSON.stringify(retryables)
                         );
-                        command
-                            .execute(commandArgs, bufs, msg)
-                            .then((response) => {
-                                switch (response.type) {
-                                    case CommandResponseType.Message:
-                                        sendWebhook(
-                                            response.id,
-                                            response.content,
-                                            msg.channel,
-                                            response.buffer,
-                                            response.filename
-                                        );
-                                        break;
-                                }
-                            });
-                    })
-                    .catch((r) => {
-                        sendWebhook("flaps", r, msg.channel);
-                    });
-            } else {
-                command.execute(commandArgs, null, msg).then((response) => {
+                    }
+                }
+                commandRan = true;
+                errorChannel = msg.channel;
+
+                if (command.needs && command.needs.length > 0) {
+                    let srcs = await getSources(
+                        { attachments: defatts } as Message,
+                        command.needs
+                    ).catch((e) => sendWebhook("flaps", e, msg.channel));
+                    if (!srcs) return;
+                    let bufs: [Buffer, string][] = await Promise.all(
+                        srcs.map(async (s) => [await readFile(s), s])
+                    );
+                    let response = await command.execute(
+                        commandArgs,
+                        bufs,
+                        msg
+                    );
                     switch (response.type) {
                         case CommandResponseType.Message:
-                            sendWebhook(
-                                response.id,
-                                response.content,
-                                msg.channel,
-                                response.buffer,
-                                response.filename
-                            );
+                            if (response.filename) {
+                                writeFileSync(
+                                    file("cache/" + response.filename),
+                                    response.buffer
+                                );
+                                defatts = new Collection();
+                                defatts.set("0", {
+                                    url:
+                                        "https://flaps.us.to/cache/" +
+                                        response.filename,
+                                    contentType: contentType(response.filename),
+                                } as Attachment);
+                            }
+                            lastresp = response;
+                            console.log("cmd done lmao 2");
                             break;
                     }
-                });
+                } else {
+                    let response = await command.execute(
+                        commandArgs,
+                        null,
+                        msg
+                    );
+                    switch (response.type) {
+                        case CommandResponseType.Message:
+                            if (response.filename) {
+                                writeFileSync(
+                                    file("cache/" + response.filename),
+                                    response.buffer
+                                );
+                                defatts = new Collection();
+                                defatts.set("0", {
+                                    url:
+                                        "https://flaps.us.to/cache/" +
+                                        response.filename,
+                                    contentType: contentType(response.filename),
+                                } as Attachment);
+                            }
+                            lastresp = response;
+                            console.log("cmd done lmao");
+
+                            break;
+                    }
+                }
             }
         }
+
+        console.log("sending lmao");
+        sendWebhook(
+            lastresp.id,
+            lastresp.content,
+            msg.channel,
+            lastresp.buffer,
+            lastresp.filename
+        );
     }
 
     logMessage(msg, commandRan, webhookUsed, commandArgs, startTime);
