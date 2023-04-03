@@ -457,7 +457,12 @@ export async function onMessage(msg: Message) {
 
                 if (command.needs && command.needs.length > 0) {
                     let srcs = await getSources(
-                        { attachments: defatts } as Message,
+                        {
+                            attachments: defatts,
+                            reference: msg.reference,
+                            fetchReference: msg.fetchReference,
+                            client: client,
+                        } as Message,
                         command.needs
                     ).catch((e) => sendWebhook("flaps", e, msg.channel));
                     if (!srcs) return;
