@@ -490,7 +490,6 @@ export async function onMessage(msg: Message) {
                                 } as Attachment);
                             }
                             lastresp = response;
-                            console.log("cmd done lmao 2");
                             break;
                     }
                 } else {
@@ -515,22 +514,20 @@ export async function onMessage(msg: Message) {
                                 } as Attachment);
                             }
                             lastresp = response;
-                            console.log("cmd done lmao");
-
                             break;
                     }
                 }
             }
         }
 
-        console.log("sending lmao");
-        sendWebhook(
-            lastresp.id,
-            lastresp.content,
-            msg.channel,
-            lastresp.buffer,
-            lastresp.filename
-        );
+        if (commandRan)
+            sendWebhook(
+                lastresp.id,
+                lastresp.content,
+                msg.channel,
+                lastresp.buffer,
+                lastresp.filename
+            );
     }
 
     logMessage(msg, commandRan, webhookUsed, commandArgs, startTime);
