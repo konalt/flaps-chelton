@@ -86,7 +86,7 @@ router.post("/runcmd", (req, res) => {
                             buffer: response.buffer
                                 ? bufferToDataURL(
                                       response.buffer,
-                                      lookup(response.filename)
+                                      lookup(response.filename) || "text/plain"
                                   )
                                 : null,
                         });

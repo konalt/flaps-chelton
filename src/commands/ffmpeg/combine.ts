@@ -140,8 +140,8 @@ module.exports = {
     needs: ["image/video/audio/gif", "image/video/audio/gif"],
     async execute(args: string[], buffers: [Buffer, string][], msg: Message) {
         return new Promise((res, rej) => {
-            let type1 = getTypeSingular(lookup(buffers[0][1]));
-            let type2 = getTypeSingular(lookup(buffers[1][1]));
+            let type1 = getTypeSingular(lookup(buffers[0][1]) || "text/plain");
+            let type2 = getTypeSingular(lookup(buffers[1][1]) || "text/plain");
 
             let op = combineOperation(type1, type2);
 
