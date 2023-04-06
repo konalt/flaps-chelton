@@ -570,6 +570,7 @@ registerFont("fonts/tate.ttf", { family: "Tate" });
 registerFont("fonts/spotify.otf", { family: "Spotify" });
 registerFont("fonts/arial.ttf", { family: "Arial" });
 registerFont("fonts/ibmplex.otf", { family: "IBM Plex Sans", weight: "400" });
+registerFont("fonts/helvetica.ttf", { family: "Helvetica" });
 
 async function readCommandDir(dir: string) {
     const files = await readdir(dir, {
