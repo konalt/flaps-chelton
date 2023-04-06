@@ -199,7 +199,9 @@ async function snapchat(
                 ) {
                     emojiPositions.push([
                         charOffset,
-                        index * (fontSize + 5) + fontSize * 0.4,
+                        index * (fontSize + 5) +
+                            fontSize * 0.4 +
+                            videoHeight * 0.66,
                     ]);
                     charOffset += char[0];
                     return;
