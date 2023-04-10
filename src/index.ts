@@ -432,7 +432,7 @@ export async function onMessage(msg: Message) {
             "Command did not return a FlapsCommandResponse."
         );
         for (const info of commandChain) {
-            let commandId = info[0];
+            let commandId = info[0].toLowerCase();
             let commandArgs = info[1];
 
             let command = commands.find((cmd) =>
