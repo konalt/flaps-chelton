@@ -542,6 +542,7 @@ process.on("unhandledRejection", (reason: any, p) => {
         `unhandled rejection. reason: ${esc(Color.BrightRed)}${reason}`,
         "promise"
     );
+    if (!errorChannel) return;
     sendWebhook(
         "flapserrors",
         `Unhandled promise rejection.\nReason: \`${reason.stack}\``,
