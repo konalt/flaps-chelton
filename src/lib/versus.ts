@@ -4,7 +4,7 @@ import { sendWebhook } from "./webhooks";
 import { download } from "./download";
 import { join } from "path";
 import { getFileExt, getFileName, makeMessageResp } from "./utils";
-import { readFile } from "fs/promises";
+import { readFile, writeFile } from "fs/promises";
 
 function looparg(name: string) {
     return name.endsWith(".mp4") || name.endsWith(".gif") ? "" : "-loop 1 ";
@@ -129,6 +129,15 @@ async function versus(
             var forceWin = names[2];
             var vi = 0;
 
+            await writeFile(
+                "versus/img1." + getFileExt(buffers[0][1]),
+                buffers[0]
+            );
+            await writeFile(
+                "versus/img1." + getFileExt(buffers[1][1]),
+                buffers[1]
+            );
+
             var inputs = [
                 "versus/img1." + getFileExt(buffers[0][1]),
                 "versus/img2." + getFileExt(buffers[1][1]),
@@ -251,17 +260,9 @@ async function versus(
                 vi * segmentLength - segmentLength
             );
 
-            res(
-                makeMessageResp(
-                    "flaps",
-                    "",
-                    null,
-                    await readFile("versus/out.mp4"),
-                    getFileName("Effect_VS", "mp4")
-                )
-            );
+            res(await readFile("versus/out.mp4"));
         } else {
-            res(makeMessageResp("flaps", "i need 2 images and 2 names"));
+            rej("2 Images and Names are needed");
         }
     });
 }
