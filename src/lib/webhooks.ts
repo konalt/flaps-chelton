@@ -25,6 +25,8 @@ const defaultUsername = "No Username";
 const defaultAvatar =
     "https://media.discordapp.net/attachments/838732607344214019/1075967910696210492/flapjpg.jpg";
 const defaultTTS = false;
+const maxFileSizeMiB = 25;
+
 function baseSend(
     url: string,
     content: string = defaultContent,
@@ -100,7 +102,7 @@ export function sendWebhook(
     getWebhookURL(channel as TextChannel).then(async (url: string) => {
         let user: WebhookBot = hooks.get(id);
         // if file is over 8mb, send failsafe
-        if (buffer && Buffer.byteLength(buffer) > 8e6) {
+        if (buffer && Buffer.byteLength(buffer) > maxFileSizeMiB / 1.049e6) {
             await writeFile(file("cache/" + filename), buffer).then(() => {
                 content +=
                     "\n(This message originally contained a file, but the file was over 8MB in size.\nLink: https://flaps.us.to/cache/" +
