@@ -102,12 +102,14 @@ export function sendWebhook(
     getWebhookURL(channel as TextChannel).then(async (url: string) => {
         let user: WebhookBot = hooks.get(id);
         // if file is over 8mb, send failsafe
-        if (buffer && Buffer.byteLength(buffer) > maxFileSizeMiB / 1.049e6) {
+        if (buffer && Buffer.byteLength(buffer) > maxFileSizeMiB * 1.049e6) {
             await writeFile(file("cache/" + filename), buffer).then(() => {
                 content +=
-                    "\n(This message originally contained a file, but the file was over 8MB in size.\nLink: https://flaps.us.to/cache/" +
+                    "\n(This message originally contained a file, but the file was over " +
+                    maxFileSizeMiB +
+                    "MiB in size.\nLink: https://flaps.us.to/cache/" +
                     filename +
-                    " )";
+                    "";
             });
             buffer = null;
             filename = null;
