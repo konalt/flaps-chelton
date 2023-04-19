@@ -9,6 +9,7 @@ module.exports = {
     id: "compressjpg",
     name: "Compress JPG",
     desc: "Compresses an image a comical amount.",
+    aliases: ["compressjpeg", "jpgcompress", "jpegcompress"],
     needs: ["image"],
     async execute(args, buf, msg) {
         return new Promise((res, rej) => {
