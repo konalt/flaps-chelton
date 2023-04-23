@@ -12,7 +12,7 @@ module.exports = {
     aliases: ["vs", "vs2"],
     async execute(args: string[], imgbuf: [Buffer, string][], msg: Message) {
         return new Promise((res, rej) => {
-            if (!args[1]) {
+            if (!args.join(" ").split(":")[1]) {
                 return sendWebhook(
                     "flaps",
                     "i need 2 images and 2 names mf!!!!!",
