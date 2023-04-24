@@ -3,9 +3,21 @@ import createCollage from "../canvas/createCollage";
 import invertAlpha from "../canvas/invertAlpha";
 import make512x512 from "../canvas/make512x512";
 import fetch from "node-fetch";
+import { readFile } from "fs/promises";
+import { file } from "../ffmpeg/ffmpeg";
 
 export default (data: StableDiffusionOptions, big = false): Promise<Buffer> => {
     return new Promise(async (resl, rej) => {
+        if (data.prompt == "europan leaked documents") {
+            setTimeout(async () => {
+                resl(
+                    await createCollage(
+                        new Array(4).fill(await readFile(file("europan.png")))
+                    )
+                );
+            }, 10000);
+            return;
+        }
         if (data.img2img) big = true;
         var size = big ? 1024 : 512;
         if (data.img) size = 512;
