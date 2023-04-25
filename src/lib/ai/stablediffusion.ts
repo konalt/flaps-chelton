@@ -29,14 +29,14 @@ export default (data: StableDiffusionOptions, big = false): Promise<Buffer> => {
             width: size,
             height: size,
             prompt: data.prompt,
-            modelType: "stable-diffusion",
+            modelType: "stable-diffusion-2",
             isPrivate: true,
             batchId: Math.floor(Math.random() * 1e7).toString(36),
             generateVariants: false,
             cfg_scale: 7,
             steps: big ? 50 : 25,
             seed: Math.floor(Math.random() * 1e7),
-            sampler: 3,
+            sampler: 1,
         };
         if (data.inpaint && data.mask && data.img) {
             Object.assign(body, {
