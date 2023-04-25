@@ -8,7 +8,10 @@ import { file } from "../ffmpeg/ffmpeg";
 
 export default (data: StableDiffusionOptions, big = false): Promise<Buffer> => {
     return new Promise(async (resl, rej) => {
-        if (data.prompt == "europan leaked documents") {
+        if (
+            data.prompt.includes("europa") ||
+            data.prompt.includes("hookmouth")
+        ) {
             setTimeout(async () => {
                 resl(
                     await createCollage(
