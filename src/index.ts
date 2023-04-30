@@ -681,7 +681,11 @@ readCommandDir(__dirname + "/commands").then(() => {
             }, 1000);
             initializeWebServer().then(() => {
                 log("Logging in...", "start");
-                client.login(process.env.DISCORD_TOKEN || "NoTokenProvided");
+                client
+                    .login(process.env.DISCORD_TOKEN || "NoTokenProvided")
+                    .catch((e) => {
+                        console.log(e);
+                    });
             });
         });
     });
