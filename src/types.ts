@@ -69,6 +69,11 @@ export interface TrimOptions {
 export interface SpeedOptions {
     speed: number;
 }
+export interface SpinOptions {
+    speed: number;
+    length: number;
+    gif: boolean;
+}
 
 export interface RGBColor {
     r: number;
