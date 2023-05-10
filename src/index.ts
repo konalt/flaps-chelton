@@ -260,7 +260,7 @@ function tenorURLToGifURL(url: string): Promise<string> {
 }
 
 function getSourcesWithAttachments(msg: Message, types: string[]) {
-    return new Promise((resolve, reject) => {
+    return new Promise(async (resolve, reject) => {
         function l2(msg: Message) {
             var atts = msg.attachments.first(types.length);
             var attTypes = getTypes(atts);
@@ -352,7 +352,27 @@ function getSourcesWithAttachments(msg: Message, types: string[]) {
         }
         if (!msg.attachments.first() && !types[0].endsWith("?")) {
             if (!msg.reference) {
-                reject("No source found");
+                const channel = await client.channels.fetch(msg.channel.id);
+                if (!(channel instanceof TextChannel)) return;
+                const messages = await channel.messages.fetch({
+                    limit: 10,
+                    before: msg.id,
+                }); // fetch up to 100 messages
+
+                const filteredMessages = messages.filter(
+                    (m) => m.author.id == msg.author.id
+                );
+                console.log(filteredMessages.map((m) => m.content));
+
+                const lastMessage = filteredMessages.first(2)[1]; // or filteredMessages.slice(-1)[0]
+
+                console.log(lastMessage.content);
+
+                if (!lastMessage) {
+                    reject("No source found");
+                } else {
+                    l2(lastMessage);
+                }
             } else {
                 msg.fetchReference().then((ref) => {
                     l2(ref);
@@ -462,6 +482,8 @@ export async function onMessage(msg: Message) {
                             reference: msg.reference,
                             fetchReference: msg.fetchReference,
                             client: client,
+                            channel: msg.channel,
+                            author: msg.author,
                         } as Message,
                         command.needs
                     ).catch((e) => sendWebhook("flaps", e, msg.channel));
