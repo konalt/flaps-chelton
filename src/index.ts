@@ -357,17 +357,11 @@ function getSourcesWithAttachments(msg: Message, types: string[]) {
                 const messages = await channel.messages.fetch({
                     limit: 10,
                     before: msg.id,
-                }); // fetch up to 100 messages
-
+                });
                 const filteredMessages = messages.filter(
                     (m) => m.author.id == msg.author.id
                 );
-                console.log(filteredMessages.map((m) => m.content));
-
-                const lastMessage = filteredMessages.first(2)[1]; // or filteredMessages.slice(-1)[0]
-
-                console.log(lastMessage.content);
-
+                const lastMessage = filteredMessages.first(2)[1];
                 if (!lastMessage) {
                     reject("No source found");
                 } else {
