@@ -10,10 +10,10 @@ module.exports = {
     id: "reverse",
     name: "Reverse",
     desc: "Reverses a video or audio file.",
-    needs: ["video/audio"],
+    needs: ["video/audio/gif"],
     execute(args, buf, msg) {
         return new Promise((res, rej) => {
-            reverse(buf).then(
+            reverse(buf, getFileExt(buf[0][1]) == "gif").then(
                 handleFFmpeg(
                     getFileName("Effect_Reverse", getFileExt(buf[0][1])),
                     msg.channel as TextChannel,
