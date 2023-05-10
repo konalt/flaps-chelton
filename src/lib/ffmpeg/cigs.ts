@@ -15,7 +15,7 @@ async function cigs(
     var advanced = {
         nofix: false,
         invert: false,
-        fontsize: 0.1,
+        fontsize: 0.05,
         emojisize: 1.3,
         vcrosdmono: false,
     };
