@@ -353,7 +353,9 @@ function getSourcesWithAttachments(msg: Message, types: string[]) {
         if (!msg.attachments.first() && !types[0].endsWith("?")) {
             if (!msg.reference) {
                 const channel = await client.channels.fetch(msg.channel.id);
-                if (!(channel instanceof TextChannel)) return;
+                if (!(channel instanceof TextChannel)) {
+                    return reject("No source found");
+                }
                 const messages = await channel.messages.fetch({
                     limit: 10,
                     before: msg.id,
