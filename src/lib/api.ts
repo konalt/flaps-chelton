@@ -51,16 +51,14 @@ router.post("/question", (req, res) => {
 });
 
 function xbuf(url: string, ext = null) {
-    return new Promise((res, rej) => {
-        var buf = dataURLToBuffer(url);
-        var inFile =
-            "images/cache/" +
-            uuidv4() +
-            "." +
-            extension(url.split(":")[1].split(";")[0]);
-        writeFileSync(inFile, buf);
-        res(inFile);
-    });
+    var buf = dataURLToBuffer(url);
+    var inFile =
+        "images/cache/" +
+        uuidv4() +
+        "." +
+        extension(url.split(":")[1].split(";")[0]);
+    writeFileSync(inFile, buf);
+    return [buf, inFile];
 }
 
 router.post("/runcmd", (req, res) => {
@@ -68,12 +66,12 @@ router.post("/runcmd", (req, res) => {
         cmd.aliases.includes(req.body.id.toLowerCase())
     );
     if (command) {
+        var files = (req.body.files || []).map((x: string) => xbuf(x));
+        console.log(files);
         command
-            .execute(
-                (req.body.args || "").split(" "),
-                (req.body.files || []).map((x: string) => xbuf(x)),
-                { channel: null } as Message
-            )
+            .execute((req.body.args || "").split(" "), files, {
+                channel: null,
+            } as Message)
             .then((response) => {
                 switch (response.type) {
                     case CommandResponseType.Message:

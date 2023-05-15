@@ -557,7 +557,7 @@ export async function onMessage(msg: Message) {
 // fuck you node
 process.on("unhandledRejection", (reason: any, p) => {
     log(
-        `unhandled rejection. reason: ${esc(Color.BrightRed)}${reason}`,
+        `unhandled rejection. reason: ${esc(Color.BrightRed)}${reason.stack}`,
         "promise"
     );
     if (!errorChannel) return;

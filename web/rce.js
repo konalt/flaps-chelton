@@ -13,6 +13,7 @@ axios.get("/api/commands").then((resp) => {
 function run() {
     var cmdid = selector.value;
     var args = document.getElementById("args").value;
+    console.log(urls);
     axios
         .post("/api/runcmd", {
             id: cmdid,
@@ -29,9 +30,8 @@ $("#form").submit((e) => {
     run();
 });
 
-function readFilePromise(input) {
+function readFilePromise(file) {
     return new Promise((res, _rej) => {
-        const file = input.files[0];
         const reader = new FileReader();
         reader.addEventListener(
             "load",
@@ -48,7 +48,9 @@ function readFilePromise(input) {
 
 function readFiles(input) {
     return new Promise((res, _rej) => {
-        Promise.all(input.files.map((i) => readFilePromise(i))).then((out) => {
+        Promise.all(
+            Array.from(input.files).map((i) => readFilePromise(i))
+        ).then((out) => {
             res(out);
         });
     });
@@ -58,7 +60,8 @@ var urls = [];
 
 $("#file").change(function (e) {
     e.preventDefault();
-    readFiles($("#img")[0], (url) => {
+    readFiles($("#file")[0]).then((url) => {
+        console.log(url);
         urls = url;
     });
 });
