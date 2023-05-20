@@ -18,7 +18,7 @@ export default (buf: Buffer): Promise<Buffer> => {
         ctx.drawImage(
             parentalimg,
             parental.x,
-            parental.y,
+            image.height - parental.h - parental.y,
             parental.w,
             parental.h
         );
