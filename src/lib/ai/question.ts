@@ -5,6 +5,13 @@ import { openai, model } from "./openai";
 import { readFile } from "fs/promises";
 
 export let monsoonPre = [1, "flaps", "I'm an AI."];
+readFile("monsoon.txt", "utf-8").then((monsoonData) => {
+    monsoonPre = [
+        parseFloat(monsoonData.split(" ")[0]),
+        monsoonData.split(" ")[1],
+        monsoonData.split(" ").slice(2).join(" "),
+    ];
+});
 
 let temperatureOverride = -1;
 
