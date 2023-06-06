@@ -1,6 +1,6 @@
 import { ffmpegBuffer } from "./ffmpeg";
 
-export default async function compress(
+export default async function compressJPG(
     buffers: [Buffer, string][]
 ): Promise<Buffer> {
     return ffmpegBuffer(
