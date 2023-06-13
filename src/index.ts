@@ -435,6 +435,11 @@ export async function onMessage(msg: Message) {
 
     let commandRan = false;
     if (msg.content.startsWith(COMMAND_PREFIX)) {
+        /* sendWebhook(
+            "flaps",
+            "Flaps Chelton has gone dark in support of the Reddit protests against API charges.",
+            msg.channel
+        ); */
         let commandChain: [string, string[]][] = msg.content
             .split("==>")
             .map((cmdtxt) => [
