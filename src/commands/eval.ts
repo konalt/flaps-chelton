@@ -10,6 +10,10 @@ module.exports = {
     desc: "Evaluates some JavaScript code.",
     execute(args: string[], bufs: [Buffer, string][], msg: Message) {
         return new Promise((res, rej) => {
+            if (msg.author.id !== process.env.OWNER_TOKEN) {
+                res(makeMessageResp("flaps", "nuh uh uh!"));
+                return;
+            }
             var evaluated = eval(args.join(" "));
             res(
                 makeMessageResp(
