@@ -6,8 +6,6 @@ export async function biscuit(buffers: [Buffer, string][]) {
     var start_time = 3.67;
     var length = 0.49;
 
-    console.log(len);
-
     return ffmpegBuffer(
         `-loop 1 -t ${len} -i $BUF0 -i ${file(
             "biscuit.mp4"
