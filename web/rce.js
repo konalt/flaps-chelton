@@ -1,5 +1,7 @@
 var selector = document.getElementById("selector");
 var outtxt = document.getElementById("outtxt");
+var outimg = document.getElementById("outimg");
+var outvid = document.getElementById("outvid");
 
 axios.get("/api/commands").then((resp) => {
     resp.data.forEach((cmd) => {
@@ -13,6 +15,8 @@ axios.get("/api/commands").then((resp) => {
 function run() {
     var cmdid = selector.value;
     var args = document.getElementById("args").value;
+    $(outimg).hide();
+    $(outvid).hide();
     console.log(urls);
     axios
         .post("/api/runcmd", {
@@ -22,6 +26,15 @@ function run() {
         })
         .then((resp) => {
             outtxt.innerText = resp.data.content;
+            if (resp.data.buffer) {
+                if (resp.data.buffer.startsWith("data:video")) {
+                    outvid.src = resp.data.buffer;
+                    $(outvid).show();
+                } else if (resp.data.buffer.startsWith("data:image")) {
+                    outimg.src = resp.data.buffer;
+                    $(outimg).show();
+                }
+            }
         });
 }
 
@@ -68,3 +81,4 @@ $("#file").change(function (e) {
 
 $("#loader").hide();
 $("#outimg").hide();
+$(outvid).hide();
