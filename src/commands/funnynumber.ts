@@ -12,17 +12,15 @@ module.exports = {
     execute(args: string[], bufs: [Buffer, string][], msg: Message) {
         return new Promise((res, rej) => {
             var x = "";
+            var noformat = false;
+            if (args.includes("--noformat")) {
+                noformat = true;
+                args = args.filter((a) => a != "--noformat");
+            }
             if (args[0]) {
                 x = args.join("_");
             } else {
                 x = "calamitas".split(" ").join("_");
-            }
-            if (x.includes("child")) {
-                return sendWebhook(
-                    "runcling",
-                    "🚔🚔🚔🚔🚨🚨🚨🚨🚨🚓🚓🚓🚓👮‍♀️👮‍♂️👮‍♂️👮‍♂️👮‍♂️👮👮‍♂️👮‍♂️🚓🚨👮‍♀️👮‍♂️👮‍♀️🚓🚔🚨",
-                    msg.channel
-                );
             }
             fetch(
                 "https://rule34.xxx/public/autocomplete.php?q=" +
@@ -45,20 +43,22 @@ module.exports = {
                 .then((r) => {
                     var y = "";
                     if (!r[0]) {
-                        sendWebhook(
-                            "runcling",
-                            "holy fuck. you searched for something that even the horniest corner of the internet could not draw. good job dude.",
-                            msg.channel
+                        res(
+                            makeMessageResp(
+                                "runcling",
+                                "holy fuck. you searched for something that even the horniest corner of the internet could not draw. good job dude."
+                            )
                         );
                     } else {
                         r = r.filter((z) =>
                             z.label.replace(/&#039;/g, "'").startsWith(x)
                         );
                         if (!r[0]) {
-                            return sendWebhook(
-                                "runcling",
-                                "holy fuck. you searched for something that even the horniest corner of the internet could not draw. good job dude.",
-                                msg.channel
+                            return res(
+                                makeMessageResp(
+                                    "runcling",
+                                    "holy fuck. you searched for something that even the horniest corner of the internet could not draw. good job dude."
+                                )
                             );
                         }
                         var data = {};
@@ -72,20 +72,29 @@ module.exports = {
                         });
                         y = r
                             .map((z) => {
-                                return (
-                                    "**" +
-                                    x +
-                                    "**" +
-                                    z.label
-                                        .replace(/&#039;/g, "'")
-                                        .substring(x.length)
-                                        .replace(/_/g, "\\_")
-                                );
+                                if (noformat) {
+                                    return (
+                                        x +
+                                        z.label
+                                            .replace(/&#039;/g, "'")
+                                            .substring(x.length)
+                                    );
+                                } else {
+                                    return (
+                                        "**" +
+                                        x +
+                                        "**" +
+                                        z.label
+                                            .replace(/&#039;/g, "'")
+                                            .substring(x.length)
+                                            .replace(/_/g, "\\_")
+                                    );
+                                }
                             })
                             .join("\n");
                     }
 
-                    res(makeMessageResp("runcling", y, msg.channel));
+                    res(makeMessageResp("runcling", y));
                 });
         });
     },
