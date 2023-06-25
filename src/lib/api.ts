@@ -115,7 +115,7 @@ router.get("/commands", (req, res) => {
     res.json(commands);
 });
 
-router.get("/userdata/:id", (req, res) => {
+router.get("/legacy/userdata/:id", (req, res) => {
     let user = hooks.get(req.params.id);
     if (user) {
         res.contentType("txt").send(user.name);
