@@ -10,8 +10,11 @@ import stablediffusion from "./ai/stablediffusion";
 import { bufferToDataURL, dataURLToBuffer, uuidv4 } from "./utils";
 import { extension, lookup } from "mime-types";
 import { writeFileSync } from "fs";
-import { sendWebhook } from "./webhooks";
+import { hooks, sendWebhook } from "./webhooks";
 import { Message } from "discord.js";
+import { users } from "./users";
+
+const funnynumber = require("../commands/funnynumber");
 
 const router = Router({
     mergeParams: true,
@@ -48,6 +51,20 @@ router.post("/question", (req, res) => {
     question(req.body.question).then((answer) => {
         res.contentType("txt").send(answer);
     });
+});
+
+router.get("/legacy/question/:question", (req, res) => {
+    question(req.params.question.replace(/_sps_/g, " ")).then((answer) => {
+        res.contentType("txt").send(answer);
+    });
+});
+
+router.get("/legacy/funnynumber/:funnynumber", (req, res) => {
+    funnynumber
+        .execute([req.params.funnynumber, "--noformat"], [])
+        .then((resp: FlapsMessageCommandResponse) => {
+            res.contentType("txt").send(resp.content);
+        });
 });
 
 function xbuf(url: string, ext = null) {
@@ -96,6 +113,15 @@ router.post("/runcmd", (req, res) => {
 
 router.get("/commands", (req, res) => {
     res.json(commands);
+});
+
+router.get("/userdata/:id", (req, res) => {
+    let user = hooks.get(req.params.id);
+    if (user) {
+        res.contentType("txt").send(user.name);
+    } else {
+        res.contentType("txt").send("FlapsAPIUnknownUser");
+    }
 });
 
 export default router;
