@@ -131,11 +131,11 @@ async function versus(
 
             await writeFile(
                 "versus/img1." + getFileExt(buffers[0][1]),
-                buffers[0]
+                buffers[0][0]
             );
             await writeFile(
-                "versus/img1." + getFileExt(buffers[1][1]),
-                buffers[1]
+                "versus/img2." + getFileExt(buffers[1][1]),
+                buffers[1][0]
             );
 
             var inputs = [
