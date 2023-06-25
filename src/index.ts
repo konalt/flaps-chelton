@@ -446,7 +446,6 @@ export async function onMessage(msg: Message) {
                 cmdtxt.trim().split(" ")[0].substring(COMMAND_PREFIX.length),
                 cmdtxt.trim().split(" ").slice(1),
             ]);
-        console.log(commandChain);
         let defatts: Collection<string, Attachment> = msg.attachments;
         let lastresp: FlapsCommandResponse = makeMessageResp(
             "flapserrors",
