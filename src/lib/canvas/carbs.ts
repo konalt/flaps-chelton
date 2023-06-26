@@ -5,8 +5,8 @@ import { sample } from "../utils";
 
 export default (funny: boolean): Promise<Buffer> => {
     return new Promise(async (resolve, reject) => {
-        var w = 960,
-            h = 540,
+        var w = 512,
+            h = 512,
             fontScaleFactor = 0.09;
         var c = createCanvas(w, h);
         var ctx = c.getContext("2d");
