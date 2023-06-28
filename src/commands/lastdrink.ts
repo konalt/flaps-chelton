@@ -18,7 +18,7 @@ module.exports = {
             var minutes = Math.floor(delta / 60) % 60;
             delta -= minutes * 60;
             var seconds = Math.round(delta % 60);
-            var str = `good funo it has been a total of ${days} days ${hours} hours ${minutes} minutes ${seconds} seconds since your last drink\nplease do not drink you get very annoying and i get worried for your mental health`;
+            var str = `good funo it has been a total of ${days} days ${hours} hours ${minutes} minutes ${seconds} seconds since your last drink\nif thats less than 14 days you CANT so STOP ASKING ME`;
             res(makeMessageResp("flaps", str));
         });
     },
