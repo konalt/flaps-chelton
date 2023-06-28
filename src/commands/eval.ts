@@ -3,6 +3,9 @@ import { Message } from "discord.js";
 import { makeMessageResp } from "../lib/utils";
 import { sendWebhook } from "../lib/webhooks";
 import { FlapsCommand } from "../types";
+import { users } from "../lib/users";
+import { hooks } from "../lib/webhooks";
+import fs from "fs/promises";
 
 module.exports = {
     id: "eval",
