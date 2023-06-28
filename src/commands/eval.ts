@@ -7,6 +7,13 @@ import { users } from "../lib/users";
 import { hooks } from "../lib/webhooks";
 import fs from "fs/promises";
 
+const proxy = {
+    users,
+    hooks,
+    fs,
+    sendWebhook,
+};
+
 module.exports = {
     id: "eval",
     name: "Eval",
