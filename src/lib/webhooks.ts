@@ -118,7 +118,7 @@ export function sendWebhook(
             url + "?wait=true",
             user?.quirk ? user?.quirk(content) : content,
             user?.name || "wh:" + id,
-            user?.avatar || "https://flaps.us.to/avatars/" + id + ".png",
+            user?.avatar || "https://flaps.us.to/avatar/" + id + ".png",
             buffer,
             filename
         );
