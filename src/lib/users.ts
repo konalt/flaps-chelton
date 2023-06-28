@@ -678,6 +678,10 @@ export const users: WebhookBot[] = [
         id: "dictionary",
         name: "My First Dictionary!",
     },
+    {
+        id: "ihatesuicide",
+        name: "i HATE suicide! 💖",
+    },
 ];
 
 function spamtonify(text: string): string {
