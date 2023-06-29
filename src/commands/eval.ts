@@ -25,13 +25,19 @@ module.exports = {
                 return;
             }
             var evaluated = eval(args.join(" "));
-            res(
-                makeMessageResp(
-                    "flaps",
-                    evaluated.toString ? evaluated.toString() : "No response",
-                    msg.channel
-                )
-            );
+            if (evaluated) {
+                res(
+                    makeMessageResp(
+                        "flaps",
+                        evaluated.toString
+                            ? evaluated.toString()
+                            : "No response",
+                        msg.channel
+                    )
+                );
+            } else {
+                res(makeMessageResp("flaps", "No response", msg.channel));
+            }
         });
     },
 } satisfies FlapsCommand;
