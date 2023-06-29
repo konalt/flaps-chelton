@@ -617,6 +617,8 @@ async function readCommandDir(dir: string) {
 var doneUsers = [];
 var isMidnightActive = false;
 var midnightText = "midnight";
+
+let midnightTimeout;
 export async function midnight(channel: TextChannel) {
     sendWebhook("flaps", "midnight", channel);
     var members = await channel.guild.members.fetch();
@@ -629,7 +631,8 @@ export async function midnight(channel: TextChannel) {
         }
     }
     isMidnightActive = true;
-    setTimeout(() => {
+    if (midnightTimeout) clearTimeout(midnightTimeout);
+    midnightTimeout = setTimeout(() => {
         var nonusers = usersRequired.filter((x) => !doneUsers.includes(x));
         if (nonusers.length > 0) {
             sendWebhook(
