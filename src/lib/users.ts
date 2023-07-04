@@ -682,6 +682,54 @@ export const users: WebhookBot[] = [
         id: "ihatesuicide",
         name: "i HATE suicide! 💖",
     },
+    {
+        id: "sisyphus",
+        name: "sisyphus #BoulderPushin",
+    },
+    {
+        id: "adrian",
+        name: "hecu adrian shepard",
+    },
+    {
+        id: "uzi",
+        name: "oozi oozi",
+    },
+    {
+        id: "n",
+        name: "the male one",
+    },
+    {
+        id: "v",
+        name: "v",
+    },
+    {
+        id: "j",
+        name: "dommy suit mommy drone",
+    },
+    {
+        id: "lemmy",
+        name: "LEMMY LEMMTON THE LEMMCORD BOT",
+    },
+    {
+        id: "cadence",
+        name: "the ginger from that rhythm game",
+    },
+    {
+        id: "sandwoman",
+        name: "sand elemental",
+    },
+    {
+        id: "cloudwoman",
+        name: "cloud elemental",
+    },
+    {
+        id: "waterwoman",
+        name: "water elemental",
+    },
+    {
+        id: "bigboss",
+        name: "big boss",
+    },
 ];
 
 function spamtonify(text: string): string {
