@@ -9,7 +9,7 @@ module.exports = {
     id: "lameimpala",
     name: "Lame Impala",
     desc: "More like... Lame Impala...",
-    needs: [],
+    aliases: ["lemmyimpala"],
     async execute(args, buf, msg) {
         return new Promise((res, rej) => {
             lameimpala().then(
