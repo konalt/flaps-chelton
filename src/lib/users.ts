@@ -734,6 +734,23 @@ export const users: WebhookBot[] = [
         id: "anton",
         name: "anton chigurh",
     },
+    {
+        id: "coach",
+        name: "Coach.",
+        quirk: (text) => {
+            let cia = text
+                .replace(/cia/gi, "CIA")
+                .replace(/fbi/gi, "FBI")
+                .replace(/nsa/gi, "NSA")
+                .replace(/\?/g, "..?");
+            let cap = cia.charAt(0).toUpperCase() + cia.substring(1);
+            if (cap.endsWith(".") || cap.endsWith("?")) {
+                return cap;
+            } else {
+                return cap + "...";
+            }
+        },
+    },
 ];
 
 function spamtonify(text: string): string {
