@@ -12,8 +12,10 @@ module.exports = {
         return new Promise((res, rej) => {
             res(
                 makeMessageResp(
-                    "flaps",
-                    Math.round(Math.random()) == 0 ? "tails" : "heads",
+                    "anton",
+                    Math.round(Math.random()) == 0
+                        ? "It's tails."
+                        : "It's heads.",
                     msg.channel
                 )
             );
