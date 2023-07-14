@@ -124,4 +124,19 @@ router.get("/legacy/userdata/:id", (req, res) => {
     }
 });
 
+router.get("/legacy/userdata_json/:id/:text", (req, res) => {
+    let user = hooks.get(req.params.id);
+    if (user) {
+        res.send({
+            name: user.name,
+            text: req.params.text.replace(/\.space\./g, " "),
+        });
+    } else {
+        res.send({
+            name: "FlapsAPIUnknownUser",
+            text: req.params.text.replace(/\.space\./g, " "),
+        });
+    }
+});
+
 export default router;
