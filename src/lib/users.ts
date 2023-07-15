@@ -751,6 +751,10 @@ export const users: WebhookBot[] = [
             }
         },
     },
+    {
+        id: "peni",
+        name: 'peni "corkagh" parker',
+    },
 ];
 
 function spamtonify(text: string): string {
