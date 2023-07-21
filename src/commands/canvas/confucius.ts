@@ -17,7 +17,7 @@ module.exports = {
                         "",
                         null,
                         out,
-                        getFileName("Canvas_AndrewTate", "png")
+                        getFileName("Canvas_Confucius", "png")
                     )
                 );
             });
