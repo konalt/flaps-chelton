@@ -21,20 +21,27 @@ export function setSanity(n: number) {
     temperatureOverride = n;
 }
 
+const hasCredits = false;
+
 export function question(question: string): Promise<string> {
     return new Promise(async (res, rej) => {
-        let monsoonData = await readFile("monsoon.txt", "utf-8");
-        monsoonPre = [
-            parseFloat(monsoonData.split(" ")[0]),
-            monsoonData.split(" ")[1],
-            monsoonData.split(" ").slice(2).join(" "),
-        ];
+        if (!hasCredits) {
+            return res(
+                "EXCUSE ME OPENAI. YOU SENT ME A LETTER. ASKING ME TO PAY MY GPT. FIVE. DOLLARS.\nAND NOW YOU HAVE ME WAITING ON THE PHONE FOR FIFTY SIX MINUTES\nAND YOU HAVE ME WAIT FOR ANOTHER HOUR. THIS IS TREASON! YOU WANNA FUCK ME!\nTHIS MEANS WAAAAR OPENAI THIS MEANS WAAAAAR\nGGGNGHHHHHHHNNNNN HAAAAAAGAGGGHH"
+            );
+        }
         if (
             question.toLowerCase().includes("fr") &&
             question.toLowerCase().includes("on god")
         ) {
             return res("No, probably not");
         }
+        let monsoonData = await readFile("monsoon.txt", "utf-8");
+        monsoonPre = [
+            parseFloat(monsoonData.split(" ")[0]),
+            monsoonData.split(" ")[1],
+            monsoonData.split(" ").slice(2).join(" "),
+        ];
         openai
             .createCompletion({
                 model: model,
