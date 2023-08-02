@@ -13,7 +13,7 @@ module.exports = {
             confucius(args.join(" ")).then((out) => {
                 res(
                     makeMessageResp(
-                        "flaps",
+                        "confucius",
                         "",
                         null,
                         out,

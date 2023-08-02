@@ -17,7 +17,7 @@ module.exports = {
             ).then((out) => {
                 res(
                     makeMessageResp(
-                        "flaps",
+                        "shapiro",
                         "",
                         null,
                         out,

@@ -13,7 +13,7 @@ module.exports = {
             homodog(buf[0] ? buf[0][0] : null, args.join(" ")).then((out) => {
                 res(
                     makeMessageResp(
-                        "flaps",
+                        "homodog",
                         "",
                         msg.channel,
                         out,

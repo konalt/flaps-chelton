@@ -18,7 +18,7 @@ module.exports = {
             dalle2watermark(imgbuf[0][0]).then((out: Buffer) => {
                 res(
                     makeMessageResp(
-                        "flaps",
+                        "dalle2",
                         "",
                         msg.channel as TextChannel,
                         out,
