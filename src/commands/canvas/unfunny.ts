@@ -14,7 +14,7 @@ module.exports = {
             unfunny(buf[0][0]).then((out) => {
                 res(
                     makeMessageResp(
-                        "flaps",
+                        "saul",
                         "",
                         msg.channel,
                         out,

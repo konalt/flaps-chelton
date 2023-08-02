@@ -14,7 +14,7 @@ module.exports = {
             jhold(imgbuf[0][0]).then((out: Buffer) => {
                 res(
                     makeMessageResp(
-                        "flaps",
+                        "j",
                         "",
                         msg.channel as TextChannel,
                         out,
