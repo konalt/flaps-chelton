@@ -7,8 +7,8 @@ import { FlapsCommand } from "../../types";
 module.exports = {
     id: "frame",
     name: "Frame",
-    desc: "Places an image or video in a nice golden frame.",
-    needs: ["image/video"],
+    desc: "Places an image in a nice golden frame.",
+    needs: ["image"],
     execute(args, buf, msg) {
         return new Promise((res, rej) => {
             frame(buf).then(
