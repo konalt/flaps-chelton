@@ -16,10 +16,10 @@ module.exports = {
             perseverantia(buf).then(
                 handleFFmpeg(
                     getFileName("Effect_Perseverantia", getFileExt(buf[0][1])),
-                    msg.channel as TextChannel,
+
                     res
                 ),
-                handleFFmpegCatch(msg.channel, res)
+                handleFFmpegCatch(res)
             );
         });
     },

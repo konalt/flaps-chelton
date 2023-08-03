@@ -16,10 +16,10 @@ module.exports = {
             cookingVideo(buf).then(
                 handleFFmpeg(
                     getFileName("Effect_CookingVideo", "mp4"),
-                    msg.channel as TextChannel,
+
                     res
                 ),
-                handleFFmpegCatch(msg.channel, res)
+                handleFFmpegCatch(res)
             );
         });
     },

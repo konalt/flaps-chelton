@@ -16,10 +16,10 @@ module.exports = {
             reverse(buf, getFileExt(buf[0][1]) == "gif").then(
                 handleFFmpeg(
                     getFileName("Effect_Reverse", getFileExt(buf[0][1])),
-                    msg.channel as TextChannel,
+
                     res
                 ),
-                handleFFmpegCatch(msg.channel, res)
+                handleFFmpegCatch(res)
             );
         });
     },

@@ -23,10 +23,10 @@ module.exports = {
                         "Effect_Spin",
                         args.includes("--gif") ? "gif" : "mp4"
                     ),
-                    msg.channel as TextChannel,
+
                     res
                 ),
-                handleFFmpegCatch(msg.channel, res)
+                handleFFmpegCatch(res)
             );
         });
     },

@@ -163,10 +163,10 @@ module.exports = {
             op(buffers).then(
                 handleFFmpeg(
                     getFileName("Effect_Combine", combineExt(type1, type2)),
-                    msg.channel as TextChannel,
+
                     res
                 ),
-                handleFFmpegCatch(msg.channel, res)
+                handleFFmpegCatch(res)
             );
         });
     },

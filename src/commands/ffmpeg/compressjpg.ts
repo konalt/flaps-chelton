@@ -16,10 +16,10 @@ module.exports = {
             compressjpg(buf).then(
                 handleFFmpeg(
                     getFileName("Effect_CompressJPG", "jpeg"),
-                    msg.channel as TextChannel,
+
                     res
                 ),
-                handleFFmpegCatch(msg.channel, res)
+                handleFFmpegCatch(res)
             );
         });
     },

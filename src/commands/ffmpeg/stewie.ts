@@ -15,10 +15,10 @@ module.exports = {
             stewie(buf).then(
                 handleFFmpeg(
                     getFileName("Effect_Stewie", "mp4"),
-                    msg.channel as TextChannel,
+
                     res
                 ),
-                handleFFmpegCatch(msg.channel, res)
+                handleFFmpegCatch(res)
             );
         });
     },

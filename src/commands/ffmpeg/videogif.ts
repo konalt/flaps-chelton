@@ -15,10 +15,10 @@ module.exports = {
             videogif(buf).then(
                 handleFFmpeg(
                     getFileName("Effect_VideoGif", "gif"),
-                    msg.channel as TextChannel,
+
                     res
                 ),
-                handleFFmpegCatch(msg.channel, res)
+                handleFFmpegCatch(res)
             );
         });
     },

@@ -15,12 +15,8 @@ module.exports = {
             lobster(buf, {
                 text: args.length > 0 ? args.join(" ") : "give me text",
             }).then(
-                handleFFmpeg(
-                    getFileName("Effect_Lobster", "mp4"),
-                    msg.channel,
-                    res
-                ),
-                handleFFmpegCatch(msg.channel, res)
+                handleFFmpeg(getFileName("Effect_Lobster", "mp4"), res),
+                handleFFmpegCatch(res)
             );
         });
     },

@@ -5,10 +5,9 @@ import { sendWebhook } from "../webhooks";
 
 export default function handleFFmpeg(
     filename: string,
-    channel: TextBasedChannel,
     resolveFn: (resp: FlapsCommandResponse) => void
 ): (buffer: Buffer) => void {
     return function handler(buffer: Buffer) {
-        resolveFn(makeMessageResp("ffmpeg", "", channel, buffer, filename));
+        resolveFn(makeMessageResp("ffmpeg", "", null, buffer, filename));
     };
 }

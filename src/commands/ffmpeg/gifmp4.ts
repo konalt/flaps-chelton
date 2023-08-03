@@ -16,10 +16,10 @@ module.exports = {
             gifmp4(buf).then(
                 handleFFmpeg(
                     getFileName("Effect_GIFMP4", "mp4"),
-                    msg.channel as TextChannel,
+
                     res
                 ),
-                handleFFmpegCatch(msg.channel, res)
+                handleFFmpegCatch(res)
             );
         });
     },

@@ -15,10 +15,9 @@ module.exports = {
             errortest(buf).then(
                 handleFFmpeg(
                     getFileName("Effect_ERR", getFileExt(buf[0][1])),
-                    msg.channel,
                     res
                 ),
-                handleFFmpegCatch(msg.channel, res)
+                handleFFmpegCatch(res)
             );
         });
     },

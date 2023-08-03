@@ -16,10 +16,10 @@ module.exports = {
             busting(buf).then(
                 handleFFmpeg(
                     getFileName("Effect_Busting", getFileExt(buf[0][1])),
-                    msg.channel as TextChannel,
+
                     res
                 ),
-                handleFFmpegCatch(msg.channel, res)
+                handleFFmpegCatch(res)
             );
         });
     },

@@ -17,12 +17,8 @@ module.exports = {
     async execute(args: string[], buffers: [Buffer, string][], msg: Message) {
         return new Promise((res, rej) => {
             convertkvm(buffers).then(
-                handleFFmpeg(
-                    getFileName("Effect_KVMConv", "kvm"),
-                    msg.channel,
-                    res
-                ),
-                handleFFmpegCatch(msg.channel, res)
+                handleFFmpeg(getFileName("Effect_KVMConv", "kvm"), res),
+                handleFFmpegCatch(res)
             );
         });
     },

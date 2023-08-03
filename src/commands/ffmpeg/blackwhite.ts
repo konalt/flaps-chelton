@@ -16,10 +16,9 @@ module.exports = {
             blackwhite(buf).then(
                 handleFFmpeg(
                     getFileName("Effect_BlackWhite", getFileExt(buf[0][1])),
-                    msg.channel,
                     res
                 ),
-                handleFFmpegCatch(msg.channel, res)
+                handleFFmpegCatch(res)
             );
         });
     },

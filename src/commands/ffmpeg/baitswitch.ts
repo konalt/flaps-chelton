@@ -10,15 +10,11 @@ module.exports = {
     name: "Bait and Switch",
     desc: "Creates a Bait & Switch meme with an image and a video.",
     needs: ["image", "video"],
-    execute(args, buf, msg) {
+    execute(args, buf) {
         return new Promise((res, rej) => {
             baitswitch(buf).then(
-                handleFFmpeg(
-                    getFileName("Effect_BaitSwitch", "mp4"),
-                    msg.channel as TextChannel,
-                    res
-                ),
-                handleFFmpegCatch(msg.channel, res)
+                handleFFmpeg(getFileName("Effect_BaitSwitch", "mp4"), res),
+                handleFFmpegCatch(res)
             );
         });
     },

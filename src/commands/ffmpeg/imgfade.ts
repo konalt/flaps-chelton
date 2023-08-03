@@ -15,10 +15,10 @@ module.exports = {
             imgfade(buf).then(
                 handleFFmpeg(
                     getFileName("Effect_Invert", getFileExt(buf[0][1])),
-                    msg.channel as TextChannel,
+
                     res
                 ),
-                handleFFmpegCatch(msg.channel, res)
+                handleFFmpegCatch(res)
             );
         });
     },

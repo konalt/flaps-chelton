@@ -15,10 +15,10 @@ module.exports = {
             lameimpala().then(
                 handleFFmpeg(
                     getFileName("Effect_LameImpala", "png"),
-                    msg.channel as TextChannel,
+
                     res
                 ),
-                handleFFmpegCatch(msg.channel, res)
+                handleFFmpegCatch(res)
             );
         });
     },

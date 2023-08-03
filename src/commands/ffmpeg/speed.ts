@@ -20,10 +20,10 @@ module.exports = {
             }).then(
                 handleFFmpeg(
                     getFileName("Effect_Speed", getFileExt(buffers[0][1])),
-                    msg.channel as TextChannel,
+
                     res
                 ),
-                handleFFmpegCatch(msg.channel, res)
+                handleFFmpegCatch(res)
             );
         });
     },

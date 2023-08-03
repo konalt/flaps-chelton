@@ -16,10 +16,10 @@ module.exports = {
             biscuit(buf).then(
                 handleFFmpeg(
                     getFileName("Effect_Biscuit", "mp4"),
-                    msg.channel as TextChannel,
+
                     res
                 ),
-                handleFFmpegCatch(msg.channel, res)
+                handleFFmpegCatch(res)
             );
         });
     },

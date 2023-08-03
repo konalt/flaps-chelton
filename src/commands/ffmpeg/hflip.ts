@@ -25,7 +25,7 @@ module.exports = {
                     out,
                     getFileName("Effect_HFlip", getFileExt(buffers[0][1]))
                 );
-            }, handleFFmpegCatch(msg.channel, res));
+            }, handleFFmpegCatch(res));
         });
     },
 } satisfies FlapsCommand;
