@@ -185,10 +185,12 @@ function logMessage(
 
 function autoReact(msg: Message) {
     let f: string[] = [];
-    flags.forEach((val, key) => {
-        if (msg.content.toLowerCase().includes(val) && !f.includes(key))
-            f.push(key);
-    });
+    for (const [flagName, triggers] of Object.entries(flags)) {
+        for (const trigger of triggers) {
+            if (f.includes(flagName)) break;
+            if (msg.content.toLowerCase().includes(trigger)) f.push(flagName);
+        }
+    }
     if (f.includes("rember")) {
         f = f.filter((x) => x != "forgor");
     }
@@ -562,7 +564,7 @@ process.on("unhandledRejection", (reason: any, p) => {
 client.on("messageCreate", onMessage);
 
 export let commands: Collection<string, FlapsCommand> = new Collection();
-let flags: Collection<string, string> = new Collection();
+let flags: Record<string, string[]> = {};
 
 log("Loading fonts...", "start");
 registerFont("fonts/dog.otf", { family: "Fuckedup" });
@@ -662,7 +664,9 @@ readCommandDir(__dirname + "/commands").then(() => {
     log("Loading autoreact flags...", "start");
     readFile("flags.txt", { encoding: "utf-8" }).then((flagtext) => {
         for (const line of flagtext.split("\n")) {
-            flags.set(line.split(" ")[1], line.split(" ")[0]);
+            let flagName = line.split(" ")[0];
+            if (!flags[flagName]) flags[flagName] = [];
+            flags[flagName].push(line.split(" ").slice(1).join(" "));
         }
         updateUsers().then(() => {
             log("Starting web server...", "start");
