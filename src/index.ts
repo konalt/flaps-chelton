@@ -10,7 +10,6 @@ import {
     Collection,
     Message,
     Partials,
-    PresenceData,
     TextBasedChannel,
     TextChannel,
 } from "discord.js";
@@ -21,15 +20,12 @@ import {
     CommandResponseType,
     FlapsCommand,
     FlapsCommandResponse,
-    WebhookBot,
 } from "./types";
 import { downloadPromise } from "./lib/download";
 import {
-    getFunctionName,
     getTypes,
     getTypeSingular,
     makeMessageResp,
-    time,
     uuidv4,
 } from "./lib/utils";
 import { registerFont } from "canvas";
@@ -37,9 +33,7 @@ import fetch from "node-fetch";
 import { getVideoDimensions } from "./lib/ffmpeg/getVideoDimensions";
 import {
     AudioPlayer,
-    AudioPlayerStatus,
     createAudioPlayer,
-    createAudioResource,
     DiscordGatewayAdapterCreator,
     joinVoiceChannel,
     NoSubscriberBehavior,
