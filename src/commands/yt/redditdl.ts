@@ -28,7 +28,7 @@ function getReddit(url: string, id: string, isVideo: boolean): Promise<string> {
 module.exports = {
     id: "redditdl",
     name: "Reddit DL",
-    desc: "Downloads a Reddit link. Also works on a lot of other platforms!",
+    desc: "Downloads a Reddit link.",
     execute(args: string[]) {
         return new Promise((res, rej) => {
             let url = args[0];
