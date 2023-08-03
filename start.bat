@@ -1,3 +1,3 @@
 @echo off
-nodemon wrapper.js
+nodemon --watch dist wrapper.js
 pause>nul
