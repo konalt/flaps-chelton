@@ -657,7 +657,7 @@ readCommandDir(__dirname + "/commands").then(() => {
                 ) {
                     midnight(
                         client.channels.cache.get(
-                            "882743320554643476"
+                            process.env.MAIN_CHANNEL
                         ) as TextChannel
                     );
                 }
@@ -673,7 +673,7 @@ readCommandDir(__dirname + "/commands").then(() => {
                         "scal",
                         "TIME\nHAHAHAHH",
                         client.channels.cache.get(
-                            "882743320554643476"
+                            process.env.MAIN_CHANNEL
                         ) as TextBasedChannel
                     );
                 }
@@ -682,7 +682,7 @@ readCommandDir(__dirname + "/commands").then(() => {
                         "nick",
                         "pills here",
                         client.channels.cache.get(
-                            "882743320554643476"
+                            process.env.MAIN_CHANNEL
                         ) as TextBasedChannel
                     );
                 }
