@@ -2,6 +2,7 @@ import { Color, esc, log } from "./lib/logger";
 import { config } from "dotenv";
 log("Loading settings...", "start");
 config();
+log("Importing modules...", "start");
 import {
     ActivityType,
     Attachment,
@@ -48,6 +49,7 @@ import { contentType, lookup } from "mime-types";
 import initializeWebServer from "./lib/web";
 import { file } from "./lib/ffmpeg/ffmpeg";
 
+log("Initializing client...", "start");
 export const client: Client = new Client({
     partials: [
         Partials.Message,
