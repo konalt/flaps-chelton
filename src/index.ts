@@ -8,6 +8,7 @@ import {
     Attachment,
     Client,
     Collection,
+    GuildMember,
     Message,
     Partials,
     TextBasedChannel,
@@ -403,6 +404,10 @@ export async function onMessage(msg: Message) {
         ) {
             doneUsers.push(mem.id);
             msg.react("👍");
+            if (getUnmidnightedUsers().length == 0) {
+                clearTimeout(midnightTimeout);
+                finishMidnight();
+            }
         }
     }
 
@@ -600,7 +605,38 @@ var doneUsers = [];
 var isMidnightActive = false;
 var midnightText = "midnight";
 
-let midnightTimeout;
+let midnightReqUsers = [];
+let midnightChannel: TextChannel;
+
+function finishMidnight() {
+    var nonusers = getUnmidnightedUsers();
+    if (nonusers.length > 0) {
+        sendWebhook(
+            "flaps",
+            "<@" +
+                nonusers.join(">, <@") +
+                ">" +
+                ". YOU FUCKER" +
+                (nonusers.length > 1 ? "S" : "") +
+                ". YOU MISS THE MIDNIGH !!!!",
+            midnightChannel
+        );
+    } else {
+        sendWebhook(
+            "flaps",
+            "good job everyone. another great day.",
+            midnightChannel
+        );
+    }
+    isMidnightActive = false;
+    doneUsers = [];
+}
+
+function getUnmidnightedUsers() {
+    return midnightReqUsers.filter((x) => !doneUsers.includes(x));
+}
+
+let midnightTimeout: NodeJS.Timeout;
 export async function midnight(channel: TextChannel) {
     sendWebhook("flaps", "midnight", channel);
     var members = await channel.guild.members.fetch();
@@ -612,30 +648,12 @@ export async function midnight(channel: TextChannel) {
             }
         }
     }
+    midnightReqUsers = usersRequired;
+    midnightChannel = channel;
     isMidnightActive = true;
     if (midnightTimeout) clearTimeout(midnightTimeout);
     midnightTimeout = setTimeout(() => {
-        var nonusers = usersRequired.filter((x) => !doneUsers.includes(x));
-        if (nonusers.length > 0) {
-            sendWebhook(
-                "flaps",
-                "<@" +
-                    nonusers.join(">, <@") +
-                    ">" +
-                    ". YOU FUCKER" +
-                    (nonusers.length > 1 ? "S" : "") +
-                    ". YOU MISS THE MIDNIGH !!!!",
-                channel
-            );
-        } else {
-            sendWebhook(
-                "flaps",
-                "good job everyone. another great day.",
-                channel
-            );
-        }
-        isMidnightActive = false;
-        doneUsers = [];
+        finishMidnight();
     }, 60 * 1000); // 1 min
 }
 
