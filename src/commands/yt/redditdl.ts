@@ -49,8 +49,8 @@ module.exports = {
                 ]).then((combined) => {
                     res(
                         makeMessageResp(
-                            "flaps",
-                            "here",
+                            "reddit",
+                            "",
                             null,
                             combined,
                             getFileName("DL_Reddit", "mp4")
