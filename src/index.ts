@@ -146,8 +146,7 @@ function logMessage(
     msg: Message,
     commandRan: boolean,
     webhookUsed: boolean,
-    commandArgs: string[],
-    startTime: number
+    commandArgs: string[]
 ) {
     if (!(msg.channel instanceof TextChannel)) return;
     let channel = `${esc(Color.Yellow)}<#${msg.channel.name}>`;
@@ -176,13 +175,9 @@ function logMessage(
                   .trim()
             : msg.content
     }`;
-    let processTime = `${esc(Color.DarkGrey)}<${Date.now() - startTime}ms>`;
 
     log(
-        `${channel} ${user} ${contentColor}${content} ${processTime}`.replace(
-            / {2,}/g,
-            " "
-        ),
+        `${channel} ${user} ${contentColor}${content}`.replace(/ {2,}/g, " "),
         "chat"
     );
 }
@@ -396,12 +391,7 @@ export async function onMessage(msg: Message) {
         msg.reply("this mf bot dont support dms get the fuck outta here");
         return;
     }
-
-    let startTime = Date.now();
-
-    let commandId = msg.content.split(" ")[0].substring(COMMAND_PREFIX.length);
     let commandArgs = msg.content.split(" ").slice(1);
-    let commandArgString = msg.content.split(" ").slice(1).join(" ");
 
     if (isMidnightActive) {
         var mem = await msg.guild.members.fetch(msg.member);
@@ -431,11 +421,6 @@ export async function onMessage(msg: Message) {
 
     let commandRan = false;
     if (msg.content.startsWith(COMMAND_PREFIX)) {
-        /* sendWebhook(
-            "flaps",
-            "Flaps Chelton has gone dark in support of the Reddit protests against API charges.",
-            msg.channel
-        ); */
         let commandChain: [string, string[]][] = msg.content
             .split("==>")
             .map((cmdtxt) => [
@@ -456,6 +441,11 @@ export async function onMessage(msg: Message) {
             );
 
             if (command) {
+                logMessage(msg, true, webhookUsed, commandArgs);
+                log(
+                    `Running command ${esc(Color.BrightCyan)}${commandId}`,
+                    "cmd"
+                );
                 if (commandId !== "retry") {
                     let retryables = JSON.parse(
                         (await readFile("retrycache.json")).toString()
@@ -470,7 +460,6 @@ export async function onMessage(msg: Message) {
                 }
                 commandRan = true;
                 errorChannel = msg.channel;
-
                 if (command.needs && command.needs.length > 0) {
                     let srcs = await getSources(
                         {
@@ -546,11 +535,8 @@ export async function onMessage(msg: Message) {
                 lastresp.buffer,
                 lastresp.filename
             );
-    }
-
-    logMessage(msg, commandRan, webhookUsed, commandArgs, startTime);
-    if (commandRan) {
-        log(`Running command ${esc(Color.BrightCyan)}${commandId}`, "cmd");
+    } else {
+        logMessage(msg, false, webhookUsed, commandArgs);
     }
 }
 
