@@ -59,8 +59,7 @@ export function question(question: string): Promise<string> {
                 res(resp.data.choices[0].text.split("Q:")[0].trim());
             })
             .catch((resp) => {
-                console.log(resp);
-                res(resp);
+                res(JSON.stringify(resp.data));
             });
     });
 }
