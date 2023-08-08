@@ -71,6 +71,8 @@ function ffmpegBuffer(
         }, rej);
     });
 }
+const ffmpegLogRegex =
+    /(ffmpeg version [^ ]+ Copyright \(c\) \d+-\d+ the FFmpeg developers)|(  built with .+)|(  configuration: (--[a-z0-9\-]+ ?)+)|(  lib[a-z0-9]+ +\d+\. +\d+\.\d+ +\/ +\d+\. +\d+\.\d+$)/gm;
 export { ffmpegBuffer };
 export function ffmpeg(args: string, quiet = false) {
     return new Promise((resolve, reject) => {
@@ -92,6 +94,7 @@ export function ffmpeg(args: string, quiet = false) {
             //b += c;
         });
         ffmpegInstance.stderr.on("data", (c) => {
+            if (c.toString().match(ffmpegLogRegex)) return;
             b += c;
         });
         ffmpegInstance.on("exit", (code) => {
