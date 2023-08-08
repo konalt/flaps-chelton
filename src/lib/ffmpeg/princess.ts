@@ -35,8 +35,9 @@ export default async function princess(
         return file("images/princess/" + chosen + ".png");
     });
     let inputString = "-i " + princessTags.join(" -i ");
-    let princessImageSize = 400;
+    let princessImageSize = 300;
     let largeImageSize = 1080;
+    let princessPadding = 25;
     return ffmpegBuffer(
         `-i $BUF0 -i $BUF1 ${inputString} -filter_complex "[0:v]${scaleFilter(
             ...dims
@@ -49,10 +50,10 @@ export default async function princess(
         [3:v]${scaleFilterKeepAR(princessImageSize)},${randomRotate()}[pimg2];
         [4:v]${scaleFilterKeepAR(princessImageSize)},${randomRotate()}[pimg3];
         [5:v]${scaleFilterKeepAR(princessImageSize)},${randomRotate()}[pimg4];
-        [pink_a0][pimg1]overlay=10:10[pink_a1];
-        [pink_a1][pimg2]overlay=10:main_h-overlay_h-10[pink_a2];
-        [pink_a2][pimg3]overlay=main_w-overlay_w-10:main_h-overlay_h-10[pink_a3];
-        [pink_a3][pimg4]overlay=main_w-overlay_w-10:10[pink_a4]" -frames:v 1 -update 1 -map "[pink_a4]" $OUT`.replace(
+        [pink_a0][pimg1]overlay=${princessPadding}:${princessPadding}[pink_a1];
+        [pink_a1][pimg2]overlay=${princessPadding}:main_h-overlay_h-${princessPadding}[pink_a2];
+        [pink_a2][pimg3]overlay=main_w-overlay_w-${princessPadding}:main_h-overlay_h-${princessPadding}[pink_a3];
+        [pink_a3][pimg4]overlay=main_w-overlay_w-${princessPadding}:${princessPadding}[pink_a4]" -frames:v 1 -update 1 -map "[pink_a4]" $OUT`.replace(
             /\n +/g,
             ""
         ),
