@@ -21,7 +21,7 @@ export function setSanity(n: number) {
     temperatureOverride = n;
 }
 
-const hasCredits = false;
+const hasCredits = true;
 
 export function question(question: string): Promise<string> {
     return new Promise(async (res, rej) => {
