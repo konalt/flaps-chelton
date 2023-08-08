@@ -21,7 +21,7 @@ export function setSanity(n: number) {
     temperatureOverride = n;
 }
 
-const hasCredits = true;
+const hasCredits = process.env.OPENAI_ENABLED == "yes";
 
 export function question(question: string): Promise<string> {
     return new Promise(async (res, rej) => {
