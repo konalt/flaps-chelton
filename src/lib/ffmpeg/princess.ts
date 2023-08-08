@@ -20,6 +20,9 @@ function scaleFilter(width: number, height: number) {
 function randomRotate() {
     return `rotate=${Math.random() * 2 - 1}*PI/6:c=none`;
 }
+function randomOverlay() {
+    return `overlay=${Math.random()}*main_w-overlay_w/2:${Math.random()}*main_h-overlay_h/2`;
+}
 
 export default async function princess(
     buffers: [Buffer, string][]
@@ -38,10 +41,24 @@ export default async function princess(
     let princessImageSize = 300;
     let largeImageSize = 1080;
     let princessPadding = 25;
+    let sparkleSize = 100;
+    let sparkleCount = 20;
+    let splitFilter = `split=${sparkleCount}`;
+    for (let i = 0; i < sparkleCount; i++) {
+        splitFilter += `[sparkle${i}]`;
+    }
+    let overlayFilter = `[pink_a4]null[sparkles_a0];`;
+    for (let i = 0; i < sparkleCount; i++) {
+        overlayFilter += `[sparkles_a${i}][sparkle${i}]${randomOverlay()}[sparkles_a${
+            i + 1
+        }];`;
+    }
     return ffmpegBuffer(
-        `-i $BUF0 -i $BUF1 ${inputString} -filter_complex "[0:v]${scaleFilter(
-            ...dims
-        )},${scaleFilterKeepAR(largeImageSize)}[in_img];
+        `-i $BUF0 -i $BUF1 ${inputString} -i ${file(
+            "images/princess/sparkle.png"
+        )} -filter_complex "[0:v]${scaleFilter(...dims)},${scaleFilterKeepAR(
+            largeImageSize
+        )}[in_img];
         [1:v]${scaleFilter(...dims)},${scaleFilterKeepAR(
             largeImageSize
         )}[in_color];
@@ -53,7 +70,10 @@ export default async function princess(
         [pink_a0][pimg1]overlay=${princessPadding}:${princessPadding}[pink_a1];
         [pink_a1][pimg2]overlay=${princessPadding}:main_h-overlay_h-${princessPadding}[pink_a2];
         [pink_a2][pimg3]overlay=main_w-overlay_w-${princessPadding}:main_h-overlay_h-${princessPadding}[pink_a3];
-        [pink_a3][pimg4]overlay=main_w-overlay_w-${princessPadding}:${princessPadding}[pink_a4]" -frames:v 1 -update 1 -map "[pink_a4]" $OUT`.replace(
+        [pink_a3][pimg4]overlay=main_w-overlay_w-${princessPadding}:${princessPadding}[pink_a4];
+        [6:v]${scaleFilterKeepAR(sparkleSize)},${splitFilter};
+        ${overlayFilter}
+        [sparkles_a${sparkleCount}]null[sparkles]" -frames:v 1 -update 1 -map "[sparkles]" $OUT`.replace(
             /\n +/g,
             ""
         ),
