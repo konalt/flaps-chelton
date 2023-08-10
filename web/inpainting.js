@@ -24,7 +24,7 @@ function dalle2() {
     var maskURL = canvas2.toDataURL("image/png");
     axios
         .post(
-            "https://flaps.us.to/api/inpaint",
+            "/api/inpaint",
             {
                 prompt: t,
                 img: imgURL,

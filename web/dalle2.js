@@ -5,7 +5,7 @@ function dalle2() {
     $("#out").hide();
     axios
         .post(
-            "https://flaps.us.to/api/dalle2",
+            "/api/dalle2",
             {
                 prompt: t,
             },
