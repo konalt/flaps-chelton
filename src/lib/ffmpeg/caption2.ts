@@ -3,7 +3,7 @@ import path from "path";
 import { Caption2Options } from "../../types";
 import { getFileExt, twemojiURL, uuidv4 } from "../utils";
 import { downloadPromise } from "../download";
-import { ffmpegBuffer, file, preset } from "./ffmpeg";
+import { ffmpegBuffer, file, preset, usePreset } from "./ffmpeg";
 import getTextWidth from "../canvas/getTextWidth";
 import { getVideoDimensions } from "./getVideoDimensions";
 
@@ -253,7 +253,9 @@ async function caption2(
     return ffmpegBuffer(
         `-y -i $BUF0 ${emojiInputs}-filter_complex_script ${file(
             output + ".ffscript"
-        )} -map "[out_v]" -map "0:a?" -preset:v ${preset} -update 1 $OUT`,
+        )} -map "[out_v]" -map "0:a?" ${usePreset(
+            buffers[0][1]
+        )} -update 1 $OUT`,
         buffers,
         getFileExt(buffers[0][1])
     );

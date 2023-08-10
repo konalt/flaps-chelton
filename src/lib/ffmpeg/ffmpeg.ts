@@ -158,3 +158,18 @@ export async function ffprobe(args: string): Promise<string> {
         });
     });
 }
+
+const videoFormats = ["mp4", "mkv"];
+export function usePreset(filename: string) {
+    if (videoFormats.includes(getFileExt(filename))) {
+        return `-preset ${preset}`;
+    }
+    return "";
+}
+
+export const DEFAULTFORMAT = {
+    IMAGE: "png",
+    VIDEO: "mp4",
+    AUDIO: "mp3",
+    GIF: "gif",
+};
