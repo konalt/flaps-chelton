@@ -94,7 +94,7 @@ export function ffmpeg(args: string, quiet = false) {
             //b += c;
         });
         ffmpegInstance.stderr.on("data", (c) => {
-            if (c.toString().match(ffmpegLogRegex) && !ffmpegVerbose) return;
+            if (c.toString().match(ffmpegLogRegex)) return;
             b += c;
         });
         ffmpegInstance.on("exit", (code) => {
