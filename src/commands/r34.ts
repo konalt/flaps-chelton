@@ -1,7 +1,7 @@
 import fetch from "node-fetch";
 import { downloadPromise } from "../lib/download";
 import { getFileName, makeMessageResp, sample, uuidv4 } from "../lib/utils";
-import { FlapsCommand } from "../types";
+import { FlapsCommand, FlapsCommandResponse } from "../types";
 
 function decodeEntities(encodedString) {
     var translate_re = /&(nbsp|amp|quot|lt|gt);/g;
@@ -53,9 +53,16 @@ module.exports = {
     name: "R34",
     desc: "You know what this command does. We all know what this command does.",
     aliases: ["r34comments", "r34video", "r34commentsvideo"],
-    execute(args, buf, msg) {
-        return new Promise((res) => {
-            if (Math.random() < 0.1) {
+    execute(args) {
+        return new Promise(async (res) => {
+            res(
+                makeMessageResp(
+                    "runcling",
+                    "this command has been archived. they added a fucking captcha to the website. its over folks"
+                )
+            );
+            return;
+            /*if (Math.random() < 0.1) {
                 return res(
                     makeMessageResp(
                         "welldressed",
@@ -88,7 +95,7 @@ module.exports = {
                 {
                     headers: {
                         "User-Agent": "FlapsChelton",
-                        Accept: "*/*",
+                        Accept: "* /*",
                         "Accept-Language": "en-US,en;q=0.5",
                         "Sec-Fetch-Dest": "empty",
                         "Sec-Fetch-Mode": "cors",
@@ -112,14 +119,6 @@ module.exports = {
                     ra = ra.filter((z: any) =>
                         z.label.replace(/&#039;/g, "'").startsWith(x)
                     );
-                    /* if (!ra[0]) {
-                    return sendWebhook(
-                        "runcling",
-                        "go inside horny runcling\n😫8====✊===D💦💦",
-                        false,
-                        msg.channel
-                    );
-                } */
                     fetch(
                         "https://rule34.xxx/index.php?page=post&s=list&tags=" +
                             (x.includes(" ") ? x : ra[0].value)
@@ -272,6 +271,7 @@ module.exports = {
                             }
                         });
                 });
+                */
         });
     },
 } satisfies FlapsCommand;
