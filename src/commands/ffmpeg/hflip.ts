@@ -5,6 +5,7 @@ import { getFileExt, getFileName } from "../../lib/utils";
 import { sendWebhook } from "../../lib/webhooks";
 import { FlapsCommand } from "../../types";
 import handleFFmpegCatch from "../../lib/ffmpeg/handleFFmpegCatch";
+import handleFFmpeg from "../../lib/ffmpeg/handleFFmpeg";
 
 module.exports = {
     id: "hflip",
@@ -17,15 +18,10 @@ module.exports = {
                 "-i $BUF0 -vf hflip $OUT",
                 buffers,
                 getFileExt(buffers[0][1])
-            ).then((out: Buffer) => {
-                sendWebhook(
-                    "ffmpeg",
-                    "",
-                    msg.channel as TextChannel,
-                    out,
-                    getFileName("Effect_HFlip", getFileExt(buffers[0][1]))
-                );
-            }, handleFFmpegCatch(res));
+            ).then(
+                handleFFmpeg(getFileName("Effect_HFlip", "png"), res),
+                handleFFmpegCatch(res)
+            );
         });
     },
 } satisfies FlapsCommand;
