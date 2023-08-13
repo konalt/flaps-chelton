@@ -8,6 +8,7 @@ import {
     Attachment,
     Client,
     Collection,
+    Guild,
     GuildMember,
     Message,
     Partials,
@@ -531,6 +532,8 @@ export async function onMessage(msg: Message) {
                             break;
                     }
                 }
+            } else {
+                logMessage(msg, false, webhookUsed, commandArgs);
             }
         }
 
@@ -610,25 +613,39 @@ var midnightText = "midnight";
 let midnightReqUsers = [];
 let midnightChannel: TextChannel;
 
+let midnightStartText = process.env.MIDNIGHT_START_MESSAGE ?? "midnight";
+let midnightFinishSuccessText =
+    process.env.MIDNIGHT_GOOD_MESSAGE ??
+    "good job everyone. another great day.";
+let midnightFinishFailureText =
+    process.env.MIDNIGHT_BAD_MESSAGE ?? "$pings$. THIS WILL NOT GO UNPUNISHED";
+
 function finishMidnight() {
     var nonusers = getUnmidnightedUsers();
+    let pings = "";
+
+    if (nonusers.length >= 2) {
+        for (const nonuser of nonusers.slice(0, -1)) {
+            pings += "<@" + nonuser.id + "> ";
+        }
+        pings += "and <@" + nonusers.at(-1) + ">";
+    } else if (nonusers.length > 0) {
+        pings = "<@" + nonusers[0] + ">";
+    }
+    pings = pings.trimEnd();
+    let pluralUpper = nonusers.length > 1 ? "S" : "";
+    let pluralLower = pluralUpper.toLowerCase();
     if (nonusers.length > 0) {
         sendWebhook(
             "flaps",
-            "<@" +
-                nonusers.join(">, <@") +
-                ">" +
-                ". YOU FUCKER" +
-                (nonusers.length > 1 ? "S" : "") +
-                ". YOU MISS THE MIDNIGH !!!!",
+            midnightFinishFailureText
+                .replace(/\$pings\$/g, pings)
+                .replace(/\$pluralUpper\$/g, pluralUpper)
+                .replace(/\$pluralLower\$/g, pluralLower),
             midnightChannel
         );
     } else {
-        sendWebhook(
-            "flaps",
-            "good job everyone. another great day.",
-            midnightChannel
-        );
+        sendWebhook("flaps", midnightFinishSuccessText, midnightChannel);
     }
     isMidnightActive = false;
     doneUsers = [];
@@ -640,9 +657,9 @@ function getUnmidnightedUsers() {
 
 let midnightTimeout: NodeJS.Timeout;
 export async function midnight(channel: TextChannel) {
-    sendWebhook("flaps", "midnight", channel);
+    sendWebhook("flaps", midnightStartText, channel);
     var members = await channel.guild.members.fetch();
-    var usersRequired = [];
+    var usersRequired: string[] = [];
     for (const member of members) {
         if (member[1].presence && !member[1].user.bot) {
             if (member[1].presence.status != "offline") {
