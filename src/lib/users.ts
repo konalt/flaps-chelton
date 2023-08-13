@@ -696,7 +696,7 @@ export const users: WebhookBot[] = [
     },
     {
         id: "n",
-        name: "the male one",
+        name: "wife thief",
     },
     {
         id: "v",
@@ -704,7 +704,7 @@ export const users: WebhookBot[] = [
     },
     {
         id: "j",
-        name: "dommy suit mommy drone",
+        name: "tacticola wielding dommy robot",
     },
     {
         id: "lemmy",
