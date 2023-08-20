@@ -1,7 +1,13 @@
 import { writeFileSync } from "fs";
 import path from "path";
 import { Caption2Options } from "../../types";
-import { getFileExt, twemojiURL, uuidv4 } from "../utils";
+import {
+    getFileExt,
+    twemojiURL,
+    uuidv4,
+    emojiRegex,
+    customEmojiRegex,
+} from "../utils";
 import { downloadPromise } from "../download";
 import { ffmpegBuffer, file, preset, usePreset } from "./ffmpeg";
 import getTextWidth from "../canvas/getTextWidth";
@@ -59,8 +65,6 @@ async function caption2(
     var lines: any[][] = [];
     var currentLine = "";
     var emojiReplacer = "xx";
-    var emojiRegex = /(?=\p{Emoji})(?=[\D])(?=[^\*])/gu;
-    var customEmojiRegex = /(<a?)?:\w+:(\d+>)/g;
     var fontChangeRegex = /\*[\w\d]+\*/g;
     var txtW = (txt, fnt = fontName) => getTextWidth(fnt, fontSize, txt);
     var emojiSize = fontSize * advanced.emojisize;

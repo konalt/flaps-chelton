@@ -56,6 +56,9 @@ export function getFileExt(path: string) {
     return path.split(".")[path.split(".").length - 1];
 }
 
+export const emojiRegex = /(?=\p{Emoji})(?=[\D])(?=[^\*#])/gu;
+export const customEmojiRegex = /(<a?)?:\w+:(\d+>)/g;
+
 export function twemojiURL(emoji: string) {
     var cp = emoji.codePointAt(0).toString(16);
     return (
