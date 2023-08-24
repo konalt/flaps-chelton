@@ -5,6 +5,7 @@ import { sendWebhook } from "../lib/webhooks";
 import { FlapsCommand } from "../types";
 import { users } from "../lib/users";
 import { hooks } from "../lib/webhooks";
+import { client } from "../index";
 import fs from "fs/promises";
 
 const proxy = {
@@ -12,6 +13,7 @@ const proxy = {
     hooks,
     fs,
     sendWebhook,
+    client,
 };
 
 module.exports = {
