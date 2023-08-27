@@ -2,7 +2,7 @@ import { spawn } from "child_process";
 import { readFile, writeFileSync } from "fs";
 import { extension } from "mime-types";
 import { Color, esc, log } from "../logger";
-import { getFileExt, uuidv4 } from "../utils";
+import { getFileExt, scheduleDelete, uuidv4 } from "../utils";
 import { join } from "path";
 import { stdout } from "process";
 
@@ -67,6 +67,10 @@ function ffmpegBuffer(
                 });
             } else {
                 res(outFile);
+            }
+            scheduleDelete(file("/cache/BUF_" + opId + "_FINAL." + outExt), 30);
+            for (const path of files) {
+                scheduleDelete(path, 30);
             }
         }, rej);
     });

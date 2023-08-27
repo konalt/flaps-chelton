@@ -28,6 +28,7 @@ import {
     getTypes,
     getTypeSingular,
     makeMessageResp,
+    scheduleDelete,
     uuidv4,
 } from "./lib/utils";
 import { registerFont } from "canvas";
@@ -428,6 +429,7 @@ export async function onMessage(msg: Message) {
     }
 
     let commandRan = false;
+    let commandFiles = [];
     if (msg.content.startsWith(COMMAND_PREFIX)) {
         let commandChain: [string, string[]][] = msg.content
             .split("==>")
@@ -484,6 +486,9 @@ export async function onMessage(msg: Message) {
                     let bufs: [Buffer, string][] = await Promise.all(
                         srcs.map(async (s) => [await readFile(s), s])
                     );
+                    for (const src of srcs) {
+                        commandFiles.push([src, 120]);
+                    }
                     let response = await command.execute(
                         commandArgs,
                         bufs,
@@ -496,6 +501,10 @@ export async function onMessage(msg: Message) {
                                     file("cache/" + response.filename),
                                     response.buffer
                                 );
+                                commandFiles.push([
+                                    file("cache/" + response.filename),
+                                    21600,
+                                ]);
                                 defatts = new Collection();
                                 defatts.set("0", {
                                     url:
@@ -537,7 +546,7 @@ export async function onMessage(msg: Message) {
             }
         }
 
-        if (commandRan)
+        if (commandRan) {
             sendWebhook(
                 lastresp.id,
                 lastresp.content,
@@ -545,6 +554,10 @@ export async function onMessage(msg: Message) {
                 lastresp.buffer,
                 lastresp.filename
             );
+            for (const file of commandFiles) {
+                scheduleDelete(file[0], file[1]);
+            }
+        }
     } else {
         logMessage(msg, false, webhookUsed, commandArgs);
     }

@@ -105,11 +105,11 @@ export function sendWebhook(
         if (buffer && Buffer.byteLength(buffer) > maxFileSizeMiB * 1.049e6) {
             await writeFile(file("cache/" + filename), buffer).then(() => {
                 content +=
-                    "\n(This message originally contained a file, but the file was over " +
+                    "\nThis message originally contained a file, but the file was over " +
                     maxFileSizeMiB +
                     "MiB in size.\nLink: https://flaps.us.to/cache/" +
                     filename +
-                    "";
+                    "\n*This link will expire in 6 hours.*";
             });
             buffer = null;
             filename = null;

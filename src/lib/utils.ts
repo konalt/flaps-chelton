@@ -2,7 +2,8 @@ import { Attachment, TextBasedChannel, TextChannel } from "discord.js";
 import { FlapsMessageCommandResponse } from "../types";
 import { downloadPromise } from "./download";
 import { get100Posts } from "./reddit";
-import { sendWebhook } from "./webhooks";
+import { unlinkSync } from "fs";
+import { Color, esc, log } from "./logger";
 
 export function uuidv4() {
     let s = (n = 1) =>
@@ -141,4 +142,20 @@ export function dataURLToBuffer(url: string) {
 
 export function bufferToDataURL(buffer: Buffer, type: string) {
     return "data:" + type + ";base64," + buffer.toString("base64");
+}
+
+export function scheduleDelete(path: string, timeSeconds: number) {
+    log(
+        `Scheduling deletion of file ${esc(Color.LightGrey)}${path}${esc(
+            Color.White
+        )} in ${esc(Color.Yellow)}${timeSeconds}${esc(Color.White)}s.`,
+        "scheduledelete"
+    );
+    setTimeout(() => {
+        log(
+            `Deleting file ${esc(Color.LightGrey)}${path}${esc(Color.White)}.`,
+            "scheduledelete"
+        );
+        unlinkSync(path);
+    }, timeSeconds * 1000);
 }
