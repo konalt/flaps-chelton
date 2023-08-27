@@ -2,7 +2,7 @@ import { log, esc, Color } from "../logger";
 import { ffmpeg, ffmpegBuffer, file, preset } from "./ffmpeg";
 import { copyFileSync, existsSync } from "fs";
 
-let scalingTableHelpers = ["STR END XPS YPS WTH HGT"];
+let scalingTableHelpers = ["STR XPS YPS WTH HGT"];
 
 export default function parseScalingTable(
     txt: string,
@@ -18,11 +18,10 @@ export default function parseScalingTable(
         .map((x) => x.split(" ").map((y) => parseInt(y))) // make array of numbers
         .map((x) => ({
             start: x[0],
-            end: x[1],
-            x: x[2],
-            y: x[3],
-            width: x[4],
-            height: x[5],
+            x: x[1],
+            y: x[2],
+            width: x[3],
+            height: x[4],
         }));
     let directiveCount = directives.length;
     let filter = `color=s=${v_width}x${v_height}:c=black:d=${v_length}:r=30,format=rgba[static_bg];[static_bg]split=${directiveCount}`;
