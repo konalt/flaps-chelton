@@ -9,7 +9,7 @@ import { ffmpegBuffer, file, preset } from "./ffmpeg";
 import handleFFmpeg from "./handleFFmpeg";
 import { getFileName } from "../utils";
 
-export default async function invert(
+export default async function dud(
     buffers: [Buffer, string][]
 ): Promise<Buffer> {
     return new Promise(async (res, rej) => {
