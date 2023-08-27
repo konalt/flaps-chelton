@@ -1,98 +1,58 @@
 import { log, esc, Color } from "../logger";
-import { ffmpeg, ffmpegBuffer, file } from "./ffmpeg";
+import { ffmpeg, ffmpegBuffer, file, preset } from "./ffmpeg";
 import { copyFileSync, existsSync } from "fs";
 
 let scalingTableHelpers = ["STR END XPS YPS WTH HGT"];
 
 export default function parseScalingTable(
     txt: string,
-    in_specifier: string,
-    frame_count: number,
     v_width: number,
     v_height: number,
-    input: [Buffer, string]
+    v_length: number,
+    in_buf: [Buffer, string]
 ) {
-    return new Promise<void>((resolve) => {
-        var start = Date.now();
-        var scale = 1;
-        var ext = input[1].split(".").pop();
-        var list = txt // convert buffer to string
-            .split("\n") // remove newlines
-            .map((x) => x.trim().replace(/ +/g, " ")) // strip CR if windows, remove duplicate spaces
-            .filter((x) => !scalingTableHelpers.includes(x.toUpperCase())) // remove helper lines
-            .map((x) => x.split(" ").map((y) => parseInt(y))) // make array of numbers
-            .map((x) => ({
-                start: x[0],
-                end: x[1],
-                x: x[2] * scale,
-                y: x[3] * scale,
-                width: x[4] * scale,
-                height: x[5] * scale,
-            })); // make objects
-        var promises = [];
-        var cDir = list[0];
-        var cDirInd = 0;
-        var lastIndGen = -1;
-        log(`${esc(Color.White)}Creating image sequence...`, "scalingtable");
-        for (let frame_num = 0; frame_num < frame_count; frame_num++) {
-            if (frame_num > cDir.end) {
-                cDir = list[cDirInd++];
-            }
-            if (lastIndGen != cDirInd) {
-                promises.push(
-                    (() => {
-                        return new Promise<void>((res) => {
-                            ffmpeg(
-                                `-i ${file(
-                                    input[1]
-                                )} -filter_complex "[0:v]scale=${cDir.width}:${
-                                    cDir.height
-                                },pad=${v_width}:${v_height}:${cDir.x}:${
-                                    cDir.y
-                                },setsar=1:1[out]" -map "[out]" ${file(
-                                    input[1] +
-                                        "." +
-                                        frame_num.toString().padStart(3, "0") +
-                                        "." +
-                                        ext
-                                )}`
-                            )
-                                .then(() => {
-                                    res();
-                                })
-                                .catch(() => {
-                                    res();
-                                });
-                        });
-                    })()
-                );
-                lastIndGen = cDirInd;
-            }
-        }
-        Promise.all(promises).then(() => {
-            log(
-                `${esc(Color.White)}Keyframes created. Copying...`,
-                "scalingtable"
-            );
-            var curFile = file(
-                input[1] + "." + "0".padStart(3, "0") + "." + ext
-            );
-            for (let frame_num = 0; frame_num < frame_count; frame_num++) {
-                var newFile = file(
-                    input[1] +
-                        "." +
-                        frame_num.toString().padStart(3, "0") +
-                        "." +
-                        ext
-                );
-                if (!existsSync(newFile)) {
-                    copyFileSync(curFile, newFile);
-                } else {
-                    curFile = newFile;
-                }
-            }
-            log(`${esc(Color.White)}All frames created.`, "scalingtable");
-            resolve();
-        });
-    });
+    let directives = txt
+        .split("\n") // split on newlines
+        .map((x) => x.trim().replace(/ +/g, " ")) // strip CR if windows, remove duplicate spaces
+        .filter((x) => !scalingTableHelpers.includes(x.toUpperCase())) // remove helper lines
+        .map((x) => x.split(" ").map((y) => parseInt(y))) // make array of numbers
+        .map((x) => ({
+            start: x[0],
+            end: x[1],
+            x: x[2],
+            y: x[3],
+            width: x[4],
+            height: x[5],
+        }));
+    let directiveCount = directives.length;
+    let filter = `color=s=${v_width}x${v_height}:c=black:d=${v_length}:r=30,format=rgba[static_bg];[static_bg]split=${directiveCount}`;
+    for (const directiveNumber of directives.keys()) {
+        filter += `[static_bg_${directiveNumber}]`;
+    }
+    filter += `;[0:v]null[input_image];[input_image]split=${directiveCount}`;
+    for (const directiveNumber of directives.keys()) {
+        filter += `[input_image_${directiveNumber}]`;
+    }
+    filter += `;`;
+    for (const [directiveNumber, directive] of directives.entries()) {
+        filter += `[input_image_${directiveNumber}]scale=${directive.width}:${directive.height}[input_image_scaled_${directiveNumber}];`;
+    }
+    for (const [directiveNumber, directive] of directives.entries()) {
+        filter += `[static_bg_${directiveNumber}][input_image_scaled_${directiveNumber}]overlay=x=${directive.x}:y=${directive.y}[input_layer_${directiveNumber}];`;
+    }
+    filter += `[input_layer_0]null[compiled_layer_0];`;
+    for (const [directiveNumber, directive] of directives.entries()) {
+        if (directiveNumber == 0) continue;
+        filter += `[compiled_layer_${
+            directiveNumber - 1
+        }][input_layer_${directiveNumber}]overlay=x='if(gte(n\\,${
+            directive.start
+        })\\,0\\,NAN)':y=0[compiled_layer_${directiveNumber}];`;
+    }
+    filter += `[compiled_layer_${directiveCount - 1}]null[scaling_result]`;
+    return ffmpegBuffer(
+        `-r 30 -t ${v_length} -i $BUF0 -filter_complex ${filter} -map "[scaling_result]" -t ${v_length} -r 30 -preset:v ${preset} $OUT`,
+        [in_buf],
+        "mp4"
+    );
 }
