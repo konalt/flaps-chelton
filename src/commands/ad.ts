@@ -7,7 +7,9 @@ module.exports = {
     desc: "Immediately deletes your message.",
     async execute(_a, _b, msg) {
         return new Promise(async (res, rej) => {
-            msg.delete();
+            setTimeout(() => {
+                msg.delete();
+            }, 1000);
             res(makeMessageResp("flaps", ""));
         });
     },
