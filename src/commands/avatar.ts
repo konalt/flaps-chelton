@@ -23,7 +23,7 @@ module.exports = {
                     makeMessageResp("flaps", "that mf dont have an avatar")
                 );
             }
-            if (args[0] == "--nogif") {
+            if (args.includes("--nogif") || getFileExt(url) == "webp") {
                 url = url.split(".").slice(0, -1).join(".") + ".png";
             }
             const image = await downloadPromise(url);
