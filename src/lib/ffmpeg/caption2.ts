@@ -7,6 +7,7 @@ import {
     uuidv4,
     emojiRegex,
     customEmojiRegex,
+    scheduleDelete,
 } from "../utils";
 import { downloadPromise } from "../download";
 import { ffmpegBuffer, file, preset, usePreset } from "./ffmpeg";
@@ -172,14 +173,17 @@ async function caption2(
         });
         newLines.push([lineYOffset, newWords]);
     });
+    let emojiFileList = [];
     let emojis2 = emojis.map((e, i) => {
         if (e[1]) {
             var url =
                 "https://cdn.discordapp.com/emojis/" +
                 e[0].split(":")[2].split(">")[0] +
                 ".png";
+            emojiFileList.push(file(output + ".emoji." + i + ".png"));
             return downloadPromise(url, file(output + ".emoji." + i + ".png"));
         } else {
+            emojiFileList.push(file(output + ".emoji." + i + ".png"));
             return downloadPromise(
                 twemojiURL(e[0]),
                 file(output + ".emoji." + i + ".png")
@@ -254,6 +258,10 @@ async function caption2(
         }
     }
     writeFileSync(file(output + ".ffscript"), filter);
+    scheduleDelete(file(output + ".ffscript"), 120);
+    for (const eFile of emojiFileList) {
+        scheduleDelete(eFile, 120);
+    }
     return ffmpegBuffer(
         `-y -i $BUF0 ${emojiInputs}-filter_complex_script ${file(
             output + ".ffscript"
