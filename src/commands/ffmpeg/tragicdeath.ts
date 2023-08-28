@@ -8,6 +8,7 @@ import { file } from "../../lib/ffmpeg/ffmpeg";
 module.exports = {
     id: "tragicdeath",
     name: "Tragic Death",
+    desc: "Makes poor sam die tragically.",
     execute(args, buf, msg) {
         return new Promise((res, rej) => {
             question(
