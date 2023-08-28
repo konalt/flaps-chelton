@@ -234,3 +234,19 @@ div.pasteindicator video {
     -ms-border-radius: 5px;
     -o-border-radius: 5px;
 }
+
+button#clearimage {
+    background-color: rgb(255, 165, 165);
+    border: 1px solid rgb(173, 119, 119);
+    border-radius: 3px;
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
+    -ms-border-radius: 3px;
+    -o-border-radius: 3px;
+}
+button#clearimage:hover {
+    background-color: rgb(255, 135, 135);
+}
+button#clearimage:active {
+    background-color: rgb(255, 94, 94);
+}
