@@ -33,7 +33,7 @@ function run() {
     $(outimg).hide();
     $(outvid).hide();
     var useURL = urls;
-    if ($("#useprev").is(":checked")) {
+    if ($("#useprev").is(":checked") && lasturl.length > 0) {
         useURL = [lasturl];
     }
     let command = commands.find((c) => c.id == cmdid);
@@ -96,13 +96,11 @@ var urls = [];
 $("#file").change(function (e) {
     e.preventDefault();
     readFiles($("#file")[0]).then((url) => {
-        console.log(url);
         urls = url;
     });
 });
 
 readFiles($("#file")[0]).then((url) => {
-    console.log(url);
     urls = url;
 });
 
