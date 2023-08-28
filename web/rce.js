@@ -12,17 +12,22 @@ axios.get("/api/commands").then((resp) => {
     });
 });
 
+let lasturl = "";
+
 function run() {
     var cmdid = selector.value;
     var args = document.getElementById("args").value;
     $(outimg).hide();
     $(outvid).hide();
-    console.log(urls);
+    var useURL = urls;
+    if ($("#useprev").is(":checked")) {
+        useURL = [lasturl];
+    }
     axios
         .post("/api/runcmd", {
             id: cmdid,
             args: args,
-            files: urls,
+            files: useURL,
         })
         .then((resp) => {
             outtxt.innerText = resp.data.content;
@@ -34,6 +39,8 @@ function run() {
                     outimg.src = resp.data.buffer;
                     $(outimg).show();
                 }
+                lasturl = resp.data.buffer;
+                $("#useprevl").show();
             }
         });
 }
@@ -79,6 +86,21 @@ $("#file").change(function (e) {
     });
 });
 
+readFiles($("#file")[0]).then((url) => {
+    console.log(url);
+    urls = url;
+});
+
+$("#useprev").change(function (e) {
+    e.preventDefault();
+    if ($("#useprev").is(":checked")) {
+        $("#file").hide();
+    } else {
+        $("#file").show();
+    }
+});
+
 $("#loader").hide();
 $("#outimg").hide();
+$("#useprevl").hide();
 $(outvid).hide();

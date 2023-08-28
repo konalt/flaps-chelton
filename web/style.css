@@ -31,6 +31,11 @@ input[type="file"] {
     margin: 0 -5px;
 }
 
+input[type="checkbox"] {
+    width: 25px;
+    height: 25px;
+}
+
 label {
     margin: 5px 0;
     font-size: x-large;
