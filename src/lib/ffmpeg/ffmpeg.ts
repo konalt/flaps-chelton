@@ -83,9 +83,13 @@ export function ffmpeg(args: string, quiet = false) {
         var startTime = Date.now();
         var newargs =
             extraArgs + " " + (ffmpegVerbose ? "" : "-v warning ") + args;
-        var ffmpegInstance = spawn("ffmpeg", newargs.trim().split(" "), {
-            shell: true,
-        });
+        var ffmpegInstance = spawn(
+            "ffmpeg",
+            newargs.replace(/\r?\n/g, "").trim().split(" "),
+            {
+                shell: true,
+            }
+        );
         if (ffmpegVerbose)
             log(`Launch Args: ${esc(Color.White)}` + newargs, "ffmpeg");
         var b = "";
