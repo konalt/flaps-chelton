@@ -116,6 +116,8 @@ readFiles($("#file")[0]).then((url) => {
     urls = url;
 });
 
+$("#useprev").prop("checked", false);
+
 $("#useprev").change(function (e) {
     e.preventDefault();
     if ($("#useprev").is(":checked")) {
