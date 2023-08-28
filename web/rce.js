@@ -31,7 +31,7 @@ function run() {
     $("#err").hide();
     var cmdid = selector.value;
     let command = commands.find((c) => c.id == cmdid);
-    if (command.needs && !urls[0]) {
+    if (command.needs && !urls[0] && !command.needs[0].endsWith("?")) {
         flaps.showError("This command requires: " + command.needs.join(","));
         return;
     }
