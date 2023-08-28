@@ -20,6 +20,7 @@ module.exports = {
     id: "eval",
     name: "Eval",
     desc: "Evaluates some JavaScript code.",
+    showOnCommandSimulator: false,
     execute(args: string[], bufs: [Buffer, string][], msg: Message) {
         return new Promise((res, rej) => {
             if (msg.author.id !== process.env.OWNER_TOKEN) {

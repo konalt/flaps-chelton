@@ -53,6 +53,7 @@ module.exports = {
     name: "R34",
     desc: "You know what this command does. We all know what this command does.",
     aliases: ["r34comments", "r34video", "r34commentsvideo"],
+    showOnCommandSimulator: false,
     execute(args) {
         return new Promise(async (res) => {
             res(

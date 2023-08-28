@@ -5,6 +5,7 @@ import { makeMessageResp } from "../lib/utils";
 module.exports = {
     id: "lastdrink",
     name: "Last Drink",
+    showOnCommandSimulator: false,
     execute(args, buf, msg) {
         return new Promise((res) => {
             var newTime =

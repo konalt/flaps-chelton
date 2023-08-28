@@ -6,6 +6,7 @@ export interface FlapsCommand {
     name: string;
     desc?: string;
     needs?: string[];
+    showOnCommandSimulator?: boolean;
     execute: (
         args: string[],
         buf: [Buffer, string][],

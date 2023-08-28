@@ -7,6 +7,7 @@ import { FlapsCommand } from "../types";
 module.exports = {
     id: "emoji",
     name: "Emoji",
+    showOnCommandSimulator: false,
     async execute(args, buf, msg) {
         return new Promise(async (res, rej) => {
             function s(url: string, gif: boolean, name: string) {

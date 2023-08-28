@@ -112,7 +112,16 @@ router.post("/runcmd", (req, res) => {
 });
 
 router.get("/commands", (req, res) => {
-    res.json(commands);
+    let filteredCommands = [];
+    for (const [_, command] of commands) {
+        if (
+            typeof command.showOnCommandSimulator === "undefined" ||
+            command.showOnCommandSimulator == true
+        ) {
+            filteredCommands.push(command);
+        }
+    }
+    res.json(filteredCommands);
 });
 
 router.get("/legacy/userdata/:id", (req, res) => {

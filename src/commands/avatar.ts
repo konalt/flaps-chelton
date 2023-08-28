@@ -6,6 +6,7 @@ module.exports = {
     id: "avatar",
     name: "Avatar",
     desc: "Returns a user's avatar.",
+    showOnCommandSimulator: false,
     async execute(args, buf, msg) {
         return new Promise(async (res, rej) => {
             let user = msg.mentions.users.first();

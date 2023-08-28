@@ -5,6 +5,7 @@ module.exports = {
     id: "react",
     name: "React",
     desc: "Reacts to the replied message with a specified emoji.",
+    showOnCommandSimulator: false,
     async execute(args, buf, msg) {
         return new Promise(async (res) => {
             var ref = await msg.fetchReference();

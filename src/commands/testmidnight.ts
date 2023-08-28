@@ -7,6 +7,7 @@ module.exports = {
     id: "testmidnight",
     name: "Test Midnight",
     desc: "Tests the midnight feature in the current channel.",
+    showOnCommandSimulator: false,
     execute(args, bufs, msg) {
         return new Promise((res, rej) => {
             midnight(msg.channel as TextChannel);

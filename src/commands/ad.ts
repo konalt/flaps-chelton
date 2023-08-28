@@ -5,6 +5,7 @@ module.exports = {
     id: "ad",
     name: "Auto-Delete",
     desc: "Immediately deletes your message.",
+    showOnCommandSimulator: false,
     async execute(_a, _b, msg) {
         return new Promise(async (res, rej) => {
             setTimeout(() => {

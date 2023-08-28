@@ -9,6 +9,7 @@ module.exports = {
     id: "retry",
     name: "Retry",
     desc: "Retries the last sent message (or the replied message, if present).",
+    showOnCommandSimulator: false,
     async execute(args: string[], bufs: [Buffer, string][], msg: Message) {
         return new Promise(async (res, rej) => {
             if (msg.channel instanceof StageChannel)

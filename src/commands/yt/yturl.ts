@@ -11,6 +11,7 @@ module.exports = {
     id: "yturl",
     name: "YouTube URL",
     desc: "Play a YouTube URL in voice chat.",
+    showOnCommandSimulator: false,
     execute(args: string[], bufs: [Buffer, string][], msg: Message) {
         return new Promise((res, rej) => {
             let url = args[0];
