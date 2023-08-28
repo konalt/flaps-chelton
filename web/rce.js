@@ -19,7 +19,11 @@ axios.get("/api/commands").then((resp) => {
         opt.innerHTML = cmd.name;
         selector.appendChild(opt);
     });
+    commands = sorted;
+    updateCommandInfo();
 });
+
+let commands = [];
 
 let lasturl = "";
 
@@ -32,6 +36,8 @@ function run() {
     if ($("#useprev").is(":checked")) {
         useURL = [lasturl];
     }
+    let command = commands.find((c) => c.id == cmdid);
+    if (!command.needs) useURL = [];
     axios
         .post("/api/runcmd", {
             id: cmdid,
@@ -107,6 +113,20 @@ $("#useprev").change(function (e) {
     } else {
         $("#file").show();
     }
+});
+function updateCommandInfo() {
+    let command = commands.find((c) => c.id == $(selector).val());
+    $("#commandid").text(command.id);
+    $("#commanddesc").text(command.desc);
+    if (command.needs) {
+        $("#commandneeds").text(command.needs.join(","));
+    } else {
+        $("#commandneeds").text("none");
+    }
+}
+$(selector).change(function (e) {
+    e.preventDefault();
+    updateCommandInfo();
 });
 
 $("#loader").hide();
