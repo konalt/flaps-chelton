@@ -179,3 +179,7 @@ code {
     color: #333;
     background-color: #f3f3f3;
 }
+
+img.outimg {
+    max-width: 512px;
+}
