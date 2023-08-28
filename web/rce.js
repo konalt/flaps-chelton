@@ -28,17 +28,20 @@ let commands = [];
 let lasturl = "";
 
 function run() {
+    $("#err").hide();
     var cmdid = selector.value;
+    let command = commands.find((c) => c.id == cmdid);
+    if (command.needs && !urls[0]) {
+        flaps.showError("This command requires: " + command.needs.join(","));
+        return;
+    }
     var args = document.getElementById("args").value;
     $(outimg).hide();
     $(outvid).hide();
     $(outtxt).hide();
+    $("#pasteindicator").hide();
     $("#loader").show();
     var useURL = urls;
-    if ($("#useprev").is(":checked") && lasturl.length > 0) {
-        useURL = [lasturl];
-    }
-    let command = commands.find((c) => c.id == cmdid);
     if (!command.needs) useURL = [];
     axios
         .post("/api/runcmd", {
@@ -109,21 +112,22 @@ $("#file").change(function (e) {
     e.preventDefault();
     readFiles($("#file")[0]).then((url) => {
         urls = url;
+        setPreviewBuffer(url[0], "uploaded");
     });
 });
 
 readFiles($("#file")[0]).then((url) => {
-    urls = url;
+    if (url[0]) {
+        urls = url;
+        setPreviewBuffer(url[0], "uploaded");
+    }
 });
 
-$("#useprev").prop("checked", false);
-
-$("#useprev").change(function (e) {
+$("#uselastgen").click(function (e) {
     e.preventDefault();
-    if ($("#useprev").is(":checked")) {
-        $("#file").hide();
-    } else {
-        $("#file").show();
+    if (lasturl) {
+        urls = [lasturl];
+        setPreviewBuffer(lasturl, "generated");
     }
 });
 function updateCommandInfo() {
@@ -132,8 +136,10 @@ function updateCommandInfo() {
     $("#commanddesc").text(command.desc);
     if (command.needs) {
         $("#commandneeds").text(command.needs.join(","));
+        $("#fileinput").show();
     } else {
         $("#commandneeds").text("none");
+        $("#fileinput").hide();
     }
 }
 $(selector).change(function (e) {
@@ -144,5 +150,44 @@ $(selector).change(function (e) {
 $("#loader").hide();
 $("#outimg").hide();
 $("#outtxt").hide();
+$("#pasteindicator").hide();
+$("#pastedimage").hide();
+$("#pastedvideo").hide();
 $("#useprevl").hide();
 $(outvid).hide();
+
+function setPreviewBuffer(buffer, type) {
+    $("#pasteindicator").show();
+    $("#outimg").hide();
+    $("#outvid").hide();
+    $("#outtxt").hide();
+    $("#pastedimage").hide();
+    $("#pastedvideo").hide();
+    if (buffer.startsWith("data:video")) {
+        $("#pastedvideo")[0].src = buffer;
+        $("#pastedvideo").show();
+        $("#filetype").text("video");
+    } else if (buffer.startsWith("data:image")) {
+        $("#pastedimage")[0].src = buffer;
+        $("#pastedimage").show();
+        $("#filetype").text("image");
+    }
+    $("#imgtype").text(type);
+}
+
+window.addEventListener("paste", function (event) {
+    var items = (event.clipboardData || event.originalEvent.clipboardData)
+        .items;
+    for (index in items) {
+        var item = items[index];
+        if (item.kind === "file") {
+            var blob = item.getAsFile();
+            var reader = new FileReader();
+            reader.onload = function () {
+                urls = [reader.result];
+                setPreviewBuffer(reader.result, "pasted");
+            };
+            reader.readAsDataURL(blob);
+        }
+    }
+});

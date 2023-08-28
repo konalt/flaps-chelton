@@ -16,10 +16,12 @@ hr {
 input[type="text"] {
     width: 350px;
     margin-right: 5px;
+    margin-bottom: 5px;
 }
 
 input[type="text"].wide {
     width: 512px;
+    margin-bottom: 5px;
 }
 
 input[type="submit"] {
@@ -28,7 +30,7 @@ input[type="submit"] {
 
 input[type="file"] {
     font-size: medium;
-    margin: 0 -5px;
+    margin: 5px 0px 5px 0px;
 }
 
 input[type="checkbox"] {
@@ -82,8 +84,8 @@ textarea:focus {
     border: 16px solid #f3f3f3;
     border-top: 16px solid #333;
     border-radius: 50%;
-    width: 512px;
-    height: 512px;
+    width: 380px;
+    height: 380px;
     animation: spin 1s linear infinite;
     -webkit-animation: spin 1s linear infinite;
 }
@@ -181,5 +183,54 @@ code {
 }
 
 img.outimg {
-    max-width: 512px;
+    width: 380px;
+}
+
+video.outvid {
+    width: 380px;
+}
+
+div.pasteindicator {
+    background-color: #ccc;
+    padding: 10px;
+    border-radius: 5px;
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    -ms-border-radius: 5px;
+    -o-border-radius: 5px;
+    width: fit-content;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 5px;
+    margin: 5px 0px 5px 0px;
+    --pasted-media-size: 280px;
+}
+
+div.pasteindicator img {
+    border-radius: 5px;
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    -ms-border-radius: 5px;
+    -o-border-radius: 5px;
+    width: var(--pasted-media-size);
+}
+
+div.pasteindicator.aleft {
+    align-items: start;
+    gap: 0px;
+}
+
+button {
+    font-size: x-large;
+}
+
+div.pasteindicator video {
+    width: var(--pasted-media-size);
+    border-radius: 5px;
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    -ms-border-radius: 5px;
+    -o-border-radius: 5px;
 }

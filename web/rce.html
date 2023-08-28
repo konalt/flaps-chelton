@@ -29,13 +29,15 @@
         <h1>Command Simulator</h1>
         <hr />
         <select id="selector"></select>
-        <p class="commandinfo" id="commanddesc"></p>
-        <p class="commandinfo smaller">
-            Command needs: <code id="commandneeds"></code>
-        </p>
-        <p class="commandinfo smaller">
-            Command ID: <code id="commandid"></code>
-        </p>
+        <div class="pasteindicator aleft">
+            <p class="commandinfo" id="commanddesc"></p>
+            <p class="commandinfo smaller">
+                Command needs: <code id="commandneeds"></code>
+            </p>
+            <p class="commandinfo smaller">
+                Command ID: <code id="commandid"></code>
+            </p>
+        </div>
         <form id="form">
             <input
                 type="text"
@@ -44,12 +46,20 @@
                 autocomplete="off"
             />
             <br />
-            <label for="useprevious" id="useprevl">
-                <input type="checkbox" name="useprevious" id="useprev" />
-                Use last generated file as source
-            </label>
-            <input type="file" name="file" id="file" multiple />
-            <br />
+            <div style="display: contents" id="fileinput">
+                <button id="uselastgen">
+                    Use last generated file as source
+                </button>
+                <input type="file" name="file" id="file" multiple />
+                <div class="pasteindicator" id="pasteindicator">
+                    <p class="commandinfo">
+                        Using <span id="imgtype">unknown</span>
+                        <span id="filetype">unknown</span>
+                    </p>
+                    <img id="pastedimage" />
+                    <video id="pastedvideo" controls></video>
+                </div>
+            </div>
             <input type="submit" value="Go!" id="genbtn" />
         </form>
         <div id="loader" class="loader"></div>
