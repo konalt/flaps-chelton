@@ -23,6 +23,14 @@ axios.get("/api/commands").then((resp) => {
     updateCommandInfo();
 });
 
+function clearImage() {
+    lasturl = "";
+    urls = [];
+    $("#pasteindicator").hide();
+    $("#file").val("");
+    $("#clearimage").hide();
+}
+
 let commands = [];
 
 let lasturl = "";
@@ -156,8 +164,15 @@ $("#pastedvideo").hide();
 $("#useprevl").hide();
 $(outvid).hide();
 
+$("#clearimage").hide();
+$("#clearimage").click((e) => {
+    e.preventDefault();
+    clearImage();
+});
+
 function setPreviewBuffer(buffer, type) {
     $("#pasteindicator").show();
+    $("#clearimage").show();
     $("#outimg").hide();
     $("#outvid").hide();
     $("#outtxt").hide();
