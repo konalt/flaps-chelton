@@ -4,7 +4,16 @@ var outimg = document.getElementById("outimg");
 var outvid = document.getElementById("outvid");
 
 axios.get("/api/commands").then((resp) => {
-    resp.data.forEach((cmd) => {
+    let sorted = resp.data.sort((a, b) => {
+        if (a.name < b.name) {
+            return -1;
+        }
+        if (a.name > b.name) {
+            return 1;
+        }
+        return 0;
+    });
+    sorted.forEach((cmd) => {
         var opt = document.createElement("option");
         opt.value = cmd.id;
         opt.innerHTML = cmd.name;
