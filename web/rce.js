@@ -33,6 +33,7 @@ function run() {
     $(outimg).hide();
     $(outvid).hide();
     $(outtxt).hide();
+    $("#loader").show();
     var useURL = urls;
     if ($("#useprev").is(":checked") && lasturl.length > 0) {
         useURL = [lasturl];
@@ -45,23 +46,30 @@ function run() {
             args: args,
             files: useURL,
         })
-        .then((resp) => {
-            outtxt.innerText = resp.data.content;
-            if (resp.data.content.length > 0) {
-                $(outtxt).show();
-            }
-            if (resp.data.buffer) {
-                if (resp.data.buffer.startsWith("data:video")) {
-                    outvid.src = resp.data.buffer;
-                    $(outvid).show();
-                } else if (resp.data.buffer.startsWith("data:image")) {
-                    outimg.src = resp.data.buffer;
-                    $(outimg).show();
+        .then(
+            (resp) => {
+                $("#loader").hide();
+                outtxt.innerText = resp.data.content;
+                if (resp.data.content.length > 0) {
+                    $(outtxt).show();
                 }
-                lasturl = resp.data.buffer;
-                $("#useprevl").show();
+                if (resp.data.buffer) {
+                    if (resp.data.buffer.startsWith("data:video")) {
+                        outvid.src = resp.data.buffer;
+                        $(outvid).show();
+                    } else if (resp.data.buffer.startsWith("data:image")) {
+                        outimg.src = resp.data.buffer;
+                        $(outimg).show();
+                    }
+                    lasturl = resp.data.buffer;
+                    $("#useprevl").show();
+                }
+            },
+            (err) => {
+                $("#loader").hide();
+                window.flaps.showError(err);
             }
-        });
+        );
 }
 
 $("#form").submit((e) => {
