@@ -32,6 +32,7 @@ function run() {
     var args = document.getElementById("args").value;
     $(outimg).hide();
     $(outvid).hide();
+    $(outtxt).hide();
     var useURL = urls;
     if ($("#useprev").is(":checked") && lasturl.length > 0) {
         useURL = [lasturl];
@@ -46,6 +47,9 @@ function run() {
         })
         .then((resp) => {
             outtxt.innerText = resp.data.content;
+            if (resp.data.content.length > 0) {
+                $(outtxt).show();
+            }
             if (resp.data.buffer) {
                 if (resp.data.buffer.startsWith("data:video")) {
                     outvid.src = resp.data.buffer;
@@ -129,5 +133,6 @@ $(selector).change(function (e) {
 
 $("#loader").hide();
 $("#outimg").hide();
+$("#outtxt").hide();
 $("#useprevl").hide();
 $(outvid).hide();
