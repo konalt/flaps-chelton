@@ -174,3 +174,8 @@ pre#outtxt {
     font-size: 16px;
     width: 450px;
 }
+
+code {
+    color: #333;
+    background-color: #f3f3f3;
+}
