@@ -45,6 +45,7 @@ import {
 import { contentType, lookup } from "mime-types";
 import initializeWebServer from "./lib/web";
 import { file } from "./lib/ffmpeg/ffmpeg";
+import { flapsWeb3DAPIInit } from "./lib/web3dapi";
 
 log("Initializing client...", "start");
 export const client: Client = new Client({
@@ -740,12 +741,15 @@ readCommandDir(__dirname + "/commands").then(() => {
                 }
             }, 1000);
             initializeWebServer().then(() => {
-                log("Logging in...", "start");
-                client
-                    .login(process.env.DISCORD_TOKEN || "NoTokenProvided")
-                    .catch((e) => {
-                        console.log(e);
-                    });
+                log("Initializing Web3D API...", "start");
+                flapsWeb3DAPIInit().then(() => {
+                    log("Logging in...", "start");
+                    client
+                        .login(process.env.DISCORD_TOKEN || "NoTokenProvided")
+                        .catch((e) => {
+                            console.log(e);
+                        });
+                });
             });
         });
     });
