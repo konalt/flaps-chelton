@@ -41,18 +41,26 @@ async function _init(id, options = {}) {
             camera.position.z = 6.9;
             camera.lookAt(0, 2, 0.5);
 
-            let textMaterial = new THREE.MeshStandardMaterial({
-                color: 0xffffff,
-                metalness: 0.683,
-                roughness: 0.562,
-            });
+            let textMaterial;
+            let groundMaterial;
 
-            let groundMaterial = new THREE.MeshPhysicalMaterial({
-                color: 0x9b9b9b,
-                roughness: 0,
-                metalness: 0,
-                reflectivity: 1,
-            });
+            if (debug) {
+                textMaterial = new THREE.MeshNormalMaterial();
+                groundMaterial = new THREE.MeshNormalMaterial();
+            } else {
+                textMaterial = new THREE.MeshStandardMaterial({
+                    color: 0xffffff,
+                    metalness: 0.683,
+                    roughness: 0.562,
+                });
+
+                groundMaterial = new THREE.MeshPhysicalMaterial({
+                    color: 0x9b9b9b,
+                    roughness: 0,
+                    metalness: 0,
+                    reflectivity: 1,
+                });
+            }
 
             const ground = new THREE.Mesh(
                 new THREE.PlaneGeometry(20, 20, 20),
