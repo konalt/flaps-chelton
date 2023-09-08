@@ -1,0 +1,7 @@
+{
+    "UserID": {
+        "channel": "ChannelID",
+        "webhook": "WebhookBotID",
+        "text": "The user is online now!"
+    }
+}

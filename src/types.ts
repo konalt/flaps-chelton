@@ -81,3 +81,9 @@ export interface RGBColor {
     g: number;
     b: number;
 }
+
+export interface AutoStatusInfo {
+    channel: string;
+    text: string;
+    webhook: string;
+}

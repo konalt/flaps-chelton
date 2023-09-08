@@ -6,6 +6,7 @@ log("Importing modules...", "start");
 import {
     ActivityType,
     Attachment,
+    CategoryChannel,
     Client,
     Collection,
     Guild,
@@ -19,6 +20,7 @@ import { readFile, readdir, writeFile } from "fs/promises";
 import { readFileSync, writeFileSync, existsSync } from "fs";
 import { hooks, sendWebhook, updateUsers } from "./lib/webhooks";
 import {
+    AutoStatusInfo,
     CommandResponseType,
     FlapsCommand,
     FlapsCommandResponse,
@@ -580,6 +582,40 @@ process.on("unhandledRejection", (reason: any, p) => {
 
 client.on("messageCreate", onMessage);
 
+function loadAutoStatus() {
+    return new Promise<void>(async (resolve, reject) => {
+        let autoStatus: Record<string, AutoStatusInfo> = JSON.parse(
+            (await readFile("autostatus.json")).toString()
+        );
+        client.on("presenceUpdate", async (oldPresence, newPresence) => {
+            if (newPresence.guild.id !== process.env.MAIN_GUILD) return;
+            if (!Object.keys(autoStatus).includes(newPresence.userId)) return;
+            log(
+                `User ${newPresence.user.username} is now ${
+                    newPresence.status
+                } (desktop ${newPresence.clientStatus.desktop || "offline"})`,
+                `presence`
+            );
+            let status = autoStatus[newPresence.userId];
+            let lastStatus = oldPresence ? oldPresence.status : "offline";
+            if (lastStatus == "online" || lastStatus == "dnd") return; // dont wanna alert people too much
+            if (newPresence.clientStatus.desktop === "online") {
+                let channel = await client.channels.fetch(status.channel);
+                if (channel instanceof TextChannel) {
+                    sendWebhook(status.webhook, status.text, channel);
+                } else {
+                    console.log(
+                        "Auto Status for userId " +
+                            newPresence.userId +
+                            " has an invalid channel ID"
+                    );
+                }
+            }
+        });
+        resolve();
+    });
+}
+
 export let commands: Collection<string, FlapsCommand> = new Collection();
 let flags: Record<string, string[]> = {};
 
@@ -693,12 +729,14 @@ export async function midnight(channel: TextChannel) {
 log("Loading commands...", "start");
 readCommandDir(__dirname + "/commands").then(() => {
     log("Loading autoreact flags...", "start");
-    readFile("flags.txt", { encoding: "utf-8" }).then((flagtext) => {
+    readFile("flags.txt", { encoding: "utf-8" }).then(async (flagtext) => {
         for (const line of flagtext.split("\n")) {
             let flagName = line.split(" ")[0];
             if (!flags[flagName]) flags[flagName] = [];
             flags[flagName].push(line.split(" ").slice(1).join(" "));
         }
+        log("Loading autostatus messages...", "start");
+        await loadAutoStatus();
         updateUsers().then(() => {
             log("Starting web server...", "start");
             setInterval(() => {
