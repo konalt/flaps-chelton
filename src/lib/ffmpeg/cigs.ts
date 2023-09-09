@@ -10,7 +10,7 @@ import {
     scheduleDelete,
 } from "../utils";
 import { downloadPromise } from "../download";
-import { ffmpegBuffer, file, preset } from "./ffmpeg";
+import { ffmpegBuffer, ffmpegNewBuffer, file, preset } from "./ffmpeg";
 import getTextWidth from "../canvas/getTextWidth";
 import { getVideoDimensions } from "./getVideoDimensions";
 
@@ -252,17 +252,24 @@ async function cigs(
         }
     }
     writeFileSync(file(output + ".ffscript"), filter);
-    scheduleDelete(file(output + ".ffscript"), 120);
-    for (const eFile of emojiFileList) {
-        scheduleDelete(eFile, 120);
-    }
-    return ffmpegBuffer(
-        `-y -i $BUF0 ${emojiInputs}-filter_complex_script ${file(
-            output + ".ffscript"
-        )} -map "[out_v]" -map "0:a?" -preset:v ${preset} -update 1 $OUT`,
-        buffers,
-        getFileExt(buffers[0][1])
-    );
+    return new Promise<Buffer>((resolve, reject) => {
+        ffmpegNewBuffer(
+            `-y -i $BUF0 ${emojiInputs}-filter_complex_script ${file(
+                output + ".ffscript"
+            )} -map "[out_v]" -map "0:a?" $PRESET -update 1 $OUT`,
+            buffers
+        )
+            .then((buffer) => {
+                for (const eFile of emojiFileList) {
+                    scheduleDelete(eFile, 5);
+                }
+                scheduleDelete(file(output + ".ffscript"), 5);
+                resolve(buffer);
+            })
+            .catch((error) => {
+                reject(error);
+            });
+    });
 }
 
 export default cigs;
