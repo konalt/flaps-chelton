@@ -48,6 +48,7 @@ import { contentType, lookup } from "mime-types";
 import initializeWebServer from "./lib/web";
 import { file } from "./lib/ffmpeg/ffmpeg";
 import { flapsWeb3DAPIInit } from "./lib/web3dapi";
+import filestreamServer from "./lib/filestreamserver";
 
 log("Initializing client...", "start");
 export const client: Client = new Client({
@@ -445,9 +446,11 @@ export async function onMessage(msg: Message) {
             "flapserrors",
             "Command did not return a FlapsCommandResponse."
         );
+        let index = 0;
         for (const info of commandChain) {
             let commandId = info[0].toLowerCase();
             let commandArgs = info[1];
+            let isLast = index == commandChain.length - 1;
 
             let command = commands.find((cmd) =>
                 cmd.aliases.includes(commandId.toLowerCase())
@@ -490,7 +493,7 @@ export async function onMessage(msg: Message) {
                         srcs.map(async (s) => [await readFile(s), s])
                     );
                     for (const src of srcs) {
-                        commandFiles.push([src, 120]);
+                        commandFiles.push([src, 5]);
                     }
                     let response = await command.execute(
                         commandArgs,
@@ -506,7 +509,10 @@ export async function onMessage(msg: Message) {
                                 );
                                 commandFiles.push([
                                     file("cache/" + response.filename),
-                                    21600,
+                                    isLast &&
+                                    response.buffer.byteLength > 25 * 1.049e6
+                                        ? 21600
+                                        : 5,
                                 ]);
                                 defatts = new Collection();
                                 defatts.set("0", {
@@ -547,6 +553,7 @@ export async function onMessage(msg: Message) {
             } else {
                 logMessage(msg, false, webhookUsed, commandArgs);
             }
+            index++;
         }
 
         if (commandRan) {
@@ -726,6 +733,15 @@ export async function midnight(channel: TextChannel) {
     }, 60 * 1000); // 1 min
 }
 
+export let [addBuffer, removeBuffer] = [
+    (buffer: Buffer, ext: string) => {
+        return "null";
+    },
+    (string: string) => {
+        return;
+    },
+];
+
 log("Loading commands...", "start");
 readCommandDir(__dirname + "/commands").then(() => {
     log("Loading autoreact flags...", "start");
@@ -737,8 +753,9 @@ readCommandDir(__dirname + "/commands").then(() => {
         }
         log("Loading autostatus messages...", "start");
         await loadAutoStatus();
-        updateUsers().then(() => {
-            log("Starting web server...", "start");
+        updateUsers().then(async () => {
+            log("Starting filestream server...", "start");
+            [addBuffer, removeBuffer] = await filestreamServer();
             setInterval(() => {
                 var d = new Date();
                 if (
@@ -778,6 +795,7 @@ readCommandDir(__dirname + "/commands").then(() => {
                     );
                 }
             }, 1000);
+            log("Starting web server...", "start");
             initializeWebServer().then(() => {
                 log("Initializing Web3D API...", "start");
                 flapsWeb3DAPIInit().then(() => {

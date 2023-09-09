@@ -5,15 +5,79 @@ import { Color, esc, log } from "../logger";
 import { getFileExt, scheduleDelete, uuidv4 } from "../utils";
 import { join } from "path";
 import { stdout } from "process";
+import { addBuffer, removeBuffer } from "../..";
 
 const extraArgs = "";
 const ffmpegVerbose = process.env.FFMPEG_VERBOSE == "yes";
 
-export const preset = "ultrafast";
+export const preset = "veryfast";
 
 export function file(pathstr: string) {
     return join(".", pathstr.includes("images") ? "" : "images", pathstr);
 }
+
+function getOutputFormat(ext: string) {
+    if (ext == "png") {
+        return "-f image2 -c png";
+    }
+    if (ext == "mp4") {
+        return "-f mp4 -movflags frag_keyframe+empty_moov";
+    }
+    return "-f " + ext;
+}
+
+export function ffmpegNewBuffer(
+    args: string,
+    buffers: [Buffer, string][],
+    outExt?: string
+): Promise<Buffer> {
+    return new Promise<Buffer>((resolve, reject) => {
+        if (!outExt) outExt = getFileExt(buffers[0][1]);
+        outExt = outExt.toLowerCase();
+        let newargs =
+            "-v warning " +
+            args
+                .replace(/\r?\n/g, "")
+                .replace(/\$PRESET/g, `${usePreset(outExt)}`)
+                .replace(/\$OUT/g, `${getOutputFormat(outExt)} -`)
+                .trim();
+
+        let bufferNames = [];
+        for (const [buffer, filename] of buffers) {
+            bufferNames.push(
+                addBuffer(buffer, getFileExt(filename.toLowerCase()))
+            );
+        }
+
+        newargs = newargs.replace(/\$BUF([0-9])+/g, (a, b) => {
+            return "http://localhost:56033/" + bufferNames[parseInt(b)];
+        });
+
+        const process = spawn("ffmpeg", newargs.split(" "), {
+            shell: true,
+        });
+        let chunkedOutput = [];
+        let errorLog = "";
+        process.stdout.on("data", (chunk: Buffer) => {
+            chunkedOutput.push(chunk);
+        });
+        process.stderr.on("data", (chunk: string) => {
+            errorLog += chunk;
+        });
+        process.on("exit", (code) => {
+            let file = Buffer.concat(chunkedOutput);
+            for (const bufferName of bufferNames) {
+                removeBuffer(bufferName);
+            }
+            if (code == 0) {
+                resolve(file);
+            } else {
+                reject(errorLog);
+            }
+        });
+    });
+}
+
 function ffmpegBuffer(
     args: string,
     buffers: [Buffer, string][],
@@ -51,7 +115,7 @@ function ffmpegBuffer(
             );
         });
         if (!outExt) outExt = getFileExt(buffers[0][1]);
-        var outFile = file("/cache/BUF_" + opId + "_FINAL." + outExt);
+        var outFile = `-f ${outExt} -`;
         files.forEach((filename, i) => {
             writeFileSync(filename, buffers[i][0]);
         });
@@ -98,15 +162,16 @@ export function ffmpeg(args: string, quiet = false) {
                 `${esc(Color.White)}Instance PID: ${ffmpegInstance.pid}`,
                 "ffmpeg"
             );
+        let outChunked = [];
         ffmpegInstance.stdout.on("data", (c) => {
-            //b += c;
+            outChunked.push(c);
         });
         ffmpegInstance.stderr.on("data", (c) => {
             if (c.toString().match(ffmpegLogRegex)) return;
             b += c;
         });
         ffmpegInstance.on("exit", (code) => {
-            if (ffmpegVerbose) console.log(b);
+            let outBuffer = Buffer.concat(outChunked);
             if (code == 0 && !quiet) {
                 log(
                     `${esc(Color.Green)}Completed ${esc(Color.White)}in ${esc(

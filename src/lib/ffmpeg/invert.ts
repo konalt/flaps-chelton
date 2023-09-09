@@ -1,10 +1,5 @@
-import { ffmpegBuffer, preset, usePreset } from "./ffmpeg";
+import { ffmpegNewBuffer } from "./ffmpeg";
 
-export default async function invert(
-    buffers: [Buffer, string][]
-): Promise<Buffer> {
-    return ffmpegBuffer(
-        `-i $BUF0 -vf negate ${usePreset(buffers[0][1])} $OUT`,
-        buffers
-    );
+export default function invert(buffers: [Buffer, string][]) {
+    return ffmpegNewBuffer("-i $BUF0 -vf negate $PRESET $OUT", buffers);
 }
