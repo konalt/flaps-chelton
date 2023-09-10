@@ -84,7 +84,6 @@ router.post("/runcmd", (req, res) => {
     );
     if (command) {
         var files = (req.body.files || []).map((x: string) => xbuf(x));
-        console.log(files);
         command
             .execute((req.body.args || "").split(" "), files, {
                 channel: null,
@@ -108,6 +107,8 @@ router.post("/runcmd", (req, res) => {
                         break;
                 }
             });
+    } else {
+        res.status(404).contentType("txt").send("404 Command Not Found");
     }
 });
 
