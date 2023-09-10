@@ -11,7 +11,6 @@ export const downloadPromise = function (
             https
                 .get(url, function (res) {
                     var data: Buffer[] = [];
-
                     res.on("data", function (chunk: Buffer) {
                         data.push(chunk);
                     }).on("end", function () {
@@ -20,7 +19,6 @@ export const downloadPromise = function (
                     });
                 })
                 .on("error", function (err) {
-                    fs.unlink(dest, () => {});
                     reject(err);
                 });
         } else {
