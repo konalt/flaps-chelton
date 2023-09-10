@@ -55,35 +55,52 @@ router.post("/question", (req, res) => {
 });
 
 router.get("/legacy/question/:question", (req, res) => {
+    log(
+        `Legacy API request for ${esc(Color.Cyan)}question${esc(
+            Color.White
+        )}...`,
+        "api-legacy"
+    );
     question(req.params.question.replace(/_sps_/g, " ")).then((answer) => {
         res.contentType("txt").send(answer);
     });
 });
 
 router.get("/legacy/funnynumber/:funnynumber", (req, res) => {
+    log(
+        `Legacy API request for ${esc(Color.Cyan)}funnynumber${esc(
+            Color.White
+        )}...`,
+        "api-legacy"
+    );
     funnynumber
         .execute([req.params.funnynumber, "--noformat"], [])
         .then((resp: FlapsMessageCommandResponse) => {
+            log(
+                `Legacy API request for ${esc(Color.Cyan)}funnynumber ${esc(
+                    Color.White
+                )}succeeded!`,
+                "api-legacy"
+            );
             res.contentType("txt").send(resp.content);
         });
 });
 
-function xbuf(url: string, ext = null) {
+function xbuf(url: string) {
     var buf = dataURLToBuffer(url);
-    var inFile =
-        "images/cache/" +
-        uuidv4() +
-        "." +
-        extension(url.split(":")[1].split(";")[0]);
-    writeFileSync(inFile, buf);
-    return [buf, inFile];
+    return [buf, extension(url.split(":")[1].split(";")[0])];
 }
 
 router.post("/runcmd", (req, res) => {
     let command = commands.find((cmd) =>
         cmd.aliases.includes(req.body.id.toLowerCase())
     );
-    log(`API request for command ${esc(Color.Green)}${req.body.id}`, "api");
+    log(
+        `API request for command ${esc(Color.Green)}${req.body.id}${esc(
+            Color.White
+        )}...`,
+        "api"
+    );
     if (command) {
         var files = (req.body.files || []).map((x: string) => xbuf(x));
         command
@@ -132,7 +149,8 @@ router.post("/runcmd", (req, res) => {
                     content: `Command execution error:\n${reason}`,
                     buffer: null,
                 });
-            });
+            })
+            .finally(() => {});
     } else {
         log(
             `API request for command ${esc(Color.Green)}${
@@ -160,10 +178,30 @@ router.get("/commands", (req, res) => {
 });
 
 router.get("/legacy/userdata/:id", (req, res) => {
+    log(
+        `Legacy API request for user ${esc(Color.Yellow)}${req.params.id}${esc(
+            Color.White
+        )}...`,
+        "api-legacy"
+    );
     let user = hooks.get(req.params.id);
     if (user) {
+        log(
+            `Legacy API request for user ${esc(Color.Yellow)}${
+                req.params.id
+            } ${esc(Color.White)}succeeded!`,
+            "api-legacy"
+        );
         res.contentType("txt").send(user.name);
     } else {
+        log(
+            `Legacy API request for user ${esc(Color.Yellow)}${
+                req.params.id
+            } ${esc(Color.White)}failed: ${esc(
+                Color.BrightRed
+            )}User not found.`,
+            "api-legacy"
+        );
         res.contentType("txt").send("FlapsAPIUnknownUser");
     }
 });
