@@ -13,6 +13,7 @@ import { writeFileSync } from "fs";
 import { hooks, sendWebhook } from "./webhooks";
 import { Message } from "discord.js";
 import { users } from "./users";
+import { Color, esc, log } from "./logger";
 
 const funnynumber = require("../commands/funnynumber");
 
@@ -82,6 +83,7 @@ router.post("/runcmd", (req, res) => {
     let command = commands.find((cmd) =>
         cmd.aliases.includes(req.body.id.toLowerCase())
     );
+    log(`API request for command ${esc(Color.Green)}${req.body.id}`, "api");
     if (command) {
         var files = (req.body.files || []).map((x: string) => xbuf(x));
         command
@@ -91,6 +93,12 @@ router.post("/runcmd", (req, res) => {
             .then((response) => {
                 switch (response.type) {
                     case CommandResponseType.Message:
+                        log(
+                            `API request for command ${esc(Color.Green)}${
+                                req.body.id
+                            } ${esc(Color.White)}succeeded!`,
+                            "api"
+                        );
                         res.json({
                             id: response.id,
                             type: 0,
@@ -106,8 +114,34 @@ router.post("/runcmd", (req, res) => {
                         });
                         break;
                 }
+            })
+            .catch((reason) => {
+                log(
+                    `API request for command ${esc(Color.Green)}${
+                        req.body.id
+                    } failed: ${esc(Color.BrightRed)}Execution error${esc(
+                        Color.White
+                    )}.`,
+                    "api"
+                );
+                res.json({
+                    id: "flapserrors",
+                    type: 0,
+                    channel: null,
+                    filename: "",
+                    content: `Command execution error:\n${reason}`,
+                    buffer: null,
+                });
             });
     } else {
+        log(
+            `API request for command ${esc(Color.Green)}${
+                req.body.id
+            } failed: ${esc(Color.BrightRed)}Command not found${esc(
+                Color.White
+            )}.`,
+            "api"
+        );
         res.status(404).contentType("txt").send("404 Command Not Found");
     }
 });
