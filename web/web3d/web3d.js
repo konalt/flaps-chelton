@@ -139,7 +139,7 @@ async function _init(id, options = {}) {
 
     renderer.render(scene, camera);
 
-    window.flapsWeb3DFinished(size[0], size[1]);
+    if (window.flapsWeb3DFinished) window.flapsWeb3DFinished(size[0], size[1]);
 }
 
 window.flapsWeb3DInit = _init;
