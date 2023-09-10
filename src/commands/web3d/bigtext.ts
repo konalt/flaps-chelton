@@ -1,6 +1,6 @@
-import { getFileName, makeMessageResp } from "../lib/utils";
-import { FlapsCommand } from "../types";
-import { getWeb3DAPIImage } from "../lib/web3dapi";
+import { getFileName, makeMessageResp } from "../../lib/utils";
+import { FlapsCommand } from "../../types";
+import { getWeb3DAPIImage } from "../../lib/web3dapi";
 
 module.exports = {
     id: "bigtext",
