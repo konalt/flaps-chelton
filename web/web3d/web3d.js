@@ -42,6 +42,7 @@ async function _init(id, options = {}) {
         antialias: true,
     });
     renderer.setSize(size[0], size[1]);
+    renderer.outputColorSpace = THREE.SRGBColorSpace;
     document.body.appendChild(renderer.domElement);
 
     switch (id) {
@@ -155,7 +156,6 @@ async function _init(id, options = {}) {
             camera.lookAt(0, 0, 0);
 
             let texture = await loadTexture(options.imageURL);
-            renderer.outputColorSpace = THREE.SRGBColorSpace;
             texture.colorSpace = THREE.SRGBColorSpace;
             const cube = new THREE.Mesh(
                 new THREE.BoxGeometry(1, 1, 1),
