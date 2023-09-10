@@ -1,6 +1,5 @@
 import { TextChannel } from "discord.js";
 import { Message } from "discord.js";
-import { ffmpegBuffer } from "../../lib/ffmpeg/ffmpeg";
 import {
     getFileExt,
     getFileName,

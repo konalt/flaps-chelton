@@ -1,5 +1,5 @@
-import { ffmpegNewBuffer } from "./ffmpeg";
+import { ffmpegBuffer } from "./ffmpeg";
 
 export default function invert(buffers: [Buffer, string][]) {
-    return ffmpegNewBuffer("-i $BUF0 -vf negate $PRESET $OUT", buffers);
+    return ffmpegBuffer("-i $BUF0 -vf negate $PRESET $OUT", buffers);
 }

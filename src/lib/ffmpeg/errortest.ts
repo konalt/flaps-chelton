@@ -1,4 +1,4 @@
-import { ffmpegBuffer, preset } from "./ffmpeg";
+import { ffmpegBuffer } from "./ffmpeg";
 
 export default async function errortest(
     buffers: [Buffer, string][]

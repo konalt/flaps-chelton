@@ -6,11 +6,12 @@ export default function filestreamServer(): Promise<
 > {
     return new Promise((resolve) => {
         const app = express();
-        let files: Record<string, Buffer> = {
-            "testfile.txt": Buffer.from("This is a test file.\noozi oozi"),
-        };
+        let files: Record<string, Buffer> = {};
         app.get("/", (req, res) => {
             res.status(400).contentType("txt").send("400 Bad Request");
+        });
+        app.get("/filelist", (req, res) => {
+            res.contentType("txt").send(Object.keys(files).join("\n"));
         });
         app.get("/:fileID", (req, res) => {
             let fileID = req.params.fileID;
@@ -19,7 +20,29 @@ export default function filestreamServer(): Promise<
                 res.status(404).contentType("txt").send("404 Not Found");
                 return;
             }
-            res.contentType(getFileExt(fileID)).send(file);
+            res.setHeader("Accept-Ranges", "bytes");
+            let trimmedBuffer = file;
+            let status = 200;
+            if (req.headers.range) {
+                let byteRange = req.headers.range.split("=")[1].split("-");
+                trimmedBuffer = file.subarray(
+                    parseInt(byteRange[0]),
+                    byteRange[1] ? parseInt(byteRange[1]) : file.byteLength
+                );
+                status = 206;
+                res.setHeader(
+                    "Content-Range",
+                    "bytes " +
+                        byteRange[0] +
+                        "-" +
+                        (byteRange[1] ?? file.byteLength) +
+                        "/" +
+                        file.byteLength
+                );
+            }
+            res.status(status)
+                .contentType(getFileExt(fileID))
+                .send(trimmedBuffer);
         });
         function addBuffer(buffer: Buffer, ext: string): string {
             let fileID = uuidv4() + "." + ext;

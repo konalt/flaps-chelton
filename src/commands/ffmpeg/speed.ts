@@ -1,10 +1,7 @@
-import { TextChannel } from "discord.js";
 import { Message } from "discord.js";
-import { ffmpegBuffer } from "../../lib/ffmpeg/ffmpeg";
 import handleFFmpeg from "../../lib/ffmpeg/handleFFmpeg";
 import handleFFmpegCatch from "../../lib/ffmpeg/handleFFmpegCatch";
 import { getFileExt, getFileName } from "../../lib/utils";
-import { sendWebhook } from "../../lib/webhooks";
 import { FlapsCommand } from "../../types";
 import speed from "../../lib/ffmpeg/speed";
 

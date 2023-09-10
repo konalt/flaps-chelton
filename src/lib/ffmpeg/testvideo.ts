@@ -1,5 +1,5 @@
-import { ffmpegNewBuffer } from "./ffmpeg";
+import { ffmpegBuffer } from "./ffmpeg";
 
 export default function testVideo() {
-    return ffmpegNewBuffer("-f lavfi -i testsrc -t 10 $OUT", [], "mp4");
+    return ffmpegBuffer("-f lavfi -i testsrc -t 10 $OUT", [], "mp4");
 }

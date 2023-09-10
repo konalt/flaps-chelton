@@ -1,4 +1,4 @@
-import { ffmpegBuffer, file, preset } from "./ffmpeg";
+import { ffmpegBuffer, file } from "./ffmpeg";
 import { getVideoDimensions } from "./getVideoDimensions";
 import createPrincessGradient from "../../lib/canvas/createPrincessGradient";
 
@@ -27,7 +27,7 @@ function randomOverlay() {
 export default async function princess(
     buffers: [Buffer, string][]
 ): Promise<Buffer> {
-    let dims = await getVideoDimensions(buffers[0][1]);
+    let dims = await getVideoDimensions(buffers[0]);
     let gradient = await createPrincessGradient(buffers[0][0]);
     let tmp = [];
     let princessTags = ["", "", "", ""].map((_) => {
@@ -77,6 +77,6 @@ export default async function princess(
             /\n +/g,
             ""
         ),
-        buffers.concat([[gradient, "NUL.png"]])
+        buffers.concat([[gradient, "png"]])
     );
 }

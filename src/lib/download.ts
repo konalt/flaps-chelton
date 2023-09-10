@@ -1,5 +1,6 @@
 import https from "https";
 import fs from "fs";
+import { readFile } from "fs/promises";
 
 export const downloadPromise = function (
     url: string,
@@ -31,8 +32,8 @@ export const downloadPromise = function (
                     }
                     response.pipe(file);
                     file.on("finish", function () {
-                        file.close(() => {
-                            resolve(null);
+                        file.close(async () => {
+                            resolve(await readFile(dest));
                         });
                     });
                 })

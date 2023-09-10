@@ -1,4 +1,4 @@
-import { ffmpegBuffer, preset, usePreset } from "./ffmpeg";
+import { ffmpegBuffer } from "./ffmpeg";
 
 export default async function reverse(
     buffers: [Buffer, string][],
@@ -9,7 +9,7 @@ export default async function reverse(
             isGIF
                 ? ",split[s0][s1];[s0]palettegen[p];[s1][p]paletteuse"
                 : " -af areverse"
-        } ${usePreset(buffers[0][1])} $OUT`,
+        } $PRESET $OUT`,
         buffers
     );
 }

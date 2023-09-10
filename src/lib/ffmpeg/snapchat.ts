@@ -10,7 +10,7 @@ import {
     scheduleDelete,
 } from "../utils";
 import { downloadPromise } from "../download";
-import { ffmpegBuffer, ffmpegNewBuffer, file, preset } from "./ffmpeg";
+import { ffmpegBuffer, file } from "./ffmpeg";
 import getTextWidth from "../canvas/getTextWidth";
 import { getVideoDimensions } from "./getVideoDimensions";
 
@@ -26,7 +26,7 @@ async function snapchat(
         emojisize: 1.3,
         vcrosdmono: false,
     };
-    let dims = await getVideoDimensions(buffers[0][1]);
+    let dims = await getVideoDimensions(buffers[0]);
     var videoHeight = dims[1];
     var videoWidth = dims[0];
     videoWidth = Math.round(videoWidth / 2) * 2;
@@ -260,7 +260,7 @@ async function snapchat(
     }
     writeFileSync(file(output + ".ffscript"), filter);
     return new Promise<Buffer>((resolve, reject) => {
-        ffmpegNewBuffer(
+        ffmpegBuffer(
             `-y -i $BUF0 ${emojiInputs}-filter_complex_script ${file(
                 output + ".ffscript"
             )} -map "[out_v]" -map "0:a?" $PRESET -update 1 $OUT`,

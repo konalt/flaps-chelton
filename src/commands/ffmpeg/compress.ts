@@ -13,11 +13,7 @@ module.exports = {
     async execute(args, buf, msg) {
         return new Promise((res, rej) => {
             compress(buf).then(
-                handleFFmpeg(
-                    getFileName("Effect_Compress", getFileExt(buf[0][1])),
-
-                    res
-                ),
+                handleFFmpeg(getFileName("Effect_Compress", "mp4"), res),
                 handleFFmpegCatch(res)
             );
         });

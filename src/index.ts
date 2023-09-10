@@ -27,6 +27,7 @@ import {
 } from "./types";
 import { downloadPromise } from "./lib/download";
 import {
+    getFileExt,
     getTypes,
     getTypeSingular,
     makeMessageResp,
@@ -273,9 +274,12 @@ function getSourcesWithAttachments(msg: Message, types: string[]) {
                             downloadPromise(
                                 url,
                                 "images/cache/" + id + ".gif"
-                            ).then(async () => {
+                            ).then(async (buffer) => {
                                 var name = "images/cache/" + id + ".gif";
-                                var dimensions = await getVideoDimensions(name);
+                                var dimensions = await getVideoDimensions([
+                                    buffer,
+                                    name,
+                                ]);
                                 resolve([
                                     [
                                         {
@@ -308,10 +312,11 @@ function getSourcesWithAttachments(msg: Message, types: string[]) {
                         var npath = id + "." + ext;
                         var zpath = "images/cache/" + npath;
                         downloadPromise(msg.content.split(" ")[0], zpath).then(
-                            async () => {
-                                var dimensions = await getVideoDimensions(
-                                    zpath
-                                );
+                            async (buffer) => {
+                                var dimensions = await getVideoDimensions([
+                                    buffer,
+                                    ext,
+                                ]);
                                 resolve([
                                     [
                                         {
@@ -538,6 +543,13 @@ export async function onMessage(msg: Message) {
                                     file("cache/" + response.filename),
                                     response.buffer
                                 );
+                                commandFiles.push([
+                                    file("cache/" + response.filename),
+                                    isLast &&
+                                    response.buffer.byteLength > 25 * 1.049e6
+                                        ? 21600
+                                        : 5,
+                                ]);
                                 defatts = new Collection();
                                 defatts.set("0", {
                                     url:

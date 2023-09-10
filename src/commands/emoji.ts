@@ -16,7 +16,7 @@ module.exports = {
                         makeMessageResp(
                             "flaps",
                             "your emoji is: damn " + name,
-                            msg.channel,
+                            null,
                             emoji,
                             getFileName("Emoji", gif ? "gif" : "png")
                         )

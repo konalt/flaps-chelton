@@ -18,7 +18,7 @@ export default async function trim(
                 : ""
         }[out_v]" -map "[out_v]"${
             options.gif ? "" : ' -map "1:a:0"'
-        } -c:v libx264 -preset:v ${preset} -t ${options.length} $OUT`,
+        } -c:v libx264 $PRESET -t ${options.length} $OUT`,
         buffers,
         options.gif ? "gif" : "mp4"
     );

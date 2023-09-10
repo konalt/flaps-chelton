@@ -1,5 +1,5 @@
 import { Caption2Options } from "../../types";
-import { ffmpegBuffer, file, preset } from "./ffmpeg";
+import { ffmpegBuffer, file } from "./ffmpeg";
 import { getVideoDimensions } from "./getVideoDimensions";
 
 export default async function invert(
@@ -17,7 +17,7 @@ export default async function invert(
             .replace(/%/g, "\\\\\\%")
             .replace(/:/g, "\\\\\\:")
             .replace(/\n/g, "\\\\\\n");
-    var dims = await getVideoDimensions(buffers[0][1]);
+    var dims = await getVideoDimensions(buffers[0]);
     var w = 0,
         h = 0;
     if (dims[0] > dims[1]) {
@@ -46,7 +46,7 @@ export default async function invert(
         [speen][rainbow]xfade=transition=dissolve:duration=1:offset=4,format=yuv420p[transitioned_a];
         [text][transitioned_a]xfade=transition=circleopen:duration=1:offset=2,format=yuv420p[out_nocrop];
         [out_nocrop]crop=480:480:0:0[out_v]"
-        -map "[out_v]" -map "2:a:0" -t 9 -crf:v 51 -b:v 16k -preset:v ${preset} $OUT`,
+        -map "[out_v]" -map "2:a:0" -t 9 -crf:v 51 -b:v 16k $PRESET $OUT`,
         buffers,
         "mp4"
     );

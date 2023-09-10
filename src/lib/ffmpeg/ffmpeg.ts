@@ -20,13 +20,16 @@ function getOutputFormat(ext: string) {
     if (ext == "png") {
         return "-f image2 -c png";
     }
+    if (ext == "jpeg" || ext == "jpg") {
+        return "-f image2 -c mjpeg";
+    }
     if (ext == "mp4") {
-        return "-f mp4 -movflags frag_keyframe+empty_moov";
+        return "-pix_fmt yuv420p -f mp4 -movflags faststart+frag_keyframe+empty_moov";
     }
     return "-f " + ext;
 }
 
-export function ffmpegNewBuffer(
+export function ffmpegBuffer(
     args: string,
     buffers: [Buffer, string][],
     outExt?: string
@@ -34,13 +37,15 @@ export function ffmpegNewBuffer(
     return new Promise<Buffer>((resolve, reject) => {
         if (!outExt) outExt = getFileExt(buffers[0][1]);
         outExt = outExt.toLowerCase();
-        let newargs =
-            "-v warning " +
+        let verbosityArg = ffmpegVerbose ? "" : "-v warning";
+        let newargs = (
+            verbosityArg +
+            " " +
             args
                 .replace(/\r?\n/g, "")
                 .replace(/\$PRESET/g, `${usePreset(outExt)}`)
                 .replace(/\$OUT/g, `${getOutputFormat(outExt)} -`)
-                .trim();
+        ).trim();
 
         let bufferNames = [];
         for (const [buffer, filename] of buffers) {
@@ -53,18 +58,21 @@ export function ffmpegNewBuffer(
             return "http://localhost:56033/" + bufferNames[parseInt(b)];
         });
 
-        const process = spawn("ffmpeg", newargs.split(" "), {
+        const childProcess = spawn("ffmpeg", newargs.split(" "), {
             shell: true,
         });
         let chunkedOutput = [];
         let errorLog = "";
-        process.stdout.on("data", (chunk: Buffer) => {
+        childProcess.stdout.on("data", (chunk: Buffer) => {
             chunkedOutput.push(chunk);
         });
-        process.stderr.on("data", (chunk: string) => {
+        childProcess.stderr.on("data", (chunk: string) => {
             errorLog += chunk;
+            if (ffmpegVerbose) {
+                process.stdout.write(chunk);
+            }
         });
-        process.on("exit", (code) => {
+        childProcess.on("exit", (code) => {
             let file = Buffer.concat(chunkedOutput);
             for (const bufferName of bufferNames) {
                 removeBuffer(bufferName);
@@ -78,25 +86,28 @@ export function ffmpegNewBuffer(
     });
 }
 
-function ffmpegBuffer(
+/**
+ * @deprecated Creates too many intermediate files
+ */
+function ffmpegOldBuffer(
     args: string,
     buffers: [Buffer, string][],
     outExt?: string,
     noFileReturn?: false
 ): Promise<Buffer>;
-function ffmpegBuffer(
+function ffmpegOldBuffer(
     args: string,
     buffers: [Buffer, string][],
     outExt?: string,
     noFileReturn?: true
 ): Promise<string>;
-function ffmpegBuffer(
+function ffmpegOldBuffer(
     args: string,
     buffers: [Buffer, string][],
     outExt?: string,
     noFileReturn?: any
 ): Promise<Buffer>;
-function ffmpegBuffer(
+function ffmpegOldBuffer(
     args: string,
     buffers: [Buffer, string][],
     outExt?: string,
@@ -141,7 +152,7 @@ function ffmpegBuffer(
 }
 const ffmpegLogRegex =
     /(ffmpeg version [^ ]+ Copyright \(c\) \d+-\d+ the FFmpeg developers)|(  built with .+)|(  configuration: (--[a-z0-9\-]+ ?)+)|(  lib[a-z0-9]+ +\d+\. +\d+\.\d+ +\/ +\d+\. +\d+\.\d+$)/gm;
-export { ffmpegBuffer };
+export { ffmpegOldBuffer };
 export function ffmpeg(args: string, quiet = false) {
     return new Promise((resolve, reject) => {
         var startTime = Date.now();
@@ -194,10 +205,15 @@ export function ffmpeg(args: string, quiet = false) {
     });
 }
 
-export async function ffprobe(args: string): Promise<string> {
-    return new Promise((resolve, reject) => {
+export async function ffprobe(
+    args: string,
+    buffer: [Buffer, string]
+): Promise<string> {
+    return new Promise(async (resolve, reject) => {
         var quiet = false;
         var startTime = Date.now();
+        let inFile = addBuffer(buffer[0], getFileExt(buffer[1]));
+        args = args.replace(/\$BUF0/g, "http://localhost:56033/" + inFile);
         var ffmpegInstance = spawn("ffprobe", args.split(" "), {
             shell: true,
         });
@@ -209,6 +225,7 @@ export async function ffprobe(args: string): Promise<string> {
             stdout.write("[ffprobe] " + c);
         });
         ffmpegInstance.on("exit", (code) => {
+            removeBuffer(inFile);
             if (code == 0 && !quiet) {
                 if (!quiet)
                     log(

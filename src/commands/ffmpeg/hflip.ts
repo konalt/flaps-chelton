@@ -14,12 +14,11 @@ module.exports = {
     needs: ["image/video"],
     async execute(args: string[], buffers: [Buffer, string][], msg: Message) {
         return new Promise((res, rej) => {
-            ffmpegBuffer(
-                "-i $BUF0 -vf hflip $OUT",
-                buffers,
-                getFileExt(buffers[0][1])
-            ).then(
-                handleFFmpeg(getFileName("Effect_HFlip", "png"), res),
+            ffmpegBuffer("-i $BUF0 -vf hflip $OUT", buffers).then(
+                handleFFmpeg(
+                    getFileName("Effect_HFlip", getFileExt(buffers[0][1])),
+                    res
+                ),
                 handleFFmpegCatch(res)
             );
         });

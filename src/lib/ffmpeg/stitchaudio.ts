@@ -1,5 +1,4 @@
-import { ffmpegBuffer, preset } from "./ffmpeg";
-import { getVideoDimensions, getVideoLength } from "./getVideoDimensions";
+import { ffmpegBuffer } from "./ffmpeg";
 
 export default async function stitchaudio(
     buffers: [Buffer, string][]

@@ -16,7 +16,7 @@ module.exports = {
                             "test",
                             null,
                             file,
-                            getFileName("Effect_TestVideo", "webm")
+                            getFileName("Effect_TestVideo", "mp4")
                         )
                     );
                 },

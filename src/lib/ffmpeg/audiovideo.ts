@@ -1,12 +1,10 @@
-import { ffmpegBuffer, preset } from "./ffmpeg";
-import { getVideoDimensions, getVideoLength } from "./getVideoDimensions";
+import { ffmpegBuffer } from "./ffmpeg";
 
 export default async function audiovideo(
     buffers: [Buffer, string][]
 ): Promise<Buffer> {
-    let dur = await getVideoLength(buffers[0][1]);
     return ffmpegBuffer(
-        `-i $BUF0 -i $BUF1 -map 0:a:0 -map 1:v:0 -c:v copy -c:a aac -preset:v ${preset} -shortest $OUT`,
+        `-i $BUF0 -i $BUF1 -map 0:a:0 -map 1:v:0 -c:v copy -c:a aac $PRESET -shortest $OUT`,
         buffers,
         "mp4"
     );

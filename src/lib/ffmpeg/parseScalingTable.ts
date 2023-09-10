@@ -1,6 +1,4 @@
-import { log, esc, Color } from "../logger";
-import { ffmpeg, ffmpegBuffer, file, preset } from "./ffmpeg";
-import { copyFileSync, existsSync } from "fs";
+import { ffmpegBuffer } from "./ffmpeg";
 
 let scalingTableHelpers = ["STR XPS YPS WTH HGT"];
 
@@ -50,7 +48,7 @@ export default function parseScalingTable(
     }
     filter += `[compiled_layer_${directiveCount - 1}]null[scaling_result]`;
     return ffmpegBuffer(
-        `-r 30 -t ${v_length} -i $BUF0 -filter_complex ${filter} -map "[scaling_result]" -t ${v_length} -r 30 -preset:v ${preset} $OUT`,
+        `-r 30 -t ${v_length} -i $BUF0 -filter_complex ${filter} -map "[scaling_result]" -t ${v_length} -r 30 $PRESET $OUT`,
         [in_buf],
         "mp4"
     );

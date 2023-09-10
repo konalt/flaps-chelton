@@ -1,7 +1,7 @@
 import createFrame from "../canvas/createFrame";
-import { ffmpegBuffer, preset } from "./ffmpeg";
+import { ffmpegBuffer } from "./ffmpeg";
 
-export default async function errortest(
+export default async function frame(
     buffers: [Buffer, string][]
 ): Promise<Buffer> {
     let [frame, padSize] = await createFrame(buffers[0][0]);
@@ -11,6 +11,6 @@ export default async function errortest(
         }:h=ih+${
             padSize * 2
         }:x=${padSize}:y=${padSize}[pad];[pad][1:v]overlay[out]" -map "[out]" -update 1 -frames:v 1 $OUT`,
-        [buffers[0], [frame, "NUL"]]
+        [buffers[0], [frame, "png"]]
     );
 }
