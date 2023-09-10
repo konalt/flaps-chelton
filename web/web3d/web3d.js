@@ -155,13 +155,19 @@ async function _init(id, options = {}) {
             camera.lookAt(0, 0, 0);
 
             let texture = await loadTexture(options.imageURL);
+            renderer.outputColorSpace = THREE.SRGBColorSpace;
+            texture.colorSpace = THREE.SRGBColorSpace;
             const cube = new THREE.Mesh(
                 new THREE.BoxGeometry(1, 1, 1),
-                new THREE.MeshStandardMaterial({ map: texture })
+                new THREE.MeshStandardMaterial({
+                    map: texture,
+                    metalness: 1,
+                    roughness: 1,
+                })
             );
             scene.add(cube);
 
-            const light = new THREE.PointLight(0xffffff, 20, 10);
+            const light = new THREE.PointLight(0xffffff, 100, 10);
             light.position.x = 2;
             light.position.y = 1.6;
             light.position.z = 1.5;
