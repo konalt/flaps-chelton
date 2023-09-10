@@ -4,14 +4,25 @@ import { FontLoader } from "three/addons/loaders/FontLoader.js";
 
 const resolutions = {
     bigtext: [768, 768],
+    cube: [768, 768],
 };
 
-const loader = new FontLoader();
-
+const fontLoader = new FontLoader();
 async function loadFont(fontName) {
     return new Promise((res) => {
-        loader.load(fontName, function (font) {
+        fontLoader.load(fontName, function (font) {
             res(font);
+        });
+    });
+}
+const textureLoader = new THREE.TextureLoader();
+async function loadTexture(textureName) {
+    return new Promise((res) => {
+        if (!textureName)
+            textureName =
+                "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAICAYAAADED76LAAAALElEQVQYV2P8z/D/PwMQMAIhCAD5YBrGZySoAKwJi06ESYQUELSCoAKK3QAAUtcn+TTvDwYAAAAASUVORK5CYII=";
+        textureLoader.load(textureName, function (texture) {
+            res(texture);
         });
     });
 }
@@ -135,11 +146,33 @@ async function _init(id, options = {}) {
 
             break;
         }
+        case "cube": {
+            camera.position.x = 2.5;
+            camera.position.y = 1.4;
+            camera.position.z = 3;
+            camera.fov = 25;
+            camera.updateProjectionMatrix();
+            camera.lookAt(0, 0, 0);
+
+            let texture = await loadTexture(options.imageURL);
+            const cube = new THREE.Mesh(
+                new THREE.BoxGeometry(1, 1, 1),
+                new THREE.MeshStandardMaterial({ map: texture })
+            );
+            scene.add(cube);
+
+            const light = new THREE.PointLight(0xffffff, 20, 10);
+            light.position.x = 2;
+            light.position.y = 1.6;
+            light.position.z = 1.5;
+            scene.add(light);
+            break;
+        }
     }
 
     renderer.render(scene, camera);
 
-    if (window.flapsWeb3DFinished) window.flapsWeb3DFinished(size[0], size[1]);
+    window.flapsWeb3DFinished(size[0], size[1]);
 }
 
 window.flapsWeb3DInit = _init;
