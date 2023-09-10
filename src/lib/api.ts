@@ -136,9 +136,9 @@ router.post("/runcmd", (req, res) => {
                 log(
                     `API request for command ${esc(Color.Green)}${
                         req.body.id
-                    } failed: ${esc(Color.BrightRed)}Execution error${esc(
-                        Color.White
-                    )}.`,
+                    }${esc(Color.White)} failed: ${esc(
+                        Color.BrightRed
+                    )}Execution error${esc(Color.White)}.`,
                     "api"
                 );
                 res.json({
