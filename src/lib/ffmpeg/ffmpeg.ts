@@ -37,7 +37,7 @@ export function ffmpegBuffer(
     return new Promise<Buffer>((resolve, reject) => {
         if (!outExt) outExt = getFileExt(buffers[0][1]);
         outExt = outExt.toLowerCase();
-        let verbosityArg = ffmpegVerbose ? "" : "-v warning";
+        let verbosityArg = ffmpegVerbose ? "-v debug" : "-v warning";
         let newargs = (
             verbosityArg +
             " " +
@@ -255,6 +255,12 @@ export function usePreset(filename: string) {
         return `-preset ${preset}`;
     }
     return "";
+}
+
+export function gifPalette(in_specifier: string, out_specifier: string) {
+    return `[${in_specifier}]split[${in_specifier}_pgen_${out_specifier}][${in_specifier}_puse_${out_specifier}];
+    [${in_specifier}_pgen_${out_specifier}]palettegen[${in_specifier}_palette_${out_specifier}];
+    [${in_specifier}_puse_${out_specifier}][${in_specifier}_palette_${out_specifier}]paletteuse[${out_specifier}];`;
 }
 
 export const DEFAULTFORMAT = {
