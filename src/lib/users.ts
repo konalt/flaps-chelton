@@ -696,7 +696,7 @@ export const users: WebhookBot[] = [
     },
     {
         id: "n",
-        name: "wife thief",
+        name: "forgiven wife thief",
     },
     {
         id: "v",
