@@ -165,6 +165,9 @@ async function _init(id, options = {}) {
                     roughness: 1,
                 })
             );
+            if (Math.random() > 0.5) {
+                cube.rotation.y = Math.PI / 2;
+            }
             scene.add(cube);
 
             const light = new THREE.PointLight(0xffffff, 100, 10);
