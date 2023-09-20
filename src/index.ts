@@ -806,6 +806,22 @@ readCommandDir(__dirname + "/commands").then(() => {
                         ) as TextBasedChannel
                     );
                 }
+                if (
+                    d.getMinutes() == 33 &&
+                    d.getHours() == 23 &&
+                    d.getFullYear() == 2033 &&
+                    d.getMonth() == 2 &&
+                    d.getDate() == 3 &&
+                    d.getSeconds() < 1
+                ) {
+                    sendWebhook(
+                        "nick",
+                        "@everyone R.I.P. FUNKY TOWN\n IT'S 3/3/33 23:33 THO YA FUCKIN DONGS!!!!!",
+                        client.channels.cache.get(
+                            process.env.MAIN_CHANNEL
+                        ) as TextBasedChannel
+                    );
+                }
             }, 1000);
             log("Starting web server...", "start");
             initializeWebServer().then(() => {
