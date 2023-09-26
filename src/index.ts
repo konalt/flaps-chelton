@@ -341,7 +341,9 @@ function getSourcesWithAttachments(msg: Message, types: string[]) {
                 reject("Type Error:\n" + getTypeMessage(attTypes, types));
             } else {
                 var ids = atts.map(() => uuidv4().replace(/-/gi, ""));
-                var exts = atts.map((att) => "." + att.url.split(".").pop());
+                var exts = atts.map(
+                    (att) => "." + att.url.split(".").pop().split("?")[0]
+                );
                 var proms = atts.map((att, i) =>
                     downloadPromise(att.url, "images/cache/" + ids[i] + exts[i])
                 );
