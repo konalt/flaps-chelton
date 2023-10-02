@@ -75,6 +75,13 @@ export interface SpinOptions {
     length: number;
     gif: boolean;
 }
+export interface CropOptions {
+    x: number;
+    y: number;
+    width: number;
+    height: number;
+    mode: "pixel" | "percent";
+}
 
 export interface RGBColor {
     r: number;
