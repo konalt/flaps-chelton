@@ -63,7 +63,12 @@ export async function getWeb3DAPIImage(
     options: Record<string, any>
 ): Promise<Buffer> {
     return new Promise(async (res, rej) => {
-        if (!browser || !page) return rej("Please initialize");
+        let browser = await puppeteer.launch({
+            //@ts-ignore
+            headless: "new",
+            args: [...minimalArgs],
+        });
+        let page = await browser.newPage();
         await page.goto(
             "http://localhost:" +
                 (process.env.WEB_PORT || 8080) +
@@ -79,6 +84,7 @@ export async function getWeb3DAPIImage(
                     type: "jpeg",
                 });
                 if (buffer instanceof Buffer) {
+                    browser.close();
                     res(buffer);
                 } else {
                     rej("page.screenshot did not return a Buffer.");
@@ -101,7 +107,12 @@ export async function hookWeb3DAPIAnimation(
     options: Record<string, any>
 ): Promise<Web3DAnimation> {
     return new Promise(async (res, rej) => {
-        if (!browser || !page) return rej("Please initialize");
+        let browser = await puppeteer.launch({
+            //@ts-ignore
+            headless: "new",
+            args: [...minimalArgs],
+        });
+        let page = await browser.newPage();
         await page.goto(
             "http://localhost:" +
                 (process.env.WEB_PORT || 8080) +
@@ -129,6 +140,9 @@ export async function hookWeb3DAPIAnimation(
                                 window.flapsWeb3DStep(...(args || []));
                             }, args);
                             return currentStepPromise;
+                        },
+                        destroy: () => {
+                            browser.close();
                         },
                     };
                     res(animation);
