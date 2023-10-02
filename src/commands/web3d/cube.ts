@@ -10,7 +10,7 @@ module.exports = {
     needs: ["image"],
     execute(args, buffers) {
         return new Promise((res, rej) => {
-            getWeb3DAPIImage("ecube_hearts", {
+            getWeb3DAPIImage("cube", {
                 imageURL: bufferToDataURL(buffers[0][0], "image/png"),
             }).then((img) => {
                 res(
