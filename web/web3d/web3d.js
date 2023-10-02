@@ -190,6 +190,7 @@ async function _init(id, options = {}) {
             texture.colorSpace = THREE.SRGBColorSpace;
             let material = new THREE.MeshBasicMaterial({
                 map: texture,
+                transparent: true,
             });
             let geometry = new THREE.PlaneGeometry(1.5, 1.5);
             const plane1 = new THREE.Mesh(geometry, material);
@@ -237,6 +238,7 @@ async function _init(id, options = {}) {
                 new THREE.PlaneGeometry(1.3, 1.3),
                 new THREE.MeshBasicMaterial({
                     map: texture,
+                    transparent: true,
                 })
             );
             group.add(imagePlane);
@@ -291,6 +293,7 @@ async function _init(id, options = {}) {
                 new THREE.PlaneGeometry(1, 2),
                 new THREE.MeshBasicMaterial({
                     map: leftTexture,
+                    transparent: true,
                 })
             );
             left.position.x = -0.53;
@@ -304,6 +307,7 @@ async function _init(id, options = {}) {
                 new THREE.PlaneGeometry(1, 2),
                 new THREE.MeshBasicMaterial({
                     map: rightTexture,
+                    transparent: true,
                 })
             );
             right.position.x = 0.53;
