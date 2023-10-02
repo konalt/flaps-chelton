@@ -747,12 +747,15 @@ export async function midnight(channel: TextChannel) {
     }, 60 * 1000); // 1 min
 }
 
-export let [addBuffer, removeBuffer] = [
+export let [addBuffer, removeBuffer, addBufferSequence] = [
     (buffer: Buffer, ext: string) => {
         return "null";
     },
     (string: string) => {
         return;
+    },
+    (buffer: Buffer[], ext: string) => {
+        return "null";
     },
 ];
 
@@ -769,7 +772,8 @@ readCommandDir(__dirname + "/commands").then(() => {
         await loadAutoStatus();
         updateUsers().then(async () => {
             log("Starting filestream server...", "start");
-            [addBuffer, removeBuffer] = await filestreamServer();
+            [addBuffer, removeBuffer, addBufferSequence] =
+                await filestreamServer();
             setInterval(() => {
                 var d = new Date();
                 if (

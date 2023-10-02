@@ -94,3 +94,8 @@ export interface AutoStatusInfo {
     text: string;
     webhook: string;
 }
+
+export interface Web3DAnimation {
+    step: (...args: any[]) => Promise<Buffer>;
+    lastFrame: Buffer;
+}

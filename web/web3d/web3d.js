@@ -5,6 +5,9 @@ import { FontLoader } from "three/addons/loaders/FontLoader.js";
 const resolutions = {
     bigtext: [768, 768],
     cube: [768, 768],
+    ecube_2planes: [512, 512],
+    ecube_hearts: [512, 512],
+    ecube_sliced: [512, 512],
 };
 
 const fontLoader = new FontLoader();
@@ -27,17 +30,15 @@ async function loadTexture(textureName) {
     });
 }
 
+let lastID = "";
+let renderer, camera, scene;
+
 async function _init(id, options = {}) {
     let size = resolutions[id];
     if (!size) size = [1, 1];
-    const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(
-        60,
-        size[0] / size[1],
-        0.1,
-        1000
-    );
-    const renderer = new THREE.WebGLRenderer({
+    scene = new THREE.Scene();
+    camera = new THREE.PerspectiveCamera(60, size[0] / size[1], 0.1, 1000);
+    renderer = new THREE.WebGLRenderer({
         powerPreference: "high-performance",
         antialias: true,
     });
@@ -177,11 +178,169 @@ async function _init(id, options = {}) {
             scene.add(light);
             break;
         }
+        case "ecube_2planes": {
+            camera.position.x = 0;
+            camera.position.y = 0;
+            camera.position.z = 6;
+            camera.fov = 25;
+            camera.updateProjectionMatrix();
+            camera.lookAt(0, 0, 0);
+
+            let texture = await loadTexture(options.imageURL);
+            texture.colorSpace = THREE.SRGBColorSpace;
+            let material = new THREE.MeshBasicMaterial({
+                map: texture,
+            });
+            let geometry = new THREE.PlaneGeometry(1.5, 1.5);
+            const plane1 = new THREE.Mesh(geometry, material);
+            plane1.position.z = 1.01;
+            const plane2 = new THREE.Mesh(geometry, material);
+            plane2.position.z = 1;
+            plane2.rotation.y = Math.PI;
+            const plane3 = new THREE.Mesh(geometry, material);
+            plane3.position.z = -1;
+            plane3.rotation.y = Math.PI;
+            const plane4 = new THREE.Mesh(geometry, material);
+            plane4.position.z = -1.01;
+
+            let group = new THREE.Group();
+            group.add(plane1);
+            group.add(plane2);
+            group.add(plane3);
+            group.add(plane4);
+
+            scene.add(group);
+
+            stepFunction = (rotate = 0.4, fov = 25, setup = false) => {
+                group.rotation.y += rotate;
+                camera.fov = fov;
+                camera.updateProjectionMatrix();
+                if (setup) {
+                    group.rotation.y = 0;
+                }
+            };
+            break;
+        }
+        case "ecube_hearts": {
+            camera.position.x = 0;
+            camera.position.y = 0;
+            camera.position.z = 6;
+            camera.fov = 25;
+            camera.updateProjectionMatrix();
+            camera.lookAt(0, 0, 0);
+
+            let group = new THREE.Group();
+
+            let texture = await loadTexture(options.imageURL);
+            texture.colorSpace = THREE.SRGBColorSpace;
+            const imagePlane = new THREE.Mesh(
+                new THREE.PlaneGeometry(1.3, 1.3),
+                new THREE.MeshBasicMaterial({
+                    map: texture,
+                })
+            );
+            group.add(imagePlane);
+
+            let heartsFrontTexture = await loadTexture(
+                "images/ecube_hearts_front.png"
+            );
+            heartsFrontTexture.colorSpace = THREE.SRGBColorSpace;
+            const heartsFrontPlane = new THREE.Mesh(
+                new THREE.PlaneGeometry(1.5, 1.5),
+                new THREE.MeshBasicMaterial({
+                    map: heartsFrontTexture,
+                    transparent: true,
+                })
+            );
+            heartsFrontPlane.position.z = 0.2;
+            group.add(heartsFrontPlane);
+
+            let heartsBackTexture = await loadTexture(
+                "images/ecube_hearts_back.png"
+            );
+            heartsFrontTexture.colorSpace = THREE.SRGBColorSpace;
+            const heartsBackPlane = new THREE.Mesh(
+                new THREE.PlaneGeometry(1.5, 1.5),
+                new THREE.MeshBasicMaterial({
+                    map: heartsBackTexture,
+                    transparent: true,
+                })
+            );
+            heartsBackPlane.position.z = -0.2;
+            group.add(heartsBackPlane);
+
+            scene.add(group);
+
+            stepFunction = (x, y) => {
+                group.rotation.x = x;
+                group.rotation.y = -y;
+            };
+            break;
+        }
+        case "ecube_sliced": {
+            camera.position.x = 0;
+            camera.position.y = 0;
+            camera.position.z = 6;
+            camera.fov = 25;
+            camera.updateProjectionMatrix();
+            camera.lookAt(0, 0, 0);
+
+            let leftTexture = await loadTexture(options.leftSideImageURL);
+            leftTexture.colorSpace = THREE.SRGBColorSpace;
+            let left = new THREE.Mesh(
+                new THREE.PlaneGeometry(1, 2),
+                new THREE.MeshBasicMaterial({
+                    map: leftTexture,
+                })
+            );
+            left.position.x = -0.53;
+            left.position.y = 1.5;
+            left.position.z = 1;
+            scene.add(left);
+
+            let rightTexture = await loadTexture(options.rightSideImageURL);
+            rightTexture.colorSpace = THREE.SRGBColorSpace;
+            let right = new THREE.Mesh(
+                new THREE.PlaneGeometry(1, 2),
+                new THREE.MeshBasicMaterial({
+                    map: rightTexture,
+                })
+            );
+            right.position.x = 0.53;
+            right.position.y = -1.5;
+            right.position.z = 1;
+            scene.add(right);
+
+            stepFunction = (lx, ly, fov) => {
+                left.position.x = -lx;
+                left.position.y = ly;
+                right.position.x = lx;
+                right.position.y = -ly;
+                camera.fov = fov;
+                camera.updateProjectionMatrix();
+            };
+        }
     }
 
+    lastID = id;
     renderer.render(scene, camera);
 
-    window.flapsWeb3DFinished(size[0], size[1]);
+    if (window.flapsWeb3DFinished) window.flapsWeb3DFinished(size[0], size[1]);
 }
 
+let stepFunction = () => {};
+
+async function _step(...args) {
+    if (!lastID) return;
+    stepFunction(...args);
+    renderer.render(scene, camera);
+    if (window.flapsWeb3DStepFinished) {
+        window.flapsWeb3DStepFinished(
+            resolutions[lastID][0],
+            resolutions[lastID][1]
+        );
+    }
+}
+
+window.flapsWeb3DStep = _step;
 window.flapsWeb3DInit = _init;

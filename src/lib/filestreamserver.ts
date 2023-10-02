@@ -2,7 +2,11 @@ import express from "express";
 import { getFileExt, uuidv4 } from "./utils";
 
 export default function filestreamServer(): Promise<
-    [(buffer: Buffer, ext: string) => string, (string: string) => void]
+    [
+        (buffer: Buffer, ext: string) => string,
+        (string: string) => void,
+        (buffers: Buffer[], ext: string) => string
+    ]
 > {
     return new Promise((resolve) => {
         const app = express();
@@ -44,16 +48,51 @@ export default function filestreamServer(): Promise<
                 .contentType(getFileExt(fileID))
                 .send(trimmedBuffer);
         });
+        function addBufferSequence(buffers: Buffer[], ext: string) {
+            let id = uuidv4();
+            let fileID = id + "_%." + ext;
+            let i = 0;
+            for (const buffer of buffers) {
+                files[fileID.replace("%", i.toString().padStart(3, "0"))] =
+                    buffer;
+                i++;
+            }
+            return fileID.replace("%", "%03d");
+        }
         function addBuffer(buffer: Buffer, ext: string): string {
             let fileID = uuidv4() + "." + ext;
             files[fileID] = buffer;
             return fileID;
         }
         function removeBuffer(fileID: string) {
-            delete files[fileID];
+            if (fileID.includes("%03d")) {
+                let i = 0;
+                while (true) {
+                    if (
+                        files[
+                            fileID.replace(
+                                "%03d",
+                                i.toString().padStart(3, "0")
+                            )
+                        ]
+                    ) {
+                        delete files[
+                            fileID.replace(
+                                "%03d",
+                                i.toString().padStart(3, "0")
+                            )
+                        ];
+                    } else {
+                        break;
+                    }
+                    i++;
+                }
+            } else {
+                delete files[fileID];
+            }
         }
         app.listen(56033, () => {
-            resolve([addBuffer, removeBuffer]);
+            resolve([addBuffer, removeBuffer, addBufferSequence]);
         });
     });
 }
