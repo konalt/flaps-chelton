@@ -8,6 +8,12 @@ import crop from "./crop";
 export default async function ecube(buffers: [Buffer, string][]) {
     let resolution = 512;
 
+    let image = await ffmpegBuffer(
+        `-i $BUF0 -vf scale=${resolution}:${resolution}:force_original_aspect_ratio=1,pad=${resolution}:${resolution}:(ow-iw)/2:(oh-ih)/2,setsar=1:1 $OUT`,
+        buffers,
+        "png"
+    );
+
     let zoomRotateLength = 0.6;
     let zoomRotateOutput = await ffmpegBuffer(
         `-loop 1 -i $BUF0 -f lavfi -i "color=d=${zoomRotateLength}:s=${resolution}*${resolution}" -filter_complex "
@@ -16,15 +22,12 @@ export default async function ecube(buffers: [Buffer, string][]) {
 [padded]rotate=max(pow((t-0.1)*2\\,3)\\,0)[rotating];
 [rotating]scale=max(1-3*t+0.5\\,0.7)*iw:-1:eval=frame[scaling];
 [1:v][scaling]overlay=x=main_w/2-overlay_w/2:y=main_h/2-overlay_h/2[out]" -map "[out]" -t 0.6 $PRESET $OUT`,
-        buffers,
+        [[image, "png"]],
         "mp4"
     );
 
     let planeAnimation = await hookWeb3DAPIAnimation("ecube_2planes", {
-        imageURL: bufferToDataURL(
-            buffers[0][0],
-            lookup(buffers[0][1]) || "image/png"
-        ),
+        imageURL: bufferToDataURL(image, "image/png"),
     });
     let planeAnimationFrames: Buffer[] = [];
     planeAnimationFrames.push(await planeAnimation.step(0.3, 25));
@@ -61,10 +64,7 @@ export default async function ecube(buffers: [Buffer, string][]) {
     removeBuffer(planeAnimationSequence);
 
     let heartAnimation = await hookWeb3DAPIAnimation("ecube_hearts", {
-        imageURL: bufferToDataURL(
-            buffers[0][0],
-            lookup(buffers[0][1]) || "image/png"
-        ),
+        imageURL: bufferToDataURL(image, "image/png"),
     });
     let heartAnimationFrames: Buffer[] = [];
     heartAnimationFrames.push(await heartAnimation.step(0, 1.5));
@@ -98,14 +98,14 @@ export default async function ecube(buffers: [Buffer, string][]) {
     );
     removeBuffer(heartAnimationSequence);
 
-    let leftSideP = crop(buffers, {
+    let leftSideP = crop([[image, "png"]], {
         x: 0,
         y: 0,
         width: 50,
         height: 100,
         mode: "percent",
     });
-    let rightSideP = crop(buffers, {
+    let rightSideP = crop([[image, "png"]], {
         x: 50,
         y: 0,
         width: 50,
