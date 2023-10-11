@@ -177,6 +177,15 @@ router.get("/commands", (req, res) => {
     res.json(filteredCommands);
 });
 
+router.get("/userlist", (req, res) => {
+    let string = "";
+    for (const user of users) {
+        string += `${user.id} ${user.name}\n`;
+    }
+    string = string.trim();
+    res.contentType("txt").send(string);
+});
+
 router.get("/legacy/userdata/:id", (req, res) => {
     log(
         `Legacy API request for user ${esc(Color.Yellow)}${req.params.id}${esc(
