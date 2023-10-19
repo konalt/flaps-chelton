@@ -733,7 +733,10 @@ export async function midnight(channel: TextChannel) {
     var usersRequired: string[] = [];
     for (const member of members) {
         if (member[1].presence && !member[1].user.bot) {
-            if (member[1].presence.status != "offline") {
+            if (
+                member[1].presence.status == "online" ||
+                member[1].presence.status == "dnd"
+            ) {
                 usersRequired.push(member[0]);
             }
         }
