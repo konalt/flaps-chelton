@@ -1,5 +1,6 @@
 import { WebhookBot } from "../types";
 import owoify from "owoify-js";
+import { sample } from "./utils";
 
 export const users: WebhookBot[] = [
     {
@@ -762,6 +763,109 @@ export const users: WebhookBot[] = [
     {
         id: "hornet",
         name: "hornet",
+    },
+    {
+        id: "jordan",
+        name: "jordan peterson",
+    },
+    {
+        id: "rogan",
+        name: "joe rogan",
+    },
+    {
+        id: "rebecca",
+        name: "toothpaste girl",
+    },
+    {
+        id: "lizzy",
+        name: "banana split",
+    },
+    {
+        id: "thad",
+        name: "HEALTHPILLED BandageLord",
+    },
+    {
+        id: "cyn",
+        name: "The Flesh (currently demanding)",
+    },
+    {
+        id: "doll",
+        name: "doll being all alone",
+    },
+    {
+        id: "pomni",
+        name: "pomniacci the famous clown",
+    },
+    {
+        id: "knight",
+        name: "The Knight",
+    },
+    {
+        id: "purevessel",
+        name: "Pure Vessel",
+    },
+    {
+        id: "grimm",
+        name: "bat clown",
+    },
+    {
+        id: "cordie",
+        name: "66th spider brigade",
+    },
+    {
+        id: "icon",
+        name: "ic-0n the magical cube",
+    },
+    {
+        id: "cornifer",
+        name: "map guy",
+    },
+    {
+        id: "reedus",
+        name: "NORMAN REEDUS from HELLUVA DEAD",
+    },
+    {
+        id: "investor",
+        name: "billionaire investor",
+    },
+    {
+        id: "gassy",
+        name: "🦸🦸🦸 INCREDIBLE GASSY 💨💨💨",
+        quirk: (content) => {
+            let farts = [
+                "BRAAAP",
+                "PBBBT",
+                "PRRRRRPT",
+                "FRRRRRP",
+                "BRAAAAAAAP",
+            ];
+            let words = content.split(" ");
+            for (let i = 0; i < words.length / 5; i++) {
+                words.splice(
+                    ((words.length + 1) * Math.random()) | 0,
+                    0,
+                    `(${sample(farts)})`
+                );
+            }
+            let out = words.join(" ");
+            return out;
+        },
+    },
+    {
+        id: "tessa",
+        name: "hollow knight shadewife",
+    },
+    {
+        id: "vodka",
+        name: "bottle of vodka",
+    },
+    {
+        id: "alice",
+        name: "insane southerner",
+    },
+    {
+        id: "chrome",
+        name: "marketshare dominator",
     },
 ];
 
