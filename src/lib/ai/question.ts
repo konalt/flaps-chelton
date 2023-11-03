@@ -59,7 +59,30 @@ export function question(question: string): Promise<string> {
                 res(resp.data.choices[0].text.split("Q:")[0].trim());
             })
             .catch((resp) => {
-                res(JSON.stringify(resp.data));
+                switch (resp.response.status) {
+                    case 429:
+                        let ratelimitHeaders = "";
+                        for (const [h, v] of Object.entries(
+                            resp.response.headers
+                        )) {
+                            if (h.startsWith("x-ratelimit-")) {
+                                ratelimitHeaders +=
+                                    h.substring("x-ratelimit-".length) +
+                                    ": " +
+                                    v +
+                                    "\n";
+                            }
+                        }
+                        ratelimitHeaders = ratelimitHeaders.trim();
+                        res(
+                            "[429] Too Many Requests\nPlease wait before making another request.\nAdditional info:\n" +
+                                ratelimitHeaders
+                        );
+                        break;
+                    default:
+                        console.log(resp);
+                        res("[Unknown Error] Check flaps log for more info");
+                }
             });
     });
 }
