@@ -9,7 +9,7 @@ module.exports = {
     name: "Versus",
     desc: "They shall do battle!",
     needs: ["image/gif/video", "image/gif/video"],
-    aliases: ["vs", "vs2"],
+    aliases: ["vs"],
     async execute(args: string[], imgbuf: [Buffer, string][], msg: Message) {
         return new Promise((res, rej) => {
             if (!args.join(" ").split(":")[1]) {
@@ -19,19 +19,21 @@ module.exports = {
                     msg.channel
                 );
             }
-            versus(imgbuf, args.join(" ").split(":"), false).then(
-                (out: Buffer) => {
-                    res(
-                        makeMessageResp(
-                            "flaps",
-                            "",
-                            msg.channel,
-                            out,
-                            getFileName("Effect_Versus", "mp4")
-                        )
-                    );
-                }
-            );
+            versus(
+                imgbuf,
+                args.join(" ").split(":"),
+                args.join(" ").split(":")[2] == "long"
+            ).then((out: Buffer) => {
+                res(
+                    makeMessageResp(
+                        "flaps",
+                        "",
+                        msg.channel,
+                        out,
+                        getFileName("Effect_Versus", "mp4")
+                    )
+                );
+            });
         });
     },
 } satisfies FlapsCommand;
