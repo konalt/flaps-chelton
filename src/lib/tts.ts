@@ -1,4 +1,5 @@
 import SamJs from "sam-js";
+import { TTSSAMLine } from "../types";
 
 // These were all taken from src/util/util.es6
 // Because they couldn't expose the fucking functions
@@ -25,8 +26,6 @@ const Uint16ToUint8Array = (uint16: number) => {
 
     return result;
 };
-
-let sam = new SamJs();
 
 function renderBuffer(audiobuffer: Uint8Array) {
     // Calculate buffer size.
@@ -75,7 +74,29 @@ function renderBuffer(audiobuffer: Uint8Array) {
 }
 
 export function textToSpeechSAM(text: string) {
+    let sam = new SamJs();
     let buf = sam.buf8(text);
     if (buf instanceof Boolean) return Uint8Array.from([]);
     return renderBuffer(buf);
+}
+
+export function textToSpeechSAMSing(lines: TTSSAMLine[]) {
+    let arr: number[] = [];
+    for (const line of lines) {
+        let sam = new SamJs({
+            speed: line.speed,
+            pitch: line.pitch,
+            singmode: true,
+        });
+        try {
+            let buf = sam.buf8(line.text, true);
+
+            if (buf instanceof Boolean) {
+                arr = arr.concat([0]);
+            } else {
+                arr = arr.concat(Array.from(buf));
+            }
+        } catch (e) {}
+    }
+    return renderBuffer(Uint8Array.from(arr));
 }

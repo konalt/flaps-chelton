@@ -100,3 +100,9 @@ export interface Web3DAnimation {
     destroy: () => void;
     lastFrame: Buffer;
 }
+
+export interface TTSSAMLine {
+    speed: number;
+    pitch: number;
+    text: string;
+}
