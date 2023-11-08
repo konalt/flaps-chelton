@@ -38,7 +38,7 @@ module.exports = {
                     "yt-dlp",
                     (
                         url +
-                        " -x --audio-format mp3 -o ./audio/yt/" +
+                        " -f 140 -ciw --audio-quality 0 -x --audio-format mp3 -o ./audio/yt/" +
                         id +
                         ".mp3"
                     ).split(" ")
