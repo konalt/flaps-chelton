@@ -5,7 +5,14 @@ import { sendWebhook } from "../lib/webhooks";
 import { FlapsCommand } from "../types";
 import { users } from "../lib/users";
 import { hooks } from "../lib/webhooks";
-import { client } from "../index";
+import {
+    client,
+    voiceConnections,
+    voicePlayers,
+    addBuffer,
+    addBufferSequence,
+    commands,
+} from "../index";
 import fs from "fs/promises";
 
 const proxy = {
@@ -14,6 +21,11 @@ const proxy = {
     fs,
     sendWebhook,
     client,
+    voiceConnections,
+    voicePlayers,
+    addBuffer,
+    addBufferSequence,
+    commands,
 };
 
 module.exports = {
