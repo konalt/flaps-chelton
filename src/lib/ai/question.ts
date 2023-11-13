@@ -23,6 +23,12 @@ export function setSanity(n: number) {
 
 const hasCredits = process.env.OPENAI_ENABLED == "yes";
 
+let ratelimitHeadersCached = "No Info Yet. Ask a question first!";
+
+export function getRatelimit() {
+    return ratelimitHeadersCached;
+}
+
 export function question(question: string): Promise<string> {
     return new Promise(async (res, rej) => {
         if (!hasCredits) {
@@ -56,6 +62,18 @@ export function question(question: string): Promise<string> {
                 presence_penalty: 0,
             })
             .then((resp) => {
+                let ratelimitHeaders = "";
+                for (const [h, v] of Object.entries(resp.headers)) {
+                    if (h.startsWith("x-ratelimit-")) {
+                        ratelimitHeaders +=
+                            h.substring("x-ratelimit-".length) +
+                            ": " +
+                            v +
+                            "\n";
+                    }
+                }
+                ratelimitHeaders = ratelimitHeaders.trim();
+                ratelimitHeadersCached = ratelimitHeaders;
                 res(resp.data.choices[0].text.split("Q:")[0].trim());
             })
             .catch((resp) => {
