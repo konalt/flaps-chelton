@@ -9,6 +9,7 @@ module.exports = {
     id: "funnynumber",
     name: "Funny Number",
     desc: "Gets the funny number of a character.",
+    showOnCommandSimulator: false,
     execute(args: string[], bufs: [Buffer, string][], msg: Message) {
         return new Promise((res, rej) => {
             var x = "";
