@@ -13,8 +13,8 @@ module.exports = {
     async execute(args: string[], buffers: [Buffer, string][], msg: Message) {
         return new Promise((res, rej) => {
             trim(buffers, {
-                start: parseFloat(args[0]),
-                end: parseFloat(args[1]),
+                start: args[0],
+                end: args[1],
             }).then(
                 handleFFmpeg(
                     getFileName("Effect_Trim", getFileExt(buffers[0][1])),

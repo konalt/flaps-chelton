@@ -64,8 +64,8 @@ export interface CaptionOptions {
     fontsize: number;
 }
 export interface TrimOptions {
-    start: number;
-    end: number;
+    start: string;
+    end: string;
 }
 export interface SpeedOptions {
     speed: number;
