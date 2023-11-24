@@ -1,10 +1,18 @@
-import { Canvas, CanvasRenderingContext2D, createCanvas } from "canvas";
-import { emojiRegex } from "../utils";
+import {
+    Canvas,
+    CanvasRenderingContext2D,
+    Image,
+    createCanvas,
+    loadImage,
+} from "canvas";
+import { customEmojiRegex, emojiRegex, twemojiURL } from "../utils";
+import { downloadPromise } from "../download";
 
 function getLines(
     ctx: CanvasRenderingContext2D,
     text: string,
-    maxWidth: number
+    maxWidth: number,
+    lineHeight: number
 ) {
     var words = text.split(" ");
     var lines = [];
@@ -12,7 +20,11 @@ function getLines(
 
     for (var i = 1; i < words.length; i++) {
         var word = words[i];
-        var width = ctx.measureText(currentLine + " " + word).width;
+        var width = calculateDrawnLineWidth(
+            currentLine + " " + word,
+            ctx,
+            lineHeight
+        );
         if (width < maxWidth) {
             currentLine += " " + word;
         } else {
@@ -32,6 +44,26 @@ function lineHeight(ctx: CanvasRenderingContext2D) {
     return height;
 }
 
+function downloadEmoji(emoji: string) {
+    return new Promise<Image>((resolve, reject) => {
+        downloadPromise(twemojiURL(emoji)).then(async (buffer) => {
+            resolve(await loadImage(buffer));
+        });
+    });
+}
+
+function downloadCustomEmoji(emoji: string) {
+    return new Promise<Image>((resolve, reject) => {
+        let url =
+            "https://cdn.discordapp.com/emojis/" +
+            emoji.split(":")[2].split(">")[0] +
+            ".png";
+        downloadPromise(url).then(async (buffer) => {
+            resolve(await loadImage(buffer));
+        });
+    });
+}
+
 function decodeOptions(text: string) {
     let textArr = text.split(" ");
     let options = {
@@ -48,6 +80,78 @@ function decodeOptions(text: string) {
     return options;
 }
 
+function calculateDrawnLineWidth(
+    line: string,
+    ctx: CanvasRenderingContext2D,
+    lineHeight: number
+) {
+    let width = 0;
+    for (const char of line) {
+        if (char.match(emojiRegex) || char == "\uFFFD") {
+            width += lineHeight;
+        } else {
+            width += ctx.measureText(char).width;
+        }
+    }
+    return width;
+}
+
+function getLinesForParagraphs(
+    ctx: CanvasRenderingContext2D,
+    text: string,
+    maxWidth: number,
+    lineHeight: number
+) {
+    return text
+        .split("\n")
+        .map((para) => getLines(ctx, para, maxWidth, lineHeight))
+        .reduce((a, b) => a.concat(b));
+}
+
+function drawLine(
+    x: number,
+    y: number,
+    line: string,
+    emojis: Record<string, Image>,
+    customEmojis: Image[],
+    ctx: CanvasRenderingContext2D,
+    lineHeight: number
+) {
+    let currentWidth = 0;
+    let customEmojiIndex = 0;
+    for (const char of line) {
+        if (char.match(emojiRegex)) {
+            ctx.drawImage(
+                emojis[char],
+                x + currentWidth,
+                y,
+                lineHeight,
+                lineHeight
+            );
+            currentWidth += lineHeight;
+        } else if (char == "\uFFFD") {
+            let eh =
+                lineHeight *
+                (customEmojis[customEmojiIndex].height /
+                    customEmojis[customEmojiIndex].width);
+            let my = y + lineHeight / 2;
+            ctx.drawImage(
+                customEmojis[customEmojiIndex],
+                x + currentWidth,
+                my - eh / 2,
+                lineHeight,
+                eh
+            );
+            currentWidth += lineHeight;
+            customEmojiIndex++;
+        } else {
+            let cw = ctx.measureText(char).width;
+            ctx.fillText(char, x + currentWidth, y);
+            currentWidth += cw;
+        }
+    }
+}
+
 export default function createCaption2(
     width: number,
     height: number,
@@ -62,8 +166,23 @@ export default function createCaption2(
             .split(" ")
             .filter((w) => !w.startsWith("--"))
             .join(" ");
-        let emojis = text.match(emojiRegex);
-        console.log(emojis);
+        let customEmojiList = text.match(customEmojiRegex) || [];
+        text = text.replace(customEmojiRegex, "\uFFFD");
+        let unicodeEmojis = [];
+        for (const char of text) {
+            if (char.match(emojiRegex) && !unicodeEmojis.includes(char)) {
+                unicodeEmojis.push(char);
+            }
+        }
+        let emojis: Record<string, Image> = {};
+        let customEmojis: Image[] = [];
+        for (const emoji of unicodeEmojis) {
+            emojis[emoji] = await downloadEmoji(emoji);
+        }
+        for (const emoji of customEmojiList) {
+            customEmojis.push(await downloadCustomEmoji(emoji));
+        }
+
         let backgroundColor = options.background;
         let textColor = options.text;
         let fontSizeMultiplier = 0.1;
@@ -71,9 +190,14 @@ export default function createCaption2(
         ctx.font = fontSize + "px " + fontName;
         ctx.textBaseline = "top";
         let maxLineHeight = lineHeight(ctx);
-        let yPadding = 0.5 * maxLineHeight;
+        let yPadding = 0.4 * maxLineHeight;
 
-        let lines = getLines(ctx, text, width);
+        let lines = getLinesForParagraphs(
+            ctx,
+            text,
+            width * 0.9,
+            maxLineHeight
+        );
         let totalHeight = maxLineHeight * lines.length;
 
         c.height = totalHeight + yPadding * 2;
@@ -83,11 +207,20 @@ export default function createCaption2(
         ctx.fillStyle = backgroundColor;
         ctx.fillRect(0, 0, c.width, c.height);
 
-        ctx.textAlign = "center";
+        ctx.textAlign = "left";
         ctx.fillStyle = textColor;
         let i = 0;
         for (const line of lines) {
-            ctx.fillText(line, width / 2, yPadding + i * maxLineHeight);
+            let lw = calculateDrawnLineWidth(line, ctx, maxLineHeight);
+            drawLine(
+                width / 2 - lw / 2,
+                yPadding + i * maxLineHeight,
+                line,
+                emojis,
+                customEmojis,
+                ctx,
+                maxLineHeight
+            );
             i++;
         }
 
