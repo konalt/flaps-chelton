@@ -226,6 +226,12 @@ function drawLine(
         } else {
             let cw = ctx.measureText(char).width;
             ctx.fillText(char, x + currentWidth, y);
+            if (debug) {
+                let oss = "" + ctx.strokeStyle;
+                ctx.strokeStyle = "red";
+                ctx.strokeRect(x + currentWidth, y, cw, lineHeight);
+                ctx.strokeStyle = oss;
+            }
             currentWidth += cw;
         }
     }
