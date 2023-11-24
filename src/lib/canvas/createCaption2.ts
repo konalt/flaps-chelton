@@ -5,8 +5,16 @@ import {
     createCanvas,
     loadImage,
 } from "canvas";
-import { customEmojiRegex, emojiRegex, twemojiURL } from "../utils";
+import {
+    customEmojiRegex,
+    emojiRegex,
+    flagEmojiRegex,
+    twemojiURL,
+} from "../utils";
 import { downloadPromise } from "../download";
+
+const customEmojiReplacement = "\uE001";
+const flagEmojiReplacement = "\uE002";
 
 function getLines(
     ctx: CanvasRenderingContext2D,
@@ -87,7 +95,11 @@ function calculateDrawnLineWidth(
 ) {
     let width = 0;
     for (const char of line) {
-        if (char.match(emojiRegex) || char == "\uFFFD") {
+        if (
+            char.match(emojiRegex) ||
+            char == flagEmojiReplacement ||
+            char == customEmojiReplacement
+        ) {
             width += lineHeight;
         } else {
             width += ctx.measureText(char).width;
@@ -114,11 +126,13 @@ function drawLine(
     line: string,
     emojis: Record<string, Image>,
     customEmojis: Image[],
+    flagEmojis: Image[],
     ctx: CanvasRenderingContext2D,
     lineHeight: number
 ) {
     let currentWidth = 0;
     let customEmojiIndex = 0;
+    let flagEmojiIndex = 0;
     for (const char of line) {
         if (char.match(emojiRegex)) {
             ctx.drawImage(
@@ -129,7 +143,7 @@ function drawLine(
                 lineHeight
             );
             currentWidth += lineHeight;
-        } else if (char == "\uFFFD") {
+        } else if (char == customEmojiReplacement) {
             let eh =
                 lineHeight *
                 (customEmojis[customEmojiIndex].height /
@@ -144,6 +158,16 @@ function drawLine(
             );
             currentWidth += lineHeight;
             customEmojiIndex++;
+        } else if (char == flagEmojiReplacement) {
+            ctx.drawImage(
+                flagEmojis[flagEmojiIndex],
+                x + currentWidth,
+                y,
+                lineHeight,
+                lineHeight
+            );
+            currentWidth += lineHeight;
+            flagEmojiIndex++;
         } else {
             let cw = ctx.measureText(char).width;
             ctx.fillText(char, x + currentWidth, y);
@@ -167,7 +191,9 @@ export default function createCaption2(
             .filter((w) => !w.startsWith("--"))
             .join(" ");
         let customEmojiList = text.match(customEmojiRegex) || [];
-        text = text.replace(customEmojiRegex, "\uFFFD");
+        let flagEmojiList = text.match(flagEmojiRegex) || [];
+        text = text.replace(customEmojiRegex, customEmojiReplacement);
+        text = text.replace(flagEmojiRegex, flagEmojiReplacement);
         let unicodeEmojis = [];
         for (const char of text) {
             if (char.match(emojiRegex) && !unicodeEmojis.includes(char)) {
@@ -176,11 +202,15 @@ export default function createCaption2(
         }
         let emojis: Record<string, Image> = {};
         let customEmojis: Image[] = [];
+        let flagEmojis: Image[] = [];
         for (const emoji of unicodeEmojis) {
             emojis[emoji] = await downloadEmoji(emoji);
         }
         for (const emoji of customEmojiList) {
             customEmojis.push(await downloadCustomEmoji(emoji));
+        }
+        for (const emoji of flagEmojiList) {
+            flagEmojis.push(await downloadEmoji(emoji));
         }
 
         let backgroundColor = options.background;
@@ -218,6 +248,7 @@ export default function createCaption2(
                 line,
                 emojis,
                 customEmojis,
+                flagEmojis,
                 ctx,
                 maxLineHeight
             );
