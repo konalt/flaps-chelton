@@ -497,7 +497,10 @@ export async function onMessage(msg: Message) {
                     ).catch((e) => sendWebhook("flaps", e, msg.channel));
                     if (!srcs) return;
                     let bufs: [Buffer, string][] = await Promise.all(
-                        srcs.map(async (s) => [await readFile(s), s])
+                        srcs.map(async (s) => [
+                            await readFile(s),
+                            getFileExt(s),
+                        ])
                     );
                     for (const src of srcs) {
                         commandFiles.push([src, 5]);
