@@ -62,7 +62,7 @@ export function ffmpegBuffer(
             shell: true,
         });
         let chunkedOutput = [];
-        let errorLog = "";
+        let errorLog = "ARGS: ffmpeg " + newargs + "\n";
         childProcess.stdout.on("data", (chunk: Buffer) => {
             chunkedOutput.push(chunk);
         });
