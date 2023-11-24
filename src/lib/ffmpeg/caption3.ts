@@ -9,6 +9,9 @@ export default async function caption3(
 ): Promise<Buffer> {
     let [width, height] = await getVideoDimensions(buffers[0]);
     let duration = await getVideoLength(buffers[0]);
+    if (Number.isNaN(duration)) {
+        duration = 0.05; // fucking images
+    }
     let [caption, boxHeight] = await createCaption2(
         width,
         height,
