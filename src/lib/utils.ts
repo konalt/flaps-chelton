@@ -59,9 +59,16 @@ export function getFileExt(path: string) {
 
 export const emojiRegex = /(?=\p{Emoji})(?=[\D])(?=[^\*#])/gu;
 export const customEmojiRegex = /(<a?)?:\w+:(\d+>)/g;
+export const flagEmojiRegex = /[\uD83C][\uDDE6-\uDDFF][\uD83C][\uDDE6-\uDDFF]/g;
 
 export function twemojiURL(emoji: string) {
-    var cp = emoji.codePointAt(0).toString(16);
+    let cp1 = emoji.codePointAt(0).toString(16);
+    let cp2: string;
+    if (emoji.length > 1) {
+        cp2 = emoji.codePointAt(2).toString(16);
+    }
+    let cp = cp1;
+    if (cp2) cp += "-" + cp2;
     return (
         "https://cdnjs.cloudflare.com/ajax/libs/twemoji/14.0.2/72x72/" +
         cp +
