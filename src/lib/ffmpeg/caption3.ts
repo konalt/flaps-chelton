@@ -18,7 +18,7 @@ export default async function caption3(
         options.text
     );
     return ffmpegBuffer(
-        `-i $BUF0 -loop 1 -t ${duration} -i $BUF1 -filter_complex "[1:v]pad=w=iw:h=ih+${height}[padded];[padded][0:v]overlay=x=0:y=${boxHeight}[overlay];${autoGifPalette(
+        `-i $BUF0 -loop 1 -t ${duration} -i $BUF1 -filter_complex "[1:v]pad=ceil(iw/2)*2:ceil(ih/2)*2[even];[even]pad=w=iw:h=ih+${height}[padded];[padded][0:v]overlay=x=0:y=${boxHeight}[overlay];${autoGifPalette(
             "overlay",
             "out",
             buffers[0][1]
