@@ -81,12 +81,14 @@ function decodeOptions(text: string) {
     let options = {
         background: "#ffffff",
         text: "#000000",
+        invert: false,
     };
     for (const word of textArr) {
         if (!word.startsWith("--")) continue;
         let [option, value] = word.substring(2).split("=");
+        if (!value) value = "__boolset";
         if (Object.keys(options).includes(option)) {
-            options[option] = value;
+            options[option] = value == "__boolset" ? true : value;
         }
     }
     return options;
@@ -248,8 +250,10 @@ export default function createCaption2(
             flagEmojis.push(await downloadEmoji(emoji));
         }
 
-        let backgroundColor = options.background;
-        let textColor = options.text;
+        let backgroundColor = options.invert
+            ? options.text
+            : options.background;
+        let textColor = options.invert ? options.background : options.text;
         let fontSizeMultiplier = 0.1;
         let fontSize = Math.round(((width + height) / 2) * fontSizeMultiplier);
         setFont(ctx, fontSize, defaultFont);
