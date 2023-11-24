@@ -8,7 +8,7 @@ import handleFFmpegCatch from "../../lib/ffmpeg/handleFFmpegCatch";
 module.exports = {
     id: "caption2",
     name: "Caption2",
-    desc: "Adds a Futura caption to a video, image, or gif.",
+    desc: "Adds a Futura caption to a video, image, or gif. Now uses canvas!",
     needs: ["image/video/gif"],
     async execute(args: string[], buffers: [Buffer, string][], msg: Message) {
         return new Promise((res, rej) => {
