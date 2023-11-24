@@ -82,6 +82,7 @@ function decodeOptions(text: string) {
         background: "#ffffff",
         text: "#000000",
         invert: false,
+        debug: false,
     };
     for (const word of textArr) {
         if (!word.startsWith("--")) continue;
@@ -143,13 +144,20 @@ function drawLine(
     flagEmojis: Image[],
     ctx: CanvasRenderingContext2D,
     lineHeight: number,
-    fontSize: number
+    fontSize: number,
+    debug: boolean
 ) {
     let currentWidth = 0;
     let customEmojiIndex = 0;
     let flagEmojiIndex = 0;
     for (const char of line) {
         if (char.match(emojiRegex)) {
+            if (debug) {
+                let ofs = "" + ctx.fillStyle;
+                ctx.fillStyle = "aqua";
+                ctx.fillRect(x + currentWidth, y, lineHeight, lineHeight);
+                ctx.fillStyle = ofs;
+            }
             ctx.drawImage(
                 emojis[char],
                 x + currentWidth,
@@ -164,6 +172,12 @@ function drawLine(
                 (customEmojis[customEmojiIndex].height /
                     customEmojis[customEmojiIndex].width);
             let my = y + lineHeight / 2;
+            if (debug) {
+                let ofs = "" + ctx.fillStyle;
+                ctx.fillStyle = "lime";
+                ctx.fillRect(x + currentWidth, y, lineHeight, lineHeight);
+                ctx.fillStyle = ofs;
+            }
             ctx.drawImage(
                 customEmojis[customEmojiIndex],
                 x + currentWidth,
@@ -174,6 +188,12 @@ function drawLine(
             currentWidth += lineHeight;
             customEmojiIndex++;
         } else if (char == flagEmojiReplacement) {
+            if (debug) {
+                let ofs = "" + ctx.fillStyle;
+                ctx.fillStyle = "magenta";
+                ctx.fillRect(x + currentWidth, y, lineHeight, lineHeight);
+                ctx.fillStyle = ofs;
+            }
             ctx.drawImage(
                 flagEmojis[flagEmojiIndex],
                 x + currentWidth,
@@ -184,8 +204,24 @@ function drawLine(
             currentWidth += lineHeight;
             flagEmojiIndex++;
         } else if (char == startAlternateFont) {
+            if (debug) {
+                let oss = "" + ctx.strokeStyle;
+                ctx.strokeStyle = "red";
+                ctx.moveTo(x + currentWidth, y);
+                ctx.lineTo(x + currentWidth, y + lineHeight);
+                ctx.stroke();
+                ctx.strokeStyle = oss;
+            }
             setFont(ctx, fontSize, alternateFont);
         } else if (char == endAlternateFont) {
+            if (debug) {
+                let oss = "" + ctx.strokeStyle;
+                ctx.strokeStyle = "red";
+                ctx.moveTo(x + currentWidth, y);
+                ctx.lineTo(x + currentWidth, y + lineHeight);
+                ctx.stroke();
+                ctx.strokeStyle = oss;
+            }
             setFont(ctx, fontSize, defaultFont);
         } else {
             let cw = ctx.measureText(char).width;
@@ -296,7 +332,8 @@ export default function createCaption2(
                 flagEmojis,
                 ctx,
                 maxLineHeight,
-                fontSize
+                fontSize,
+                options.debug
             );
             i++;
         }
