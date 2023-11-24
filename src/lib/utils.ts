@@ -64,7 +64,7 @@ export const flagEmojiRegex = /[\uD83C][\uDDE6-\uDDFF][\uD83C][\uDDE6-\uDDFF]/g;
 export function twemojiURL(emoji: string) {
     let cp1 = emoji.codePointAt(0).toString(16);
     let cp2: string;
-    if (emoji.length > 1) {
+    if (emoji.codePointAt(2)) {
         cp2 = emoji.codePointAt(2).toString(16);
     }
     let cp = cp1;
