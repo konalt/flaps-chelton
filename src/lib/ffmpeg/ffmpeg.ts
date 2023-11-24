@@ -257,6 +257,18 @@ export function usePreset(filename: string) {
     return "";
 }
 
+export function autoGifPalette(
+    in_specifier: string,
+    out_specifier: string,
+    format: string
+) {
+    if (format == "gif") {
+        return gifPalette(in_specifier, out_specifier);
+    } else {
+        return `[${in_specifier}]null[${out_specifier}]`;
+    }
+}
+
 export function gifPalette(in_specifier: string, out_specifier: string) {
     return `[${in_specifier}]split[${in_specifier}_pgen_${out_specifier}][${in_specifier}_puse_${out_specifier}];
     [${in_specifier}_pgen_${out_specifier}]palettegen[${in_specifier}_palette_${out_specifier}];
