@@ -4,6 +4,7 @@ import { hookWeb3DAPIAnimation } from "../web3dapi";
 import { ffmpegBuffer } from "./ffmpeg";
 import { addBufferSequence, removeBuffer } from "../..";
 import crop from "./crop";
+import videoGif from "./videogif";
 
 function plane(image: Buffer) {
     return new Promise<Buffer>(async (resolve, reject) => {
@@ -200,5 +201,7 @@ export default async function ecube(buffers: [Buffer, string][]) {
         ]
     );
 
-    return zoomPlaneHeartAndSlice;
+    let gif = videoGif([[zoomPlaneHeartAndSlice, "mp4"]]);
+
+    return gif;
 }
