@@ -15,12 +15,15 @@ import { downloadPromise } from "../download";
 
 const customEmojiReplacement = "\uE001";
 const flagEmojiReplacement = "\uE002";
+const startAlternateFont = "\uE003";
+const endAlternateFont = "\uE004";
 
 function getLines(
     ctx: CanvasRenderingContext2D,
     text: string,
     maxWidth: number,
-    lineHeight: number
+    lineHeight: number,
+    fontSize: number
 ) {
     var words = text.split(" ");
     var lines = [];
@@ -31,7 +34,8 @@ function getLines(
         var width = calculateDrawnLineWidth(
             currentLine + " " + word,
             ctx,
-            lineHeight
+            lineHeight,
+            fontSize
         );
         if (width < maxWidth) {
             currentLine += " " + word;
@@ -91,8 +95,10 @@ function decodeOptions(text: string) {
 function calculateDrawnLineWidth(
     line: string,
     ctx: CanvasRenderingContext2D,
-    lineHeight: number
+    lineHeight: number,
+    fontSize: number
 ) {
+    let originalFont = "" + ctx.font;
     let width = 0;
     for (const char of line) {
         if (
@@ -101,10 +107,15 @@ function calculateDrawnLineWidth(
             char == customEmojiReplacement
         ) {
             width += lineHeight;
+        } else if (char == startAlternateFont) {
+            setFont(ctx, fontSize, alternateFont);
+        } else if (char == endAlternateFont) {
+            setFont(ctx, fontSize, defaultFont);
         } else {
             width += ctx.measureText(char).width;
         }
     }
+    ctx.font = originalFont;
     return width;
 }
 
@@ -112,11 +123,12 @@ function getLinesForParagraphs(
     ctx: CanvasRenderingContext2D,
     text: string,
     maxWidth: number,
-    lineHeight: number
+    lineHeight: number,
+    fontSize: number
 ) {
     return text
         .split("\n")
-        .map((para) => getLines(ctx, para, maxWidth, lineHeight))
+        .map((para) => getLines(ctx, para, maxWidth, lineHeight, fontSize))
         .reduce((a, b) => a.concat(b));
 }
 
@@ -128,7 +140,8 @@ function drawLine(
     customEmojis: Image[],
     flagEmojis: Image[],
     ctx: CanvasRenderingContext2D,
-    lineHeight: number
+    lineHeight: number,
+    fontSize: number
 ) {
     let currentWidth = 0;
     let customEmojiIndex = 0;
@@ -168,12 +181,27 @@ function drawLine(
             );
             currentWidth += lineHeight;
             flagEmojiIndex++;
+        } else if (char == startAlternateFont) {
+            setFont(ctx, fontSize, alternateFont);
+        } else if (char == endAlternateFont) {
+            setFont(ctx, fontSize, defaultFont);
         } else {
             let cw = ctx.measureText(char).width;
             ctx.fillText(char, x + currentWidth, y);
             currentWidth += cw;
         }
     }
+}
+
+const defaultFont = '"Futura Condensed Extra", sans-serif';
+const alternateFont = "sans-serif";
+
+function setFont(
+    ctx: CanvasRenderingContext2D,
+    fontSize: number,
+    font: string
+) {
+    ctx.font = fontSize + "px " + font;
 }
 
 export default function createCaption2(
@@ -184,7 +212,6 @@ export default function createCaption2(
     return new Promise(async (resolve, reject) => {
         let c = createCanvas(width, width);
         let ctx = c.getContext("2d");
-        let fontName = '"Futura Condensed Extra", sans-serif';
         let options = decodeOptions(text);
         text = text
             .split(" ")
@@ -194,6 +221,14 @@ export default function createCaption2(
         let flagEmojiList = text.match(flagEmojiRegex) || [];
         text = text.replace(customEmojiRegex, customEmojiReplacement);
         text = text.replace(flagEmojiRegex, flagEmojiReplacement);
+        let ir = true;
+        text = text.replace(/(?<!\\)\*/g, () => {
+            ir = !ir;
+            if (!ir) return startAlternateFont;
+            return endAlternateFont;
+        });
+        text = text.replace(/\\\*/g, "*");
+
         let unicodeEmojis = [];
         for (const char of text) {
             if (char.match(emojiRegex) && !unicodeEmojis.includes(char)) {
@@ -217,7 +252,7 @@ export default function createCaption2(
         let textColor = options.text;
         let fontSizeMultiplier = 0.1;
         let fontSize = Math.round(((width + height) / 2) * fontSizeMultiplier);
-        ctx.font = fontSize + "px " + fontName;
+        setFont(ctx, fontSize, defaultFont);
         ctx.textBaseline = "top";
         let maxLineHeight = lineHeight(ctx);
         let yPadding = 0.4 * maxLineHeight;
@@ -226,12 +261,13 @@ export default function createCaption2(
             ctx,
             text,
             width * 0.9,
-            maxLineHeight
+            maxLineHeight,
+            fontSize
         );
         let totalHeight = maxLineHeight * lines.length;
 
         c.height = totalHeight + yPadding * 2;
-        ctx.font = fontSize + "px " + fontName;
+        setFont(ctx, fontSize, defaultFont);
         ctx.textBaseline = "top";
 
         ctx.fillStyle = backgroundColor;
@@ -241,7 +277,12 @@ export default function createCaption2(
         ctx.fillStyle = textColor;
         let i = 0;
         for (const line of lines) {
-            let lw = calculateDrawnLineWidth(line, ctx, maxLineHeight);
+            let lw = calculateDrawnLineWidth(
+                line,
+                ctx,
+                maxLineHeight,
+                fontSize
+            );
             drawLine(
                 width / 2 - lw / 2,
                 yPadding + i * maxLineHeight,
@@ -250,7 +291,8 @@ export default function createCaption2(
                 customEmojis,
                 flagEmojis,
                 ctx,
-                maxLineHeight
+                maxLineHeight,
+                fontSize
             );
             i++;
         }
