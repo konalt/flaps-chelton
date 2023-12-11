@@ -842,7 +842,7 @@ export const users: WebhookBot[] = [
             let words = content.split(" ");
             for (let i = 0; i < words.length / 5; i++) {
                 words.splice(
-                    ((words.length + 1) * Math.random()) || 0,
+                    (words.length + 1) * Math.random() || 0,
                     0,
                     `(${sample(farts)})`
                 );
@@ -866,6 +866,10 @@ export const users: WebhookBot[] = [
     {
         id: "chrome",
         name: "marketshare dominator",
+    },
+    {
+        id: "octavia",
+        name: "Octavia",
     },
 ];
 
