@@ -86,7 +86,7 @@ export function time() {
 
 export const types = {
     image: ["image/png", "image/jpeg", "image/webp"],
-    video: ["video/mp4", "video/x-matroska"],
+    video: ["video/mp4", "video/x-matroska", "video/quicktime"],
     text: ["text/plain"],
     json: ["application/json"],
     gif: ["image/gif"],
