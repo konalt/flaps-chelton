@@ -1,4 +1,4 @@
-import { loadImage, createCanvas, Canvas } from "canvas";
+import { loadImage, createCanvas, Canvas, ImageData } from "canvas";
 
 function calculateAspectRatioFit(
     srcWidth: number,
