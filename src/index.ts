@@ -231,7 +231,7 @@ function autoReact(msg: Message) {
                 (emoji) => emoji.name === "828274359076126760"
             )
         );
-    if (f.includes("copper")) {
+    if (f.includes("copper") && !msg.author.bot) {
         sendWebhook("flaps", "copper you say?", msg.channel as TextChannel);
     }
 }
@@ -402,7 +402,6 @@ function getSources(msg: Message, types: string[]): Promise<string[]> {
 let errorChannel: TextBasedChannel;
 
 export async function onMessage(msg: Message) {
-    if (msg.author.bot) return;
     if (!(msg.channel instanceof TextChannel)) {
         msg.reply("this mf bot dont support dms get the fuck outta here");
         return;
