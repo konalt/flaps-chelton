@@ -4,7 +4,7 @@ const openai = new OpenAIApi(
     new Configuration({ apiKey: process.env.OPENAI_TOKEN })
 );
 
-const model = "text-davinci-002";
+const model = "davinci-002";
 
 export { model };
 
