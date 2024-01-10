@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Flaps Web3D API</title>
+        <style>
+            body {
+                margin: 0;
+            }
+        </style>
+        <script
+            async
+            src="https://unpkg.com/es-module-shims@1.8.0/dist/es-module-shims.js"
+        ></script>
+
+        <script type="importmap">
+            {
+                "imports": {
+                    "three": "https://unpkg.com/three@v0.156.0/build/three.module.js",
+                    "three/addons/": "https://unpkg.com/three@v0.156.0/examples/jsm/"
+                }
+            }
+        </script>
+    </head>
+    <body>
+        <script type="module" src="web3d.js"></script>
+    </body>
+</html>

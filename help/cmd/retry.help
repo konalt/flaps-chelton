@@ -1,0 +1,3 @@
+!retry
+Retries the last command you issued.
+If you reply to a command instead, it retries that one.

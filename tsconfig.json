@@ -1,0 +1,16 @@
+{
+    "compilerOptions": {
+        "target": "es6",
+        "module": "CommonJS",
+        "esModuleInterop": true,
+        "moduleResolution": "node",
+        "outDir": "dist",
+        "rootDir": "src"
+    },
+    "compileOnSave": true,
+    "watchOptions": {
+        "watchDirectory": "usefsevents"
+    },
+    "exclude": [""],
+    "include": ["**/*.*", "src/**/*.*", "*", "**/*"]
+}

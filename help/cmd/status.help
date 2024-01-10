@@ -1,0 +1,7 @@
+!status <text>
+Changes flaps status. First word must be one of:
+Playing
+Streaming
+Competing
+Listening
+Watching

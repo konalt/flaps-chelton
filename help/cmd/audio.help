@@ -1,0 +1,3 @@
+!audio <file>
+Plays an audio file in VC.
+Note that this command also includes !audio stop to stop audio.

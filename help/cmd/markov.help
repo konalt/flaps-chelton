@@ -1,0 +1,2 @@
+!markov <words>
+Uses a markov chain text generator on the specified string.

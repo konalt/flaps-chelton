@@ -1,0 +1,2 @@
+!help <cmd>
+Shows help for a command, or for all commands if none is provided.

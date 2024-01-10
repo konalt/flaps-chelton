@@ -1,0 +1,1 @@
+raiden 30 84-(text_w/2) 196-(text_h/2) 294-(text_w/2) 82-(text_h/2)

@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Command Simulator - Flaps Chelton</title>
+        <script
+            src="https://code.jquery.com/jquery-3.6.1.min.js"
+            integrity="sha256-o88AwQnZB+VDvE9tvIXrMQaPlFFSUTR+nldQm1LuPXQ="
+            crossorigin="anonymous"
+        ></script>
+        <link
+            rel="stylesheet"
+            href="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/css/bootstrap.min.css"
+            integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u"
+            crossorigin="anonymous"
+        />
+        <script
+            src="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/js/bootstrap.min.js"
+            integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
+            crossorigin="anonymous"
+        ></script>
+        <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+        <link rel="stylesheet" href="style.css" />
+    </head>
+
+    <body>
+        <h1>Command Simulator</h1>
+        <hr />
+        <select id="selector"></select>
+        <div class="pasteindicator aleft">
+            <p class="commandinfo" id="commanddesc"></p>
+            <p class="commandinfo smaller">
+                Command needs: <code id="commandneeds"></code>
+            </p>
+            <p class="commandinfo smaller">
+                Command ID: <code id="commandid"></code>
+            </p>
+        </div>
+        <form id="form">
+            <input
+                type="text"
+                id="args"
+                placeholder="Arguments..."
+                autocomplete="off"
+            />
+            <br />
+            <div style="display: contents" id="fileinput">
+                <button id="clearimage">Clear</button>
+                <button id="uselastgen">
+                    Use last generated file as source
+                </button>
+                <input type="file" name="file" id="file" multiple />
+                <div class="pasteindicator" id="pasteindicator">
+                    <p class="commandinfo">
+                        Using <span id="imgtype">unknown</span>
+                        <span id="filetype">unknown</span>
+                    </p>
+                    <img id="pastedimage" />
+                    <video id="pastedvideo" controls></video>
+                </div>
+            </div>
+            <input type="submit" value="Go!" id="genbtn" />
+        </form>
+        <div id="loader" class="loader"></div>
+        <div
+            id="err"
+            style="
+                background-color: rgba(255, 0, 0, 0.54);
+                border-radius: 5px;
+                border: 3px solid rgba(255, 0, 0, 0.9);
+                color: white;
+                width: 512px;
+                padding: 10px;
+                font-weight: bold;
+            "
+        ></div>
+        <pre id="outtxt"></pre>
+        <img id="outimg" class="outimg" />
+        <video id="outvid" class="outvid" controls></video>
+        <script src="common.js"></script>
+        <script src="rce.js"></script>
+    </body>
+</html>

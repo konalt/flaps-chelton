@@ -1,0 +1,5 @@
+!insanity <number>
+Sets the "insanity" of GPT-3.
+0 = Normal AI.
+1 = Default setting.
+2 = Mentally insane.

@@ -1,0 +1,7 @@
+farquaad 1184 671 96 D D D D
+hanque 1626 1060 108 350 D 1280 T
+megamind 225 225 24 D D D D
+pigeon 3264 2448 180 D D D D
+whenthe 800 450 96 D D D D
+dallas 1280 720 108 D D D D
+holyshit 800 600 72 D D D D

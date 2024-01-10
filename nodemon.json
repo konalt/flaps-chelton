@@ -1,0 +1,12 @@
+{
+    "ignore": [
+        "**/*.ts",
+        "retrycache.json",
+        "web/*.*",
+        "node_modules",
+        "images",
+        "audio",
+        "js",
+        "fonts"
+    ]
+}
