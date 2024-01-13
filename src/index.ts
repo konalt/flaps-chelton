@@ -1,4 +1,4 @@
-import { Color, esc, log } from "./lib/logger";
+import { Color, esc, getMessageLog, log } from "./lib/logger";
 import { config } from "dotenv";
 log("Loading settings...", "start");
 config();
@@ -143,52 +143,8 @@ client.on("ready", async () => {
         });
 });
 
-const COMMAND_PREFIX = "!";
-const WH_PREFIX = "<";
-
-function idFromName(name: string) {
-    return hooks.find((h) => h.name == name).id || "flaps";
-}
-
-function logMessage(
-    msg: Message,
-    commandRan: boolean,
-    webhookUsed: boolean,
-    commandArgs: string[]
-) {
-    if (!(msg.channel instanceof TextChannel)) return;
-    let channel = `${esc(Color.Yellow)}<#${msg.channel.name}>`;
-    let user = `${
-        msg.author.bot && msg.author.discriminator == "0000"
-            ? esc(Color.Cyan) + `<wh:${idFromName(msg.author.username)}>`
-            : esc(Color.BrightCyan) +
-              `<${msg.author.username}#${msg.author.discriminator}>`
-    }`;
-    let contentColor = `${esc(Color.White)}${
-        commandRan
-            ? esc(Color.BrightGreen)
-            : webhookUsed
-            ? esc(Color.BrightYellow)
-            : ""
-    }`;
-    let content = `${
-        commandRan || webhookUsed
-            ? [
-                  msg.content.split(" ")[0],
-                  commandArgs.length > 0
-                      ? esc(Color.White) + commandArgs.join(" ")
-                      : "",
-              ]
-                  .join(" ")
-                  .trim()
-            : msg.content
-    }`;
-
-    log(
-        `${channel} ${user} ${contentColor}${content}`.replace(/ {2,}/g, " "),
-        "chat"
-    );
-}
+const COMMAND_PREFIX = process.env.COMMAND_PREFIX;
+const WH_PREFIX = process.env.WEBHOOK_PREFIX;
 
 function autoReact(msg: Message) {
     let f: string[] = [];
@@ -406,7 +362,8 @@ export async function onMessage(msg: Message) {
         msg.reply("this mf bot dont support dms get the fuck outta here");
         return;
     }
-    let commandArgs = msg.content.split(" ").slice(1);
+
+    log(getMessageLog(msg), "chat");
 
     if (isMidnightActive) {
         var mem = await msg.guild.members.fetch(msg.member);
@@ -425,12 +382,10 @@ export async function onMessage(msg: Message) {
         }
     }
 
-    let webhookUsed = false;
     if (msg.content.startsWith(WH_PREFIX)) {
         let id = msg.content.split(" ")[0].substring(WH_PREFIX.length);
         let content = msg.content.split(" ").slice(1).join(" ");
         if (hooks.get(id)) {
-            webhookUsed = true;
             sendWebhook(id, content, msg.channel);
             msg.delete();
         }
@@ -463,9 +418,8 @@ export async function onMessage(msg: Message) {
             );
 
             if (command) {
-                logMessage(msg, true, webhookUsed, commandArgs);
                 log(
-                    `Running command ${esc(Color.BrightCyan)}${commandId}`,
+                    `${commandChain.length > 1 ? `${esc(Color.BrightBlue)}(${index+1}/${commandChain.length}) ${esc(Color.White)}` : ''}Running command ${esc(Color.BrightCyan)}${commandId}`,
                     "cmd"
                 );
                 if (commandId !== "retry") {
@@ -566,8 +520,6 @@ export async function onMessage(msg: Message) {
                             break;
                     }
                 }
-            } else {
-                logMessage(msg, false, webhookUsed, commandArgs);
             }
             index++;
         }
@@ -584,8 +536,6 @@ export async function onMessage(msg: Message) {
                 scheduleDelete(file[0], file[1]);
             }
         }
-    } else {
-        logMessage(msg, false, webhookUsed, commandArgs);
     }
 }
 
