@@ -114,10 +114,15 @@ export function sendWebhook(
             buffer = null;
             filename = null;
         }
+        let name = user?.name || "wh:" + id;
+        if (name == "flaps chelton") {
+            let flapsMember = await (channel as TextChannel).guild.members.fetchMe();
+            if (flapsMember.nickname) name = flapsMember.nickname;
+        }
         baseSend(
             url + "?wait=true",
             user?.quirk ? user?.quirk(content) : content,
-            user?.name || "wh:" + id,
+            name,
             user?.avatar || "https://flaps.us.to/avatar/" + id + ".png",
             buffer,
             filename
