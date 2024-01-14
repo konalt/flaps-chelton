@@ -38,7 +38,7 @@ export const log = (text = "Text Here", sub: string | null = null) => {
 };
 
 function idFromName(name: string) {
-    return hooks.find((h) => h.name == name).id || "flaps";
+    return hooks.find((h) => h.name == name)?.id || "flaps";
 }
 
 export function getMessageLog(msg: Message) {
