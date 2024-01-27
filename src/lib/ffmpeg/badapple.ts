@@ -1,8 +1,8 @@
 import { ffmpegBuffer } from "./ffmpeg";
 import { getVideoLength } from "./getVideoDimensions";
 
-function tune(hz: number, base = 440) {
-    return `asetrate=44100*(${hz}/${base}),aresample=44100,atempo=1/(${hz}/${base})`;
+function tune(hz: number, base: number, noteDur: number) {
+    return `asetrate=44100*(${hz}/${base}),aresample=44100,atempo=1/(${hz}/${base}),atrim=0:${noteDur}`;
 }
 
 const NoteLUT = {
@@ -38,7 +38,8 @@ export default async function badapple(
     buffers: [Buffer, string][]
 ): Promise<Buffer> {
     let dur = await getVideoLength(buffers[0]);
-    let speedupFactor = dur / 0.21742;
+    let noteDur = 0.232;
+    let speedupFactor = dur / noteDur;
     let noteRate: Record<string, number> = {};
     for (const note of BadApple) {
         if (!noteRate[note]) noteRate[note] = 0;
@@ -57,7 +58,7 @@ export default async function badapple(
         let tone = note;
         if (long || xlong) tone = tone.substring(0, tone.length - 1);
         filter += `[t${note}]`;
-        filter += tune(NoteLUT[tone], NoteLUT.A);
+        filter += tune(NoteLUT[tone], NoteLUT.A, noteDur);
         if (long || xlong) filter += ",atempo=0.5";
         if (xlong) filter += ",atempo=0.5,atempo=0.5,atempo=0.5";
         filter += `,asplit=${inst}`;
