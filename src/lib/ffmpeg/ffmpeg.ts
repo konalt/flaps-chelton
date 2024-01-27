@@ -8,7 +8,6 @@ import { stdout } from "process";
 import { addBuffer, removeBuffer } from "../..";
 
 const extraArgs = "";
-const ffmpegVerbose = process.env.FFMPEG_VERBOSE == "yes";
 
 export const preset = "veryfast";
 
@@ -35,9 +34,10 @@ export function ffmpegBuffer(
     outExt?: string
 ): Promise<Buffer> {
     return new Promise<Buffer>((resolve, reject) => {
+        const ffmpegVerbose = process.env.FFMPEG_VERBOSE == "yes";
         if (!outExt) outExt = getFileExt(buffers[0][1]);
         outExt = outExt.toLowerCase();
-        let verbosityArg = ffmpegVerbose ? "-v debug" : "-v warning";
+        let verbosityArg = ffmpegVerbose ? "-v info" : "-v warning";
         let newargs = (
             verbosityArg +
             " " +
@@ -155,6 +155,8 @@ const ffmpegLogRegex =
 export { ffmpegOldBuffer };
 export function ffmpeg(args: string, quiet = false) {
     return new Promise((resolve, reject) => {
+        const ffmpegVerbose = process.env.FFMPEG_VERBOSE == "yes";
+
         var startTime = Date.now();
         var newargs =
             extraArgs + " " + (ffmpegVerbose ? "" : "-v warning ") + args;
