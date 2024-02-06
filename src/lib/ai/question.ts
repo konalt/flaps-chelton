@@ -93,8 +93,7 @@ export function question(question: string): Promise<string> {
                         }
                         ratelimitHeaders = ratelimitHeaders.trim();
                         res(
-                            "[429] Too Many Requests\nPlease wait before making another request.\nAdditional info:\n" +
-                                ratelimitHeaders
+                            "[429] Too Many Requests\nPlease wait before making another request."
                         );
                         break;
                     default:
