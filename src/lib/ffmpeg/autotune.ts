@@ -25,23 +25,16 @@ const NoteLUT = {
     E5: 659,
 };
 
-const BadApple = `
-D E F G A_ D5 C5 A_ D_ A G F E D E F G A_ G F E D E F E D CS E D E F G A_ D5 C5 A_ D_ A G F E D E F G A_ G F E_ F_ G_ A_ 
-D E F G A_ D5 C5 A_ D_ A G F E D E F G A_ G F E D E F E D CS E D E F G A_ D5 C5 A_ D_ A G F E D E F G A_ G F E_ F_ G_ A_ 
-C5 D5 A G A_ G A C5 D5 A G A_ G A G F E C D_ C D E F G A D_ G A C5 D5 A G A_ G A C5 D5 A G A_ G A G F E C D_ C D E F G A D_ 
-G A C5 D5 A G A_ G A C5 D5 A G A_ G A G F E C D_ C D E F G A D_ G A C5 D5 A G A_ G A C5 D5 A G A_ C5 D5 E5 D5 C5 A G_ F G F E D C D-
-`
-    .replace(/\r?\n/g, "")
-    .split(" ");
-
-export default async function badapple(
-    buffers: [Buffer, string][]
+export default async function autotune(
+    buffers: [Buffer, string][],
+    song: string
 ): Promise<Buffer> {
     let dur = await getVideoLength(buffers[0]);
     let noteDur = 0.232;
     let speedupFactor = dur / noteDur;
     let noteRate: Record<string, number> = {};
-    for (const note of BadApple) {
+    let songNotes = song.replace(/\r?\n/g, "").split(" ");
+    for (const note of songNotes) {
         if (!noteRate[note]) noteRate[note] = 0;
         noteRate[note]++;
     }
@@ -54,10 +47,10 @@ export default async function badapple(
     filter += ";";
     for (const [note, inst] of Object.entries(noteRate)) {
         let long = note.endsWith("_");
-        let xlong = note.endsWith("-");
         let short = note.endsWith("+");
+        let xlong = note.endsWith("-");
         let tone = note;
-        if (long || xlong) tone = tone.substring(0, tone.length - 1);
+        if (long || xlong || short) tone = tone.substring(0, tone.length - 1);
         filter += `[t${note}]`;
         filter += tune(NoteLUT[tone], NoteLUT.A, noteDur);
         if (short) filter += ",atempo=2";
@@ -71,7 +64,7 @@ export default async function badapple(
     }
     let noteRate2: Record<string, number> = {};
     let totalNotes = 0;
-    for (const note of BadApple) {
+    for (const note of songNotes) {
         if (!noteRate2[note]) noteRate2[note] = 0;
         filter += `[f${note}${noteRate2[note]}]`;
         noteRate2[note]++;
