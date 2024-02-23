@@ -35,6 +35,8 @@ export default async function autotune(
     let noteRate: Record<string, number> = {};
     let songNotes = song.replace(/\r?\n/g, "").split(" ");
     for (const note of songNotes) {
+        console.log(note.replace(/[_+-]/g, ""));
+        if (!NoteLUT[note.replace(/[_+-]/g, "")]) continue;
         if (!noteRate[note]) noteRate[note] = 0;
         noteRate[note]++;
     }
@@ -42,6 +44,7 @@ export default async function autotune(
         Object.keys(noteRate).length
     }`;
     for (const n of Object.keys(noteRate)) {
+        if (!NoteLUT[n.replace(/[_+-]/g, "")]) continue;
         filter += `[t${n}]`;
     }
     filter += ";";
@@ -65,6 +68,7 @@ export default async function autotune(
     let noteRate2: Record<string, number> = {};
     let totalNotes = 0;
     for (const note of songNotes) {
+        if (!NoteLUT[note.replace(/[_+-]/g, "")]) continue;
         if (!noteRate2[note]) noteRate2[note] = 0;
         filter += `[f${note}${noteRate2[note]}]`;
         noteRate2[note]++;
