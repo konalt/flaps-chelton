@@ -887,6 +887,42 @@ export const users: WebhookBot[] = [
         id: "sketchbook",
         name: "sketchbook dhmis",
     },
+    {
+        id: "yellowguy",
+        name: "yellow guy",
+    },
+    {
+        id: "redguy",
+        name: "red guy",
+    },
+    {
+        id: "duckguy",
+        name: "duck guy",
+    },
+    {
+        id: "tony",
+        name: "tony the 'talking' clock",
+    },
+    {
+        id: "shrignuld",
+        name: "Shrignuld (Little Baby Pigeon)",
+    },
+    {
+        id: "colin",
+        name: "colin the computery guy",
+    },
+    {
+        id: "steak",
+        name: "somewhat humanoid steak",
+    },
+    {
+        id: "lamp",
+        name: "the legful lamp",
+    },
+    {
+        id: "roy",
+        name: "roy gribbleston",
+    },
 ];
 
 function spamtonify(text: string): string {
