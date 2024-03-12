@@ -904,15 +904,15 @@ export const users: WebhookBot[] = [
         name: "tony the 'talking' clock",
     },
     {
-        id: "shrignuld",
-        name: "Shrignuld (Little Baby Pigeon)",
+        id: "shrignold",
+        name: "Shrignold (Little Baby Pigeon)",
     },
     {
         id: "colin",
         name: "colin the computery guy",
     },
     {
-        id: "steak",
+        id: "steakguy",
         name: "somewhat humanoid steak",
     },
     {
