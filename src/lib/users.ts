@@ -923,6 +923,38 @@ export const users: WebhookBot[] = [
         id: "roy",
         name: "roy gribbleston",
     },
+    {
+        id: "briefcase",
+        name: "the briefcase",
+    },
+    {
+        id: "coffin",
+        name: "floorboard person",
+    },
+    {
+        id: "warren",
+        name: "AN EAGLE (NOT A WORM)",
+    },
+    {
+        id: "lily",
+        name: "Lily",
+    },
+    {
+        id: "todney",
+        name: "Todney",
+    },
+    {
+        id: "choochoo",
+        name: "Choo Choo",
+    },
+    {
+        id: "electracey",
+        name: "elecwifey",
+    },
+    {
+        id: "peridot",
+        name: "peridot",
+    },
 ];
 
 function spamtonify(text: string): string {
