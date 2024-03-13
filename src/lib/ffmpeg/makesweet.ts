@@ -99,7 +99,7 @@ export default async function makesweet(
     buffers: [Buffer, string][],
     text: string
 ) {
-    let resolution = 512;
+    let resolution = 384;
 
     // the heart uv is fucked and flips them???
     let image1 = await ffmpegBuffer(
