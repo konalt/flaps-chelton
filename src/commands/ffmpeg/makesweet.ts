@@ -8,7 +8,7 @@ module.exports = {
     id: "makesweet",
     name: "Makesweet",
     desc: "Makes a 3D heart locket gif.",
-    needs: ["image"],
+    needs: ["image", "image?"],
     execute(args, buf) {
         return new Promise((res, rej) => {
             makesweet(buf, args.join(" ")).then(

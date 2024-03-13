@@ -107,11 +107,20 @@ export default async function makesweet(
         [[await createMakesweetFixedImage(buffers[0][0]), "png"]],
         "png"
     );
-    let image2 = await ffmpegBuffer(
-        `-i $BUF0 -vf scale=${resolution}:${resolution}:force_original_aspect_ratio=1,pad=${resolution}:${resolution}:(ow-iw)/2:(oh-ih)/2,setsar=1:1,vflip,hflip $OUT`,
-        [[await createMakesweetText(text), "png"]],
-        "png"
-    );
+    let image2: Buffer;
+    if (buffers[1]) {
+        image2 = await ffmpegBuffer(
+            `-i $BUF0 -vf scale=${resolution}:${resolution}:force_original_aspect_ratio=1,pad=${resolution}:${resolution}:(ow-iw)/2:(oh-ih)/2,setsar=1:1,vflip $OUT`,
+            [[await createMakesweetFixedImage(buffers[1][0]), "png"]],
+            "png"
+        );
+    } else {
+        image2 = await ffmpegBuffer(
+            `-i $BUF0 -vf scale=${resolution}:${resolution}:force_original_aspect_ratio=1,pad=${resolution}:${resolution}:(ow-iw)/2:(oh-ih)/2,setsar=1:1,vflip,hflip $OUT`,
+            [[await createMakesweetText(text), "png"]],
+            "png"
+        );
+    }
 
     let locketAnim = await locket([image1, image2]);
 
