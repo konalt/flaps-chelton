@@ -116,8 +116,10 @@ export async function hookWeb3DAPIAnimation(
         await page.goto(
             "http://localhost:" +
                 (process.env.WEB_PORT || 8080) +
-                "/web3d/view_web3d"
+                "/web3d/view_web3d",
+            { waitUntil: "domcontentloaded" }
         );
+        let lastFrame: Buffer;
         let currentStepPromise: Promise<Buffer> | null;
         let currentStepPromiseResolve: (value: Buffer) => void;
         await page.removeExposedFunction("flapsWeb3DFinished").catch(() => {});
@@ -125,10 +127,16 @@ export async function hookWeb3DAPIAnimation(
             "flapsWeb3DFinished",
             async (width: number, height: number) => {
                 await page.setViewport({ width, height });
-                let buffer = await page.screenshot({ encoding: "binary" });
+                let buffer = await page.screenshot({
+                    encoding: "binary",
+                    type: "jpeg",
+                });
                 if (buffer instanceof Buffer) {
+                    lastFrame = buffer;
                     let animation: Web3DAnimation = {
-                        lastFrame: buffer,
+                        lastFrame: () => {
+                            return lastFrame;
+                        },
                         step: async (...args): Promise<Buffer> => {
                             currentStepPromise = new Promise<Buffer>(
                                 async (resolve, reject) => {
@@ -164,6 +172,7 @@ export async function hookWeb3DAPIAnimation(
                         type: "jpeg",
                     });
                     if (buffer instanceof Buffer) {
+                        lastFrame = buffer;
                         currentStepPromiseResolve(buffer);
                     } else {
                         rej("page.screenshot did not return a Buffer.");

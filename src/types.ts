@@ -98,7 +98,7 @@ export interface AutoStatusInfo {
 export interface Web3DAnimation {
     step: (...args: any[]) => Promise<Buffer>;
     destroy: () => void;
-    lastFrame: Buffer;
+    lastFrame: () => Buffer;
 }
 
 export interface TTSSAMLine {
