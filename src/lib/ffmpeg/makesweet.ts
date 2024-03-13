@@ -2,6 +2,7 @@ import { bufferToDataURL } from "../utils";
 import { hookWeb3DAPIAnimation } from "../web3dapi";
 import { ffmpegBuffer } from "./ffmpeg";
 import createMakesweetText from "../canvas/createMakesweetText";
+import createMakesweetFixedImage from "../canvas/createMakesweetFixedImage";
 import { addBufferSequence, removeBuffer } from "../..";
 import videoGif from "./videogif";
 
@@ -103,7 +104,7 @@ export default async function makesweet(
     // the heart uv is fucked and flips them???
     let image1 = await ffmpegBuffer(
         `-i $BUF0 -vf scale=${resolution}:${resolution}:force_original_aspect_ratio=1,pad=${resolution}:${resolution}:(ow-iw)/2:(oh-ih)/2,setsar=1:1,vflip $OUT`,
-        buffers,
+        [[await createMakesweetFixedImage(buffers[0][0]), "png"]],
         "png"
     );
     let image2 = await ffmpegBuffer(
