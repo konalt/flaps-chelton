@@ -17,8 +17,12 @@ export default (buf: Buffer): Promise<Buffer> => {
         var ctx = c.getContext("2d");
         ctx.fillStyle = "#dddddd";
         ctx.fillRect(0, 0, 512, 512);
-        let is = calculateAspectRatioFit(img.width, img.height, 412);
-        ctx.drawImage(img, 256 - is[0] / 2, 100, is[0], is[1]);
+        let v = 100;
+        if (img.width / img.height > 1.25) {
+            v = 0;
+        }
+        let is = calculateAspectRatioFit(img.width, img.height, 512 - v);
+        ctx.drawImage(img, 256 - is[0] / 2, v, is[0], is[1]);
         resolve(c.toBuffer("image/png"));
     });
 };

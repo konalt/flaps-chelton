@@ -373,14 +373,12 @@ async function _init(id, options = {}) {
             texture1.colorSpace = THREE.SRGBColorSpace;
             let material1 = new THREE.MeshStandardMaterial({
                 map: texture1,
-                transparent: true,
             });
 
             let texture2 = await loadTexture(img2);
             texture2.colorSpace = THREE.SRGBColorSpace;
             let material2 = new THREE.MeshStandardMaterial({
                 map: texture2,
-                transparent: true,
             });
 
             let locket1 = await loadModel("models/locket.glb");
