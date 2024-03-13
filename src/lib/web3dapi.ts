@@ -2,11 +2,13 @@ import puppeteer, { Browser, Page } from "puppeteer";
 import { Web3DAnimation } from "../types";
 
 let minimalArgs = [];
+let headless: boolean | "new" =
+    process.env.WEB3D_HEADLESS == "yes" ? "new" : false;
 
 export async function gpu(): Promise<Buffer> {
     return new Promise<Buffer>(async (res, rej) => {
         let browser = await puppeteer.launch({
-            headless: "new",
+            headless,
             args: [...minimalArgs],
         });
         let page = await browser.newPage();
@@ -30,7 +32,7 @@ export async function getWeb3DAPIImage(
 ): Promise<Buffer> {
     return new Promise(async (res, rej) => {
         let browser = await puppeteer.launch({
-            headless: "new",
+            headless,
             args: [...minimalArgs],
         });
         let page = await browser.newPage();
@@ -73,7 +75,7 @@ export async function hookWeb3DAPIAnimation(
 ): Promise<Web3DAnimation> {
     return new Promise(async (res, rej) => {
         let browser = await puppeteer.launch({
-            headless: "new",
+            headless,
             args: [...minimalArgs],
         });
         let page = await browser.newPage();
