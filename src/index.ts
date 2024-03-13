@@ -48,7 +48,6 @@ import {
 import { contentType, lookup } from "mime-types";
 import initializeWebServer from "./lib/web";
 import { file } from "./lib/ffmpeg/ffmpeg";
-import { flapsWeb3DAPIInit } from "./lib/web3dapi";
 import filestreamServer from "./lib/filestreamserver";
 
 log("Initializing client...", "start");
@@ -419,7 +418,13 @@ export async function onMessage(msg: Message) {
 
             if (command) {
                 log(
-                    `${commandChain.length > 1 ? `${esc(Color.BrightBlue)}(${index+1}/${commandChain.length}) ${esc(Color.White)}` : ''}Running command ${esc(Color.BrightCyan)}${commandId}`,
+                    `${
+                        commandChain.length > 1
+                            ? `${esc(Color.BrightBlue)}(${index + 1}/${
+                                  commandChain.length
+                              }) ${esc(Color.White)}`
+                            : ""
+                    }Running command ${esc(Color.BrightCyan)}${commandId}`,
                     "cmd"
                 );
                 if (commandId !== "retry") {
@@ -786,15 +791,12 @@ readCommandDir(__dirname + "/commands").then(() => {
             }, 1000);
             log("Starting web server...", "start");
             initializeWebServer().then(() => {
-                log("Initializing Web3D API...", "start");
-                flapsWeb3DAPIInit().then(() => {
-                    log("Logging in...", "start");
-                    client
-                        .login(process.env.DISCORD_TOKEN || "NoTokenProvided")
-                        .catch((e) => {
-                            console.log(e);
-                        });
-                });
+                log("Logging in...", "start");
+                client
+                    .login(process.env.DISCORD_TOKEN || "NoTokenProvided")
+                    .catch((e) => {
+                        console.log(e);
+                    });
             });
         });
     });
