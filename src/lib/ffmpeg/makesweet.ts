@@ -1,4 +1,4 @@
-import { bufferToDataURL } from "../utils";
+import { bufferToDataURL, parseOptions } from "../utils";
 import { hookWeb3DAPIAnimation } from "../web3dapi";
 import { ffmpegBuffer } from "./ffmpeg";
 import createMakesweetText from "../canvas/createMakesweetText";
@@ -58,7 +58,7 @@ function interpolate(frame1: number[], frame2: number[]): number[] {
     return out;
 }
 
-function locket(images: [Buffer, Buffer]) {
+function locket(images: [Buffer, Buffer], options: Record<string, any>) {
     return new Promise<Buffer>(async (resolve, reject) => {
         let heartAnimation = await hookWeb3DAPIAnimation("heartlocket", {
             img1: bufferToDataURL(images[0], "image/png"),
@@ -66,9 +66,11 @@ function locket(images: [Buffer, Buffer]) {
         });
         let heartAnimationFrames: Buffer[] = [];
         let i = 0;
-        for (const frame of ANIMATION) {
+        let uanim = [...ANIMATION];
+        if (options.reverse) uanim.reverse();
+        for (const frame of uanim) {
             let thisFrame = frame;
-            let nextFrame = ANIMATION[i + 1];
+            let nextFrame = uanim[i + 1];
             if (!nextFrame) nextFrame = thisFrame;
             let interpolated = interpolate(thisFrame, nextFrame);
             heartAnimationFrames.push(await heartAnimation.step(...frame));
@@ -86,7 +88,7 @@ function locket(images: [Buffer, Buffer]) {
             "jpeg"
         );
         let heartAnimationConcat = await ffmpegBuffer(
-            `-pattern_type sequence -f image2 -i http://localhost:56033/${heartAnimationSequence} -framerate 20 $PRESET $OUT`,
+            `-pattern_type sequence -f image2 -i http://localhost:56033/${heartAnimationSequence} -framerate ${options.fps} $PRESET $OUT`,
             [],
             "mp4"
         );
@@ -99,7 +101,12 @@ export default async function makesweet(
     buffers: [Buffer, string][],
     text: string
 ) {
-    let resolution = 384;
+    let [options, textParsed] = parseOptions(text, {
+        imgres: 384,
+        fps: 20,
+        reverse: false,
+    });
+    let resolution = options.imgres;
 
     // the heart uv is fucked and flips them???
     let image1 = await ffmpegBuffer(
@@ -110,20 +117,20 @@ export default async function makesweet(
     let image2: Buffer;
     if (buffers[1]) {
         image2 = await ffmpegBuffer(
-            `-i $BUF0 -vf scale=${resolution}:${resolution}:force_original_aspect_ratio=1,pad=${resolution}:${resolution}:(ow-iw)/2:(oh-ih)/2,setsar=1:1,vflip $OUT`,
+            `-i $BUF0 -vf scale=${resolution}:${resolution}:force_original_aspect_ratio=1,pad=${resolution}:${resolution}:(ow-iw)/2:(oh-ih)/2,setsar=1:1,vflip,hflip $OUT`,
             [[await createMakesweetFixedImage(buffers[1][0]), "png"]],
             "png"
         );
     } else {
         image2 = await ffmpegBuffer(
             `-i $BUF0 -vf scale=${resolution}:${resolution}:force_original_aspect_ratio=1,pad=${resolution}:${resolution}:(ow-iw)/2:(oh-ih)/2,setsar=1:1,vflip,hflip $OUT`,
-            [[await createMakesweetText(text), "png"]],
+            [[await createMakesweetText(textParsed), "png"]],
             "png"
         );
     }
 
-    let locketAnim = await locket([image1, image2]);
+    let locketAnim = await locket([image1, image2], options);
 
-    let gif = videoGif([[locketAnim, "mp4"]], 20);
+    let gif = videoGif([[locketAnim, "mp4"]], options.fps);
     return gif;
 }

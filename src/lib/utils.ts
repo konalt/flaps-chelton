@@ -156,3 +156,24 @@ export function scheduleDelete(path: string, timeSeconds: number) {
         unlinkSync(path);
     }, timeSeconds * 1000);
 }
+
+export function parseOptions(
+    text: string,
+    defaults: Record<string, any>
+): [Record<string, any>, string] {
+    let textArr = text.split(" ");
+    let options = { ...defaults };
+    let newText = [];
+    for (const word of textArr) {
+        if (!word.startsWith("--")) {
+            newText.push(word);
+            continue;
+        }
+        let [option, value] = word.substring(2).split("=");
+        if (!value) value = "__boolset";
+        if (Object.keys(options).includes(option)) {
+            options[option] = value == "__boolset" ? true : value;
+        }
+    }
+    return [options, newText.join(" ")];
+}
