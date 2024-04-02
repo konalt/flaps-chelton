@@ -10,6 +10,7 @@ const resolutions = {
     ecube_hearts: [512, 512],
     ecube_sliced: [512, 512],
     heartlocket: [400, 300],
+    cubespin: [512, 512],
 };
 const NOTEXTURE =
     "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAALUlEQVQ4T2O8w/DzvwoDOwOQZiCHZmRgYPhPrmaQPsZRF4yGwWg6AGfAgc8LADOwDrjWxfJ7AAAAAElFTkSuQmCC";
@@ -426,6 +427,28 @@ async function _init(id, options = {}) {
                 if (dr > mdr) dr = mdr;
             };
             break;
+        }
+        case "cubespin": {
+            camera.position.x = 0;
+            camera.position.y = 0;
+            camera.position.z = 4;
+            camera.fov = 27;
+            camera.updateProjectionMatrix();
+            camera.lookAt(0, 0, 0);
+
+            let map = await loadTexture(options.img);
+            map.colorSpace = THREE.SRGBColorSpace;
+            const cube = new THREE.Mesh(
+                new THREE.BoxGeometry(1, 1, 1),
+                new THREE.MeshBasicMaterial({ map })
+            );
+            scene.add(cube);
+
+            stepFunction = (fractionalTurn = 0) => {
+                let fullRotate = Math.PI * 2;
+                cube.rotation.x = fractionalTurn * fullRotate;
+                cube.rotation.y = fractionalTurn * fullRotate;
+            };
         }
     }
 
