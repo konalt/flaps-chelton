@@ -382,7 +382,10 @@ export async function onMessage(msg: Message) {
     }
 
     if (msg.content.startsWith(WH_PREFIX)) {
-        let id = msg.content.split(" ")[0].substring(WH_PREFIX.length);
+        let id = msg.content
+            .split(" ")[0]
+            .substring(WH_PREFIX.length)
+            .toLowerCase();
         let content = msg.content.split(" ").slice(1).join(" ");
         if (hooks.get(id)) {
             sendWebhook(id, content, msg.channel);
