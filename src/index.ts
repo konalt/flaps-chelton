@@ -579,7 +579,12 @@ function loadAutoStatus() {
             );
             let status = autoStatus[newPresence.userId];
             let lastStatus = oldPresence ? oldPresence.status : "offline";
-            if (lastStatus == "online" || lastStatus == "dnd") return; // dont wanna alert people too much
+            if (
+                lastStatus == "online" ||
+                lastStatus == "dnd" ||
+                lastStatus == "idle"
+            )
+                return; // dont wanna alert people too much
             if (newPresence.clientStatus.desktop === "online") {
                 let channel = await client.channels.fetch(status.channel);
                 if (channel instanceof TextChannel) {
