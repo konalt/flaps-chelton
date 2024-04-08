@@ -11,6 +11,7 @@ const resolutions = {
     ecube_sliced: [512, 512],
     heartlocket: [400, 300],
     cubespin: [512, 512],
+    cirno: [800, 600],
 };
 const NOTEXTURE =
     "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAALUlEQVQ4T2O8w/DzvwoDOwOQZiCHZmRgYPhPrmaQPsZRF4yGwWg6AGfAgc8LADOwDrjWxfJ7AAAAAElFTkSuQmCC";
@@ -63,12 +64,22 @@ async function _init(id, options = {}) {
         powerPreference: "high-performance",
         antialias: true,
     });
+    renderer.shadowMap.enabled = true;
     renderer.setSize(size[0], size[1]);
     renderer.outputColorSpace = THREE.SRGBColorSpace;
     document.body.appendChild(renderer.domElement);
 
     function quickLight(x, y, z) {
         const light = new THREE.PointLight(0xffffff, 100, 100);
+        light.position.x = x;
+        light.position.y = y;
+        light.position.z = z;
+        scene.add(light);
+        return light;
+    }
+
+    function quickBigLight(x, y, z) {
+        const light = new THREE.PointLight(0xffffff, 5000, 5000);
         light.position.x = x;
         light.position.y = y;
         light.position.z = z;
@@ -449,6 +460,54 @@ async function _init(id, options = {}) {
                 cube.rotation.x = fractionalTurn * fullRotate;
                 cube.rotation.y = fractionalTurn * fullRotate;
             };
+            break;
+        }
+        case "cirno": {
+            let img = options.img || NOTEXTURE;
+
+            camera.position.x = 20;
+            camera.position.y = 7;
+            camera.position.z = 30;
+            camera.fov = 40;
+            camera.updateProjectionMatrix();
+            camera.lookAt(5, 7, 0);
+
+            let fumo = await loadModel("models/cirno.glb");
+            fumo.rotation.y = Math.PI;
+            let map = await loadTexture(img);
+            map.colorSpace = THREE.SRGBColorSpace;
+            map.flipY = false;
+            let material = new THREE.MeshStandardMaterial({
+                map,
+            });
+            fumo.children[0].material = material;
+            let scale = 0.6;
+            fumo.scale.x = scale;
+            fumo.scale.y = scale;
+            fumo.scale.z = scale;
+            scene.add(fumo);
+
+            let ground = new THREE.Mesh(
+                new THREE.PlaneGeometry(999, 999),
+                new THREE.MeshStandardMaterial({
+                    color: 0xffffff,
+                })
+            );
+            ground.rotation.x = -Math.PI / 2;
+            scene.add(ground);
+
+            scene.background = new THREE.Color(0x606060);
+            scene.fog = new THREE.Fog(0x606060, 90, 100);
+
+            quickBigLight(50, 50, 0);
+            quickBigLight(50, 30, 30);
+            quickBigLight(-50, 30, 30);
+
+            scene.add(new THREE.AmbientLight(0xffffff, 0.1));
+
+            scene.add(new THREE.AxesHelper(100));
+
+            break;
         }
     }
 
