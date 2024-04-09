@@ -504,9 +504,6 @@ async function _init(id, options = {}) {
             quickBigLight(-50, 30, 30);
 
             scene.add(new THREE.AmbientLight(0xffffff, 0.1));
-
-            scene.add(new THREE.AxesHelper(100));
-
             break;
         }
     }
