@@ -987,6 +987,18 @@ export const users: WebhookBot[] = [
         id: "stolas",
         name: "Stolas",
     },
+    {
+        id: "goodra",
+        name: "Goodra!",
+        /* quirk: (text) => {
+            return text
+                .split(" ")
+                .map((w) => {
+                    return "goodra";
+                })
+                .join(" ");
+        }, */
+    },
 ];
 
 function spamtonify(text: string): string {
