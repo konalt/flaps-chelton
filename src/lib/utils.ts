@@ -1,9 +1,9 @@
-import { Attachment, TextBasedChannel, TextChannel } from "discord.js";
+import { Attachment, TextBasedChannel } from "discord.js";
 import { FlapsMessageCommandResponse } from "../types";
 import { downloadPromise } from "./download";
 import { get100Posts } from "./reddit";
 import { unlinkSync } from "fs";
-import { Color, esc, log } from "./logger";
+import webpToPNG from "./ffmpeg/webpToPNG";
 
 export function uuidv4() {
     let s = (n = 1) =>
@@ -54,7 +54,7 @@ export function randomRedditImage(subreddit: string): Promise<Buffer> {
 }
 
 export function getFileExt(path: string) {
-    return path.split(".")[path.split(".").length - 1];
+    return path.split(".")[path.split(".").length - 1].split("?")[0];
 }
 
 export const emojiRegex = /(?=\p{Emoji})(?=[\D])(?=[^\*#])/gu;
@@ -85,12 +85,13 @@ export function time() {
 }
 
 export const types = {
-    image: ["image/png", "image/jpeg", "image/webp"],
+    image: ["image/png", "image/jpeg"],
     video: ["video/mp4", "video/x-matroska", "video/quicktime"],
     text: ["text/plain"],
     json: ["application/json"],
     gif: ["image/gif"],
     audio: ["audio/mpeg", "audio/aac"],
+    webp: ["image/webp"],
 };
 
 export function getTypeSingular(ct: string) {
@@ -176,4 +177,13 @@ export function parseOptions(
         }
     }
     return [options, newText.join(" ")];
+}
+
+export function convertWebpAttachmentToPng(attachment: Attachment) {
+    return new Promise<Buffer>((resolve) => {
+        downloadPromise(attachment.url).then(async (buf) => {
+            let png = await webpToPNG([[buf, "webp"]]);
+            resolve(png);
+        });
+    });
 }

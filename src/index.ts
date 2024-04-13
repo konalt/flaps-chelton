@@ -24,9 +24,11 @@ import {
     CommandResponseType,
     FlapsCommand,
     FlapsCommandResponse,
+    FlapsMessageSource,
 } from "./types";
 import { downloadPromise } from "./lib/download";
 import {
+    convertWebpAttachmentToPng,
     getFileExt,
     getTypes,
     getTypeSingular,
@@ -217,9 +219,36 @@ function tenorURLToGifURL(url: string): Promise<string> {
 
 function getSourcesWithAttachments(msg: Message, types: string[]) {
     return new Promise(async (resolve, reject) => {
-        function l2(msg: Message) {
+        async function l2(msg: Message) {
             var atts = msg.attachments.first(types.length);
             var attTypes = getTypes(atts);
+            let newAtts: [FlapsMessageSource, Buffer][] = [];
+            let n = 0;
+            for (const type of attTypes) {
+                if (type == "webp") {
+                    let attachment = await convertWebpAttachmentToPng(atts[n]);
+                    newAtts.push([
+                        {
+                            width: atts[n].width,
+                            height: atts[n].height,
+                            fileExt: "png",
+                        },
+                        attachment,
+                    ]);
+                } else {
+                    let buf = await downloadPromise(atts[n].url);
+                    newAtts.push([
+                        {
+                            width: atts[n].width,
+                            height: atts[n].height,
+                            fileExt: getFileExt(atts[n].url),
+                        },
+                        buf,
+                    ]);
+                }
+                n++;
+            }
+            attTypes = attTypes.map((t) => (t == "webp" ? "image" : t));
             if (!atts[0] && !types[0].endsWith("?")) {
                 if (msg.content.startsWith("https://tenor.com/")) {
                     var type = "gif";
@@ -295,16 +324,14 @@ function getSourcesWithAttachments(msg: Message, types: string[]) {
             } else if (!typesMatch(attTypes, types)) {
                 reject("Type Error:\n" + getTypeMessage(attTypes, types));
             } else {
-                var ids = atts.map(() => uuidv4().replace(/-/gi, ""));
-                var exts = atts.map(
-                    (att) => "." + att.url.split(".").pop().split("?")[0]
-                );
-                var proms = atts.map((att, i) =>
-                    downloadPromise(att.url, "images/cache/" + ids[i] + exts[i])
+                var ids = newAtts.map(() => uuidv4().replace(/-/gi, ""));
+                var exts = newAtts.map((att) => "." + att[0].fileExt);
+                var proms = newAtts.map((att, i) =>
+                    writeFile("images/cache/" + ids[i] + exts[i], att[1])
                 );
                 Promise.all(proms).then(() => {
                     resolve(
-                        atts.map((att, i) => [
+                        newAtts.map((att, i) => [
                             att,
                             "images/cache/" + ids[i] + exts[i],
                         ])

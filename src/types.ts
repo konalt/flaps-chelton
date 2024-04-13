@@ -106,3 +106,9 @@ export interface TTSSAMLine {
     pitch: number;
     text: string;
 }
+
+export interface FlapsMessageSource {
+    width: number;
+    height: number;
+    fileExt: string;
+}
