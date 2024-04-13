@@ -58,6 +58,9 @@ export function ffmpegBuffer(
             return "http://localhost:56033/" + bufferNames[parseInt(b)];
         });
 
+        if (ffmpegVerbose)
+            log(`Launch Args: ${esc(Color.White)}` + newargs, "ffmpeg");
+
         const childProcess = spawn("ffmpeg", newargs.split(" "), {
             shell: true,
         });
