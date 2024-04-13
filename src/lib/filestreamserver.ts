@@ -65,6 +65,8 @@ export default function filestreamServer(): Promise<
             return fileID;
         }
         function removeBuffer(fileID: string) {
+            const ffmpegVerbose = process.env.FFMPEG_VERBOSE == "yes";
+            if (ffmpegVerbose) return;
             if (fileID.includes("%03d")) {
                 let i = 0;
                 while (true) {
