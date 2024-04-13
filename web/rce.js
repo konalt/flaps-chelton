@@ -5,13 +5,9 @@ var outvid = document.getElementById("outvid");
 
 axios.get("/api/commands").then((resp) => {
     let sorted = resp.data.sort((a, b) => {
-        if (a.name < b.name) {
-            return -1;
-        }
-        if (a.name > b.name) {
-            return 1;
-        }
-        return 0;
+        let nameA = a.name.toUpperCase();
+        let nameB = b.name.toUpperCase();
+        return nameA < nameB ? -1 : nameA > nameB ? 1 : 0;
     });
     sorted.forEach((cmd) => {
         var opt = document.createElement("option");
