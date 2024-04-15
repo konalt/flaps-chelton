@@ -67,7 +67,8 @@ export default function initializeWebServer(): Promise<void> {
                 log(
                     `Transcoded avatar ${esc(Color.BrightCyan)}${file} ${esc(
                         Color.White
-                    )}to WebP.`
+                    )}to WebP.`,
+                    "avatar"
                 );
                 res(normalized);
             });
