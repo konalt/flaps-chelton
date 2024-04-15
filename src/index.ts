@@ -576,14 +576,18 @@ export async function onMessage(msg: Message) {
 
 // fuck you node
 process.on("unhandledRejection", (reason: any, p) => {
-    log(
-        `unhandled rejection. reason: ${esc(Color.BrightRed)}${reason.stack}`,
-        "promise"
-    );
+    let r = "unknown";
+    if (reason.stack) {
+        r = reason.stack;
+    } else {
+        r = reason;
+    }
+
+    log(`unhandled rejection. reason: ${esc(Color.BrightRed)}${r}`, "promise");
     if (!errorChannel) return;
     sendWebhook(
         "flapserrors",
-        `Unhandled promise rejection.\nReason: \`${reason.stack}\``,
+        `Unhandled promise rejection.\nReason: \`${r}\``,
         errorChannel
     );
 });
