@@ -1,5 +1,6 @@
 token.txt
 images/cache/*
+images/avatars/transcoded
 audio/yt/*
 audio/47.*
 node_modules/*

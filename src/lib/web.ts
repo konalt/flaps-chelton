@@ -1,11 +1,14 @@
 import express, { Router } from "express";
-import { existsSync } from "fs";
+import { existsSync, readdirSync, mkdirSync } from "fs";
+import { readFile, writeFile } from "fs/promises";
 import { dirname, join } from "path";
 import packPath from "package-json-path";
 import apiRouter from "./api";
+import createNormalizedAvatar from "./ffmpeg/createNormalizedAvatar";
+import { Color, log, esc } from "./logger";
 
 export default function initializeWebServer(): Promise<void> {
-    return new Promise<void>((res) => {
+    return new Promise<void>(async (res) => {
         const appRoot = dirname(packPath());
 
         const app = express();
@@ -26,11 +29,58 @@ export default function initializeWebServer(): Promise<void> {
             mergeParams: true,
         });
 
+        let avatars = {};
+        let p: Promise<Buffer>[] = [];
+        if (!existsSync(join(appRoot, "/images/avatars/transcoded"))) {
+            mkdirSync(join(appRoot, "/images/avatars/transcoded"));
+        }
+        for (const file of readdirSync(join(appRoot, "/images/avatars"))) {
+            if (!file.endsWith("png")) continue;
+            let id = file.split(".")[0];
+            let filename = id + ".webp";
+            if (
+                existsSync(
+                    join(appRoot, "/images/avatars/transcoded", filename)
+                )
+            ) {
+                avatars[id] = await readFile(
+                    join(appRoot, "/images/avatars/transcoded", filename)
+                );
+                continue;
+            }
+            log(
+                `Transcoding avatar ${esc(Color.BrightCyan)}${file} ${esc(
+                    Color.White
+                )}to WebP...`,
+                "avatar"
+            );
+            let prom = new Promise<Buffer>(async (res, rej) => {
+                let original = await readFile(
+                    join(appRoot, "/images/avatars", file)
+                );
+                let normalized = await createNormalizedAvatar(original);
+                avatars[id] = normalized;
+                await writeFile(
+                    join(appRoot, "/images/avatars/transcoded", filename),
+                    normalized
+                );
+                log(
+                    `Transcoded avatar ${esc(Color.BrightCyan)}${file} ${esc(
+                        Color.White
+                    )}to WebP.`
+                );
+                res(normalized);
+            });
+            p.push(prom);
+        }
+        await Promise.all(p);
+
         avatarRouter.get("*", (req, res) => {
-            if (existsSync(join(appRoot, "/images/avatars" + req.path))) {
-                res.sendFile(join(appRoot, "/images/avatars" + req.path));
+            let id = req.path.split("/")[1].split(".")[0];
+            if (avatars[id]) {
+                res.contentType("webp").send(avatars[id]);
             } else {
-                res.status(404).contentType("text/plain").send("404 Not Found");
+                res.status(404).contentType("txt").send("404 Not Found");
             }
         });
 
