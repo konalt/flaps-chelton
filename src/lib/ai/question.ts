@@ -1,6 +1,3 @@
-import { strikethrough } from "discord.js";
-import { CreateCompletionResponse } from "openai";
-import { sendWebhook } from "../webhooks";
 import { openai, model } from "./openai";
 import { readFile } from "fs/promises";
 
@@ -23,10 +20,8 @@ export function setSanity(n: number) {
 
 const hasCredits = process.env.OPENAI_ENABLED == "yes";
 
-let ratelimitHeadersCached = "No Info Yet. Ask a question first!";
-
 export function getRatelimit() {
-    return ratelimitHeadersCached;
+    return "Feature removed";
 }
 
 export function question(question: string): Promise<string> {
@@ -48,8 +43,8 @@ export function question(question: string): Promise<string> {
             monsoonData.split(" ")[1],
             monsoonData.split(" ").slice(2).join(" "),
         ];
-        openai
-            .createCompletion({
+        openai.completions
+            .create({
                 model: model,
                 prompt: `${monsoonPre[2]}\nQ: ${question}\nA:`,
                 temperature:
@@ -62,36 +57,11 @@ export function question(question: string): Promise<string> {
                 presence_penalty: 0,
             })
             .then((resp) => {
-                let ratelimitHeaders = "";
-                for (const [h, v] of Object.entries(resp.headers)) {
-                    if (h.startsWith("x-ratelimit-")) {
-                        ratelimitHeaders +=
-                            h.substring("x-ratelimit-".length) +
-                            ": " +
-                            v +
-                            "\n";
-                    }
-                }
-                ratelimitHeaders = ratelimitHeaders.trim();
-                ratelimitHeadersCached = ratelimitHeaders;
-                res(resp.data.choices[0].text.split("Q:")[0].trim());
+                res(resp.choices[0].text.split("Q:")[0].trim());
             })
             .catch((resp) => {
                 switch (resp.response.status) {
                     case 429:
-                        let ratelimitHeaders = "";
-                        for (const [h, v] of Object.entries(
-                            resp.response.headers
-                        )) {
-                            if (h.startsWith("x-ratelimit-")) {
-                                ratelimitHeaders +=
-                                    h.substring("x-ratelimit-".length) +
-                                    ": " +
-                                    v +
-                                    "\n";
-                            }
-                        }
-                        ratelimitHeaders = ratelimitHeaders.trim();
                         res(
                             "[429] Too Many Requests\nPlease wait before making another request."
                         );
