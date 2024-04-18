@@ -6,11 +6,13 @@ log("Importing modules...", "start");
 import {
     ActivityType,
     Attachment,
+    ButtonInteraction,
     CategoryChannel,
     Client,
     Collection,
     Guild,
     GuildMember,
+    Interaction,
     Message,
     Partials,
     TextBasedChannel,
@@ -18,13 +20,19 @@ import {
 } from "discord.js";
 import { readFile, readdir, writeFile } from "fs/promises";
 import { readFileSync, writeFileSync, existsSync } from "fs";
-import { hooks, sendWebhook, updateUsers } from "./lib/webhooks";
+import {
+    editWebhookMessage,
+    hooks,
+    sendWebhook,
+    updateUsers,
+} from "./lib/webhooks";
 import {
     AutoStatusInfo,
     CommandResponseType,
     FlapsCommand,
     FlapsCommandResponse,
     FlapsMessageSource,
+    TicTacToeCell,
 } from "./types";
 import { downloadPromise } from "./lib/download";
 import {
@@ -51,6 +59,7 @@ import { contentType, lookup } from "mime-types";
 import initializeWebServer from "./lib/web";
 import { file } from "./lib/ffmpeg/ffmpeg";
 import filestreamServer from "./lib/filestreamserver";
+import { createComponentList, games, makeMove } from "./lib/tictactoe";
 
 log("Initializing client...", "start");
 export const client: Client = new Client({
@@ -565,11 +574,61 @@ export async function onMessage(msg: Message) {
                 lastresp.content,
                 msg.channel,
                 lastresp.buffer,
-                lastresp.filename
+                lastresp.filename,
+                lastresp.components
             );
             for (const file of commandFiles) {
                 scheduleDelete(file[0], file[1]);
             }
+        }
+    }
+}
+
+export async function onInteraction(interaction: Interaction) {
+    if (interaction instanceof ButtonInteraction) {
+        let customID = interaction.customId;
+        let interactionType = customID.split("-")[0];
+        switch (interactionType) {
+            case "ttt":
+                let gameID = customID.split("-")[1];
+                let [x, y] = customID
+                    .split("-")[2]
+                    .split("x")
+                    .map((x) => parseInt(x));
+                let game = games[gameID];
+                if (!game) return;
+                let player = 0;
+                if (interaction.user.id == game.player1.id) player = 1;
+                if (interaction.user.id == game.player2.id) player = 2;
+                if (player != 0) {
+                    if (
+                        (game.nextPlace == TicTacToeCell.X && player == 2) ||
+                        (game.nextPlace == TicTacToeCell.O && player == 1)
+                    ) {
+                        interaction.reply({
+                            content: "It is not your turn!",
+                            ephemeral: true,
+                        });
+                    } else {
+                        makeMove(x, y, gameID);
+                        editWebhookMessage(
+                            interaction.message.id,
+                            "tictactoe",
+                            interaction.message.content,
+                            interaction.message.channel,
+                            null,
+                            null,
+                            createComponentList(game.board, gameID)
+                        );
+                        interaction.deferUpdate();
+                    }
+                } else {
+                    interaction.reply({
+                        content: "You are not playing in this game!",
+                        ephemeral: true,
+                    });
+                }
+                break;
         }
     }
 }
@@ -593,6 +652,7 @@ process.on("unhandledRejection", (reason: any, p) => {
 });
 
 client.on("messageCreate", onMessage);
+client.on("interactionCreate", onInteraction);
 
 function loadAutoStatus() {
     return new Promise<void>(async (resolve, reject) => {

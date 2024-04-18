@@ -1,4 +1,4 @@
-import { Attachment, TextBasedChannel } from "discord.js";
+import { Attachment, MessageComponent, TextBasedChannel } from "discord.js";
 import { FlapsMessageCommandResponse } from "../types";
 import { downloadPromise } from "./download";
 import { get100Posts } from "./reddit";
@@ -132,7 +132,8 @@ export function makeMessageResp(
     content: string,
     channel: TextBasedChannel | null = null,
     buffer: Buffer | null = null,
-    filename: string | null = null
+    filename: string | null = null,
+    components: MessageComponent[] | null = null
 ): FlapsMessageCommandResponse {
     return {
         id,
@@ -140,6 +141,7 @@ export function makeMessageResp(
         channel,
         buffer,
         filename,
+        components,
         type: 0,
     };
 }

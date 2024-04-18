@@ -1,4 +1,4 @@
-import { Message, TextBasedChannel } from "discord.js";
+import { Message, MessageComponent, TextBasedChannel, User } from "discord.js";
 
 export interface FlapsCommand {
     id: string;
@@ -21,6 +21,7 @@ export interface FlapsMessageCommandResponse {
     channel: TextBasedChannel;
     buffer: Buffer | null;
     filename: string | null;
+    components: MessageComponent[] | null;
 }
 export enum CommandResponseType {
     Message,
@@ -111,4 +112,23 @@ export interface FlapsMessageSource {
     width: number;
     height: number;
     fileExt: string;
+}
+
+export enum TicTacToeCell {
+    Empty,
+    X,
+    O,
+}
+export type TicTacToeBoard = [
+    [TicTacToeCell, TicTacToeCell, TicTacToeCell],
+    [TicTacToeCell, TicTacToeCell, TicTacToeCell],
+    [TicTacToeCell, TicTacToeCell, TicTacToeCell]
+];
+export interface TicTacToeGame {
+    player1: User;
+    player2: User;
+    id: string;
+    nextPlace: TicTacToeCell;
+    board: TicTacToeBoard;
+    isOver: boolean;
 }

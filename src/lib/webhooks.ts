@@ -2,6 +2,7 @@ import {
     Collection,
     DMChannel,
     GuildChannel,
+    MessageComponent,
     NewsChannel,
     PartialDMChannel,
     PrivateThreadChannel,
@@ -25,7 +26,36 @@ const defaultUsername = "No Username";
 const defaultAvatar =
     "https://media.discordapp.net/attachments/838732607344214019/1075967910696210492/flapjpg.jpg";
 const defaultTTS = false;
+const defaultComponents = [];
 const maxFileSizeMiB = 25;
+
+function baseEdit(
+    url: string,
+    content: string = defaultContent,
+    username: string = defaultUsername,
+    avatar_url: string = defaultAvatar,
+    buf: Buffer | null = null,
+    filename: string | null = null,
+    components: MessageComponent[] = defaultComponents
+) {
+    let form = new FormData();
+    if (filename !== null) {
+        form.append("file0", buf, filename);
+    }
+    form.append(
+        "payload_json",
+        JSON.stringify({
+            content,
+            username,
+            avatar_url,
+            components,
+        })
+    );
+    fetch(url, {
+        method: "PATCH",
+        body: form,
+    });
+}
 
 function baseSend(
     url: string,
@@ -34,7 +64,8 @@ function baseSend(
     avatar_url: string = defaultAvatar,
     buf: Buffer | null = null,
     filename: string | null = null,
-    tts: boolean = defaultTTS
+    tts: boolean = defaultTTS,
+    components: MessageComponent[] = defaultComponents
 ) {
     let form = new FormData();
     if (filename !== null) {
@@ -47,6 +78,7 @@ function baseSend(
             username,
             avatar_url,
             tts,
+            components,
         })
     );
     fetch(url, {
@@ -92,12 +124,56 @@ export function updateUsers(): Promise<void> {
     });
 }
 
+export function editWebhookMessage(
+    messageID: string,
+    id: string,
+    content: string,
+    channel: TextBasedChannel,
+    buffer: Buffer | null = null,
+    filename: string | null = null,
+    components: MessageComponent[] | null = null
+) {
+    getWebhookURL(channel as TextChannel).then(async (url: string) => {
+        let user: WebhookBot = hooks.get(id);
+        // if file is over 8mb, send failsafe
+        if (buffer && Buffer.byteLength(buffer) > maxFileSizeMiB * 1.049e6) {
+            await writeFile(file("cache/" + filename), buffer).then(() => {
+                content +=
+                    "\nThis message originally contained a file, but the file was over " +
+                    maxFileSizeMiB +
+                    "MiB in size.\nLink: https://flaps.us.to/cache/" +
+                    filename +
+                    "\n*This link will expire in 6 hours.*";
+            });
+            buffer = null;
+            filename = null;
+        }
+        let name = user?.name || "wh:" + id;
+        if (name == "flaps chelton") {
+            let flapsMember = await (
+                channel as TextChannel
+            ).guild.members.fetchMe();
+            if (flapsMember.nickname) name = flapsMember.nickname;
+        }
+        baseEdit(
+            url + "/messages/" + messageID,
+            user?.quirk ? user?.quirk(content) : content,
+            name,
+            user?.avatar || "https://flaps.us.to/avatar/" + id + ".webp",
+            buffer,
+            filename,
+            components
+        );
+    });
+}
+
 export function sendWebhook(
     id: string,
     content: string,
     channel: TextBasedChannel,
     buffer: Buffer | null = null,
-    filename: string | null = null
+    filename: string | null = null,
+    components: MessageComponent[] | null = null
 ) {
     getWebhookURL(channel as TextChannel).then(async (url: string) => {
         let user: WebhookBot = hooks.get(id);
@@ -127,7 +203,9 @@ export function sendWebhook(
             name,
             user?.avatar || "https://flaps.us.to/avatar/" + id + ".webp",
             buffer,
-            filename
+            filename,
+            false,
+            components
         );
     });
 }
