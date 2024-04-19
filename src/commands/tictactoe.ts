@@ -29,15 +29,15 @@ module.exports = {
                 row.addComponents(
                     new ButtonBuilder()
                         .setCustomId(`ttt-${game.id}-0x${y}`)
-                        .setLabel("2hu")
+                        .setLabel("_")
                         .setStyle(ButtonStyle.Secondary),
                     new ButtonBuilder()
                         .setCustomId(`ttt-${game.id}-1x${y}`)
-                        .setLabel("2hu")
+                        .setLabel("_")
                         .setStyle(ButtonStyle.Secondary),
                     new ButtonBuilder()
                         .setCustomId(`ttt-${game.id}-2x${y}`)
-                        .setLabel("2hu")
+                        .setLabel("_")
                         .setStyle(ButtonStyle.Secondary)
                 );
                 return row;
