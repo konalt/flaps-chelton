@@ -59,7 +59,12 @@ import { contentType, lookup } from "mime-types";
 import initializeWebServer from "./lib/web";
 import { file } from "./lib/ffmpeg/ffmpeg";
 import filestreamServer from "./lib/filestreamserver";
-import { createComponentList, games, makeMove } from "./lib/tictactoe";
+import {
+    createComponentList,
+    createMessageContent,
+    games,
+    makeMove,
+} from "./lib/tictactoe";
 
 log("Initializing client...", "start");
 export const client: Client = new Client({
@@ -602,8 +607,10 @@ export async function onInteraction(interaction: Interaction) {
                 if (interaction.user.id == game.player2.id) player = 2;
                 if (player != 0) {
                     if (
-                        (game.nextPlace == TicTacToeCell.X && player == 2) ||
-                        (game.nextPlace == TicTacToeCell.O && player == 1)
+                        ((game.nextPlace == TicTacToeCell.X && player == 2) ||
+                            (game.nextPlace == TicTacToeCell.O &&
+                                player == 1)) &&
+                        game.player1.id !== game.player2.id
                     ) {
                         interaction.reply({
                             content: "It is not your turn!",
@@ -614,7 +621,7 @@ export async function onInteraction(interaction: Interaction) {
                         editWebhookMessage(
                             interaction.message.id,
                             "tictactoe",
-                            interaction.message.content,
+                            createMessageContent(game),
                             interaction.message.channel,
                             null,
                             null,

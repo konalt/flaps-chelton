@@ -17,6 +17,17 @@ export function makeMove(x: number, y: number, gameID: string) {
     }
 }
 
+export function createMessageContent(game: TicTacToeGame) {
+    let currentUser =
+        game.nextPlace == TicTacToeCell.X ? game.player1 : game.player2;
+    let turnString =
+        currentUser.username +
+        (currentUser.username.endsWith("s") ? "'" : "'s");
+    return `***TIC TAC TOE!!!***
+${game.player1.username} (🇽) is playing against ${game.player2.username} (🅾️)!
+It's ${turnString} turn!`;
+}
+
 export function cellToString(cell: TicTacToeCell) {
     switch (cell) {
         case TicTacToeCell.Empty:

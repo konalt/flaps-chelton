@@ -7,7 +7,7 @@ import {
 import { client } from "..";
 import { makeMessageResp, uuidv4 } from "../lib/utils";
 import { FlapsCommand } from "../types";
-import { createGame } from "../lib/tictactoe";
+import { createGame, createMessageContent } from "../lib/tictactoe";
 
 module.exports = {
     id: "tictactoe",
@@ -53,9 +53,7 @@ module.exports = {
             res(
                 makeMessageResp(
                     "flaps",
-                    `***TIC TAC TOE!!!***
-${game.player1} is playing ${game.player2}!
-ID: \`${game.id}\``,
+                    createMessageContent(game),
                     null,
                     null,
                     null,
