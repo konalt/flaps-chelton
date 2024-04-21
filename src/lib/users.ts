@@ -705,7 +705,7 @@ export const users: WebhookBot[] = [
     },
     {
         id: "j",
-        name: "tacticola wielding dommy robot",
+        name: "cereal destination j",
     },
     {
         id: "lemmy",
