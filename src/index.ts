@@ -38,6 +38,7 @@ import { downloadPromise } from "./lib/download";
 import {
     convertWebpAttachmentToPng,
     getFileExt,
+    getFileName,
     getTypes,
     getTypeSingular,
     makeMessageResp,
@@ -430,8 +431,23 @@ export async function onMessage(msg: Message) {
             .toLowerCase();
         let content = msg.content.split(" ").slice(1).join(" ");
         if (hooks.get(id)) {
-            sendWebhook(id, content, msg.channel);
-            msg.delete();
+            if (msg.attachments.size > 0) {
+                let att = msg.attachments.first();
+                let type = getFileExt(att.url);
+                downloadPromise(att.url).then((buffer) => {
+                    sendWebhook(
+                        id,
+                        content,
+                        msg.channel,
+                        buffer,
+                        getFileName("Proxied_Attachment", type)
+                    );
+                });
+                msg.delete();
+            } else {
+                sendWebhook(id, content, msg.channel);
+                msg.delete();
+            }
         }
     } else {
         autoReact(msg);
