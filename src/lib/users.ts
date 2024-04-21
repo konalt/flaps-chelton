@@ -999,6 +999,18 @@ export const users: WebhookBot[] = [
                 .join(" ");
         }, */
     },
+    {
+        id: "greninja",
+        name: "Greninja",
+    },
+    {
+        id: "wartortle",
+        name: "Wartortle",
+    },
+    {
+        id: "fonthillhorse",
+        name: "the fonthill horse",
+    },
 ];
 
 function spamtonify(text: string): string {
