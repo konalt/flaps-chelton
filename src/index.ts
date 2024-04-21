@@ -399,7 +399,8 @@ let errorChannel: TextBasedChannel;
 
 export async function onMessage(msg: Message) {
     if (!(msg.channel instanceof TextChannel)) {
-        msg.reply("this mf bot dont support dms get the fuck outta here");
+        if (!msg.author.bot)
+            msg.reply("this mf bot dont support dms get the fuck outta here!");
         return;
     }
 
