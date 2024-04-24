@@ -17,6 +17,14 @@ module.exports = {
             let url = args[0];
             if (url.startsWith("<")) url = url.substring(1);
             if (url.endsWith(">")) url = url.substring(0, url.length - 1);
+            let player = voicePlayers.get(msg.guildId ?? "0");
+            if (!player)
+                return res(
+                    makeMessageResp(
+                        "flaps",
+                        "i am NOT in the voice channel!\nyou gotta join first"
+                    )
+                );
             var id = url.includes("newgrounds")
                 ? url.split("/")[5]
                 : url.includes("youtube.com/watch?v=")
@@ -31,7 +39,7 @@ module.exports = {
 
             if (existsSync("audio/yt/" + id + ".mp3")) {
                 let reso = createAudioResource("audio/yt/" + id + ".mp3");
-                voicePlayers.get(msg.guildId ?? "0")?.play(reso);
+                player.play(reso);
                 res(makeMessageResp("flaps", "now playing lmao"));
             } else {
                 var ytProcess = spawn(
@@ -58,7 +66,7 @@ module.exports = {
                         let reso = createAudioResource(
                             "audio/yt/" + id + ".mp3"
                         );
-                        voicePlayers.get(msg.guildId ?? "0")?.play(reso);
+                        player.play(reso);
                         res(makeMessageResp("flaps", "now playing lmao"));
                     }
                 });

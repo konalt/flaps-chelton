@@ -18,6 +18,7 @@ import {
     Partials,
     TextBasedChannel,
     TextChannel,
+    VoiceBasedChannel,
 } from "discord.js";
 import { readFile, readdir, writeFile } from "fs/promises";
 import { readFileSync, writeFileSync, existsSync } from "fs";
@@ -94,28 +95,41 @@ export const voiceConnections: Collection<string, VoiceConnection> =
     new Collection();
 export const voicePlayers: Collection<string, AudioPlayer> = new Collection();
 
-client.on("ready", async () => {
-    log("Logged in, entering voice...", "start");
-    let gs = await client.guilds.fetch();
-    for (const [guildi, guildp] of gs) {
-        let guild = await guildp.fetch();
-        let vc = guild.channels.cache.find((c) => c.isVoiceBased());
-        if (!vc) continue;
-        let conn = joinVoiceChannel({
-            channelId: vc.id,
-            guildId: guildi,
-            adapterCreator:
-                guild.voiceAdapterCreator as DiscordGatewayAdapterCreator,
-        });
-        let ply = createAudioPlayer({
-            behaviors: {
-                noSubscriber: NoSubscriberBehavior.Play,
-            },
-        });
-        conn.subscribe(ply);
-        voicePlayers.set(guildi, ply);
-        voiceConnections.set(guildi, conn);
+function flapsJoinVoiceChannel(channel: VoiceBasedChannel) {
+    let connection = joinVoiceChannel({
+        channelId: channel.id,
+        guildId: channel.guildId,
+        adapterCreator: channel.guild.voiceAdapterCreator,
+    });
+    let player = createAudioPlayer({
+        behaviors: {
+            noSubscriber: NoSubscriberBehavior.Play,
+        },
+    });
+    connection.subscribe(player);
+    voicePlayers.set(channel.guildId, player);
+    voiceConnections.set(channel.guildId, connection);
+}
+
+client.on("voiceStateUpdate", (oldState, newState) => {
+    let channel = newState.channel;
+    if (!channel) channel = oldState.channel;
+    let flapsInChannel = channel.members.has(client.user.id);
+    if (flapsInChannel && !voiceConnections.has(channel.guildId)) {
+        flapsJoinVoiceChannel(channel);
     }
+    if (channel.members.size > 0 && !flapsInChannel) {
+        flapsJoinVoiceChannel(channel);
+    }
+    if (channel.members.size == 1 && flapsInChannel) {
+        voiceConnections.get(channel.guildId).disconnect();
+        voiceConnections.get(channel.guildId).destroy();
+        voicePlayers.delete(channel.guildId);
+        voiceConnections.delete(channel.guildId);
+    }
+});
+
+client.on("ready", async () => {
     log(`${esc(Color.BrightGreen)}Listening for commands!`, "start");
 
     client.user.setPresence({
