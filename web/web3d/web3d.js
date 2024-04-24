@@ -12,6 +12,7 @@ const resolutions = {
     heartlocket: [400, 300],
     cubespin: [512, 512],
     cirno: [800, 600],
+    flag: [800, 600],
 };
 const NOTEXTURE =
     "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAALUlEQVQ4T2O8w/DzvwoDOwOQZiCHZmRgYPhPrmaQPsZRF4yGwWg6AGfAgc8LADOwDrjWxfJ7AAAAAElFTkSuQmCC";
@@ -506,6 +507,106 @@ async function _init(id, options = {}) {
             scene.add(new THREE.AmbientLight(0xffffff, 0.1));
             break;
         }
+        case "flag": {
+            let segmentCount = 20;
+            let img = options.img || NOTEXTURE;
+            let imgWidth = options.imgWidth || 16;
+            let imgHeight = options.imgHeight || 16;
+            let flagHeight = 4;
+            let flagWidth = flagHeight * (imgWidth / imgHeight);
+            let skyTexture = await loadTexture(
+                "images/equirectangular_sky.jpg"
+            );
+            skyTexture.colorSpace = THREE.SRGBColorSpace;
+            console.log(flagWidth, flagHeight);
+            camera.position.z = 10;
+            camera.fov = 35;
+            camera.updateProjectionMatrix();
+            camera.lookAt(0, 0, 0);
+            let plane = new THREE.Mesh(
+                new THREE.PlaneGeometry(
+                    flagWidth,
+                    flagHeight,
+                    segmentCount,
+                    segmentCount
+                ),
+                new THREE.MeshStandardMaterial({
+                    map: await loadTexture(img),
+                })
+            );
+            if (plane.material.map)
+                plane.material.map.colorSpace = THREE.SRGBColorSpace;
+            plane.position.x = flagWidth / 2;
+            camera.position.x += flagWidth / 2;
+            let pole = new THREE.Mesh(
+                new THREE.CylinderGeometry(0.075, 0.075, flagHeight * 2),
+                new THREE.MeshStandardMaterial({
+                    metalness: 1,
+                    roughness: 0.2,
+                    envMap: skyTexture,
+                    color: 0xffffff,
+                })
+            );
+            pole.position.y = -flagHeight / 2;
+            scene.add(pole);
+            let sky = new THREE.Mesh(
+                new THREE.SphereGeometry(500, 60, 60),
+                new THREE.MeshBasicMaterial({
+                    map: skyTexture,
+                })
+            );
+            sky.material.side = THREE.BackSide;
+            scene.add(sky);
+
+            quickBigLight(20, 20, 20);
+            quickBigLight(-50, 10, -20);
+
+            let overts = [...plane.geometry.attributes.position.array];
+            let li = 0;
+
+            stepFunction = (frameNumber = 0) => {
+                let vertices = plane.geometry.attributes.position.array;
+                for (
+                    let i = 0;
+                    i < plane.geometry.attributes.position.count;
+                    i++
+                ) {
+                    let [x, y] = [
+                        overts[i * 3] + flagWidth / 2,
+                        overts[i * 3 + 1],
+                    ];
+                    let xWave = 1;
+                    let yWave = 1;
+                    let amt = frameNumber / 3;
+                    let morphScale = Math.min((x * 2) / flagWidth, 1) * 0.6;
+                    let siner =
+                        (Math.sin((x + amt) * xWave) +
+                            Math.sin((y + amt) * yWave)) /
+                        2;
+                    vertices[i * 3 + 2] = siner * morphScale;
+                    if (
+                        Math.abs(
+                            Math.sin((y + amt) * yWave) - Math.sin(y * yWave)
+                        ) < 0.001
+                    ) {
+                        console.log("y loop interval is " + (frameNumber - li));
+                        li = frameNumber;
+                    }
+                }
+                plane.geometry.attributes.position.needsUpdate = true;
+                plane.geometry.computeVertexNormals();
+            };
+            if (options.debug) {
+                window.flapsWeb3DDebugAnimation();
+            }
+
+            let grid = new THREE.GridHelper(20, 20);
+            grid.rotation.x = Math.PI / 2;
+            scene.add(grid);
+            scene.add(new THREE.AxesHelper());
+            scene.add(plane);
+            break;
+        }
     }
 
     lastID = id;
@@ -527,6 +628,17 @@ async function _step(...args) {
         );
     }
 }
+
+window.flapsWeb3DDebugAnimation = () => {
+    let i = 0;
+    let a = () => {
+        i++;
+        stepFunction(i);
+        renderer.render(scene, camera);
+        requestAnimationFrame(a);
+    };
+    a();
+};
 
 window.flapsWeb3DStep = _step;
 window.flapsWeb3DInit = _init;
