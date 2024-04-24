@@ -602,8 +602,6 @@ async function _init(id, options = {}) {
 
             let grid = new THREE.GridHelper(20, 20);
             grid.rotation.x = Math.PI / 2;
-            scene.add(grid);
-            scene.add(new THREE.AxesHelper());
             scene.add(plane);
             break;
         }
