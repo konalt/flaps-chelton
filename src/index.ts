@@ -8,6 +8,7 @@ import {
     Attachment,
     ButtonInteraction,
     CategoryChannel,
+    ChannelType,
     Client,
     Collection,
     Guild,
@@ -400,8 +401,20 @@ let errorChannel: TextBasedChannel;
 
 export async function onMessage(msg: Message) {
     if (!(msg.channel instanceof TextChannel)) {
-        if (!msg.author.bot)
-            msg.reply("this mf bot dont support dms get the fuck outta here!");
+        if (msg.author.bot) return;
+        switch (msg.channel.type) {
+            case ChannelType.DM:
+                msg.reply(
+                    "this bot doesnt support dms bruh! big shame ik take it up with discord"
+                );
+                break;
+            default:
+                msg.reply(
+                    "sorry pimp but you cant use flaps in channels like this!"
+                );
+                break;
+        }
+
         return;
     }
 
