@@ -404,14 +404,22 @@ export async function onMessage(msg: Message) {
         if (msg.author.bot) return;
         switch (msg.channel.type) {
             case ChannelType.DM:
-                msg.reply(
-                    "this bot doesnt support dms bruh! big shame ik take it up with discord"
-                );
+                msg.reply("this bot doesnt support dms!");
+                break;
+            case ChannelType.PublicThread:
+            case ChannelType.PrivateThread:
+                if (
+                    msg.content.startsWith(WH_PREFIX) ||
+                    msg.content.startsWith(COMMAND_PREFIX)
+                )
+                    msg.reply("flaps doesnt work in threads!");
                 break;
             default:
-                msg.reply(
-                    "sorry pimp but you cant use flaps in channels like this!"
-                );
+                if (
+                    msg.content.startsWith(WH_PREFIX) ||
+                    msg.content.startsWith(COMMAND_PREFIX)
+                )
+                    msg.reply("you cant use flaps here!");
                 break;
         }
 
