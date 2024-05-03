@@ -14,6 +14,7 @@ import {
     commands,
 } from "../index";
 import fs from "fs/promises";
+import * as utils from "../lib/utils";
 
 const proxy = {
     users,
@@ -26,6 +27,7 @@ const proxy = {
     addBuffer,
     addBufferSequence,
     commands,
+    utils,
 };
 
 module.exports = {
