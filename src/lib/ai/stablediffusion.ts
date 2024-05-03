@@ -29,14 +29,17 @@ export default (data: StableDiffusionOptions, big = false): Promise<Buffer> => {
             width: size,
             height: size,
             prompt: data.prompt,
-            modelType: "stable-diffusion-2",
+            modelType: "Playground_v2.5",
             isPrivate: true,
             batchId: Math.floor(Math.random() * 1e7).toString(36),
             generateVariants: false,
-            cfg_scale: 7,
+            cfg_scale: 4,
             steps: big ? 50 : 25,
             seed: Math.floor(Math.random() * 1e7),
-            sampler: 1,
+            sampler: 9,
+            strength: 1.3,
+            high_noise_frac: 1,
+            guidance_scale: 3,
         };
         if (data.inpaint && data.mask && data.img) {
             Object.assign(body, {
@@ -79,7 +82,7 @@ export default (data: StableDiffusionOptions, big = false): Promise<Buffer> => {
             });
         }
 
-        fetch("https://playgroundai.com/api/models", {
+        fetch("https://playground.com/api/models", {
             headers: {
                 "User-Agent":
                     "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:105.0) Gecko/20100101 Firefox/105.0",
