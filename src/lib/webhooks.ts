@@ -29,7 +29,7 @@ const defaultTTS = false;
 const defaultComponents = [];
 const maxFileSizeMiB = 25;
 
-function baseEdit(
+async function baseEdit(
     url: string,
     content: string = defaultContent,
     username: string = defaultUsername,
@@ -39,8 +39,15 @@ function baseEdit(
     components: MessageComponent[] = defaultComponents
 ) {
     let form = new FormData();
+    let attachments = [];
     if (filename !== null) {
-        form.append("file0", buf, filename);
+        form.append("files[0]", buf, filename);
+        attachments = [
+            {
+                id: 0,
+                filename: filename,
+            },
+        ];
     }
     form.append(
         "payload_json",
@@ -49,12 +56,14 @@ function baseEdit(
             username,
             avatar_url,
             components,
+            attachments,
         })
     );
-    fetch(url, {
+    await fetch(url, {
         method: "PATCH",
         body: form,
     });
+    return true;
 }
 
 function baseSend(
@@ -68,9 +77,17 @@ function baseSend(
     components: MessageComponent[] = defaultComponents
 ) {
     let form = new FormData();
+    let attachments = [];
     if (filename !== null) {
-        form.append("file0", buf, filename);
+        form.append("files[0]", buf, filename);
+        attachments = [
+            {
+                id: 0,
+                filename: filename,
+            },
+        ];
     }
+
     form.append(
         "payload_json",
         JSON.stringify({
@@ -79,6 +96,7 @@ function baseSend(
             avatar_url,
             tts,
             components,
+            attachments,
         })
     );
     fetch(url, {
@@ -133,37 +151,44 @@ export function editWebhookMessage(
     filename: string | null = null,
     components: MessageComponent[] | null = null
 ) {
-    getWebhookURL(channel as TextChannel).then(async (url: string) => {
-        let user: WebhookBot = hooks.get(id);
-        // if file is over 8mb, send failsafe
-        if (buffer && Buffer.byteLength(buffer) > maxFileSizeMiB * 1.049e6) {
-            await writeFile(file("cache/" + filename), buffer).then(() => {
-                content +=
-                    "\nThis message originally contained a file, but the file was over " +
-                    maxFileSizeMiB +
-                    "MiB in size.\nLink: https://flaps.us.to/cache/" +
-                    filename +
-                    "\n*This link will expire in 6 hours.*";
+    return new Promise<void>((resolve, reject) => {
+        getWebhookURL(channel as TextChannel).then(async (url: string) => {
+            let user: WebhookBot = hooks.get(id);
+            // if file is over 8mb, send failsafe
+            if (
+                buffer &&
+                Buffer.byteLength(buffer) > maxFileSizeMiB * 1.049e6
+            ) {
+                await writeFile(file("cache/" + filename), buffer).then(() => {
+                    content +=
+                        "\nThis message originally contained a file, but the file was over " +
+                        maxFileSizeMiB +
+                        "MiB in size.\nLink: https://flaps.us.to/cache/" +
+                        filename +
+                        "\n*This link will expire in 6 hours.*";
+                });
+                buffer = null;
+                filename = null;
+            }
+            let name = user?.name || "wh:" + id;
+            if (name == "flaps chelton") {
+                let flapsMember = await (
+                    channel as TextChannel
+                ).guild.members.fetchMe();
+                if (flapsMember.nickname) name = flapsMember.nickname;
+            }
+            baseEdit(
+                url + "/messages/" + messageID,
+                user?.quirk ? user?.quirk(content) : content,
+                name,
+                user?.avatar || "https://flaps.us.to/avatar/" + id + ".webp",
+                buffer,
+                filename,
+                components
+            ).then(() => {
+                resolve();
             });
-            buffer = null;
-            filename = null;
-        }
-        let name = user?.name || "wh:" + id;
-        if (name == "flaps chelton") {
-            let flapsMember = await (
-                channel as TextChannel
-            ).guild.members.fetchMe();
-            if (flapsMember.nickname) name = flapsMember.nickname;
-        }
-        baseEdit(
-            url + "/messages/" + messageID,
-            user?.quirk ? user?.quirk(content) : content,
-            name,
-            user?.avatar || "https://flaps.us.to/avatar/" + id + ".webp",
-            buffer,
-            filename,
-            components
-        );
+        });
     });
 }
 

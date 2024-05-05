@@ -4,9 +4,11 @@ log("Loading settings...", "start");
 config();
 log("Importing modules...", "start");
 import {
+    ActionRowBuilder,
     ActivityType,
     Attachment,
     ButtonInteraction,
+    ButtonStyle,
     CategoryChannel,
     ChannelType,
     Client,
@@ -30,6 +32,8 @@ import {
 } from "./lib/webhooks";
 import {
     AutoStatusInfo,
+    Battle,
+    BattleAction,
     CommandResponseType,
     FlapsCommand,
     FlapsCommandResponse,
@@ -38,6 +42,8 @@ import {
 } from "./types";
 import { downloadPromise } from "./lib/download";
 import {
+    decodeObject,
+    encodeObject,
     convertWebpAttachmentToPng,
     getFileExt,
     getFileName,
@@ -46,6 +52,7 @@ import {
     makeMessageResp,
     scheduleDelete,
     uuidv4,
+    SPOILERBUG,
 } from "./lib/utils";
 import { registerFont } from "canvas";
 import fetch from "node-fetch";
@@ -68,6 +75,12 @@ import {
     games,
     makeMove,
 } from "./lib/tictactoe";
+import {
+    getBattleAction,
+    getBattleImage,
+    getComponents,
+    handleBattleAction,
+} from "./lib/battle";
 
 log("Initializing client...", "start");
 export const client: Client = new Client({
@@ -688,6 +701,36 @@ export async function onInteraction(interaction: Interaction) {
                     });
                 }
                 break;
+            case "battle":
+                let battle = decodeObject(
+                    interaction.message.content.split("`")[1]
+                ) as Battle;
+                if (interaction.user.id !== battle.pid) {
+                    interaction.reply({
+                        content: "This battle is not yours!",
+                        ephemeral: true,
+                    });
+                    return;
+                }
+                let battleAction = getBattleAction(interaction.customId);
+                let updatedBattle = handleBattleAction(battle, battleAction);
+                await editWebhookMessage(
+                    interaction.message.id,
+                    "flaps",
+                    `The battle begins!${SPOILERBUG}\`${encodeObject(
+                        updatedBattle
+                    )}\``,
+                    interaction.message.channel,
+                    await getBattleImage(battle),
+                    getFileName("Battle", "png"),
+                    [
+                        new ActionRowBuilder().addComponents(
+                            getComponents(updatedBattle)
+                        ),
+                    ]
+                );
+                interaction.deferUpdate();
+                return;
         }
     }
 }

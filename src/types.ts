@@ -132,3 +132,69 @@ export interface TicTacToeGame {
     board: TicTacToeBoard;
     isOver: boolean;
 }
+
+export interface Battle {
+    pid: string;
+    mns: BattleMenuState;
+    lai: BattleLastAttackInfo;
+    id: string;
+    slf: BattleCreature;
+    enm: BattleCreature;
+    wt: BattleWaitingType;
+    so: BattleAction;
+}
+export interface BattleLastAttackInfo {
+    at: BattleAttack;
+    dmg: number;
+    ddr: number;
+    adr: number;
+}
+export enum BattleWaitingType {
+    PostAttackInfo,
+    PostEnemyAttackInfo,
+    Flee,
+    None,
+}
+export enum BattleMenuState {
+    Main,
+    ChooseAttack,
+    ChooseItem,
+    RunConfirm,
+    AttackConfirm,
+    Waiting,
+}
+export enum BattleAction {
+    Fight,
+    Item,
+    Run,
+    Option1,
+    Option2,
+    Option3,
+    Option4,
+    Option5,
+    Yes,
+    No,
+    Back,
+}
+export interface BattleCreature {
+    nm: string;
+    hp: number;
+    mhp: number;
+    df: number;
+    mdf: number;
+    at: number;
+    mat: number;
+    en: number;
+    fm: boolean;
+    lv: number;
+}
+export interface BattleAttack {
+    name: string;
+    description: string;
+    damage: number;
+    enemyDefenseDamage: number;
+    enemyAttackDamage: number;
+    selfDefenseBuff: number;
+    selfAttackBuff: number;
+    cost: number;
+}

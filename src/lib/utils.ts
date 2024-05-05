@@ -4,6 +4,7 @@ import { downloadPromise } from "./download";
 import { get100Posts } from "./reddit";
 import { unlinkSync } from "fs";
 import webpToPNG from "./ffmpeg/webpToPNG";
+import { gzipSync, gunzipSync } from "node:zlib";
 
 export function uuidv4() {
     let s = (n = 1) =>
@@ -188,4 +189,27 @@ export function convertWebpAttachmentToPng(attachment: Attachment) {
             resolve(png);
         });
     });
+}
+
+export function encodeObject(object: Object) {
+    let encoded = gzipSync(
+        Buffer.from(JSON.stringify(object), "ascii")
+    ).toString("base64");
+    return encoded;
+}
+export function decodeObject(string: string) {
+    return JSON.parse(
+        gunzipSync(Buffer.from(string, "base64")).toString("ascii")
+    );
+}
+
+export const SPOILERBUG =
+    "||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||";
+
+export function hexToRGB(hex: string) {
+    if (hex.startsWith("#")) hex = hex.slice(1);
+    let r = parseInt(hex.slice(0, 2), 16);
+    let g = parseInt(hex.slice(2, 4), 16);
+    let b = parseInt(hex.slice(4, 6), 16);
+    return [r, g, b];
 }
