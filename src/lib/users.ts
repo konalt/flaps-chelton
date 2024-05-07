@@ -427,10 +427,6 @@ export const users: WebhookBot[] = [
         name: "racist cat",
     },
     {
-        id: "tasquem",
-        name: "dommy mommy catgirl",
-    },
-    {
         id: "funo",
         name: "funo",
     },
@@ -499,10 +495,6 @@ export const users: WebhookBot[] = [
         name: "saul",
     },
     {
-        id: "brimmy",
-        name: "briston elementalo",
-    },
-    {
         id: "goofygabe",
         name: "and why he goufy",
     },
@@ -530,18 +522,6 @@ export const users: WebhookBot[] = [
         },
     },
     {
-        id: "bee",
-        name: "bee girl",
-    },
-    {
-        id: "tree",
-        name: "tree girl",
-    },
-    {
-        id: "moth",
-        name: "funny moth",
-    },
-    {
         id: "howard",
         name: "howar hamin",
     },
@@ -556,14 +536,6 @@ export const users: WebhookBot[] = [
                 })
                 .join(" ");
         },
-    },
-    {
-        id: "chuchu",
-        name: "chuchu (the better one)",
-    },
-    {
-        id: "bonbon",
-        name: "bonbon",
     },
     {
         id: "politics",
@@ -712,22 +684,6 @@ export const users: WebhookBot[] = [
         name: "LEMMY LEMMTON THE LEMMCORD BOT",
     },
     {
-        id: "cadence",
-        name: "the ginger from that rhythm game",
-    },
-    {
-        id: "sandwoman",
-        name: "sand elemental",
-    },
-    {
-        id: "cloudwoman",
-        name: "cloud elemental",
-    },
-    {
-        id: "waterwoman",
-        name: "water elemental",
-    },
-    {
         id: "bigboss",
         name: "big boss",
     },
@@ -753,16 +709,8 @@ export const users: WebhookBot[] = [
         },
     },
     {
-        id: "peni",
-        name: 'peni "corkagh" parker',
-    },
-    {
         id: "confucius",
         name: "Kong Fuzi",
-    },
-    {
-        id: "hornet",
-        name: "hornet",
     },
     {
         id: "jordan",
