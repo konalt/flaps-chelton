@@ -1,5 +1,4 @@
 import { WebhookBot } from "../types";
-import owoify from "owoify-js";
 import { sample } from "./utils";
 
 export const users: WebhookBot[] = [
@@ -378,9 +377,6 @@ export const users: WebhookBot[] = [
     {
         id: "ghost",
         name: "Ghost (separate from machine)",
-        quirk(x) {
-            return owoify(x, "uvu");
-        },
     },
     {
         id: "monsoon",
