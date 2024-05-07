@@ -853,7 +853,7 @@ export const users: WebhookBot[] = [
     },
     {
         id: "tessa",
-        name: "tessa",
+        name: "tassy",
     },
     {
         id: "vodka",
