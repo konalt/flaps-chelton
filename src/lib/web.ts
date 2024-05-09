@@ -25,6 +25,18 @@ export default function initializeWebServer(): Promise<void> {
             }
         });
 
+        let imgRouter = Router({
+            mergeParams: true,
+        });
+
+        imgRouter.get("*", (req, res) => {
+            if (existsSync(join(appRoot, "/images/perma" + req.path))) {
+                res.sendFile(join(appRoot, "/images/perma" + req.path));
+            } else {
+                res.status(404).contentType("text/plain").send("404 Not Found");
+            }
+        });
+
         var avatarRouter = Router({
             mergeParams: true,
         });
@@ -96,6 +108,7 @@ export default function initializeWebServer(): Promise<void> {
         app.use(express.urlencoded({ extended: true }));
         app.use(express.json({ limit: "50mb" }));
         app.use("/api", apiRouter);
+        app.use("/img", imgRouter);
         app.use("/cache", cacheRouter);
         app.use("/avatar", avatarRouter);
 

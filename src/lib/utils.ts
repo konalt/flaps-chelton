@@ -213,3 +213,38 @@ export function hexToRGB(hex: string) {
     let b = parseInt(hex.slice(4, 6), 16);
     return [r, g, b];
 }
+
+export function calculateAspectRatioFit(
+    srcWidth: number,
+    srcHeight: number,
+    maxWidth: number,
+    maxHeight: number
+) {
+    var ratio = Math.min(maxWidth / srcWidth, maxHeight / srcHeight);
+
+    return [srcWidth * ratio, srcHeight * ratio];
+}
+
+export function humanFileSize(bytes: number, si = false, dp = 1) {
+    const thresh = si ? 1000 : 1024;
+
+    if (Math.abs(bytes) < thresh) {
+        return bytes + " B";
+    }
+
+    const units = si
+        ? ["kB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"]
+        : ["KiB", "MiB", "GiB", "TiB", "PiB", "EiB", "ZiB", "YiB"];
+    let u = -1;
+    const r = 10 ** dp;
+
+    do {
+        bytes /= thresh;
+        ++u;
+    } while (
+        Math.round(Math.abs(bytes) * r) / r >= thresh &&
+        u < units.length - 1
+    );
+
+    return bytes.toFixed(dp) + " " + units[u];
+}

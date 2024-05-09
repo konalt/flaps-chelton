@@ -215,6 +215,7 @@ export async function ffprobe(
     buffer: [Buffer, string]
 ): Promise<string> {
     return new Promise(async (resolve, reject) => {
+        const ffmpegVerbose = process.env.FFMPEG_VERBOSE == "yes";
         var quiet = false;
         var startTime = Date.now();
         let inFile = addBuffer(buffer[0], getFileExt(buffer[1]));
@@ -232,7 +233,7 @@ export async function ffprobe(
         ffmpegInstance.on("exit", (code) => {
             removeBuffer(inFile);
             if (code == 0 && !quiet) {
-                if (!quiet)
+                if (!quiet && ffmpegVerbose)
                     log(
                         `${esc(Color.Green)}Completed in ${esc(
                             Color.BrightCyan
@@ -241,7 +242,7 @@ export async function ffprobe(
                     );
                 resolve(body);
             } else {
-                if (!quiet)
+                if (!quiet && ffmpegVerbose)
                     log(
                         `${esc(Color.Red)}Failed in ${esc(Color.BrightCyan)}${
                             Date.now() - startTime
