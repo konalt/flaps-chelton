@@ -44,13 +44,26 @@ function idFromName(name: string) {
 export function getMessageLog(msg: Message) {
     if (!(msg.channel instanceof TextChannel)) return "";
     let commandChain: [string, string[]][] = msg.content
-            .split("==>")
-            .map((cmdtxt) => [
-                cmdtxt.trim().split(" ")[0].substring(process.env.COMMAND_PREFIX.length),
-                cmdtxt.trim().split(" ").slice(1)
-            ]);
-    let isCommand = !!commands.get(commandChain[0][0]);
-    let isWebhook = msg.content.startsWith(process.env.WEBHOOK_PREFIX) && hooks.find(h => h.id == msg.content.split(" ")[0].substring(process.env.WEBHOOK_PREFIX.length));
+        .split("==>")
+        .map((cmdtxt) => [
+            cmdtxt
+                .trim()
+                .split(" ")[0]
+                .substring(process.env.COMMAND_PREFIX.length),
+            cmdtxt.trim().split(" ").slice(1),
+        ]);
+    let isCommand = !!commands.find((cmd) =>
+        cmd.aliases.includes(commandChain[0][0].toLowerCase())
+    );
+    let isWebhook =
+        msg.content.startsWith(process.env.WEBHOOK_PREFIX) &&
+        hooks.find(
+            (h) =>
+                h.id ==
+                msg.content
+                    .split(" ")[0]
+                    .substring(process.env.WEBHOOK_PREFIX.length)
+        );
 
     let mainContent = "";
     if (isCommand) {
@@ -84,7 +97,9 @@ export function getMessageLog(msg: Message) {
     if (msg.attachments.size > 0) {
         if (msg.content.length > 0) mainContent += " ";
         mainContent += esc(Color.BrightYellow);
-        mainContent += `(${msg.attachments.size} attachment${msg.attachments.size > 1 ? "s" : ""})`;
+        mainContent += `(${msg.attachments.size} attachment${
+            msg.attachments.size > 1 ? "s" : ""
+        })`;
     }
 
     let channel = `${esc(Color.Yellow)}<#${msg.channel.name}>`;
@@ -98,5 +113,5 @@ export function getMessageLog(msg: Message) {
         user += `<${msg.author.username}>`;
     }
 
-    return `${channel} ${user} ${mainContent}`.replace(/ {2,}/g," ");
+    return `${channel} ${user} ${mainContent}`.replace(/ {2,}/g, " ");
 }
