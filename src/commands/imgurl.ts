@@ -1,16 +1,9 @@
 import compressImage from "../lib/ffmpeg/compressimage";
 import { file } from "../lib/ffmpeg/ffmpeg";
 import { Color, esc, log } from "../lib/logger";
-import {
-    exists,
-    getFileExt,
-    humanFileSize,
-    makeMessageResp,
-    uuidv4,
-} from "../lib/utils";
+import { exists, humanFileSize, makeMessageResp } from "../lib/utils";
 import { FlapsCommand } from "../types";
-import { writeFile, access } from "fs/promises";
-import fs from "fs";
+import { writeFile } from "fs/promises";
 import { createHash } from "crypto";
 
 module.exports = {
@@ -18,11 +11,22 @@ module.exports = {
     name: "Image URL",
     desc: "Provides a permanent image URL for your uploaded image.",
     aliases: ["img", "imageurl", "image"],
-    needs: ["image", "image?", "image?", "image?"],
+    needs: [
+        "image",
+        "image?",
+        "image?",
+        "image?",
+        "image?",
+        "image?",
+        "image?",
+        "image?",
+        "image?",
+        "image?",
+    ],
     async execute(_, buffers) {
         let writePromises = [];
-        let filenames = [];
-        for (const [buffer, origFilename] of buffers) {
+        let filenames = Array(buffers.length).fill("");
+        for (const [i, [buffer, origFilename]] of Object.entries(buffers)) {
             writePromises.push(
                 new Promise<void>(async (resolve, reject) => {
                     let compressed = await compressImage([
@@ -47,7 +51,7 @@ module.exports = {
                     if (!fileExists) {
                         await writeFile(filename, compressed);
                     }
-                    filenames.push(`${hash}.jpeg`);
+                    filenames[i] = `${hash}.jpeg`;
                     resolve();
                 })
             );
