@@ -2,7 +2,7 @@ import { Attachment, MessageComponent, TextBasedChannel } from "discord.js";
 import { FlapsMessageCommandResponse } from "../types";
 import { downloadPromise } from "./download";
 import { get100Posts } from "./reddit";
-import { unlinkSync } from "fs";
+import fs, { unlinkSync } from "fs";
 import webpToPNG from "./ffmpeg/webpToPNG";
 import { gzipSync, gunzipSync } from "node:zlib";
 
@@ -247,4 +247,13 @@ export function humanFileSize(bytes: number, si = false, dp = 1) {
     );
 
     return bytes.toFixed(dp) + " " + units[u];
+}
+
+export async function exists(path: string) {
+    try {
+        await fs.promises.access(path, fs.constants.F_OK);
+        return true;
+    } catch {
+        return false;
+    }
 }

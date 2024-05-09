@@ -2,13 +2,16 @@ import compressImage from "../lib/ffmpeg/compressimage";
 import { file } from "../lib/ffmpeg/ffmpeg";
 import { Color, esc, log } from "../lib/logger";
 import {
+    exists,
     getFileExt,
     humanFileSize,
     makeMessageResp,
     uuidv4,
 } from "../lib/utils";
 import { FlapsCommand } from "../types";
-import { writeFile } from "fs/promises";
+import { writeFile, access } from "fs/promises";
+import fs from "fs";
+import { createHash } from "crypto";
 
 module.exports = {
     id: "imgurl",
@@ -19,21 +22,35 @@ module.exports = {
     async execute(_, buffers) {
         let writePromises = [];
         let filenames = [];
-        for (const [buffer, filename] of buffers) {
-            let id = uuidv4();
-            let compressed = await compressImage([buffer, filename]);
-            log(
-                `Uploaded image compressed to ${esc(
-                    Color.BrightCyan
-                )}${humanFileSize(compressed.byteLength)}${esc(
-                    Color.White
-                )} (from ${esc(Color.BrightRed)}${humanFileSize(
-                    buffer.byteLength
-                )}${esc(Color.White)})`,
-                "permaurl"
+        for (const [buffer, origFilename] of buffers) {
+            writePromises.push(
+                new Promise<void>(async (resolve, reject) => {
+                    let compressed = await compressImage([
+                        buffer,
+                        origFilename,
+                    ]);
+                    log(
+                        `Uploaded image compressed to ${esc(
+                            Color.BrightCyan
+                        )}${humanFileSize(compressed.byteLength)}${esc(
+                            Color.White
+                        )} (from ${esc(Color.BrightRed)}${humanFileSize(
+                            buffer.byteLength
+                        )}${esc(Color.White)})`,
+                        "permaurl"
+                    );
+                    let hash = createHash("sha256")
+                        .update(compressed)
+                        .digest("hex");
+                    let filename = file(`perma/${hash}.jpeg`);
+                    let fileExists = await exists(filename);
+                    if (!fileExists) {
+                        await writeFile(filename, compressed);
+                    }
+                    filenames.push(`${hash}.jpeg`);
+                    resolve();
+                })
             );
-            writePromises.push(writeFile(file(`perma/${id}.jpeg`), compressed));
-            filenames.push(`${id}.jpeg`);
         }
         await Promise.all(writePromises);
         let outstring = "";
