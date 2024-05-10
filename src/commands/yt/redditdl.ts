@@ -7,7 +7,7 @@ import audiovideo from "../../lib/ffmpeg/audiovideo";
 function getReddit(url: string, id: string, isVideo: boolean): Promise<string> {
     return new Promise((res, rej) => {
         let ext = isVideo ? "mp4" : "m4a";
-        let fn = "./images/cache/Temp_RedditDL_Audio_" + id + "." + ext;
+        let fn = "./images/cache/Temp_RedditDL_" + id + "." + ext;
         var ytProcess = spawn(
             "yt-dlp",
             (url + " -f " + ext + " -o " + fn).split(" ")
@@ -47,14 +47,18 @@ module.exports = {
                     [audioContent, audioPath],
                     [videoContent, videoPath],
                 ]).then((combined) => {
-                    res(
-                        makeMessageResp(
-                            "reddit",
-                            "",
-                            null,
-                            combined,
-                            getFileName("DL_Reddit", "mp4")
-                        )
+                    Promise.all([unlink(audioPath), unlink(videoPath)]).then(
+                        () => {
+                            res(
+                                makeMessageResp(
+                                    "reddit",
+                                    "",
+                                    null,
+                                    combined,
+                                    getFileName("DL_Reddit", "mp4")
+                                )
+                            );
+                        }
                     );
                 });
             });
