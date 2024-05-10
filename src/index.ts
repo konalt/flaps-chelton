@@ -53,6 +53,7 @@ import {
     scheduleDelete,
     uuidv4,
     SPOILERBUG,
+    exists,
 } from "./lib/utils";
 import { registerFont } from "canvas";
 import fetch from "node-fetch";
@@ -60,6 +61,7 @@ import { getVideoDimensions } from "./lib/ffmpeg/getVideoDimensions";
 import {
     AudioPlayer,
     createAudioPlayer,
+    createAudioResource,
     DiscordGatewayAdapterCreator,
     joinVoiceChannel,
     NoSubscriberBehavior,
@@ -109,7 +111,6 @@ export const voiceConnections: Collection<string, VoiceConnection> =
 export const voicePlayers: Collection<string, AudioPlayer> = new Collection();
 
 function flapsJoinVoiceChannel(channel: VoiceBasedChannel) {
-    return;
     let connection = joinVoiceChannel({
         channelId: channel.id,
         guildId: channel.guildId,
@@ -127,7 +128,11 @@ function flapsJoinVoiceChannel(channel: VoiceBasedChannel) {
 
 client.on("voiceStateUpdate", (oldState, newState) => {
     let channel = newState.channel;
-    if (!channel) channel = oldState.channel;
+    let join = true;
+    if (!channel) {
+        channel = oldState.channel;
+        join = false;
+    }
     let flapsInChannel = channel.members.has(client.user.id);
     if (flapsInChannel && !voiceConnections.has(channel.guildId)) {
         flapsJoinVoiceChannel(channel);
@@ -140,6 +145,17 @@ client.on("voiceStateUpdate", (oldState, newState) => {
         voiceConnections.get(channel.guildId).destroy();
         voicePlayers.delete(channel.guildId);
         voiceConnections.delete(channel.guildId);
+    }
+    if (join && newState.id !== client.user.id) {
+        exists(`audio/join/${newState.id}.mp3`).then((ex) => {
+            if (!ex) return;
+            setTimeout(() => {
+                let resource = createAudioResource(
+                    `audio/join/${newState.id}.mp3`
+                );
+                voicePlayers.get(channel.guildId).play(resource);
+            }, 1000);
+        });
     }
 });
 

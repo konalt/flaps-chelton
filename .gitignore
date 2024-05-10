@@ -3,7 +3,7 @@ images/cache/*
 images/perma/*
 images/avatars/transcoded/*
 audio/yt/*
-audio/47.*
+audio/join/*
 node_modules/*
 **/Thumbs.db
 subs.srt
