@@ -1,15 +1,10 @@
 import { loadImage, createCanvas } from "canvas";
 import compressJPGExtreme from "../ffmpeg/compressjpgextreme";
-import { writeFile } from "fs/promises";
-import { file } from "../ffmpeg/ffmpeg";
-import { getFileName } from "../utils";
 
 export default (buf: Buffer): Promise<Buffer> => {
     return new Promise(async (resolve, reject) => {
         if (!buf) return reject("An image buffer is required");
-        let fn = file("cache/" + getFileName("Temp_WarriorSave", "png"));
-        await writeFile(fn, buf);
-        let compressed = await compressJPGExtreme([[buf, fn]]);
+        let compressed = await compressJPGExtreme([[buf, "png"]]);
         let warrior = await loadImage("images/warrior.png");
         let image = await loadImage(compressed);
         var c = createCanvas(warrior.width, warrior.height);
