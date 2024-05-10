@@ -109,6 +109,7 @@ export const voiceConnections: Collection<string, VoiceConnection> =
 export const voicePlayers: Collection<string, AudioPlayer> = new Collection();
 
 function flapsJoinVoiceChannel(channel: VoiceBasedChannel) {
+    return;
     let connection = joinVoiceChannel({
         channelId: channel.id,
         guildId: channel.guildId,
@@ -798,25 +799,6 @@ function loadAutoStatus() {
 export let commands: Collection<string, FlapsCommand> = new Collection();
 let flags: Record<string, string[]> = {};
 
-log("Loading fonts...", "start");
-registerFont("fonts/dog.otf", { family: "Fuckedup" });
-registerFont("fonts/homodog.otf", { family: "Homodog" });
-registerFont("fonts/weezer.otf", { family: "Weezer" });
-registerFont("fonts/futura.otf", {
-    family: "Futura",
-    weight: "400",
-});
-registerFont("fonts/vcr.ttf", {
-    family: "VCR OSD Mono",
-    weight: "400",
-});
-registerFont("fonts/tate.ttf", { family: "Tate" });
-registerFont("fonts/spotify.otf", { family: "Spotify" });
-registerFont("fonts/arial.ttf", { family: "Arial" });
-registerFont("fonts/ibmplex.otf", { family: "IBM Plex Sans", weight: "400" });
-registerFont("fonts/fancy.otf", { family: "Fancy", weight: "400" });
-registerFont("fonts/helvetica.ttf", { family: "Helvetica" });
-
 async function readCommandDir(dir: string) {
     const files = await readdir(dir, {
         withFileTypes: true,
@@ -919,89 +901,110 @@ export let [addBuffer, removeBuffer, addBufferSequence] = [
         return "null";
     },
 ];
-
-log("Loading commands...", "start");
-readCommandDir(__dirname + "/commands").then(() => {
-    log("Loading autoreact flags...", "start");
-    readFile("flags.txt", { encoding: "utf-8" }).then(async (flagtext) => {
-        for (const line of flagtext.split("\n")) {
-            let flagName = line.split(" ")[0];
-            if (!flags[flagName]) flags[flagName] = [];
-            flags[flagName].push(line.split(" ").slice(1).join(" "));
-        }
-        log("Loading autostatus messages...", "start");
-        await loadAutoStatus();
-        updateUsers().then(async () => {
-            log("Starting filestream server...", "start");
-            [addBuffer, removeBuffer, addBufferSequence] =
-                await filestreamServer();
-            setInterval(() => {
-                var d = new Date();
-                if (
-                    d.getMinutes() == 0 &&
-                    d.getHours() == 0 &&
-                    d.getSeconds() < 1
-                ) {
-                    midnight(
-                        client.channels.cache.get(
-                            process.env.MAIN_CHANNEL
-                        ) as TextChannel
-                    );
-                }
-                if (!existsSync("scal_allowtime.txt"))
-                    writeFileSync("scal_allowtime.txt", "no");
-                if (
-                    d.getMinutes() == 39 &&
-                    d.getSeconds() < 1 &&
-                    readFileSync("scal_allowtime.txt").toString() == "yes"
-                ) {
-                    writeFileSync("scal_allowtime.txt", "no");
-                    sendWebhook(
-                        "scal",
-                        "TIME\nHAHAHAHH",
-                        client.channels.cache.get(
-                            process.env.MAIN_CHANNEL
-                        ) as TextBasedChannel
-                    );
-                }
-                if (Math.random() < 1 / 100000) {
-                    sendWebhook(
-                        "nick",
-                        "pills here",
-                        client.channels.cache.get(
-                            process.env.MAIN_CHANNEL
-                        ) as TextBasedChannel
-                    );
-                }
-                if (
-                    d.getMinutes() == 33 &&
-                    d.getHours() == 23 &&
-                    d.getFullYear() == 2033 &&
-                    d.getMonth() == 2 &&
-                    d.getDate() == 3 &&
-                    d.getSeconds() < 1
-                ) {
-                    sendWebhook(
-                        "nick",
-                        "@everyone R.I.P. FUNKY TOWN\n IT'S 3/3/33 23:33 THO YA FUCKIN DONGS!!!!!",
-                        client.channels.cache.get(
-                            process.env.MAIN_CHANNEL
-                        ) as TextBasedChannel
-                    );
-                }
-            }, 1000);
-            log("Starting web server...", "start");
-            initializeWebServer().then(() => {
-                log("Logging in...", "start");
-                client
-                    .login(process.env.DISCORD_TOKEN || "NoTokenProvided")
-                    .catch((e) => {
-                        console.log(e);
-                    });
-            });
+async function init() {
+    log("Loading...", "start");
+    let loadFonts = new Promise<void>((res) => {
+        registerFont("fonts/dog.otf", { family: "Fuckedup" });
+        registerFont("fonts/homodog.otf", { family: "Homodog" });
+        registerFont("fonts/weezer.otf", { family: "Weezer" });
+        registerFont("fonts/futura.otf", {
+            family: "Futura",
+            weight: "400",
         });
+        registerFont("fonts/vcr.ttf", {
+            family: "VCR OSD Mono",
+            weight: "400",
+        });
+        registerFont("fonts/tate.ttf", { family: "Tate" });
+        registerFont("fonts/spotify.otf", { family: "Spotify" });
+        registerFont("fonts/arial.ttf", { family: "Arial" });
+        registerFont("fonts/ibmplex.otf", {
+            family: "IBM Plex Sans",
+            weight: "400",
+        });
+        registerFont("fonts/fancy.otf", { family: "Fancy", weight: "400" });
+        registerFont("fonts/helvetica.ttf", { family: "Helvetica" });
+        log("Fonts loaded.", "start");
+        res();
     });
-});
+    let loadCommands = readCommandDir(__dirname + "/commands").then(() => {
+        log("Commands loaded.", "start");
+    });
+    let loadFlags = readFile("flags.txt", { encoding: "utf-8" }).then(
+        async (flagtext) => {
+            for (const line of flagtext.split("\n")) {
+                let flagName = line.split(" ")[0];
+                if (!flags[flagName]) flags[flagName] = [];
+                flags[flagName].push(line.split(" ").slice(1).join(" "));
+            }
+            log("Auto react flags loaded.", "start");
+        }
+    );
+    let loadAutoStatusP = loadAutoStatus().then(() => {
+        log("Auto status loaded.", "start");
+    });
+    let loadUsers = updateUsers().then(() => {
+        log("Users loaded.", "start");
+    });
+    let loadFilestreamServer = filestreamServer().then((d) => {
+        [addBuffer, removeBuffer, addBufferSequence] = d;
+        log("Filestream server started.", "start");
+    });
+    let loadWebServer = initializeWebServer().then(() => {
+        log("Web server started.", "start");
+    });
+    setInterval(() => {
+        var d = new Date();
+        if (d.getMinutes() == 0 && d.getHours() == 0 && d.getSeconds() < 1) {
+            midnight(
+                client.channels.cache.get(
+                    process.env.MAIN_CHANNEL
+                ) as TextChannel
+            );
+        }
+        if (Math.random() < 1 / 100000) {
+            sendWebhook(
+                "nick",
+                "pills here",
+                client.channels.cache.get(
+                    process.env.MAIN_CHANNEL
+                ) as TextBasedChannel
+            );
+        }
+        if (
+            d.getMinutes() == 33 &&
+            d.getHours() == 23 &&
+            d.getFullYear() == 2033 &&
+            d.getMonth() == 2 &&
+            d.getDate() == 3 &&
+            d.getSeconds() < 1
+        ) {
+            sendWebhook(
+                "nick",
+                "@everyone R.I.P. FUNKY TOWN\n IT'S 3/3/33 23:33 THO YA FUCKIN DONGS!!!!!",
+                client.channels.cache.get(
+                    process.env.MAIN_CHANNEL
+                ) as TextBasedChannel
+            );
+        }
+    }, 1000);
+    await Promise.all([
+        loadAutoStatusP,
+        loadCommands,
+        loadFilestreamServer,
+        loadFlags,
+        loadFonts,
+        loadUsers,
+        loadWebServer,
+    ]);
+    log("Logging in...", "start");
+    client.login(process.env.DISCORD_TOKEN || "NoTokenProvided").catch((e) => {
+        console.log(e);
+    });
+}
+
+init();
+
 function getTypeMessage(inTypes: string[], reqTypes: string[]) {
     var maxWidthIn = inTypes.reduce((a, b) =>
         a.length > b.length ? a : b

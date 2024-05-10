@@ -134,7 +134,6 @@ export let hooks: Collection<string, WebhookBot> = new Collection();
 
 export function updateUsers(): Promise<void> {
     return new Promise((res, rej) => {
-        log("Loading webhook bots...", "start");
         for (const user of users) {
             hooks.set(user.id, user);
         }
