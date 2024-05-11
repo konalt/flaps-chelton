@@ -1,3 +1,9 @@
+import { config } from "dotenv";
+import { Color, esc, getMessageLog, log } from "./lib/logger";
+config();
+export const VERBOSE = process.env.VERBOSE == "yes";
+if (!VERBOSE) log("Importing modules...", "start");
+if (VERBOSE) log("Importing modules (@discordjs/voice)...", "start");
 import {
     AudioPlayer,
     NoSubscriberBehavior,
@@ -6,7 +12,9 @@ import {
     createAudioResource,
     joinVoiceChannel,
 } from "@discordjs/voice";
+if (VERBOSE) log("Importing modules (canvas)...", "start");
 import { registerFont } from "canvas";
+if (VERBOSE) log("Importing modules (discord.js)...", "start");
 import {
     ActionRowBuilder,
     ActivityType,
@@ -22,28 +30,36 @@ import {
     TextChannel,
     VoiceBasedChannel,
 } from "discord.js";
-import { config } from "dotenv";
+if (VERBOSE) log("Importing modules (fs)...", "start");
 import { writeFileSync } from "fs";
 import { readFile, readdir, writeFile } from "fs/promises";
+if (VERBOSE) log("Importing modules (mime-types)...", "start");
 import { contentType, lookup } from "mime-types";
+if (VERBOSE) log("Importing modules (fetch)...", "start");
 import fetch from "node-fetch";
+if (VERBOSE) log("Importing modules (flaps/battle)...", "start");
 import {
     getBattleAction,
     getBattleImage,
     getComponents,
     handleBattleAction,
 } from "./lib/battle";
+if (VERBOSE) log("Importing modules (flaps/download)...", "start");
 import { downloadPromise } from "./lib/download";
+if (VERBOSE) log("Importing modules (flaps/ffmpeg)...", "start");
 import { file } from "./lib/ffmpeg/ffmpeg";
+if (VERBOSE) log("Importing modules (flaps/getVideoDimensions)...", "start");
 import { getVideoDimensions } from "./lib/ffmpeg/getVideoDimensions";
+if (VERBOSE) log("Importing modules (flaps/filestreamserver)...", "start");
 import filestreamServer from "./lib/filestreamserver";
-import { Color, esc, getMessageLog, log } from "./lib/logger";
+if (VERBOSE) log("Importing modules (flaps/tictactoe)...", "start");
 import {
     createComponentList,
     createMessageContent,
     games,
     makeMove,
 } from "./lib/tictactoe";
+if (VERBOSE) log("Importing modules (flaps/utils)...", "start");
 import {
     SPOILERBUG,
     convertWebpAttachmentToPng,
@@ -58,13 +74,16 @@ import {
     scheduleDelete,
     uuidv4,
 } from "./lib/utils";
+if (VERBOSE) log("Importing modules (flaps/web)...", "start");
 import initializeWebServer from "./lib/web";
+if (VERBOSE) log("Importing modules (flaps/webhooks)...", "start");
 import {
     editWebhookMessage,
     hooks,
     sendWebhook,
     updateUsers,
 } from "./lib/webhooks";
+if (VERBOSE) log("Importing modules (flaps/types)...", "start");
 import {
     AutoStatusInfo,
     Battle,
@@ -74,9 +93,6 @@ import {
     FlapsMessageSource,
     TicTacToeCell,
 } from "./types";
-log("Loading settings...", "start");
-config();
-log("Importing modules...", "start");
 
 log("Initializing client...", "start");
 export const client: Client = new Client({
