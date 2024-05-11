@@ -819,9 +819,10 @@ async function readCommandDir(dir: string) {
     const files = await readdir(dir, {
         withFileTypes: true,
     });
+    let ps = [];
     for (const file of files) {
         if (file.isDirectory()) {
-            await readCommandDir(dir + "/" + file.name);
+            ps.push(readCommandDir(dir + "/" + file.name));
         } else {
             let command = require(dir +
                 "/" +
@@ -831,6 +832,7 @@ async function readCommandDir(dir: string) {
             commands.set(command.id, command);
         }
     }
+    await Promise.all(ps);
 }
 
 var doneUsers = [];
