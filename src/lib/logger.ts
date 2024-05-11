@@ -25,19 +25,19 @@ export const C = {
     White: esc(97),
 };
 
-export enum LogMode {
-    NotVerbose,
-    Verbose,
+export enum LM {
+    NVerb,
+    Verb,
     Always,
 }
 
 export const log = (
     text = "Text Here",
     sub: string | null = null,
-    logtype: LogMode = LogMode.Always
+    logtype: LM = LM.Always
 ) => {
-    if (logtype == LogMode.Verbose && !VERBOSE) return;
-    if (logtype == LogMode.NotVerbose && VERBOSE) return;
+    if (logtype == LM.Verb && !VERBOSE) return;
+    if (logtype == LM.NVerb && VERBOSE) return;
     console.log(
         (sub
             ? `${C.White}[${sub}] ${C.DGrey}[${time()}]${C.White} `

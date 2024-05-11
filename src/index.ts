@@ -2,7 +2,6 @@ import { config } from "dotenv";
 import { C, getMessageLog, log } from "./lib/logger";
 config();
 export const VERBOSE = process.env.VERBOSE == "yes";
-log("Importing modules...", "start");
 log(`Importing modules (${C.BCyan}@discordjs/voice${C.White})...`, "start");
 import {
     AudioPlayer,
