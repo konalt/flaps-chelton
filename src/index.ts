@@ -1,20 +1,20 @@
-import { Color, esc, getMessageLog, log } from "./lib/logger";
-import { config } from "dotenv";
-log("Loading settings...", "start");
-config();
-log("Importing modules...", "start");
+import {
+    AudioPlayer,
+    NoSubscriberBehavior,
+    VoiceConnection,
+    createAudioPlayer,
+    createAudioResource,
+    joinVoiceChannel,
+} from "@discordjs/voice";
+import { registerFont } from "canvas";
 import {
     ActionRowBuilder,
     ActivityType,
     Attachment,
     ButtonInteraction,
-    ButtonStyle,
-    CategoryChannel,
     ChannelType,
     Client,
     Collection,
-    Guild,
-    GuildMember,
     Interaction,
     Message,
     Partials,
@@ -22,8 +22,43 @@ import {
     TextChannel,
     VoiceBasedChannel,
 } from "discord.js";
+import { config } from "dotenv";
+import { writeFileSync } from "fs";
 import { readFile, readdir, writeFile } from "fs/promises";
-import { readFileSync, writeFileSync, existsSync } from "fs";
+import { contentType, lookup } from "mime-types";
+import fetch from "node-fetch";
+import {
+    getBattleAction,
+    getBattleImage,
+    getComponents,
+    handleBattleAction,
+} from "./lib/battle";
+import { downloadPromise } from "./lib/download";
+import { file } from "./lib/ffmpeg/ffmpeg";
+import { getVideoDimensions } from "./lib/ffmpeg/getVideoDimensions";
+import filestreamServer from "./lib/filestreamserver";
+import { Color, esc, getMessageLog, log } from "./lib/logger";
+import {
+    createComponentList,
+    createMessageContent,
+    games,
+    makeMove,
+} from "./lib/tictactoe";
+import {
+    SPOILERBUG,
+    convertWebpAttachmentToPng,
+    decodeObject,
+    encodeObject,
+    exists,
+    getFileExt,
+    getFileName,
+    getTypeSingular,
+    getTypes,
+    makeMessageResp,
+    scheduleDelete,
+    uuidv4,
+} from "./lib/utils";
+import initializeWebServer from "./lib/web";
 import {
     editWebhookMessage,
     hooks,
@@ -33,56 +68,15 @@ import {
 import {
     AutoStatusInfo,
     Battle,
-    BattleAction,
     CommandResponseType,
     FlapsCommand,
     FlapsCommandResponse,
     FlapsMessageSource,
     TicTacToeCell,
 } from "./types";
-import { downloadPromise } from "./lib/download";
-import {
-    decodeObject,
-    encodeObject,
-    convertWebpAttachmentToPng,
-    getFileExt,
-    getFileName,
-    getTypes,
-    getTypeSingular,
-    makeMessageResp,
-    scheduleDelete,
-    uuidv4,
-    SPOILERBUG,
-    exists,
-} from "./lib/utils";
-import { registerFont } from "canvas";
-import fetch from "node-fetch";
-import { getVideoDimensions } from "./lib/ffmpeg/getVideoDimensions";
-import {
-    AudioPlayer,
-    createAudioPlayer,
-    createAudioResource,
-    DiscordGatewayAdapterCreator,
-    joinVoiceChannel,
-    NoSubscriberBehavior,
-    VoiceConnection,
-} from "@discordjs/voice";
-import { contentType, lookup } from "mime-types";
-import initializeWebServer from "./lib/web";
-import { file } from "./lib/ffmpeg/ffmpeg";
-import filestreamServer from "./lib/filestreamserver";
-import {
-    createComponentList,
-    createMessageContent,
-    games,
-    makeMove,
-} from "./lib/tictactoe";
-import {
-    getBattleAction,
-    getBattleImage,
-    getComponents,
-    handleBattleAction,
-} from "./lib/battle";
+log("Loading settings...", "start");
+config();
+log("Importing modules...", "start");
 
 log("Initializing client...", "start");
 export const client: Client = new Client({
