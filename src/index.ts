@@ -1,9 +1,9 @@
 import { config } from "dotenv";
-import { Color, getMessageLog, log } from "./lib/logger";
+import { C, getMessageLog, log } from "./lib/logger";
 config();
 export const VERBOSE = process.env.VERBOSE == "yes";
-if (!VERBOSE) log("Importing modules...", "start");
-if (VERBOSE) log("Importing modules (@discordjs/voice)...", "start");
+log("Importing modules...", "start");
+log(`Importing modules (${C.BCyan}@discordjs/voice${C.White})...`, "start");
 import {
     AudioPlayer,
     NoSubscriberBehavior,
@@ -12,9 +12,9 @@ import {
     createAudioResource,
     joinVoiceChannel,
 } from "@discordjs/voice";
-if (VERBOSE) log("Importing modules (canvas)...", "start");
+log(`Importing modules (${C.BCyan}canvas${C.White})...`, "start");
 import { registerFont } from "canvas";
-if (VERBOSE) log("Importing modules (discord.js)...", "start");
+log(`Importing modules (${C.BCyan}discord.js${C.White})...`, "start");
 import {
     ActionRowBuilder,
     ActivityType,
@@ -30,36 +30,36 @@ import {
     TextChannel,
     VoiceBasedChannel,
 } from "discord.js";
-if (VERBOSE) log("Importing modules (fs)...", "start");
+log(`Importing modules (${C.BCyan}fs${C.White})...`, "start");
 import { writeFileSync } from "fs";
 import { readFile, readdir, writeFile } from "fs/promises";
-if (VERBOSE) log("Importing modules (mime-types)...", "start");
+log(`Importing modules (${C.BCyan}mime-types${C.White})...`, "start");
 import { contentType, lookup } from "mime-types";
-if (VERBOSE) log("Importing modules (fetch)...", "start");
+log(`Importing modules (${C.BCyan}fetch${C.White})...`, "start");
 import fetch from "node-fetch";
-if (VERBOSE) log("Importing modules (flaps/battle)...", "start");
+log(`Importing modules (${C.BCyan}flaps/battle${C.White})...`, "start");
 import {
     getBattleAction,
     getBattleImage,
     getComponents,
     handleBattleAction,
 } from "./lib/battle";
-if (VERBOSE) log("Importing modules (flaps/download)...", "start");
+log(`Importing modules (${C.BCyan}flaps/download${C.White})...`, "start");
 import { downloadPromise } from "./lib/download";
-if (VERBOSE) log("Importing modules (flaps/ffmpeg)...", "start");
+log(`Importing modules (${C.BCyan}flaps/ffmpeg${C.White})...`, "start");
 import { file } from "./lib/ffmpeg/ffmpeg";
-if (VERBOSE) log("Importing modules (flaps/getVideoDimensions)...", "start");
+log(`Importing modules (${C.BCyan}flaps/gvd${C.White})...`, "start");
 import { getVideoDimensions } from "./lib/ffmpeg/getVideoDimensions";
-if (VERBOSE) log("Importing modules (flaps/filestreamserver)...", "start");
+log(`Importing modules (${C.BCyan}flaps/fsserver${C.White})...`, "start");
 import filestreamServer from "./lib/filestreamserver";
-if (VERBOSE) log("Importing modules (flaps/tictactoe)...", "start");
+log(`Importing modules (${C.BCyan}flaps/tictactoe${C.White})...`, "start");
 import {
     createComponentList,
     createMessageContent,
     games,
     makeMove,
 } from "./lib/tictactoe";
-if (VERBOSE) log("Importing modules (flaps/utils)...", "start");
+log(`Importing modules (${C.BCyan}flaps/utils${C.White})...`, "start");
 import {
     SPOILERBUG,
     convertWebpAttachmentToPng,
@@ -74,16 +74,16 @@ import {
     scheduleDelete,
     uuidv4,
 } from "./lib/utils";
-if (VERBOSE) log("Importing modules (flaps/web)...", "start");
+log(`Importing modules (${C.BCyan}flaps/web${C.White})...`, "start");
 import initializeWebServer from "./lib/web";
-if (VERBOSE) log("Importing modules (flaps/webhooks)...", "start");
+log(`Importing modules (${C.BCyan}flaps/webhooks${C.White})...`, "start");
 import {
     editWebhookMessage,
     hooks,
     sendWebhook,
     updateUsers,
 } from "./lib/webhooks";
-if (VERBOSE) log("Importing modules (flaps/types)...", "start");
+log(`Importing modules (${C.BCyan}flaps/types${C.White})...`, "start");
 import {
     AutoStatusInfo,
     Battle,
@@ -170,7 +170,7 @@ client.on("voiceStateUpdate", (oldState, newState) => {
 });
 
 client.on("ready", async () => {
-    log(`${Color.BrightGreen}Listening for commands!`, "start");
+    log(`${C.BGreen}Listening for commands!`, "start");
 
     client.user.setPresence({
         activities: [
@@ -556,11 +556,11 @@ export async function onMessage(msg: Message) {
                 log(
                     `${
                         commandChain.length > 1
-                            ? `${Color.BrightBlue}(${index + 1}/${
+                            ? `${C.BBlue}(${index + 1}/${
                                   commandChain.length
-                              }) ${Color.White}`
+                              }) ${C.White}`
                             : ""
-                    }Running command ${Color.BrightCyan}${commandId}`,
+                    }Running command ${C.BCyan}${commandId}`,
                     "cmd"
                 );
                 if (commandId !== "retry") {
@@ -771,7 +771,7 @@ process.on("unhandledRejection", (reason: any, p) => {
         r = reason;
     }
 
-    log(`unhandled rejection. reason: ${Color.BrightRed}${r}`, "promise");
+    log(`unhandled rejection. reason: ${C.BRed}${r}`, "promise");
     if (!errorChannel) return;
     sendWebhook(
         "flapserrors",

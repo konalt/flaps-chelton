@@ -1,6 +1,6 @@
 import compressImage from "../lib/ffmpeg/compressimage";
 import { file } from "../lib/ffmpeg/ffmpeg";
-import { Color, log } from "../lib/logger";
+import { C, log } from "../lib/logger";
 import { exists, humanFileSize, makeMessageResp } from "../lib/utils";
 import { FlapsCommand } from "../types";
 import { writeFile } from "fs/promises";
@@ -34,13 +34,11 @@ module.exports = {
                         origFilename,
                     ]);
                     log(
-                        `Uploaded image compressed to ${
-                            Color.BrightCyan
-                        }${humanFileSize(compressed.byteLength)}${
-                            Color.White
-                        } (from ${Color.BrightRed}${humanFileSize(
+                        `Uploaded image compressed to ${C.BCyan}${humanFileSize(
+                            compressed.byteLength
+                        )}${C.White} (from ${C.BRed}${humanFileSize(
                             buffer.byteLength
-                        )}${Color.White})`,
+                        )}${C.White})`,
                         "permaurl"
                     );
                     let hash = createHash("sha256")

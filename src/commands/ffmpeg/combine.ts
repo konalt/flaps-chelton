@@ -21,7 +21,7 @@ import audiogif from "../../lib/ffmpeg/audiogif";
 import stack from "../../lib/ffmpeg/stack";
 import handleFFmpeg from "../../lib/ffmpeg/handleFFmpeg";
 import handleFFmpegCatch from "../../lib/ffmpeg/handleFFmpegCatch";
-import { Color, log } from "../../lib/logger";
+import { C, log } from "../../lib/logger";
 
 function combineOperation(
     type1: string,
@@ -145,9 +145,9 @@ module.exports = {
             let op = combineOperation(type1, type2);
 
             log(
-                `${Color.White}Using combine function ${
-                    Color.BrightBlue
-                }${getFunctionName(op)}`,
+                `${C.White}Using combine function ${C.BBlue}${getFunctionName(
+                    op
+                )}`,
                 "combine"
             );
 
