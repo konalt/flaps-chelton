@@ -1,7 +1,7 @@
 import { spawn } from "child_process";
 import { readFile, writeFileSync } from "fs";
 import { extension } from "mime-types";
-import { Color, esc, log } from "../logger";
+import { Color, log } from "../logger";
 import { getFileExt, scheduleDelete, uuidv4 } from "../utils";
 import { join } from "path";
 import { stdout } from "process";
@@ -59,7 +59,7 @@ export function ffmpegBuffer(
         });
 
         if (ffmpegVerbose)
-            log(`Launch Args: ${esc(Color.White)}` + newargs, "ffmpeg");
+            log(`Launch Args: ${Color.White}` + newargs, "ffmpeg");
 
         const childProcess = spawn("ffmpeg", newargs.split(" "), {
             shell: true,
@@ -171,13 +171,10 @@ export function ffmpeg(args: string, quiet = false) {
             }
         );
         if (ffmpegVerbose)
-            log(`Launch Args: ${esc(Color.White)}` + newargs, "ffmpeg");
+            log(`Launch Args: ${Color.White}` + newargs, "ffmpeg");
         var b = "";
         if (!quiet)
-            log(
-                `${esc(Color.White)}Instance PID: ${ffmpegInstance.pid}`,
-                "ffmpeg"
-            );
+            log(`${Color.White}Instance PID: ${ffmpegInstance.pid}`, "ffmpeg");
         let outChunked = [];
         ffmpegInstance.stdout.on("data", (c) => {
             outChunked.push(c);
@@ -190,18 +187,18 @@ export function ffmpeg(args: string, quiet = false) {
             let outBuffer = Buffer.concat(outChunked);
             if (code == 0 && !quiet) {
                 log(
-                    `${esc(Color.Green)}Completed ${esc(Color.White)}in ${esc(
+                    `${Color.Green}Completed ${Color.White}in ${
                         Color.BrightCyan
-                    )}${Date.now() - startTime}ms`,
+                    }${Date.now() - startTime}ms`,
                     "ffmpeg"
                 );
                 resolve(args.split(" ").pop());
             } else {
                 if (!quiet)
                     log(
-                        `${esc(Color.Red)}Failed ${esc(Color.White)}in ${esc(
+                        `${Color.Red}Failed ${Color.White}in ${
                             Color.BrightCyan
-                        )}${Date.now() - startTime}ms`,
+                        }${Date.now() - startTime}ms`,
                         "ffmpeg"
                     );
                 reject(b);
@@ -235,16 +232,16 @@ export async function ffprobe(
             if (code == 0 && !quiet) {
                 if (!quiet && ffmpegVerbose)
                     log(
-                        `${esc(Color.Green)}Completed in ${esc(
-                            Color.BrightCyan
-                        )}${Date.now() - startTime}ms`,
+                        `${Color.Green}Completed in ${Color.BrightCyan}${
+                            Date.now() - startTime
+                        }ms`,
                         "ffprobe"
                     );
                 resolve(body);
             } else {
                 if (!quiet && ffmpegVerbose)
                     log(
-                        `${esc(Color.Red)}Failed in ${esc(Color.BrightCyan)}${
+                        `${Color.Red}Failed in ${Color.BrightCyan}${
                             Date.now() - startTime
                         }ms`,
                         "ffprobe"

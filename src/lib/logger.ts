@@ -3,35 +3,35 @@ import { time } from "./utils";
 import { commands } from "..";
 import { hooks } from "./webhooks";
 
-export enum Color {
-    Reset = 0,
-    Black = 30,
-    Red = 31,
-    Green = 32,
-    Yellow = 33,
-    Blue = 34,
-    Magenta = 35,
-    Cyan = 36,
-    LightGrey = 37,
-    DarkGrey = 90,
-    BrightRed = 91,
-    BrightGreen = 92,
-    BrightYellow = 93,
-    BrightBlue = 94,
-    BrightMagenta = 95,
-    BrightCyan = 96,
-    White = 97,
-}
+const esc = (n: number) => "\x1b[" + n.toString() + "m";
 
-export const esc = (n: number) => "\x1b[" + n.toString() + "m";
+export const Color = {
+    Reset: esc(0),
+    Black: esc(30),
+    Red: esc(31),
+    Green: esc(32),
+    Yellow: esc(33),
+    Blue: esc(34),
+    Magenta: esc(35),
+    Cyan: esc(36),
+    LightGrey: esc(37),
+    DarkGrey: esc(90),
+    BrightRed: esc(91),
+    BrightGreen: esc(92),
+    BrightYellow: esc(93),
+    BrightBlue: esc(94),
+    BrightMagenta: esc(95),
+    BrightCyan: esc(96),
+    White: esc(97),
+};
 
 export const log = (text = "Text Here", sub: string | null = null) => {
     console.log(
         (sub
-            ? `${esc(Color.White)}[${sub}] ${esc(
-                  Color.DarkGrey
-              )}[${time()}]${esc(Color.White)} `
-            : `${esc(Color.White)}`) +
+            ? `${Color.White}[${sub}] ${Color.DarkGrey}[${time()}]${
+                  Color.White
+              } `
+            : `${Color.White}`) +
             text +
             esc(0)
     );
@@ -71,45 +71,45 @@ export function getMessageLog(msg: Message) {
         for (const [command, args] of commandChain) {
             i++;
             let tempMainContent = "";
-            tempMainContent += esc(Color.BrightGreen);
+            tempMainContent += Color.BrightGreen;
             tempMainContent += process.env.COMMAND_PREFIX;
             tempMainContent += command;
-            tempMainContent += esc(Color.LightGrey);
+            tempMainContent += Color.LightGrey;
             tempMainContent += " ";
             tempMainContent += args.join(" ");
             mainContent += tempMainContent.trim();
             if (i != commandChain.length) {
-                mainContent += esc(Color.Cyan);
+                mainContent += Color.Cyan;
                 mainContent += " ==> ";
             }
         }
     } else if (isWebhook) {
-        mainContent += esc(Color.BrightYellow);
+        mainContent += Color.BrightYellow;
         mainContent += msg.content.split(" ")[0];
         mainContent += " ";
-        mainContent += esc(Color.LightGrey);
+        mainContent += Color.LightGrey;
         mainContent += msg.content.split(" ").slice(1).join(" ");
     } else {
-        mainContent += esc(Color.LightGrey);
+        mainContent += Color.LightGrey;
         mainContent += msg.content;
     }
 
     if (msg.attachments.size > 0) {
         if (msg.content.length > 0) mainContent += " ";
-        mainContent += esc(Color.BrightYellow);
+        mainContent += Color.BrightYellow;
         mainContent += `(${msg.attachments.size} attachment${
             msg.attachments.size > 1 ? "s" : ""
         })`;
     }
 
-    let channel = `${esc(Color.Yellow)}<#${msg.channel.name}>`;
+    let channel = `${Color.Yellow}<#${msg.channel.name}>`;
 
     let user = "";
     if (msg.author.bot && msg.author.discriminator == "0000") {
-        user += `${esc(Color.Cyan)}`;
+        user += `${Color.Cyan}`;
         user += `<${idFromName(msg.author.username)}>`;
     } else {
-        user += `${esc(Color.BrightCyan)}`;
+        user += `${Color.BrightCyan}`;
         user += `<${msg.author.username}>`;
     }
 

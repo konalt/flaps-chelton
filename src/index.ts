@@ -1,5 +1,5 @@
 import { config } from "dotenv";
-import { Color, esc, getMessageLog, log } from "./lib/logger";
+import { Color, getMessageLog, log } from "./lib/logger";
 config();
 export const VERBOSE = process.env.VERBOSE == "yes";
 if (!VERBOSE) log("Importing modules...", "start");
@@ -170,7 +170,7 @@ client.on("voiceStateUpdate", (oldState, newState) => {
 });
 
 client.on("ready", async () => {
-    log(`${esc(Color.BrightGreen)}Listening for commands!`, "start");
+    log(`${Color.BrightGreen}Listening for commands!`, "start");
 
     client.user.setPresence({
         activities: [
@@ -556,11 +556,11 @@ export async function onMessage(msg: Message) {
                 log(
                     `${
                         commandChain.length > 1
-                            ? `${esc(Color.BrightBlue)}(${index + 1}/${
+                            ? `${Color.BrightBlue}(${index + 1}/${
                                   commandChain.length
-                              }) ${esc(Color.White)}`
+                              }) ${Color.White}`
                             : ""
-                    }Running command ${esc(Color.BrightCyan)}${commandId}`,
+                    }Running command ${Color.BrightCyan}${commandId}`,
                     "cmd"
                 );
                 if (commandId !== "retry") {
@@ -771,7 +771,7 @@ process.on("unhandledRejection", (reason: any, p) => {
         r = reason;
     }
 
-    log(`unhandled rejection. reason: ${esc(Color.BrightRed)}${r}`, "promise");
+    log(`unhandled rejection. reason: ${Color.BrightRed}${r}`, "promise");
     if (!errorChannel) return;
     sendWebhook(
         "flapserrors",

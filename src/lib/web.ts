@@ -5,7 +5,7 @@ import { dirname, join } from "path";
 import packPath from "package-json-path";
 import apiRouter from "./api";
 import createNormalizedAvatar from "./ffmpeg/createNormalizedAvatar";
-import { Color, log, esc } from "./logger";
+import { Color, log } from "./logger";
 
 export default function initializeWebServer(): Promise<void> {
     return new Promise<void>(async (res) => {
@@ -61,9 +61,7 @@ export default function initializeWebServer(): Promise<void> {
                 continue;
             }
             log(
-                `Transcoding avatar ${esc(Color.BrightCyan)}${file} ${esc(
-                    Color.White
-                )}to WebP...`,
+                `Transcoding avatar ${Color.BrightCyan}${file} ${Color.White}to WebP...`,
                 "avatar"
             );
             let prom = new Promise<Buffer>(async (res, rej) => {
@@ -77,9 +75,7 @@ export default function initializeWebServer(): Promise<void> {
                     normalized
                 );
                 log(
-                    `Transcoded avatar ${esc(Color.BrightCyan)}${file} ${esc(
-                        Color.White
-                    )}to WebP.`,
+                    `Transcoded avatar ${Color.BrightCyan}${file} ${Color.White}to WebP.`,
                     "avatar"
                 );
                 res(normalized);
