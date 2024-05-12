@@ -8,16 +8,12 @@ import handleFFmpegCatch from "../../lib/ffmpeg/handleFFmpegCatch";
 module.exports = {
     id: "imgfade",
     name: "Image Fade",
-    desc: "Fades an image onto a video.",
-    needs: ["video", "image/video"],
+    desc: "Fades 2 images together over a duration.",
+    needs: ["image", "image"],
     execute(args, buf, msg) {
-        return new Promise((res, rej) => {
-            imgfade(buf).then(
-                handleFFmpeg(
-                    getFileName("Effect_Invert", getFileExt(buf[0][1])),
-
-                    res
-                ),
+        return new Promise((res) => {
+            imgfade(buf, parseInt(args[0]) || 2).then(
+                handleFFmpeg(getFileName("Effect_ImageFade", "mp4"), res),
                 handleFFmpegCatch(res)
             );
         });
