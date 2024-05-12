@@ -15,7 +15,8 @@ export async function getVideoLength(
     });
 }
 export async function getVideoDimensions(
-    buffer: [Buffer, string]
+    buffer: [Buffer, string],
+    makeEven: boolean = false
 ): Promise<[number, number]> {
     return new Promise((res, rej) => {
         ffprobe(
@@ -23,7 +24,13 @@ export async function getVideoDimensions(
             buffer
         )
             .then((txt) => {
-                res(txt.split("x").map(parseFloat) as [number, number]);
+                let dims = txt.split("x").map(parseFloat) as [number, number];
+                if (makeEven)
+                    dims = dims.map((d) => Math.ceil(d / 2) * 2) as [
+                        number,
+                        number
+                    ];
+                res(dims);
             })
             .catch(rej);
     });
