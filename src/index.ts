@@ -408,24 +408,28 @@ function getSourcesWithAttachments(msg: Message, types: string[]) {
                 });
             }
         }
-        if (!msg.attachments.first() && !types[0].endsWith("?")) {
+        if (!msg.attachments.first()) {
             if (!msg.reference) {
-                const channel = await client.channels.fetch(msg.channel.id);
-                if (!(channel instanceof TextChannel)) {
-                    return reject("No source found");
-                }
-                const messages = await channel.messages.fetch({
-                    limit: 10,
-                    before: msg.id,
-                });
-                const filteredMessages = messages.filter(
-                    (m) => m.author.id == msg.author.id
-                );
-                const lastMessage = filteredMessages.first(2)[1];
-                if (!lastMessage) {
-                    reject("No source found");
+                if (types[0].endsWith("?")) {
+                    l2(msg);
                 } else {
-                    l2(lastMessage);
+                    const channel = await client.channels.fetch(msg.channel.id);
+                    if (!(channel instanceof TextChannel)) {
+                        return reject("No source found");
+                    }
+                    const messages = await channel.messages.fetch({
+                        limit: 10,
+                        before: msg.id,
+                    });
+                    const filteredMessages = messages.filter(
+                        (m) => m.author.id == msg.author.id
+                    );
+                    const lastMessage = filteredMessages.first(2)[1];
+                    if (!lastMessage) {
+                        reject("No source found");
+                    } else {
+                        l2(lastMessage);
+                    }
                 }
             } else {
                 msg.fetchReference().then((ref) => {
