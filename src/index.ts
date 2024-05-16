@@ -846,6 +846,11 @@ async function readCommandDir(dir: string) {
             let command = require(dir +
                 "/" +
                 file.name.split(".")[0]) as FlapsCommand;
+            if (
+                typeof command.name === "undefined" ||
+                commands.has(command.name)
+            )
+                continue;
             if (typeof command.aliases === "undefined") command.aliases = [];
             command.aliases.push(command.id);
             commands.set(command.id, command);
