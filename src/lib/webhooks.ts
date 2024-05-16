@@ -20,6 +20,7 @@ import { log } from "./logger";
 import { users } from "./users";
 import { writeFile } from "fs/promises";
 import { file } from "./ffmpeg/ffmpeg";
+import { DOMAIN } from "..";
 
 const defaultContent = "No Content";
 const defaultUsername = "No Username";
@@ -162,7 +163,9 @@ export function editWebhookMessage(
                     content +=
                         "\nThis message originally contained a file, but the file was over " +
                         maxFileSizeMiB +
-                        "MiB in size.\nLink: https://flaps.us.to/cache/" +
+                        "MiB in size.\nLink: https://" +
+                        DOMAIN +
+                        "/cache/" +
                         filename +
                         "\n*This link will expire in 6 hours.*";
                 });
@@ -180,7 +183,7 @@ export function editWebhookMessage(
                 url + "/messages/" + messageID,
                 user?.quirk ? user?.quirk(content) : content,
                 name,
-                user?.avatar || "https://flaps.us.to/avatar/" + id + ".webp",
+                user?.avatar || "https://" + DOMAIN + "/avatar/" + id + ".webp",
                 buffer,
                 filename,
                 components
@@ -207,7 +210,9 @@ export function sendWebhook(
                 content +=
                     "\nThis message originally contained a file, but the file was over " +
                     maxFileSizeMiB +
-                    "MiB in size.\nLink: https://flaps.us.to/cache/" +
+                    "MiB in size.\nLink: https://" +
+                    DOMAIN +
+                    "/cache/" +
                     filename +
                     "\n*This link will expire in 6 hours.*";
             });
@@ -225,7 +230,7 @@ export function sendWebhook(
             url + "?wait=true",
             user?.quirk ? user?.quirk(content) : content,
             name,
-            user?.avatar || "https://flaps.us.to/avatar/" + id + ".webp",
+            user?.avatar || "https://" + DOMAIN + "/avatar/" + id + ".webp",
             buffer,
             filename,
             false,

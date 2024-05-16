@@ -2,6 +2,7 @@ import { config } from "dotenv";
 import { C, getMessageLog, log } from "./lib/logger";
 config();
 export const VERBOSE = process.env.VERBOSE == "yes";
+export const DOMAIN = process.env.DOMAIN;
 log(`Importing modules (${C.BCyan}@discordjs/voice${C.White})...`, "start");
 import {
     AudioPlayer,
@@ -179,7 +180,6 @@ client.on("ready", async () => {
             {
                 name: "commands!",
                 type: ActivityType.Listening,
-                url: "https://konalt.us.to/g",
             },
         ],
         afk: true,
@@ -206,7 +206,6 @@ client.on("ready", async () => {
                         {
                             name,
                             type: statusType,
-                            url: "https://konalt.us.to/",
                         },
                     ],
                     afk: false,
@@ -627,7 +626,9 @@ export async function onMessage(msg: Message) {
                                 defatts = new Collection();
                                 defatts.set("0", {
                                     url:
-                                        "https://flaps.us.to/cache/" +
+                                        "https://" +
+                                        DOMAIN +
+                                        "/cache/" +
                                         response.filename,
                                     contentType: contentType(response.filename),
                                 } as Attachment);
@@ -658,7 +659,9 @@ export async function onMessage(msg: Message) {
                                 defatts = new Collection();
                                 defatts.set("0", {
                                     url:
-                                        "https://flaps.us.to/cache/" +
+                                        "https://" +
+                                        DOMAIN +
+                                        "/cache/" +
                                         response.filename,
                                     contentType: contentType(response.filename),
                                 } as Attachment);

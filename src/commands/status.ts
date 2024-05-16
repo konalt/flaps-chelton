@@ -27,7 +27,6 @@ module.exports = {
                     {
                         name,
                         type: statusType,
-                        url: "https://konalt.us.to/",
                     },
                 ],
                 afk: false,

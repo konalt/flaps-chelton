@@ -5,6 +5,7 @@ import { exists, humanFileSize, makeMessageResp } from "../lib/utils";
 import { FlapsCommand } from "../types";
 import { writeFile } from "fs/promises";
 import { createHash } from "crypto";
+import { DOMAIN } from "..";
 
 module.exports = {
     id: "imgurl",
@@ -57,7 +58,7 @@ module.exports = {
         await Promise.all(writePromises);
         let outstring = "";
         for (const filename of filenames) {
-            outstring += `<https://flaps.us.to/img/${filename}>\n`;
+            outstring += `<https://${DOMAIN}/img/${filename}>\n`;
         }
         outstring = outstring.trim();
         return makeMessageResp(
