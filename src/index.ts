@@ -142,6 +142,9 @@ client.on("voiceStateUpdate", (oldState, newState) => {
         channel = oldState.channel;
         join = false;
     }
+    if (newState.channel && oldState.channel) {
+        join = newState.channelId != oldState.channelId;
+    }
     let flapsInChannel = channel.members.has(client.user.id);
     if (flapsInChannel && !voiceConnections.has(channel.guildId)) {
         flapsJoinVoiceChannel(channel);
