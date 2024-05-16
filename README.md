@@ -12,18 +12,24 @@
 
 ## .env instructions:
 
--   To get the PLAYGROUND_COOKIE variable:
-
-1. Go to https://playgroundai.com/ and log in with your Google account.
-2. Search through the Network tab in browser DevTools to find the cookie sent along with all generation requests.
-3. Copy the cookie and place it in the .env file.
-
--   To get the OPENAI_TOKEN variable:
-
-1. Create an OpenAI account on https://platform.openai.com/.
-2. Navigate to the API keys section in the account settings.
-3. Create an API key and copy it into the .env file. _It should start with `sk-`._
-
--   The DISCORD_TOKEN is your Discord bot token.
+-   `DISCORD_TOKEN` is your Discord bot token.
+-   `OPENAI_TOKEN` is an OpenAI API key.
+-   `OPENAI_ENABLED` is whether or not to enable OpenAI features. Can be either `yes` or `no`.
+-   `WEB3D_HEADLESS` is whether or not to run 3D commands without a window. Can be either `yes` or `no`.
+-   `FFMPEG_VERBOSE` is whether or not to log FFmpeg command output. Can be either `yes` or `no`.
+-   `WEB_PORT` is the port to run the webserver on.
+-   `OWNER_TOKEN` is the bot owner's Discord User ID.
+-   `MAIN_CHANNEL` is the Discord Channel ID for the channel to send occasional messages.
+-   `MAIN_GUILD` is the Discord Guild ID for the guild containing the main channel.
+-   `MIDNIGHT_START_MESSAGE` is the message to send at midnight.
+-   `MIDNIGHT_GOOD_MESSAGE` is the message to send at 1 minute past midnight when all users have responded.
+-   `MIDNIGHT_BAD_MESSAGE` is the message to send at 1 minute past midnight when some users have not responded.
+-   `COUNTDOWN_END_DATE` is an ISO-8601 date string for when !countdown should count down to.
+-   `PLAYGROUND_COOKIE` is your Cookie header from Playground AI generation requests.
+-   `COMMAND_PREFIX` is the prefix sent before commands.
+-   `WEBHOOK_PREFIX` is the prefix sent before webhook messages.
+-   `MAX_PERMA_IMAGE_SIZE` is the maximum size (X and Y) of an image uploaded through !imgurl.
+-   `VERBOSE` is a general verbosity option. Can be either `yes` or `no`.
+-   `DOMAIN` is the public-facing domain/IP of your instance.
 
 Feel free to open an issue if you need anything!
