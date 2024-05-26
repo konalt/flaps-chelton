@@ -963,6 +963,14 @@ export const users: WebhookBot[] = [
         id: "gangle",
         name: "gangle",
     },
+    {
+        id: "wisetree",
+        name: "wise mystical darkwood tree",
+    },
+    {
+        id: "nc7",
+        name: "NC.7",
+    },
 ];
 
 function spamtonify(text: string): string {
