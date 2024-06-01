@@ -34,7 +34,7 @@ export default (data: StableDiffusionOptions, big = false): Promise<Buffer> => {
             batchId: Math.floor(Math.random() * 1e7).toString(36),
             generateVariants: false,
             cfg_scale: 4,
-            steps: big ? 50 : 25,
+            steps: 25,
             seed: Math.floor(Math.random() * 1e7),
             sampler: 9,
             strength: 1.3,
