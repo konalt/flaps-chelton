@@ -26,3 +26,4 @@ lastdrink.txt
 dist
 autostatus.json
 .vscode
+track/*

@@ -47,7 +47,7 @@ export const log = (
     );
 };
 
-function idFromName(name: string) {
+export function idFromName(name: string) {
     return hooks.find((h) => h.name == name)?.id || "flaps";
 }
 

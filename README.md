@@ -31,5 +31,6 @@
 -   `MAX_PERMA_IMAGE_SIZE` is the maximum size (X and Y) of an image uploaded through !imgurl.
 -   `VERBOSE` is a general verbosity option. Can be either `yes` or `no`.
 -   `DOMAIN` is the public-facing domain/IP of your instance.
+-   `ENABLE_TRACK` is whether or not to log all messages to a track file. Can be either `yes` or `no`.
 
 Feel free to open an issue if you need anything!

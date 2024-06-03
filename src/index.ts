@@ -3,6 +3,7 @@ import { C, getMessageLog, log } from "./lib/logger";
 config();
 export const VERBOSE = process.env.VERBOSE == "yes";
 export const DOMAIN = process.env.DOMAIN;
+export const TRACK = process.env.ENABLE_TRACK == "yes";
 log(`Importing modules (${C.BCyan}@discordjs/voice${C.White})...`, "start");
 import {
     AudioPlayer,
@@ -93,6 +94,7 @@ import {
     FlapsMessageSource,
     TicTacToeCell,
 } from "./types";
+import { trackMessage } from "./lib/track";
 
 log("Initializing client...", "start");
 export const client: Client = new Client({
@@ -486,6 +488,9 @@ export async function onMessage(msg: Message) {
     }
 
     log(getMessageLog(msg), "chat");
+    if (TRACK) {
+        trackMessage(msg);
+    }
 
     if (isMidnightActive) {
         var mem = await msg.guild.members.fetch(msg.member);
