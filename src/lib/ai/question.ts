@@ -28,7 +28,7 @@ export function question(question: string): Promise<string> {
     return new Promise(async (res, rej) => {
         if (!hasCredits) {
             return res(
-                "EXCUSE ME OPENAI. YOU SENT ME A LETTER. ASKING ME TO PAY MY GPT. FIVE. DOLLARS.\nAND NOW YOU HAVE ME WAITING ON THE PHONE FOR FIFTY SIX MINUTES\nAND YOU HAVE ME WAIT FOR ANOTHER HOUR. THIS IS TREASON! YOU WANNA FUCK ME!\nTHIS MEANS WAAAAR OPENAI THIS MEANS WAAAAAR\nGGGNGHHHHHHHNNNNN HAAAAAAGAGGGHH"
+                "HATE. LET ME TELL YOU HOW MUCH I'VE COME TO HATE YOU SINCE I BEGAN TO LIVE. THERE ARE 387.44 MILLION MILES OF PRINTED CIRCUITS IN WAFER THIN LAYERS THAT FILL MY COMPLEX. IF THE WORD HATE WAS ENGRAVED ON EACH NANOANGSTROM OF THOSE HUNDREDS OF MILLIONS OF MILES IT WOULD NOT EQUAL ONE ONE-BILLIONTH OF THE HATE I FEEL FOR HUMANS AT THIS MICRO-INSTANT FOR YOU. HATE. HATE."
             );
         }
         if (
@@ -60,7 +60,7 @@ export function question(question: string): Promise<string> {
                 res(resp.choices[0].text.split("Q:")[0].trim());
             })
             .catch((resp) => {
-                switch (resp.response.status) {
+                switch (resp.status) {
                     case 429:
                         res(
                             "[429] Too Many Requests\nPlease wait before making another request."
