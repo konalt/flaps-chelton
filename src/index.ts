@@ -191,23 +191,13 @@ client.on("ready", async () => {
     readFile("saved_status.txt")
         .then((b) => b.toString("utf-8"))
         .then((statusData) => {
-            let statusType =
-                ActivityType[
-                    statusData
-                        .split(" ")[0]
-                        .split("")
-                        .map((l, i) =>
-                            i == 0 ? l.toUpperCase() : l.toLowerCase()
-                        )
-                        .join("")
-                ];
-            let name = statusData.split(" ").slice(1).join(" ");
             setTimeout(() => {
                 client.user.setPresence({
                     activities: [
                         {
-                            name,
-                            type: statusType,
+                            name: "custom",
+                            type: ActivityType.Custom,
+                            state: statusData,
                         },
                     ],
                     afk: false,
