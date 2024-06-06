@@ -1,5 +1,5 @@
 import { Message } from "discord.js";
-import { idFromName, log } from "./logger";
+import { log } from "./logger";
 import { appendFile, mkdir, writeFile } from "fs/promises";
 import { exists } from "./utils";
 
