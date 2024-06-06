@@ -14,8 +14,7 @@ export async function trackMessage(msg: Message) {
     )
         .toString()
         .padStart(2, "0")}-${d.getDate().toString().padStart(2, "0")}`;
-    if (msg.author.bot && msg.author.discriminator == "0000")
-        author = idFromName(msg.author.username);
+    if (msg.author.bot && msg.author.discriminator == "0000") author = "flaps";
     let logString = "";
     logString += `${channel}:`;
     logString += `${author}:`;
