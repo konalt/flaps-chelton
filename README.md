@@ -32,5 +32,6 @@
 -   `VERBOSE` is a general verbosity option. Can be either `yes` or `no`.
 -   `DOMAIN` is the public-facing domain/IP of your instance.
 -   `ENABLE_TRACK` is whether or not to log all messages to a track file. Can be either `yes` or `no`.
+-   `TRACK_KEYWORDS` is a comma-separated list of keywords to mark messages containing for the track file. See default value for more details.
 
 Feel free to open an issue if you need anything!

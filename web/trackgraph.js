@@ -39,6 +39,21 @@ function readFile(input, cb) {
     }
 }
 
+let userColors = {};
+let savedUserColors = {};
+if (localStorage.getItem("track_saved_usercolors")) {
+    savedUserColors = JSON.parse(
+        localStorage.getItem("track_saved_usercolors")
+    );
+}
+function getUserColor(user) {
+    if (savedUserColors[user]) return savedUserColors[user];
+    if (!userColors[user])
+        userColors[user] =
+            "#" + Object.values(colors)[Object.keys(userColors).length];
+    return userColors[user];
+}
+
 $("#trackfile").change((e) => {
     e.preventDefault();
     readFile($("#trackfile")[0], (data) => {
@@ -62,16 +77,14 @@ function piechart(users) {
     }
     ctx.fillStyle = "white";
     ctx.fillRect(0, 0, w, w);
-    let i = 0;
     for (const user of users) {
-        ctx.fillStyle = "#" + Object.values(colors)[i];
+        ctx.fillStyle = getUserColor(user[0]);
         ctx.beginPath();
         ctx.moveTo(w / 2, w / 2);
         ctx.arc(w / 2, w / 2, w / 2, a, a + (user[1] / totalMessages) * fr);
         ctx.closePath();
         ctx.fill();
         a += (user[1] / totalMessages) * fr;
-        i++;
     }
     piechartLegend(users, totalMessages);
 }
@@ -91,7 +104,7 @@ function piechartLegend(users, totalMessages) {
     ctx.font = "14px sans-serif";
     ctx.textBaseline = "middle";
     for (const user of users) {
-        ctx.fillStyle = "#" + Object.values(colors)[i];
+        ctx.fillStyle = getUserColor(user[0]);
         ctx.fillRect(gap, gap + (sq + gap) * i, sq, sq);
         ctx.fillStyle = "black";
         ctx.fillText(
@@ -146,14 +159,124 @@ function textInfo(startTimestamp, endTimestamp, totalMessages, users) {
     }
 }
 
+function keywordPiechart(messages, keywordMask) {
+    let userCounts = {};
+    for (const msg of messages) {
+        if ((msg.kw & keywordMask) == keywordMask) {
+            if (!userCounts[msg.us]) userCounts[msg.us] = 0;
+            userCounts[msg.us]++;
+        }
+    }
+    userCounts = Object.entries(userCounts).sort((a, b) => b[1] - a[1]);
+    let canvas = document.getElementById("kw_piechart");
+    /**
+     * @type {CanvasRenderingContext2D}
+     */
+    let ctx = canvas.getContext("2d");
+    let w = canvas.width;
+    let a = -Math.PI / 2;
+    let fr = Math.PI * 2;
+    let totalMessages = 0;
+    for (const uc of userCounts) {
+        totalMessages += uc[1];
+    }
+    ctx.fillStyle = "white";
+    ctx.fillRect(0, 0, w, w);
+    for (const uc of userCounts) {
+        ctx.fillStyle = getUserColor(uc[0]);
+        ctx.beginPath();
+        ctx.moveTo(w / 2, w / 2);
+        ctx.arc(w / 2, w / 2, w / 2, a, a + (uc[1] / totalMessages) * fr);
+        ctx.closePath();
+        ctx.fill();
+        a += (uc[1] / totalMessages) * fr;
+    }
+    keywordPiechartLegend(userCounts, totalMessages, keywordMask, messages);
+}
+
+function keywordPiechartLegend(userCounts, totalMessages, kwMask, messages) {
+    let canvas = document.getElementById("kw_piechart_legend");
+    /**
+     * @type {CanvasRenderingContext2D}
+     */
+    let ctx = canvas.getContext("2d");
+    let [w, h] = [canvas.width, canvas.height];
+    let i = 0;
+    let gap = 10;
+    let sq = 20;
+    ctx.fillStyle = "white";
+    ctx.fillRect(0, 0, w, h);
+    ctx.font = "14px sans-serif";
+    ctx.fillStyle = "black";
+    ctx.textBaseline = "top";
+    ctx.textAlign = "center";
+    let kw = Object.entries(keywords).find((kw) => kw[1][0] == kwMask)[0];
+    ctx.fillText(kw, w / 2, 8, w);
+    ctx.textBaseline = "alphabetic";
+    let nextKw = Object.entries(keywords).find((kw) => kw[1][0] == kwMask << 1);
+    if (!nextKw) nextKw = Object.entries(keywords).find((kw) => kw[1][0] == 1);
+    ctx.fillText("Click to select " + nextKw[0], w / 2, h - 8, w);
+    ctx.textAlign = "left";
+    ctx.textBaseline = "middle";
+    for (const user of userCounts) {
+        ctx.fillStyle = getUserColor(user[0]);
+        ctx.fillRect(gap, gap + (sq + gap) * (i + 0.75), sq, sq);
+        ctx.fillStyle = "black";
+        ctx.fillText(
+            user[0] +
+                " (" +
+                user[1] +
+                ") (" +
+                Math.round((user[1] / totalMessages) * 100) +
+                "%)",
+            gap + sq + 4,
+            gap + (sq + gap) * (i + 0.75) + sq / 2,
+            w - (gap + sq + 4 + 4)
+        );
+        i++;
+    }
+    let e = () => {
+        keywordPiechart(messages, nextKw[1][0]);
+        document
+            .getElementById("kw_piechart_legend")
+            .removeEventListener("click", e);
+    };
+    document.getElementById("kw_piechart_legend").addEventListener("click", e);
+}
+
+let keywords = { None: [0b1, ["none"]] };
+
 function init(log, overrideStart, overrideEnd = 1) {
     $("#loading").show();
-    let messages = log
-        .split("\n")
-        .map((n) => n.trim().split(":"))
-        .map((m) => {
-            return { ch: m[0], us: m[1], tm: parseInt(m[2]) };
-        });
+    let messages = [];
+    for (const line of log.split("\n").map((n) => n.trim().split(":"))) {
+        if (line[0] == "META") {
+            switch (line[1]) {
+                case "KW": {
+                    keywords = {};
+                    let i = 0;
+                    for (const [key, words] of line
+                        .slice(2)
+                        .join(":")
+                        .split(",")
+                        .map((n) => n.split(":"))) {
+                        let wordsArray = words.split("/");
+                        keywords[key] = [1 << i, wordsArray];
+                        i++;
+                    }
+                    console.log(keywords);
+                    break;
+                }
+            }
+        } else {
+            messages.push({
+                ch: line[0],
+                us: line[1],
+                tm: parseInt(line[2]),
+                kw: line.length > 3 ? parseInt(line[3]) : 0,
+            });
+        }
+    }
     let users = [];
     let startTimestamp = overrideStart;
     let endTimestamp = overrideEnd;
@@ -169,12 +292,12 @@ function init(log, overrideStart, overrideEnd = 1) {
     }
     users = users.sort((a, b) => b[1] - a[1]);
     piechart(users);
+    keywordPiechart(messages, 0b1);
     let tsRange = endTimestamp - startTimestamp;
     let totalMessages = 0;
     for (const user of users) {
         totalMessages += user[1];
     }
-    histogram(messages, startTimestamp, endTimestamp);
     textInfo(startTimestamp, endTimestamp, totalMessages, users);
     users = users.map((u) => u[0]);
     let canvas = document.getElementById("trackout");
@@ -196,9 +319,9 @@ function init(log, overrideStart, overrideEnd = 1) {
     ctx.fillRect(0, 0, w, h);
     ctx.globalAlpha = 0.2;
     let i = 0;
-    for (const _ of users) {
+    for (const user of users) {
         let y = margin + i * inc;
-        ctx.fillStyle = "#" + Object.values(colors)[i];
+        ctx.fillStyle = getUserColor(user);
         ctx.fillRect(0, y, w, inc);
         i++;
     }
@@ -229,7 +352,7 @@ function init(log, overrideStart, overrideEnd = 1) {
         let timeSinceStartTimestamp = msg.tm - startTimestamp;
         let x = (timeSinceStartTimestamp / tsRange) * w;
         let y = margin + users.indexOf(msg.us) * inc;
-        let co = "#" + Object.values(colors)[users.indexOf(msg.us)];
+        let co = getUserColor(msg.us);
         c(x, y, 2, co);
     }
     i = 0;
