@@ -17,7 +17,7 @@ export default async function caption(
 ${options.text.split(":")[0]}`;
     var subtitleFileData2 = `1
 00:00:00,000 --> 00:50:00,000
-${options.text.split(":")[1] || ""}`;
+${options.text.split(":")[1] || " "}`;
     await writeFile(captionfile + "0.srt", subtitleFileData);
     await writeFile(captionfile + "1.srt", subtitleFileData2);
     return new Promise((resolve, reject) => {
