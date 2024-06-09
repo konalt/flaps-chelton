@@ -263,9 +263,11 @@ function keywordPiechartLegend(userCounts, totalMessages, kwMask, messages) {
         currentKeyword = nextKw[1][0];
         document
             .getElementById("kw_piechart_legend")
-            .removeEventListener("click", e);
+            .removeEventListener("mousedown", e);
     };
-    document.getElementById("kw_piechart_legend").addEventListener("click", e);
+    document
+        .getElementById("kw_piechart_legend")
+        .addEventListener("mousedown", e);
 }
 
 let keywords = { None: [0b1, ["none"]] };
