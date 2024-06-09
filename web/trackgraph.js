@@ -17,23 +17,32 @@ const colors = {
 $("#loading").hide();
 $("#data").hide();
 function readFile(input, cb) {
-    const file = input.files[0];
-    const reader = new FileReader();
-    reader.addEventListener(
-        "load",
-        () => {
-            cb(reader.result);
-        },
-        false
-    );
-    if (file) {
-        reader.readAsText(file);
+    let read = 0;
+    const files = input.files;
+    let res = "";
+    if (files[0]) {
+        for (const file of files) {
+            const reader = new FileReader();
+            reader.addEventListener(
+                "load",
+                () => {
+                    read++;
+                    res += "\n" + reader.result;
+                    if (read == files.length) {
+                        cb(res.trim());
+                    }
+                },
+                false
+            );
+            reader.readAsText(file);
+        }
     }
 }
 
 $("#trackfile").change((e) => {
     e.preventDefault();
     readFile($("#trackfile")[0], (data) => {
+        console.log(data);
         init(data);
     });
 });
@@ -68,7 +77,6 @@ function piechart(users) {
 }
 
 function piechartLegend(users, totalMessages) {
-    console.log(totalMessages);
     let canvas = document.getElementById("piechart_legend");
     /**
      * @type {CanvasRenderingContext2D}
@@ -101,6 +109,43 @@ function piechartLegend(users, totalMessages) {
     }
 }
 
+function textInfo(startTimestamp, endTimestamp, totalMessages, users) {
+    let canvas = document.getElementById("textinfo");
+    /**
+     * @type {CanvasRenderingContext2D}
+     */
+    let ctx = canvas.getContext("2d");
+    let [w, h] = [canvas.width, canvas.height];
+    ctx.fillStyle = "white";
+    ctx.fillRect(0, 0, w, h);
+    ctx.font = "14px sans-serif";
+    ctx.textBaseline = "top";
+    let text = "";
+    text += "Flaps Track File\n";
+    text += `${totalMessages} total messages by ${users.length} users\n`;
+    let dateString = (ts) => {
+        let d = new Date(ts);
+        let x = (n) => {
+            return n.toString().padStart(2, "0");
+        };
+        return `${x(d.getDate())}/${x(d.getMonth() + 1)}/${d.getFullYear()} ${x(
+            d.getHours()
+        )}:${x(d.getMinutes())}:${x(d.getSeconds())}`;
+    };
+    text += `Range start: ${dateString(startTimestamp)}\n`;
+    text += `Range end: ${dateString(endTimestamp)}\n`;
+    ctx.fillStyle = "black";
+    let y = 5;
+    for (const line of text.trim().split("\n")) {
+        ctx.fillText(line, 5, y, w - 10);
+        let measure = ctx.measureText(line);
+        y +=
+            measure.actualBoundingBoxAscent +
+            measure.actualBoundingBoxDescent +
+            2;
+    }
+}
+
 function init(log, overrideStart, overrideEnd = 1) {
     $("#loading").show();
     let messages = log
@@ -124,8 +169,14 @@ function init(log, overrideStart, overrideEnd = 1) {
     }
     users = users.sort((a, b) => b[1] - a[1]);
     piechart(users);
-    users = users.map((u) => u[0]);
     let tsRange = endTimestamp - startTimestamp;
+    let totalMessages = 0;
+    for (const user of users) {
+        totalMessages += user[1];
+    }
+    histogram(messages, startTimestamp, endTimestamp);
+    textInfo(startTimestamp, endTimestamp, totalMessages, users);
+    users = users.map((u) => u[0]);
     let canvas = document.getElementById("trackout");
     /**
      * @type {CanvasRenderingContext2D}
@@ -140,7 +191,7 @@ function init(log, overrideStart, overrideEnd = 1) {
         ctx.fill();
     };
     let margin = 20;
-    let inc = (h - margin * 2) / users.length;
+    let inc = (h - margin) / users.length;
     ctx.fillStyle = "white";
     ctx.fillRect(0, 0, w, h);
     ctx.globalAlpha = 0.2;
