@@ -8,7 +8,7 @@ let i = 0;
 for (const [key, words] of process.env.TRACK_KEYWORDS.split(",").map((n) =>
     n.split(":")
 )) {
-    let wordsArray = words.split("/");
+    let wordsArray = words.split("/").map((w) => w.replace(/~COLON~/g, ":"));
     keywords[key] = [0b00000001 << i, wordsArray];
     i++;
 }

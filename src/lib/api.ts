@@ -7,9 +7,9 @@ import {
 } from "../types";
 import { question } from "./ai/question";
 import stablediffusion from "./ai/stablediffusion";
-import { bufferToDataURL, dataURLToBuffer, uuidv4 } from "./utils";
+import { bufferToDataURL, dataURLToBuffer, exists, uuidv4 } from "./utils";
 import { extension, lookup } from "mime-types";
-import { writeFileSync } from "fs";
+import { readFile } from "fs/promises";
 import { hooks, sendWebhook } from "./webhooks";
 import { Message } from "discord.js";
 import { users } from "./users";
@@ -46,6 +46,22 @@ router.post("/inpaint", (req, res) => {
         .catch((err) => {
             res.status(500).contentType("text/plain").send(err);
         });
+});
+
+router.get("/track_day/:id", async (req, res) => {
+    let d = new Date();
+    let dateStr = `${d.getFullYear().toString().padStart(4, "0")}-${(
+        d.getMonth() + 1
+    )
+        .toString()
+        .padStart(2, "0")}-${d.getDate().toString().padStart(2, "0")}`;
+    if (await exists(`./track/${req.params.id}/${dateStr}.txt`)) {
+        res.contentType("txt").send(
+            await readFile(`./track/${req.params.id}/${dateStr}.txt`, "utf8")
+        );
+    } else {
+        res.status(404).contentType("txt").send("404 Server Not Found");
+    }
 });
 
 router.post("/question", (req, res) => {

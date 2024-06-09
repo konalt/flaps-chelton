@@ -39,8 +39,31 @@ function readFile(input, cb) {
     }
 }
 
+// eslint-disable-next-line no-unused-vars
+function attach() {
+    let sid = $("#serverid").val();
+    let e = () => {
+        fetch("/api/track_day/" + sid)
+            .then((r) => r.text())
+            .then((r) => {
+                console.log(r);
+                init(r);
+            });
+    };
+    setInterval(e, 500);
+    e();
+}
+
 let userColors = {};
-let savedUserColors = {};
+let savedUserColors = {
+    ".simpleton.": "#2ecc71",
+    alternateolympus: "#3498db",
+    flaps: "#11806a",
+    fuzno: "#fd831a",
+    gruonk: "#f32bf6",
+    twistysoup: "#8b6bdd",
+    woodpigeon: "#e74242",
+};
 if (localStorage.getItem("track_saved_usercolors")) {
     savedUserColors = JSON.parse(
         localStorage.getItem("track_saved_usercolors")
@@ -237,6 +260,7 @@ function keywordPiechartLegend(userCounts, totalMessages, kwMask, messages) {
     }
     let e = () => {
         keywordPiechart(messages, nextKw[1][0]);
+        currentKeyword = nextKw[1][0];
         document
             .getElementById("kw_piechart_legend")
             .removeEventListener("click", e);
@@ -245,6 +269,7 @@ function keywordPiechartLegend(userCounts, totalMessages, kwMask, messages) {
 }
 
 let keywords = { None: [0b1, ["none"]] };
+let currentKeyword = 1;
 
 function init(log, overrideStart, overrideEnd = 1) {
     let start = Date.now();
@@ -293,7 +318,7 @@ function init(log, overrideStart, overrideEnd = 1) {
     }
     users = users.sort((a, b) => b[1] - a[1]);
     piechart(users);
-    keywordPiechart(messages, 0b1);
+    keywordPiechart(messages, currentKeyword);
     let tsRange = endTimestamp - startTimestamp;
     let totalMessages = 0;
     for (const user of users) {
