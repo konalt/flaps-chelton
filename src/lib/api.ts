@@ -9,7 +9,7 @@ import { question } from "./ai/question";
 import stablediffusion from "./ai/stablediffusion";
 import { bufferToDataURL, dataURLToBuffer, exists, uuidv4 } from "./utils";
 import { extension, lookup } from "mime-types";
-import { readFile } from "fs/promises";
+import { readFile, readdir } from "fs/promises";
 import { hooks, sendWebhook } from "./webhooks";
 import { Message } from "discord.js";
 import { users } from "./users";
@@ -59,6 +59,18 @@ router.get("/track_day/:id", async (req, res) => {
         res.contentType("txt").send(
             await readFile(`./track/${req.params.id}/${dateStr}.txt`, "utf8")
         );
+    } else {
+        res.status(404).contentType("txt").send("404 Server Not Found");
+    }
+});
+router.get("/track_all/:id", async (req, res) => {
+    if (await exists(`./track/${req.params.id}`)) {
+        let track = "";
+        for (const file of await readdir(`./track/${req.params.id}`)) {
+            track +=
+                "\n" + (await readFile(`./track/${req.params.id}/` + file));
+        }
+        res.contentType("txt").send(track.trim());
     } else {
         res.status(404).contentType("txt").send("404 Server Not Found");
     }

@@ -34,7 +34,8 @@
         <div id="import">
             <div style="display: flex; flex-direction: row">
                 <input type="text" id="serverid" placeholder="Server ID" />
-                <button onclick="attach()">Attach to Flaps instance</button>
+                <button onclick="attach('day')">Track (Day only)</button>
+                <button onclick="attach('all')">Track (All time)</button>
             </div>
             <div style="display: flex; flex-direction: row">
                 <label for="track" style="display: block; width: fit-content"

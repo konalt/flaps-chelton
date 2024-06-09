@@ -40,10 +40,10 @@ function readFile(input, cb) {
 }
 
 // eslint-disable-next-line no-unused-vars
-function attach() {
+function attach(type) {
     let sid = $("#serverid").val();
     let e = () => {
-        fetch("/api/track_day/" + sid)
+        fetch("/api/track_" + type + "/" + sid)
             .then((r) => r.text())
             .then((r) => {
                 console.log(r);
