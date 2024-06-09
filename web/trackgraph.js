@@ -247,6 +247,7 @@ function keywordPiechartLegend(userCounts, totalMessages, kwMask, messages) {
 let keywords = { None: [0b1, ["none"]] };
 
 function init(log, overrideStart, overrideEnd = 1) {
+    let start = Date.now();
     $("#loading").show();
     let messages = [];
     for (const line of log.split("\n").map((n) => n.trim().split(":"))) {
@@ -367,4 +368,6 @@ function init(log, overrideStart, overrideEnd = 1) {
     $("#loading").hide();
     $("#import").hide();
     $("#data").show();
+    let dur = Date.now() - start;
+    $("#updatetime").text(dur);
 }
