@@ -94,7 +94,7 @@ import {
     FlapsMessageSource,
     TicTacToeCell,
 } from "./types";
-import { trackMessage } from "./lib/track";
+import { trackMessage, trackPresence } from "./lib/track";
 
 log("Initializing client...", "start");
 export const client: Client = new Client({
@@ -787,12 +787,28 @@ process.on("unhandledRejection", (reason: any, p) => {
 client.on("messageCreate", onMessage);
 client.on("interactionCreate", onInteraction);
 
+export async function getAllUserStates(serverId: string) {
+    let server = await client.guilds.fetch(serverId);
+    let states = {};
+    for (const [_, member] of server.members.cache) {
+        let status = "";
+        if (member.presence) {
+            status = member.presence.status;
+        } else {
+            status = "offline";
+        }
+        states[member.user.username] = status;
+    }
+    return states;
+}
+
 function loadAutoStatus() {
     return new Promise<void>(async (resolve, reject) => {
         let autoStatus: Record<string, AutoStatusInfo> = JSON.parse(
             (await readFile("autostatus.json")).toString()
         );
         client.on("presenceUpdate", async (oldPresence, newPresence) => {
+            if (TRACK) trackPresence(newPresence);
             if (newPresence.guild.id !== process.env.MAIN_GUILD) return;
             if (!Object.keys(autoStatus).includes(newPresence.userId)) return;
             log(

@@ -12,6 +12,7 @@ import {
     addBuffer,
     addBufferSequence,
     commands,
+    getAllUserStates,
 } from "../index";
 import fs from "fs/promises";
 import * as utils from "../lib/utils";
@@ -28,6 +29,7 @@ const proxy = {
     addBufferSequence,
     commands,
     utils,
+    getAllUserStates,
 };
 
 module.exports = {

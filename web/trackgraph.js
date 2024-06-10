@@ -46,7 +46,6 @@ function attach(type) {
         fetch("/api/track_" + type + "/" + sid)
             .then((r) => r.text())
             .then((r) => {
-                console.log(r);
                 init(r);
             });
     };
@@ -277,46 +276,81 @@ function init(log, overrideStart, overrideEnd = 1) {
     let start = Date.now();
     $("#loading").show();
     let messages = [];
+    let userStatusChains = {};
+    let startTimestamp = overrideStart;
+    let endTimestamp = overrideEnd;
     for (const line of log.split("\n").map((n) => n.trim().split(":"))) {
-        if (line[0] == "META") {
-            switch (line[1]) {
-                case "KW": {
-                    keywords = {};
-                    let i = 0;
-                    for (const [key, words] of line
-                        .slice(2)
-                        .join(":")
-                        .split(",")
-                        .map((n) => n.split(":"))) {
-                        let wordsArray = words.split("/");
-                        keywords[key] = [1 << i, wordsArray];
-                        i++;
+        switch (line[0]) {
+            case "META": {
+                switch (line[1]) {
+                    case "KW": {
+                        keywords = {};
+                        let i = 0;
+                        for (const [key, words] of line
+                            .slice(2)
+                            .join(":")
+                            .split(",")
+                            .map((n) => n.split(":"))) {
+                            let wordsArray = words.split("/");
+                            keywords[key] = [1 << i, wordsArray];
+                            i++;
+                        }
+                        console.log(keywords);
+                        break;
                     }
-                    console.log(keywords);
-                    break;
+                    case "START_TS": {
+                        startTimestamp = Math.min(
+                            startTimestamp,
+                            parseInt(line[2])
+                        );
+                    }
                 }
+                break;
             }
-        } else {
-            messages.push({
-                ch: line[0],
-                us: line[1],
-                tm: parseInt(line[2]),
-                kw: line.length > 3 ? parseInt(line[3]) : 0,
-            });
+            case "STATES": {
+                userStatusChains = {};
+                for (let [user, status] of line
+                    .slice(1)
+                    .join(":")
+                    .split(",")
+                    .map((n) => n.split(":"))) {
+                    if (user == "flaps chelton") user = "flaps";
+                    userStatusChains[user] = [[status, 0]];
+                }
+                break;
+            }
+            case "STATE": {
+                if (!userStatusChains[line[1]])
+                    userStatusChains[line[1]] = [["nodata", 0]];
+                let tm = parseInt(line[3]);
+                userStatusChains[line[1]].push([line[2], tm - startTimestamp]);
+                if (!startTimestamp) startTimestamp = tm;
+                startTimestamp = Math.min(startTimestamp, tm);
+                endTimestamp = Math.max(endTimestamp, tm);
+                break;
+            }
+            default: {
+                let msg = {
+                    ch: line[0],
+                    us: line[1],
+                    tm: parseInt(line[2]),
+                    kw: line.length > 3 ? parseInt(line[3]) : 0,
+                };
+                messages.push(msg);
+                if (!startTimestamp) startTimestamp = msg.tm;
+                startTimestamp = Math.min(startTimestamp, msg.tm);
+                endTimestamp = Math.max(endTimestamp, msg.tm);
+                break;
+            }
         }
     }
     let users = [];
-    let startTimestamp = overrideStart;
-    let endTimestamp = overrideEnd;
     for (const msg of messages) {
         if (!users.find((u) => u[0] == msg.us)) {
             users.push([msg.us, 1]);
         } else {
             users.find((u) => u[0] == msg.us)[1]++;
         }
-        if (!startTimestamp) startTimestamp = msg.tm;
-        startTimestamp = Math.min(startTimestamp, msg.tm);
-        endTimestamp = Math.max(endTimestamp, msg.tm);
     }
     users = users.sort((a, b) => b[1] - a[1]);
     piechart(users);
@@ -348,11 +382,32 @@ function init(log, overrideStart, overrideEnd = 1) {
     ctx.globalAlpha = 0.2;
     let i = 0;
     for (const user of users) {
+        let chain = userStatusChains[user];
         let y = margin + i * inc;
         ctx.fillStyle = getUserColor(user);
-        ctx.fillRect(0, y, w, inc);
+        let j = 0;
+        let x = 0;
+        for (const [status, ts] of chain) {
+            let timeToNext = 0;
+            if (chain[j + 1]) {
+                timeToNext = chain[j + 1][1] - ts;
+            } else {
+                timeToNext = endTimestamp - ts;
+            }
+            let t = (timeToNext / tsRange) * w;
+            if (status != "offline") {
+                ctx.fillRect(x, y, t, inc);
+            } else if (status == "nodata") {
+                ctx.fillStyle = "grey";
+                ctx.fillRect(x, y, t, inc);
+                ctx.fillStyle = getUserColor(user);
+            }
+            x += t;
+            j++;
+        }
         i++;
     }
+    console.log(userStatusChains);
     ctx.globalAlpha = 1;
     ctx.fillStyle = "#888";
     ctx.strokeStyle = "#888";
