@@ -382,6 +382,7 @@ function init(log, overrideStart, overrideEnd = 1) {
     let i = 0;
     for (const user of users) {
         let chain = userStatusChains[user];
+        chain = chain.sort((a, b) => a[1] - b[1]);
         let y = margin + i * inc;
         ctx.fillStyle = getUserColor(user);
         let j = 0;
@@ -394,12 +395,19 @@ function init(log, overrideStart, overrideEnd = 1) {
                 timeToNext = endTimestamp - ts;
             }
             let t = (timeToNext / tsRange) * w;
-            if (status != "offline") {
-                ctx.fillRect(x, y, t, inc);
-            } else if (status == "nodata") {
-                ctx.fillStyle = "grey";
-                ctx.fillRect(x, y, t, inc);
-                ctx.fillStyle = getUserColor(user);
+            switch (status) {
+                case "online":
+                case "dnd":
+                    ctx.fillRect(x, y, t, inc);
+                    break;
+                case "idle":
+                    ctx.fillRect(x, y, t, inc / 2);
+                    break;
+                case "nodata":
+                    ctx.fillStyle = "grey";
+                    ctx.fillRect(x, y, t, inc);
+                    ctx.fillStyle = getUserColor(user);
+                    break;
             }
             x += t;
             j++;
