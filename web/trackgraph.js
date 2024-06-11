@@ -46,7 +46,7 @@ function attach(type) {
         fetch("/api/track_" + type + "/" + sid)
             .then((r) => r.text())
             .then((r) => {
-                init(r);
+                init(r, null, Date.now());
             });
     };
     setInterval(e, 500);
@@ -79,7 +79,6 @@ function getUserColor(user) {
 $("#trackfile").change((e) => {
     e.preventDefault();
     readFile($("#trackfile")[0], (data) => {
-        console.log(data);
         init(data);
     });
 });
