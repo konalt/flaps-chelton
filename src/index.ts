@@ -4,6 +4,9 @@ config();
 export const VERBOSE = process.env.VERBOSE == "yes";
 export const DOMAIN = process.env.DOMAIN;
 export const TRACK = process.env.ENABLE_TRACK == "yes";
+export const TRACK_SERVER_REPORTS = process.env.TRACK_SERVER_REPORTS.split(",")
+    .filter((n) => n.length > 0)
+    .map((n) => n.split(":"));
 log(`Importing modules (${C.BCyan}@discordjs/voice${C.White})...`, "start");
 import {
     AudioPlayer,
@@ -1006,7 +1009,7 @@ async function init() {
     let loadWebServer = initializeWebServer().then(() => {
         log("Web server started.", "start");
     });
-    setInterval(() => {
+    setInterval(async () => {
         var d = new Date();
         if (d.getMinutes() == 0 && d.getHours() == 0 && d.getSeconds() < 1) {
             midnight(
@@ -1014,6 +1017,23 @@ async function init() {
                     process.env.MAIN_CHANNEL
                 ) as TextChannel
             );
+            let d2 = new Date(d.getTime() - 5000);
+            let dateStr = `${d2.getFullYear().toString().padStart(4, "0")}-${(
+                d2.getMonth() + 1
+            )
+                .toString()
+                .padStart(2, "0")}-${d2.getDate().toString().padStart(2, "0")}`;
+            for (const [gid, cid] of TRACK_SERVER_REPORTS) {
+                if (await exists(`./track/${gid}/${dateStr}.txt`)) {
+                    sendWebhook(
+                        "flaps",
+                        "here's what you said today!!!",
+                        client.channels.cache.get(cid) as TextChannel,
+                        await readFile(`./track/${gid}/${dateStr}.txt`),
+                        `${dateStr}.txt`
+                    );
+                }
+            }
         }
         if (Math.random() < 1 / 100000) {
             sendWebhook(
