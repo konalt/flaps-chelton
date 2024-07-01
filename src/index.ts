@@ -97,6 +97,7 @@ import {
     FlapsMessageSource,
     TicTacToeCell,
 } from "./types";
+log(`Importing modules (${C.BCyan}flaps/track${C.White})...`, "start");
 import { trackMessage, trackPresence } from "./lib/track";
 
 log("Initializing client...", "start");
