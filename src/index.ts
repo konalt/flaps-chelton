@@ -100,6 +100,8 @@ import {
 log(`Importing modules (${C.BCyan}flaps/track${C.White})...`, "start");
 import { trackMessage, trackPresence } from "./lib/track";
 
+process.title = "Flaps Chelton";
+
 log("Initializing client...", "start");
 export const client: Client = new Client({
     partials: [
