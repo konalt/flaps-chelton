@@ -99,6 +99,8 @@ import {
 } from "./types";
 log(`Importing modules (${C.BCyan}flaps/track${C.White})...`, "start");
 import { trackMessage, trackPresence } from "./lib/track";
+log(`Importing modules (${C.BCyan}flaps/web3d${C.White})...`, "start");
+import { trackReport } from "./lib/web3dapi";
 
 process.title = "Flaps Chelton";
 
@@ -1032,8 +1034,13 @@ async function init() {
                         "flaps",
                         "here's what you said today!!!",
                         client.channels.cache.get(cid) as TextChannel,
-                        await readFile(`./track/${gid}/${dateStr}.txt`),
-                        `${dateStr}.txt`
+                        await trackReport(
+                            await readFile(
+                                `./track/${gid}/${dateStr}.txt`,
+                                "utf-8"
+                            )
+                        ),
+                        getFileName("Daily_Track", "png")
                     );
                 }
             }

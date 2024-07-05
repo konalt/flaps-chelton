@@ -459,4 +459,7 @@ function init(log, overrideStart, overrideEnd = 1) {
     $("#data").show();
     let dur = Date.now() - start;
     $("#updatetime").text(dur);
+    let marker = document.createElement("div");
+    marker.id = "data-done-marker";
+    document.body.appendChild(marker);
 }

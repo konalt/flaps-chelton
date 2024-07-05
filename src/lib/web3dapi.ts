@@ -5,6 +5,40 @@ let minimalArgs = [];
 let headless: boolean | "new" =
     process.env.WEB3D_HEADLESS == "yes" ? "new" : false;
 
+export async function trackReport(trackFile: string): Promise<Buffer> {
+    return new Promise<Buffer>(async (res, rej) => {
+        let browser = await puppeteer.launch({
+            headless,
+            args: [...minimalArgs],
+            defaultViewport: null,
+        });
+        let page = await browser.newPage();
+        await page.setViewport({
+            width: 1440,
+            height: 1080,
+        });
+        await page.goto(
+            "http://localhost:" + (process.env.WEB_PORT || 8080) + "/trackgraph"
+        );
+        await page.evaluate((trackFile) => {
+            //@ts-ignore
+            window.init(trackFile);
+        }, trackFile);
+        await page.waitForSelector("div#data-done-marker");
+        const dataElement = await page.waitForSelector("div#data");
+        let buffer = await dataElement.screenshot({
+            encoding: "binary",
+            type: "jpeg",
+        });
+        if (buffer instanceof Buffer) {
+            browser.close();
+            res(buffer);
+        } else {
+            rej("dataElement.screenshot did not return a Buffer.");
+        }
+    });
+}
+
 export async function gpu(): Promise<Buffer> {
     return new Promise<Buffer>(async (res, rej) => {
         let browser = await puppeteer.launch({
