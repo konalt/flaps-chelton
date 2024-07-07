@@ -34,5 +34,6 @@
 -   `ENABLE_TRACK` is whether or not to log all messages to a track file. Can be either `yes` or `no`.
 -   `TRACK_KEYWORDS` is a comma-separated list of keywords to mark messages containing for the track file. See default value for more details.
 -   `TRACK_SERVER_REPORTS` is a comma-separated list of GuildID:ChannelIDs to send the day's track file to at midnight.
+-   `DEPTHMAP_SERVER_PORT` is the port for a server that turns images into depth maps, at the path /depth. Works best with MiDaS.
 
 Feel free to open an issue if you need anything!

@@ -14,6 +14,7 @@ import { hooks, sendWebhook } from "./webhooks";
 import { Message } from "discord.js";
 import { users } from "./users";
 import { C, log } from "./logger";
+import getDepthMap from "./depth";
 
 const funnynumber = require("../commands/funnynumber");
 
@@ -46,6 +47,11 @@ router.post("/inpaint", (req, res) => {
         .catch((err) => {
             res.status(500).contentType("text/plain").send(err);
         });
+});
+
+router.post("/depth", async (req, res) => {
+    let dm = await getDepthMap(dataURLToBuffer(req.body.img));
+    res.contentType("image/png").send(dm);
 });
 
 router.get("/track_day/:id", async (req, res) => {

@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Depth Map - Flaps Chelton</title>
+        <script
+            src="https://code.jquery.com/jquery-3.6.1.min.js"
+            integrity="sha256-o88AwQnZB+VDvE9tvIXrMQaPlFFSUTR+nldQm1LuPXQ="
+            crossorigin="anonymous"
+        ></script>
+        <link
+            rel="stylesheet"
+            href="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/css/bootstrap.min.css"
+            integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u"
+            crossorigin="anonymous"
+        />
+        <script
+            src="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/js/bootstrap.min.js"
+            integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
+            crossorigin="anonymous"
+        ></script>
+        <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+        <link rel="stylesheet" href="style.css" />
+    </head>
+    <body>
+        <h1>Depth Map Creator</h1>
+        <hr />
+        <form id="depthform">
+            <label for="img">Source Image</label>
+            <input
+                type="file"
+                name="img"
+                id="img"
+                accept="image/png,image/jpeg"
+            />
+            <input type="submit" value="Create" id="genbtn" />
+        </form>
+        <img id="out" />
+        <div id="loader" class="loader"></div>
+        <div
+            id="err"
+            style="
+                background-color: rgba(255, 0, 0, 0.54);
+                border-radius: 5px;
+                border: 3px solid rgba(255, 0, 0, 0.9);
+                color: white;
+                width: 512px;
+                padding: 10px;
+                font-weight: bold;
+            "
+        ></div>
+        <script src="common.js"></script>
+        <script src="depth.js"></script>
+    </body>
+</html>
