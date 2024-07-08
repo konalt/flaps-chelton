@@ -1,4 +1,5 @@
 import * as THREE from "three";
+import { LoopSubdivision } from "three-subdivide";
 import { TextGeometry } from "three/addons/geometries/TextGeometry.js";
 import { FontLoader } from "three/addons/loaders/FontLoader.js";
 import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
@@ -13,6 +14,7 @@ const resolutions = {
     cubespin: [512, 512],
     cirno: [800, 600],
     flag: [800, 600],
+    capcut: [768, 768],
 };
 const NOTEXTURE =
     "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAALUlEQVQ4T2O8w/DzvwoDOwOQZiCHZmRgYPhPrmaQPsZRF4yGwWg6AGfAgc8LADOwDrjWxfJ7AAAAAElFTkSuQmCC";
@@ -55,6 +57,32 @@ let camera;
  * @type {THREE.Scene}
  */
 let scene;
+
+function loadImage(url) {
+    return new Promise((resolve) => {
+        var img = new Image();
+        img.onload = () => {
+            resolve(img);
+        };
+        img.src = url;
+    });
+}
+
+async function depthMapToValueList(depthMap, res) {
+    let image = await loadImage(depthMap);
+    let canvas = document.createElement("canvas");
+    document.body.appendChild(canvas);
+    canvas.width = res;
+    canvas.height = res;
+    let ctx = canvas.getContext("2d");
+    ctx.drawImage(image, 0, 0, res, res);
+    let imageData = ctx.getImageData(0, 0, res, res);
+    let out = [];
+    for (let i = 0; i < imageData.data.length; i += 4) {
+        out.push(imageData.data[i] / 255);
+    }
+    return out;
+}
 
 async function _init(id, options = {}) {
     let size = resolutions[id];
@@ -604,6 +632,54 @@ async function _init(id, options = {}) {
             grid.rotation.x = Math.PI / 2;
             scene.add(plane);
             break;
+        }
+        case "capcut": {
+            let img = options.img || NOTEXTURE;
+            let map = await loadTexture(img);
+            map.colorSpace = THREE.SRGBColorSpace;
+            let depthMapResolution = 128;
+            let dW = depthMapResolution;
+            let dH = depthMapResolution;
+            let flagHeight = 15;
+            let flagWidth = flagHeight * (map.image.width / map.image.height);
+            camera.position.z = 30;
+            camera.position.x = 20;
+            camera.fov = 60;
+            camera.updateProjectionMatrix();
+            camera.lookAt(0, 0, 0);
+            let plane = new THREE.Mesh(
+                new THREE.PlaneGeometry(flagWidth, flagHeight, dW - 1, dH - 1),
+                //new THREE.MeshNormalMaterial()
+                new THREE.MeshStandardMaterial({ map })
+            );
+
+            console.log("running depth map");
+            let depthMapValues = await depthMapToValueList(
+                options.depth || NOTEXTURE,
+                depthMapResolution
+            );
+            console.log("modifying");
+            let vertices = plane.geometry.attributes.position.array;
+            for (let i = 0; i < plane.geometry.attributes.position.count; i++) {
+                vertices[i * 3 + 2] = depthMapValues[i] * 4;
+            }
+            plane.geometry.attributes.position.needsUpdate = true;
+            plane.geometry.computeVertexNormals();
+            console.log("subdividing stage 1");
+            LoopSubdivision.modify(plane.geometry, 1, {
+                preserveEdges: true,
+                flatOnly: true,
+            });
+            /* console.log("subdividing stage 2");
+            LoopSubdivision.modify(plane.geometry, 1, {
+                preserveEdges: true,
+                flatOnly: false,
+            }); */
+            console.log("done");
+            scene.add(plane);
+
+            quickBigLight(30, 30, 30);
+            quickBigLight(-30, 30, 30);
         }
     }
 

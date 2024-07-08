@@ -14,6 +14,7 @@ export default async function getDepthMap(img: Buffer) {
             method: "POST",
             body: JSON.stringify({
                 img: curl,
+                blur: false,
             }),
             headers: {
                 "Content-Type": "application/json",
