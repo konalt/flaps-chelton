@@ -76,7 +76,7 @@ function baseSend(
     filename: string | null = null,
     tts: boolean = defaultTTS,
     components: MessageComponent[] = defaultComponents
-) {
+): Promise<string> {
     let form = new FormData();
     let attachments = [];
     if (filename !== null) {
@@ -100,9 +100,15 @@ function baseSend(
             attachments,
         })
     );
-    fetch(url, {
-        method: "POST",
-        body: form,
+    return new Promise<string>((resolve, reject) => {
+        fetch(url, {
+            method: "POST",
+            body: form,
+        })
+            .then((r) => r.json())
+            .then((r) => {
+                resolve(r.id);
+            });
     });
 }
 
@@ -194,47 +200,47 @@ export function editWebhookMessage(
     });
 }
 
-export function sendWebhook(
+export async function sendWebhook(
     id: string,
     content: string,
     channel: TextBasedChannel,
     buffer: Buffer | null = null,
     filename: string | null = null,
     components: MessageComponent[] | null = null
-) {
-    getWebhookURL(channel as TextChannel).then(async (url: string) => {
-        let user: WebhookBot = hooks.get(id);
-        // if file is over 8mb, send failsafe
-        if (buffer && Buffer.byteLength(buffer) > maxFileSizeMiB * 1.049e6) {
-            await writeFile(file("cache/" + filename), buffer).then(() => {
-                content +=
-                    "\nThis message originally contained a file, but the file was over " +
-                    maxFileSizeMiB +
-                    "MiB in size.\nLink: https://" +
-                    DOMAIN +
-                    "/cache/" +
-                    filename +
-                    "\n*This link will expire in 6 hours.*";
-            });
-            buffer = null;
-            filename = null;
-        }
-        let name = user?.name || "wh:" + id;
-        if (name == "flaps chelton") {
-            let flapsMember = await (
-                channel as TextChannel
-            ).guild.members.fetchMe();
-            if (flapsMember.nickname) name = flapsMember.nickname;
-        }
-        baseSend(
-            url + "?wait=true",
-            user?.quirk ? user?.quirk(content) : content,
-            name,
-            user?.avatar || "https://" + DOMAIN + "/avatar/" + id + ".webp",
-            buffer,
-            filename,
-            false,
-            components
-        );
-    });
+): Promise<string> {
+    const url = await getWebhookURL(channel as TextChannel);
+    let user: WebhookBot = hooks.get(id);
+    // if file is over 8mb, send failsafe
+    if (buffer && Buffer.byteLength(buffer) > maxFileSizeMiB * 1049000) {
+        await writeFile(file("cache/" + filename), buffer).then(() => {
+            content +=
+                "\nThis message originally contained a file, but the file was over " +
+                maxFileSizeMiB +
+                "MiB in size.\nLink: https://" +
+                DOMAIN +
+                "/cache/" +
+                filename +
+                "\n*This link will expire in 6 hours.*";
+        });
+        buffer = null;
+        filename = null;
+    }
+    let name = user?.name || "wh:" + id;
+    if (name == "flaps chelton") {
+        let flapsMember = await (
+            channel as TextChannel
+        ).guild.members.fetchMe();
+        if (flapsMember.nickname) name = flapsMember.nickname;
+    }
+    let msgid = await baseSend(
+        url + "?wait=true",
+        user?.quirk ? user?.quirk(content) : content,
+        name,
+        user?.avatar || "https://" + DOMAIN + "/avatar/" + id + ".webp",
+        buffer,
+        filename,
+        false,
+        components
+    );
+    return msgid;
 }

@@ -6,6 +6,7 @@ import { getFileExt, scheduleDelete, uuidv4 } from "../utils";
 import { join } from "path";
 import { stdout } from "process";
 import { addBuffer, removeBuffer } from "../..";
+import { FFmpegPercentUpdate } from "../../types";
 
 const extraArgs = "";
 
@@ -32,14 +33,19 @@ export function ffmpegBuffer(
     args: string,
     buffers: [Buffer, string][],
     outExt?: string,
-    forceVerbose = false
+    forceVerbose = false,
+    updateFn: (update: FFmpegPercentUpdate) => void = () => {
+        void 0;
+    },
+    expectedResultLengthFrames = 1
 ): Promise<Buffer> {
     return new Promise<Buffer>((resolve, reject) => {
         const ffmpegVerbose =
             forceVerbose || process.env.FFMPEG_VERBOSE == "yes";
         if (!outExt) outExt = getFileExt(buffers[0][1]);
         outExt = outExt.toLowerCase();
-        let verbosityArg = ffmpegVerbose ? "-v info" : "-v warning";
+        let verbosityArg =
+            !!updateFn || ffmpegVerbose ? "-v info" : "-v warning";
         let newargs = (
             verbosityArg +
             " " +
@@ -70,10 +76,26 @@ export function ffmpegBuffer(
         childProcess.stdout.on("data", (chunk: Buffer) => {
             chunkedOutput.push(chunk);
         });
-        childProcess.stderr.on("data", (chunk: string) => {
+        childProcess.stderr.on("data", (chunk: Buffer) => {
             errorLog += chunk;
             if (ffmpegVerbose) {
                 process.stdout.write(chunk);
+            }
+            if (!!updateFn && chunk.toString().startsWith("frame=")) {
+                let pChunk = chunk.toString();
+                let frame = parseInt(pChunk.split("=")[1]);
+                let fps = parseFloat(pChunk.split("=")[2]);
+                let time = pChunk.split("=")[5].split(" ")[0];
+                let speed = parseFloat(pChunk.split("=")[7]);
+                let percent = (frame / expectedResultLengthFrames) * 100;
+                let update: FFmpegPercentUpdate = {
+                    fps,
+                    frame,
+                    time,
+                    speed,
+                    percent,
+                };
+                updateFn(update);
             }
         });
         childProcess.on("exit", (code) => {

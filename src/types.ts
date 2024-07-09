@@ -83,6 +83,13 @@ export interface CropOptions {
     height: number;
     mode: "pixel" | "percent";
 }
+export interface FFmpegPercentUpdate {
+    percent: number;
+    fps: number;
+    time: string;
+    frame: number;
+    speed: number;
+}
 
 export interface RGBColor {
     r: number;
