@@ -31,10 +31,12 @@ function getOutputFormat(ext: string) {
 export function ffmpegBuffer(
     args: string,
     buffers: [Buffer, string][],
-    outExt?: string
+    outExt?: string,
+    forceVerbose = false
 ): Promise<Buffer> {
     return new Promise<Buffer>((resolve, reject) => {
-        const ffmpegVerbose = process.env.FFMPEG_VERBOSE == "yes";
+        const ffmpegVerbose =
+            forceVerbose || process.env.FFMPEG_VERBOSE == "yes";
         if (!outExt) outExt = getFileExt(buffers[0][1]);
         outExt = outExt.toLowerCase();
         let verbosityArg = ffmpegVerbose ? "-v info" : "-v warning";
