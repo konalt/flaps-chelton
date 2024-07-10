@@ -7,6 +7,7 @@ import { join } from "path";
 import { stdout } from "process";
 import { addBuffer, removeBuffer } from "../..";
 import { FFmpegPercentUpdate } from "../../types";
+import os, { setPriority } from "os";
 
 const extraArgs = "";
 
@@ -37,7 +38,8 @@ export function ffmpegBuffer(
     updateFn: (update: FFmpegPercentUpdate) => void = () => {
         void 0;
     },
-    expectedResultLengthFrames = 1
+    expectedResultLengthFrames = 1,
+    prio = false
 ): Promise<Buffer> {
     return new Promise<Buffer>((resolve, reject) => {
         const ffmpegVerbose =
@@ -71,6 +73,10 @@ export function ffmpegBuffer(
         const childProcess = spawn("ffmpeg", newargs.split(" "), {
             shell: true,
         });
+        if (prio) {
+            log("Launching high priority FFmpeg process!", "ffmpeg");
+            setPriority(childProcess.pid, os.constants.priority.PRIORITY_HIGH);
+        }
         let chunkedOutput = [];
         let errorLog = "ARGS: ffmpeg " + newargs + "\n";
         childProcess.stdout.on("data", (chunk: Buffer) => {

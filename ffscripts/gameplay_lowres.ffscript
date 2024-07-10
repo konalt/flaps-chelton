@@ -253,5 +253,3 @@ color=c=0x00000000:d=10:s=200x200[img_vlines_bg];
 [mbgwl][vlines]overlay=0:0:enable='between(t,22,25)'[mbgwvl];
 [mbgwvl][final_wr]overlay=0:0:enable='between(t,25,29)'[mbgwfn];
 [mbgwfn]null[out_v];
-
-[1:a]anull[out_a];
