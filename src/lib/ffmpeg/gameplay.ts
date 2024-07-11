@@ -15,7 +15,7 @@ export default async function gameplay(
             "gameplay.mp3"
         )} -/filter_complex ./ffscripts/gameplay${
             highres ? "" : "_lowres"
-        }.ffscript -sws_flags fast_bilinear -c:v libx264 -crf:v 30 -tune animation -r 25 -t 29 -map "[out_v]" -map "1:a:0" -c:a copy -preset ultrafast $OUT`,
+        }.ffscript -sws_flags fast_bilinear -c:v libx264 -tune animation -r 25 -t 29 -map "[out_v]" -map "1:a:0" -c:a copy -preset ultrafast $OUT`,
         [[newbuf, "png"]],
         "mp4",
         true,
