@@ -597,6 +597,7 @@ export async function onMessage(msg: Message) {
                         } as Message,
                         command.needs
                     ).catch((e) => sendWebhook("flaps", e, msg.channel));
+                    if (typeof srcs == "string") return;
                     if (!srcs) return;
                     let bufs: [Buffer, string][] = await Promise.all(
                         srcs.map(async (s) => [
