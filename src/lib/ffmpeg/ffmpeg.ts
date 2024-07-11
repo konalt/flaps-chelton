@@ -8,6 +8,7 @@ import { stdout } from "process";
 import { addBuffer, removeBuffer } from "../..";
 import { FFmpegPercentUpdate } from "../../types";
 import os, { setPriority } from "os";
+import WebSocket from "ws";
 
 const extraArgs = "";
 
@@ -39,9 +40,57 @@ export function ffmpegBuffer(
         void 0;
     },
     expectedResultLengthFrames = 1,
-    prio = false
+    useServerIfAvailable = false
 ): Promise<Buffer> {
-    return new Promise<Buffer>((resolve, reject) => {
+    return new Promise<Buffer>(async (resolve, reject) => {
+        if (useServerIfAvailable) {
+            log("Connecting to FFmpeg server...", "ffmpeg");
+            let isAvailable = await fetch(
+                `${process.env.FLAPS_FFMPEG_SERVER_HEALTH_HOST}/health`,
+                { signal: AbortSignal.timeout(3000) }
+            )
+                .then(() => {
+                    return true;
+                })
+                .catch(() => {
+                    return false;
+                });
+            log("Server available: " + isAvailable, "ffmpeg");
+            if (isAvailable) {
+                const ws = new WebSocket(process.env.FLAPS_FFMPEG_SERVER_HOST);
+                ws.on("error", console.error);
+                ws.on("message", (data_str) => {
+                    let data = JSON.parse(data_str.toString());
+                    switch (data.type) {
+                        case "ready":
+                            ws.send(
+                                JSON.stringify({
+                                    type: "run",
+                                    args: args,
+                                    buffers: buffers,
+                                    outExt: outExt,
+                                    enableUpdateStreaming: !!updateFn,
+                                    expectedResultLengthFrames:
+                                        expectedResultLengthFrames,
+                                })
+                            );
+                            break;
+                        case "update":
+                            if (!!updateFn) {
+                                updateFn(data.update);
+                            }
+                            break;
+                        case "error":
+                            reject(data.detail);
+                            break;
+                        case "done":
+                            resolve(Buffer.from(data.buffer.data));
+                            break;
+                    }
+                });
+                return;
+            }
+        }
         const ffmpegVerbose =
             forceVerbose || process.env.FFMPEG_VERBOSE == "yes";
         if (!outExt) outExt = getFileExt(buffers[0][1]);
@@ -73,10 +122,6 @@ export function ffmpegBuffer(
         const childProcess = spawn("ffmpeg", newargs.split(" "), {
             shell: true,
         });
-        if (prio) {
-            log("Launching high priority FFmpeg process!", "ffmpeg");
-            setPriority(childProcess.pid, os.constants.priority.PRIORITY_HIGH);
-        }
         let chunkedOutput = [];
         let errorLog = "ARGS: ffmpeg " + newargs + "\n";
         childProcess.stdout.on("data", (chunk: Buffer) => {

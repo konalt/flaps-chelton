@@ -35,5 +35,7 @@
 -   `TRACK_KEYWORDS` is a comma-separated list of keywords to mark messages containing for the track file. See default value for more details.
 -   `TRACK_SERVER_REPORTS` is a comma-separated list of GuildID:ChannelIDs to send the day's track file to at midnight.
 -   `DEPTHMAP_SERVER_PORT` is the port for a server that turns images into depth maps, at the path /depth. Works best with MiDaS.
+-   `FLAPS_FFMPEG_SERVER_HEALTH_HOST` is the HTTP address for an instance of konalt/flaps-ffmpeg-server.
+-   `FLAPS_FFMPEG_SERVER_HEALTH_HOST` is the WebSocket address for an instance of konalt/flaps-ffmpeg-server.
 
 Feel free to open an issue if you need anything!
