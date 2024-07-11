@@ -975,6 +975,10 @@ export const users: WebhookBot[] = [
         id: "stella",
         name: "Stella",
     },
+    {
+        id: "humansketch",
+        name: "humie sketchbook",
+    },
 ];
 
 function spamtonify(text: string): string {
