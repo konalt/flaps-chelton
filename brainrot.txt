@@ -1,0 +1,117 @@
+#TEMPLATE
+worst %n% ever
+2x %nca% 3x %nca%
+%c% calls to go to %l%
+i wish for more %n%
+get away from my %n% you %a% bastard
+sorry buddy %ncl% 3 blocks down
+we pull in %c%... just for %n%... %na%maxxing to become the ultimate %nc%... all for %n%... %c% sent us to %l%... but we're going even further...
+gimme the %nc%shaker...
+2 %n%s having %n%
+i'll %n%-ify you with some %a% %n%
+i'm watching %n% with %a% %a% %n% rn, i cant believe they used %n% smh
+%c% really did %n% at %l%. 38 %a% %n%s later? shut up.
+
+#CHARACTER
+cirno
+frank
+big boss
+reimu
+ocelot
+genie
+snake
+kaz
+huey
+venom snake
+venom pimpy
+redrum
+pimpy
+doctor
+pagliacci
+marisa
+heisenberg
+freud
+mr beast
+darkwood guy
+starlight
+homelander
+hughie
+flaps
+old norm
+uzi
+n
+v
+j
+thad
+lizzy
+doll
+
+#NOUN
+silverback
+car
+lamp
+concrete
+bad apple
+organ
+bug
+birthday
+bape
+wishes
+rizzler
+deer
+revenge
+thug
+poland
+mewing
+supe
+gyatt
+rizz
+brainrot
+code
+programmer
+beer
+truck
+sex
+car
+rifle
+drone
+mogging
+molchat doma
+shit
+mushroom
+
+#ADJECTIVE
+moggy
+bald
+invisible
+bape
+solid
+venom
+pimpy
+long
+concrete
+freudian
+wonky
+thug
+polish
+wooden
+crooked
+rizzy
+normal
+sticky
+icky
+polish
+mushroom
+
+#LOCATION
+lamp
+roma takeaway
+3 blocks down
+the scarlet mansion
+2050
+motherbase
+the massachusetts walled woods
+vought tower
+copper 9
+outside
+the hood
