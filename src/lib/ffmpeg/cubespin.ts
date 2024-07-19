@@ -15,7 +15,7 @@ function anim(image: Buffer) {
             animationFrames.push(await animation.step(i / animLength));
         }
         animation.destroy();
-        let animationSequence = addBufferSequence(animationFrames, "jpeg");
+        let animationSequence = addBufferSequence(animationFrames, "png");
         let animationConcat = await ffmpegBuffer(
             `-pattern_type sequence -f image2 -i http://localhost:56033/${animationSequence} -framerate 12 $PRESET $OUT`,
             [],

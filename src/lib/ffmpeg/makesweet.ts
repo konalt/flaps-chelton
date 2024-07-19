@@ -85,7 +85,7 @@ function locket(images: [Buffer, Buffer], options: Record<string, any>) {
         heartAnimation.destroy();
         let heartAnimationSequence = addBufferSequence(
             heartAnimationFrames,
-            "jpeg"
+            "png"
         );
         let heartAnimationConcat = await ffmpegBuffer(
             `-pattern_type sequence -f image2 -i http://localhost:56033/${heartAnimationSequence} -framerate ${options.fps} $PRESET $OUT`,

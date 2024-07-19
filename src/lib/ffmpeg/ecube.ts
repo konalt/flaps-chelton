@@ -37,7 +37,7 @@ function plane(image: Buffer) {
         planeAnimation.destroy();
         let planeAnimationSequence = addBufferSequence(
             planeAnimationFrames,
-            "jpeg"
+            "png"
         );
         let planeAnimationConcat = await ffmpegBuffer(
             `-pattern_type sequence -f image2 -i http://localhost:56033/${planeAnimationSequence} -framerate 20 $PRESET $OUT`,
@@ -78,7 +78,7 @@ function heart(image: Buffer) {
         heartAnimation.destroy();
         let heartAnimationSequence = addBufferSequence(
             heartAnimationFrames,
-            "jpeg"
+            "png"
         );
         let heartAnimationConcat = await ffmpegBuffer(
             `-pattern_type sequence -f image2 -i http://localhost:56033/${heartAnimationSequence} -framerate 20 $PRESET $OUT`,
@@ -133,7 +133,7 @@ function slice(image: Buffer) {
         sliceAnimation.destroy();
         let sliceAnimationSequence = addBufferSequence(
             sliceAnimationFrames,
-            "jpeg"
+            "png"
         );
         let sliceAnimationConcat = await ffmpegBuffer(
             `-pattern_type sequence -f image2 -i http://localhost:56033/${sliceAnimationSequence} -framerate 20 $PRESET $OUT`,

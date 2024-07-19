@@ -16,7 +16,7 @@ async function animate(img: Buffer, dimensions: [number, number]) {
         frames.push(await animation.step(i));
     }
     animation.destroy();
-    let sequence = addBufferSequence(frames, "jpeg");
+    let sequence = addBufferSequence(frames, "png");
     let video = await ffmpegBuffer(
         `-pattern_type sequence -f image2 -i http://localhost:56033/${sequence} -framerate 24 $PRESET $OUT`,
         [],

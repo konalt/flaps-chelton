@@ -686,7 +686,8 @@ async function _init(id, options = {}) {
     lastID = id;
     renderer.render(scene, camera);
 
-    if (window.flapsWeb3DFinished) window.flapsWeb3DFinished(size[0], size[1]);
+    if (window.flapsWeb3DFinished)
+        window.flapsWeb3DFinished(renderer.domElement.toDataURL());
 }
 
 let stepFunction = () => {};
@@ -696,10 +697,7 @@ async function _step(...args) {
     stepFunction(...args);
     renderer.render(scene, camera);
     if (window.flapsWeb3DStepFinished) {
-        window.flapsWeb3DStepFinished(
-            resolutions[lastID][0],
-            resolutions[lastID][1]
-        );
+        window.flapsWeb3DStepFinished(renderer.domElement.toDataURL());
     }
 }
 
