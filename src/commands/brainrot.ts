@@ -10,7 +10,7 @@ module.exports = {
     id: "brainrot",
     name: "Brainrot Generator",
     desc: "brainrot generator",
-    async execute() {
+    async execute(args) {
         let data_raw = (await readFile("./brainrot.txt")).toString();
         let table = {
             TEMPLATE: [],
@@ -29,7 +29,8 @@ module.exports = {
             if (!table[read]) table[read] = [];
             table[read].push(l);
         }
-        let template = sample(table.TEMPLATE);
+        let template =
+            args.length > 0 ? args.join(" ") : sample(table.TEMPLATE);
         template = template.replace(/%[ncal]+%/g, (s) => {
             let types = s.split("%")[1].split("");
             let search = [];
