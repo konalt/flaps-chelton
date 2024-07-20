@@ -983,6 +983,218 @@ export const users: WebhookBot[] = [
         id: "ufo",
         name: "mysterious ufo",
     },
+    {
+        id: "snivy",
+        name: "smugleaf",
+    },
+    {
+        id: "reimu",
+        name: "Reimu Hakurei",
+    },
+    {
+        id: "marisa",
+        name: "Marisa Kirisame",
+    },
+    {
+        id: "rumia",
+        name: "Rumia",
+    },
+    {
+        id: "daiyousei",
+        name: "Daiyousei",
+    },
+    {
+        id: "cirno",
+        name: "Cirno ⑨",
+    },
+    {
+        id: "china",
+        name: "Hong Meiling",
+    },
+    {
+        id: "koakuma",
+        name: "Koakuma",
+    },
+    {
+        id: "patchouli",
+        name: "Patchouli Knowledge",
+    },
+    {
+        id: "sakuya",
+        name: "Sakuya Izayoi",
+    },
+    {
+        id: "remilia",
+        name: "Remilia Scarlet",
+    },
+    {
+        id: "flandre",
+        name: "Flandre Scarlet",
+    },
+    {
+        id: "letty",
+        name: "Letty Whiterock",
+    },
+    {
+        id: "chen",
+        name: "Chen",
+    },
+    {
+        id: "lilywhite",
+        name: "Lily White",
+    },
+    {
+        id: "lyrica",
+        name: "Lyrica Prismriver",
+    },
+    {
+        id: "lunasa",
+        name: "Lunasa Prismriver",
+    },
+    {
+        id: "merlin",
+        name: "Merlin Prismriver",
+    },
+    {
+        id: "youmu",
+        name: "Youmu Konpaku",
+    },
+    {
+        id: "yuyuko",
+        name: "Yuyuko Saigyouji",
+    },
+    {
+        id: "ran",
+        name: "Ran Yakumo",
+    },
+    {
+        id: "yukari",
+        name: "Yukari Yakumo",
+    },
+    {
+        id: "alicemargatroid",
+        name: "Alice Margatroid",
+    },
+    {
+        id: "wriggle",
+        name: "Wriggle Nightbug",
+    },
+    {
+        id: "mystia",
+        name: "Mystia Lorelei",
+    },
+    {
+        id: "keine",
+        name: "Keine Kamishirasawa",
+    },
+    {
+        id: "tewi",
+        name: "Tewi Inaba",
+    },
+    {
+        id: "reisen",
+        name: "Reisen Udongein Inaba",
+    },
+    {
+        id: "eirin",
+        name: "Eirin Yagokoro",
+    },
+    {
+        id: "kaguya",
+        name: "Kaguya Houraisan",
+    },
+    {
+        id: "mokou",
+        name: "Fujiwara no Mokou",
+    },
+    {
+        id: "aya",
+        name: "Aya Shameimaru",
+    },
+    {
+        id: "eiki",
+        name: "Eiki Shiki, Yamaxanadu",
+    },
+    {
+        id: "shizuha",
+        name: "Shizuha Aki",
+    },
+    {
+        id: "minoriko",
+        name: "Minoriko Aki",
+    },
+    {
+        id: "hina",
+        name: "Hina Kagiyama",
+    },
+    {
+        id: "nitori",
+        name: "Nitori Kawashiro",
+    },
+    {
+        id: "momiji",
+        name: "Momiji Inubashiri",
+    },
+    {
+        id: "sanae",
+        name: "Sanae Kochiya",
+    },
+    {
+        id: "kanako",
+        name: "Kanako Yasaka",
+    },
+    {
+        id: "suwako",
+        name: "Suwako Moriya",
+    },
+    {
+        id: "kisume",
+        name: "Kisume",
+    },
+    {
+        id: "yamame",
+        name: "Yamame Kurodani",
+    },
+    {
+        id: "parsee",
+        name: "Parsee Mizuhashi",
+    },
+    {
+        id: "yuugi",
+        name: "Yuugi Hoshiguma",
+    },
+    {
+        id: "satori",
+        name: "Satori Komeiji",
+    },
+    {
+        id: "rin",
+        name: "Rin Kaenbyou",
+    },
+    {
+        id: "utsuho",
+        name: "Utsuho Reiuji",
+    },
+    {
+        id: "koishi",
+        name: "Koishi Komeiji",
+    },
+    {
+        id: "nazrin",
+        name: "Nazrin",
+    },
+    {
+        id: "kogasa",
+        name: "Kogasa Tatara",
+    },
+    {
+        id: "ichirin",
+        name: "Ichirin Kumoi",
+    },
+    {
+        id: "minamitsu",
+        name: "Minamitsu Murasa",
+    },
 ];
 
 function spamtonify(text: string): string {
