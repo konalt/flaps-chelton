@@ -1,16 +1,17 @@
 #TEMPLATE
-worst %n% ever
-2x %nca% 3x %nca%
 %c% calls to go to %l%
 i wish for more %n%
 get away from my %n% you %a% bastard
 sorry buddy %ncl% 3 blocks down
-we pull in %c%... just for %n%... %na%maxxing to become the ultimate %nc%... all for %n%... %c% sent us to %l%... but we're going even further...
+we pull in %c%... just for %n%... %na%maxxing to become the ultimate %nc%... all for %n%... %c% sent us to %l%... but we're going even further into %l%...
 gimme the %nc%shaker...
 2 %n%s having %n%
 i'll %n%-ify you with some %a% %n%
 i'm watching %n% with %a% %a% %n% rn, i cant believe they used %n% smh
 %c% really did %n% at %l%. 38 %a% %n%s later? shut up.
+%c% driving to %l%: im a total %na%pilled %na%cel. i'm basically going %na%mode and giving %na%core vibes
+my %a% %n%: %c% i think %c% should kill you %na% style
+*%na%ifies %c% %an% style*
 
 #CHARACTER
 cirno
@@ -45,6 +46,8 @@ j
 thad
 lizzy
 doll
+glory hole worker
+hornet
 
 #NOUN
 silverback
@@ -77,12 +80,18 @@ rifle
 drone
 mogging
 molchat doma
-shit
-mushroom
+store
+food
+produce
+glory hole
+worker
+freaking
+smilk
 
 #ADJECTIVE
 moggy
 bald
+punished
 invisible
 bape
 solid
@@ -98,10 +107,11 @@ wooden
 crooked
 rizzy
 normal
-sticky
-icky
-polish
-mushroom
+autistic
+glorious
+freaky
+silky
+smooth
 
 #LOCATION
 lamp
@@ -115,3 +125,7 @@ vought tower
 copper 9
 outside
 the hood
+store
+gloryhole
+freaky zone
+hornet's nest
