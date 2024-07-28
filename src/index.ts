@@ -1017,6 +1017,15 @@ async function init() {
     });
     setInterval(async () => {
         var d = new Date();
+        if (d.getMinutes() == 30 && d.getHours() == 23 && d.getSeconds() < 1) {
+            sendWebhook(
+                "flaps",
+                `<@${process.env.OWNER_TOKEN}> do your FUCKING duolingo dumbass`,
+                client.channels.cache.get(
+                    process.env.DUO_NOTIF_CHANNEL
+                ) as TextBasedChannel
+            );
+        }
         if (d.getMinutes() == 0 && d.getHours() == 0 && d.getSeconds() < 1) {
             midnight(
                 client.channels.cache.get(

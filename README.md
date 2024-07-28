@@ -37,5 +37,6 @@
 -   `DEPTHMAP_SERVER_PORT` is the port for a server that turns images into depth maps, at the path /depth. Works best with MiDaS.
 -   `FLAPS_FFMPEG_SERVER_HEALTH_HOST` is the HTTP address for an instance of konalt/flaps-ffmpeg-server.
 -   `FLAPS_FFMPEG_SERVER_HEALTH_HOST` is the WebSocket address for an instance of konalt/flaps-ffmpeg-server.
+-   `DUO_NOTIF_CHANNEL` is the Discord Channel ID for the channel to send a message at 23:30 every day to remind the bot owner to do the FUCKING duolingo lesson
 
 Feel free to open an issue if you need anything!
