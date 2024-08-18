@@ -99,7 +99,7 @@ export function ffmpegBuffer(
             !!updateFn || ffmpegVerbose ? "-v info" : "-v warning";
         let newargs = (
             verbosityArg +
-            " " +
+            " -hide_banner " +
             args
                 .replace(/\r?\n/g, "")
                 .replace(/\$PRESET/g, `${usePreset(outExt)}`)
