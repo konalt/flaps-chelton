@@ -25,7 +25,6 @@ export default (shoebills: Shoebill[], image: Buffer): Promise<Buffer> => {
             );
             ctx.restore();
         }
-        ctx.font = "24px monospace";
         resolve(c.toBuffer("image/png"));
     });
 };
