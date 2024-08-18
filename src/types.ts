@@ -205,3 +205,10 @@ export interface BattleAttack {
     selfAttackBuff: number;
     cost: number;
 }
+
+export interface Shoebill {
+    x: number;
+    y: number;
+    rotate: number;
+    scaleFactor: number;
+}

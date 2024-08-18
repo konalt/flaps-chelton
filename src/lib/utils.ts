@@ -257,3 +257,7 @@ export async function exists(path: string) {
         return false;
     }
 }
+
+export const PLACEHOLDER_IMAGE = dataURLToBuffer(
+    "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAALUlEQVQ4T2O8w/DzvwoDOwOQZiCHZmRgYPhPrmaQPsZRF4yGwWg6AGfAgc8LADOwDrjWxfJ7AAAAAElFTkSuQmCC"
+);
