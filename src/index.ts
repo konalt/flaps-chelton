@@ -188,11 +188,12 @@ client.on("ready", async () => {
     client.user.setPresence({
         activities: [
             {
-                name: "commands!",
-                type: ActivityType.Listening,
+                name: "custom",
+                type: ActivityType.Custom,
+                state: "BACK FROM THE DEAD AND REPORTING FOR DUTY!",
             },
         ],
-        afk: true,
+        afk: false,
         status: "online",
     });
 
