@@ -1,7 +1,7 @@
-import parseScalingTable from "./parseScalingTable";
 import { readFile } from "fs/promises";
 import { getVideoDimensions, getVideoLength } from "./getVideoDimensions";
 import { ffmpegBuffer, file } from "./ffmpeg";
+import parsePerspectiveTable from "./parsePerspectiveTable";
 
 export default async function stewie(
     buffers: [Buffer, string][]
@@ -10,11 +10,12 @@ export default async function stewie(
         let vid = await readFile(file("stewie.mp4"));
         let dims = await getVideoDimensions([vid, "mp4"]);
         let len = await getVideoLength([vid, "mp4"]);
-        parseScalingTable(
-            (await readFile(file("scalingtables/thehorror.stb"))).toString(),
+        parsePerspectiveTable(
+            (await readFile(file("scalingtables/stewie2.stb"))).toString(),
             dims[0],
             dims[1],
             len,
+            30,
             buffers[0]
         ).then((scaleResult) => {
             ffmpegBuffer(
