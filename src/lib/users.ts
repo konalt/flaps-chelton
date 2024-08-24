@@ -1195,6 +1195,18 @@ export const users: WebhookBot[] = [
         id: "minamitsu",
         name: "Minamitsu Murasa",
     },
+    {
+        id: "sebastian",
+        name: "Sebastian Solace",
+    },
+    {
+        id: "eyefestation",
+        name: "Eyefestation",
+    },
+    {
+        id: "pandemonium",
+        name: "Pandemonium",
+    },
 ];
 
 function spamtonify(text: string): string {
