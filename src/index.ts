@@ -218,6 +218,7 @@ client.on("ready", async () => {
 
 const COMMAND_PREFIX = process.env.COMMAND_PREFIX;
 const WH_PREFIX = process.env.WEBHOOK_PREFIX;
+const WH_EDIT_PREFIX = process.env.WEBHOOK_EDIT_PREFIX;
 
 function autoReact(msg: Message) {
     let f: string[] = [];
@@ -530,6 +531,21 @@ export async function onMessage(msg: Message) {
                 msg.delete();
             } else {
                 sendWebhook(id, content, msg.channel);
+                msg.delete();
+            }
+        }
+    } else if (msg.content.startsWith(WH_EDIT_PREFIX)) {
+        if (msg.reference) {
+            let content = msg.content
+                .substring(WH_EDIT_PREFIX.length)
+                .toLowerCase();
+            {
+                editWebhookMessage(
+                    msg.reference.messageId,
+                    "flaps",
+                    content,
+                    msg.channel
+                );
                 msg.delete();
             }
         }
