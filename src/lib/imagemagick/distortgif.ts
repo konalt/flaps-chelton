@@ -7,8 +7,8 @@ import { imagemagickBuffer } from "./imagemagick";
 
 export default async function distortGIF(
     buffer: Buffer,
-    factorStart = 1.5,
-    factorEnd = 0.5,
+    factorStart = 1.3,
+    factorEnd = 0.2,
     frameCount = 36
 ) {
     let scaled = await compressImage([buffer, "png"], 400, true);
