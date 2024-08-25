@@ -3,10 +3,12 @@ import { ffmpegBuffer } from "./ffmpeg";
 import { getVideoDimensions } from "./getVideoDimensions";
 
 export default async function compressImage(
-    buffer: [Buffer, string]
+    buffer: [Buffer, string],
+    maxRes: number = -1
 ): Promise<Buffer> {
     let dims = await getVideoDimensions(buffer);
     let maxSize = parseInt(process.env.MAX_PERMA_IMAGE_SIZE);
+    if (maxRes > -1) maxSize = maxRes;
     let fixedDims = [0, 0];
     if (Math.max(dims[0], dims[1]) < maxSize) {
         fixedDims = dims;
