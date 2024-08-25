@@ -8,7 +8,7 @@ import { imagemagickBuffer } from "./imagemagick";
 export default async function distortGIF(
     buffer: Buffer,
     factorStart = 1.5,
-    factorEnd = 0.2,
+    factorEnd = 0.5,
     frameCount = 36
 ) {
     let scaled = await compressImage([buffer, "png"], 400, true);
@@ -24,19 +24,24 @@ export default async function distortGIF(
                             (factorStart +
                                 (i / frameCount) * (factorEnd - factorStart))
                     )
-                    .join("x")} -implode 0.25 -resize ${dims.join("x")}`,
+                    .join("x")} -implode 0.25`,
                 scaled
+            ).then((b) =>
+                ffmpegBuffer(`-i $BUF0 -vf scale=${dims.join("x")} $OUT`, [
+                    [b, "png"],
+                ])
             )
         );
     }
     let bufs = await Promise.all(outs);
     let seq = addBufferSequence(bufs, "png");
-    let animationConcat = await ffmpegBuffer(
-        `-pattern_type sequence -f image2 -i http://localhost:56033/${seq} -vf scale='trunc(iw/2)*2:trunc(ih/2)*2' -framerate 12 $PRESET $OUT`,
+    let gif = await ffmpegBuffer(
+        `-r 12 -pattern_type sequence -f image2 -i http://localhost:56033/${seq} -filter_complex "${gifPalette(
+            "0:v",
+            "out"
+        )}" -map "[out]" -framerate 18 $OUT`,
         [],
-        "mp4"
+        "gif"
     );
-    removeBuffer(seq);
-    let gif = videoGif([[animationConcat, "mp4"]], 12);
     return gif;
 }
