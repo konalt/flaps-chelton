@@ -29,39 +29,29 @@ module.exports = {
     id: "redditdl",
     name: "Reddit DL",
     desc: "Downloads a Reddit link.",
-    execute(args: string[]) {
-        return new Promise((res, rej) => {
-            let url = args[0];
-            if (url.startsWith("<")) url = url.substring(1);
-            if (url.endsWith(">")) url = url.substring(0, url.length - 1);
-            let id = uuidv4().toUpperCase().replace(/-/gi, "").substring(0, 8);
-            Promise.all([
-                getReddit(url, id, false),
-                getReddit(url, id, true),
-            ]).then(async (files) => {
-                let audioPath = files[0];
-                let videoPath = files[1];
-                let audioContent = await readFile(audioPath);
-                let videoContent = await readFile(videoPath);
-                audiovideo([
-                    [audioContent, audioPath],
-                    [videoContent, videoPath],
-                ]).then((combined) => {
-                    Promise.all([unlink(audioPath), unlink(videoPath)]).then(
-                        () => {
-                            res(
-                                makeMessageResp(
-                                    "reddit",
-                                    "",
-                                    null,
-                                    combined,
-                                    getFileName("DL_Reddit", "mp4")
-                                )
-                            );
-                        }
-                    );
-                });
-            });
-        });
+    async execute(args) {
+        let url = args[0];
+        if (url.startsWith("<")) url = url.substring(1);
+        if (url.endsWith(">")) url = url.substring(0, url.length - 1);
+        let id = uuidv4().toUpperCase().replace(/-/gi, "").substring(0, 8);
+        let files = await Promise.all([
+            getReddit(url, id, false),
+            getReddit(url, id, true),
+        ]);
+        let audioPath = files[0];
+        let videoPath = files[1];
+        let audioContent = await readFile(audioPath);
+        let videoContent = await readFile(videoPath);
+        let combined = await audiovideo([
+            [audioContent, audioPath],
+            [videoContent, videoPath],
+        ]);
+        await Promise.all([unlink(audioPath), unlink(videoPath)]);
+        return makeMessageResp(
+            "reddit",
+            "",
+            combined,
+            getFileName("DL_Reddit", "mp4")
+        );
     },
 } satisfies FlapsCommand;

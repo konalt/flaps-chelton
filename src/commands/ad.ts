@@ -7,11 +7,9 @@ module.exports = {
     desc: "Immediately deletes your message.",
     showOnCommandSimulator: false,
     async execute(_a, _b, msg) {
-        return new Promise(async (res, rej) => {
-            setTimeout(() => {
-                msg.delete();
-            }, 1000);
-            res(makeMessageResp("flaps", ""));
-        });
+        setTimeout(() => {
+            msg.delete();
+        }, 1000);
+        return makeMessageResp("flaps", "");
     },
 } satisfies FlapsCommand;

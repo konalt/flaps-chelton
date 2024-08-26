@@ -21,7 +21,6 @@ module.exports = {
         return makeMessageResp(
             "flaps",
             `The battle begins!${SPOILERBUG}\`${encodeObject(battle)}\``,
-            null,
             await getBattleImage(battle),
             getFileName("Battle", "png"),
             components

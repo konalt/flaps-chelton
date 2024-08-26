@@ -7,19 +7,13 @@ module.exports = {
     name: "Rap TV",
     desc: "Creates a Rap TV news image.",
     needs: ["image"],
-    execute(args, buf) {
-        return new Promise((res, rej) => {
-            raptv(buf[0][0], args.join(" ")).then((out) => {
-                res(
-                    makeMessageResp(
-                        "flaps",
-                        "",
-                        null,
-                        out,
-                        getFileName("Canvas_RapTV", "png")
-                    )
-                );
-            });
-        });
+    async execute(args, imgbuf) {
+        let out = await raptv(imgbuf[0][0], args.join(" "));
+        return makeMessageResp(
+            "flaps",
+            "",
+            out,
+            getFileName("Canvas_RapTV", "png")
+        );
     },
 } satisfies FlapsCommand;

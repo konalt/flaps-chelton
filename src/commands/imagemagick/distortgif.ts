@@ -7,12 +7,11 @@ module.exports = {
     name: "Distort GIF",
     desc: "Distorts an image but FUNNIER",
     needs: ["image"],
-    execute: async (args, buf) => {
+    async execute(args, buf) {
         let result = await distortGIF(buf[0][0]);
         return makeMessageResp(
             "ffmpeg",
             "",
-            null,
             result,
             getFileName("ImageMagick_DistortGIF", "gif")
         );

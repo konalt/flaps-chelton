@@ -116,7 +116,7 @@ async function versus(
     buffers: [Buffer, string][],
     names: string[],
     isLong: boolean
-) {
+): Promise<Buffer> {
     return new Promise(async (res, rej) => {
         if (buffers[1]) {
             var segmentLengths = [70, 80];

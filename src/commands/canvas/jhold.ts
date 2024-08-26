@@ -1,5 +1,3 @@
-import { TextChannel } from "discord.js";
-import { Message } from "discord.js";
 import jhold from "../../lib/canvas/jhold";
 import { getFileName, makeMessageResp } from "../../lib/utils";
 import { FlapsCommand } from "../../types";
@@ -9,19 +7,13 @@ module.exports = {
     name: "J Hold",
     desc: "Makes J hold an object.",
     needs: ["image"],
-    async execute(args: string[], imgbuf: [Buffer, string][], msg: Message) {
-        return new Promise((res, rej) => {
-            jhold(imgbuf[0][0]).then((out: Buffer) => {
-                res(
-                    makeMessageResp(
-                        "j",
-                        "",
-                        msg.channel as TextChannel,
-                        out,
-                        getFileName("Canvas_JHold", "png")
-                    )
-                );
-            });
-        });
+    async execute(args, imgbuf) {
+        let out = await jhold(imgbuf[0][0]);
+        return makeMessageResp(
+            "flaps",
+            "",
+            out,
+            getFileName("Canvas_JHold", "png")
+        );
     },
 } satisfies FlapsCommand;

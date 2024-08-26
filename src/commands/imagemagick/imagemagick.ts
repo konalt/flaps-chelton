@@ -8,12 +8,11 @@ module.exports = {
     desc: "Runs an ImageMagick command. Runs 'magick - {ARGS} png:'.",
     needs: ["image"],
     aliases: ["im"],
-    execute: async (args, buf) => {
+    async execute(args, buf) {
         let result = await imagemagickBuffer(args.join(" "), buf[0][0]);
         return makeMessageResp(
             "ffmpeg",
             "",
-            null,
             result,
             getFileName("ImageMagick", "png")
         );

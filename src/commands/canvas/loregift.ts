@@ -1,5 +1,3 @@
-import { TextChannel } from "discord.js";
-import { Message } from "discord.js";
 import loregift from "../../lib/canvas/loregift";
 import { getFileName, makeMessageResp } from "../../lib/utils";
 import { FlapsCommand } from "../../types";
@@ -9,19 +7,13 @@ module.exports = {
     name: "Lore Gift",
     desc: "Makes Loremaster gift you an object.",
     needs: ["image"],
-    async execute(args: string[], imgbuf: [Buffer, string][], msg: Message) {
-        return new Promise((res, rej) => {
-            loregift(imgbuf[0][0]).then((out: Buffer) => {
-                res(
-                    makeMessageResp(
-                        "flaps",
-                        "",
-                        msg.channel as TextChannel,
-                        out,
-                        getFileName("Canvas_LoreGift", "png")
-                    )
-                );
-            });
-        });
+    async execute(args, imgbuf) {
+        let out = await loregift(imgbuf[0][0]);
+        return makeMessageResp(
+            "flaps",
+            "",
+            out,
+            getFileName("Canvas_LoreGift", "png")
+        );
     },
 } satisfies FlapsCommand;

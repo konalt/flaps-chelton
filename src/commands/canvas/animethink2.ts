@@ -12,19 +12,13 @@ module.exports = {
     name: "AnimeThink 2",
     desc: "makes an anime character think about the image, while someone lusts over him",
     needs: ["image"],
-    async execute(args: string[], imgbuf: [Buffer, string][], msg: Message) {
-        return new Promise((res, rej) => {
-            animethink2(imgbuf[0][0]).then((out: Buffer) => {
-                res(
-                    makeMessageResp(
-                        "flaps",
-                        "",
-                        msg.channel as TextChannel,
-                        out,
-                        getFileName("Canvas_AnimeThink2", "png")
-                    )
-                );
-            });
-        });
+    async execute(args, imgbuf) {
+        let out = await animethink2(imgbuf[0][0]);
+        return makeMessageResp(
+            "flaps",
+            "",
+            out,
+            getFileName("Canvas_AnimeThink2", "png")
+        );
     },
 } satisfies FlapsCommand;

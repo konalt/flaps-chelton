@@ -29,7 +29,6 @@ module.exports = {
                         makeMessageResp(
                             "flaps",
                             "",
-                            msg.channel,
                             buf,
                             getFileName("Effect_TragicDeath", "mp4")
                         )

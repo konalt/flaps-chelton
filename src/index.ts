@@ -75,6 +75,7 @@ import {
     getTypes,
     makeMessageResp,
     scheduleDelete,
+    tenorURLToGifURL,
     uuidv4,
 } from "./lib/utils";
 log(`Importing modules (${C.BCyan}flaps/web${C.White})...`, "start");
@@ -271,21 +272,6 @@ function typesMatch(inTypes: string[], requiredTypes: string[]) {
         if (!typelist.includes(inTypes[i]) && !type.endsWith("?")) ok = false;
     });
     return ok;
-}
-
-function tenorURLToGifURL(url: string): Promise<string> {
-    var searchString = '<meta class="dynamic" name="twitter:image" content="';
-    return new Promise((resl) => {
-        /* @ts-ignore */
-        fetch(url).then((value: Response) => {
-            value.text().then((data) => {
-                var newURL = data
-                    .substring(data.indexOf(searchString) + searchString.length)
-                    .split('"')[0];
-                resl(newURL);
-            });
-        });
-    });
 }
 
 async function getSources(

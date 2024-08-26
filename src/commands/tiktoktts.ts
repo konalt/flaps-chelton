@@ -20,8 +20,7 @@ module.exports = {
         let buffer = dataURLToBuffer(`,${response.v_data}`);
         return makeMessageResp(
             "flaps",
-            "le text",
-            null,
+            "",
             buffer,
             getFileName("TTS_TikTok", "wav")
         );

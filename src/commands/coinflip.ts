@@ -8,17 +8,10 @@ module.exports = {
     id: "coinflip",
     name: "Flip a Coin",
     desc: "Simulates a coin flip.",
-    execute(args: string[], bufs: [Buffer, string][], msg: Message) {
-        return new Promise((res, rej) => {
-            res(
-                makeMessageResp(
-                    "anton",
-                    Math.round(Math.random()) == 0
-                        ? "It's tails."
-                        : "It's heads.",
-                    msg.channel
-                )
-            );
-        });
+    async execute() {
+        return makeMessageResp(
+            "anton",
+            Math.round(Math.random()) == 0 ? "It's tails." : "It's heads."
+        );
     },
 } satisfies FlapsCommand;

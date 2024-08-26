@@ -6,10 +6,8 @@ module.exports = {
     id: "insanity",
     name: "Insanity",
     desc: "Sets the temperature of Question.",
-    async execute(args, buf, msg) {
-        return new Promise((res, rej) => {
-            setSanity(parseFloat(args[0]));
-            res(makeMessageResp("monsoon", "yep donezo fonezo", msg.channel));
-        });
+    async execute(args) {
+        setSanity(parseFloat(args[0]));
+        return makeMessageResp("monsoon", "yep donezo fonezo");
     },
 } satisfies FlapsCommand;

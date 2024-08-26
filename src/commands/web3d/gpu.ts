@@ -7,19 +7,13 @@ module.exports = {
     name: "GPU",
     desc: "Checks Web3D GPU support.",
     needs: [],
-    execute() {
-        return new Promise((res, rej) => {
-            gpu().then((img) => {
-                res(
-                    makeMessageResp(
-                        "flaps",
-                        "",
-                        null,
-                        img,
-                        getFileName("Web3D_GPU", "png")
-                    )
-                );
-            });
-        });
+    async execute() {
+        let img = await gpu();
+        return makeMessageResp(
+            "flaps",
+            "",
+            img,
+            getFileName("Web3D_GPU", "png")
+        );
     },
 } satisfies FlapsCommand;

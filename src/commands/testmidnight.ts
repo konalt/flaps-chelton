@@ -8,10 +8,8 @@ module.exports = {
     name: "Test Midnight",
     desc: "Tests the midnight feature in the current channel.",
     showOnCommandSimulator: false,
-    execute(args, bufs, msg) {
-        return new Promise((res, rej) => {
-            midnight(msg.channel as TextChannel);
-            res(makeMessageResp("flaps", ""));
-        });
+    async execute(args, bufs, msg) {
+        midnight(msg.channel as TextChannel);
+        return makeMessageResp("flaps", "");
     },
 } satisfies FlapsCommand;

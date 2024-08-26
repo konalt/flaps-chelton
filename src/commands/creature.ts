@@ -11,7 +11,6 @@ module.exports = {
         return makeMessageResp(
             "flaps",
             "",
-            null,
             image,
             getFileName("Creature", "png")
         );

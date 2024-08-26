@@ -131,7 +131,6 @@ export function rgbtohex(rgb: { r: number; g: number; b: number }) {
 export function makeMessageResp(
     id: string,
     content: string,
-    channel: TextBasedChannel | null = null,
     buffer: Buffer | null = null,
     filename: string | null = null,
     components: MessageComponent[] | null = null
@@ -139,7 +138,7 @@ export function makeMessageResp(
     return {
         id,
         content,
-        channel,
+        channel: null,
         buffer,
         filename,
         components,
@@ -261,3 +260,12 @@ export async function exists(path: string) {
 export const PLACEHOLDER_IMAGE = dataURLToBuffer(
     "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAALUlEQVQ4T2O8w/DzvwoDOwOQZiCHZmRgYPhPrmaQPsZRF4yGwWg6AGfAgc8LADOwDrjWxfJ7AAAAAElFTkSuQmCC"
 );
+
+export async function tenorURLToGifURL(url: string): Promise<string> {
+    let searchString = '<meta class="dynamic" name="twitter:image" content="';
+    let response = await fetch(url).then((r) => r.text());
+    let newURL = response
+        .substring(response.indexOf(searchString) + searchString.length)
+        .split('"')[0];
+    return newURL;
+}

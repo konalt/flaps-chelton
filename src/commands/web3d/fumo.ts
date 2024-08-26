@@ -7,21 +7,15 @@ module.exports = {
     name: "Fumo",
     desc: "fumofumo ᗜˬᗜ",
     needs: ["image"],
-    execute(args, buffers) {
-        return new Promise((res, rej) => {
-            getWeb3DAPIImage("cirno", {
-                img: bufferToDataURL(buffers[0][0], "image/png"),
-            }).then((img) => {
-                res(
-                    makeMessageResp(
-                        "flaps",
-                        "",
-                        null,
-                        img,
-                        getFileName("Web3D_Cirno", "png")
-                    )
-                );
-            });
+    async execute(args, buffers) {
+        let img = await getWeb3DAPIImage("fumo", {
+            img: bufferToDataURL(buffers[0][0], "image/png"),
         });
+        return makeMessageResp(
+            "flaps",
+            "",
+            img,
+            getFileName("Web3D_Fumo", "png")
+        );
     },
 } satisfies FlapsCommand;

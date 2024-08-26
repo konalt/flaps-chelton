@@ -2,16 +2,16 @@ import { FlapsCommand } from "../types";
 import { getFileName, makeMessageResp, randomRedditImage } from "../lib/utils";
 
 module.exports = {
-    id: "badhaircut",
-    name: "Bad Haircut",
-    desc: "Gets a photo of a bad haircut.",
+    id: "firearm",
+    name: "Firearm",
+    desc: "Gets a photo of a perfectly normal gun.",
     async execute() {
-        let image = await randomRedditImage("justfuckmyshitup");
+        let image = await randomRedditImage("cursedguns");
         return makeMessageResp(
             "haircut",
             "",
             image,
-            getFileName("Reddit_BadHaircut", "png")
+            getFileName("Reddit_Firearm", "png")
         );
     },
 } satisfies FlapsCommand;

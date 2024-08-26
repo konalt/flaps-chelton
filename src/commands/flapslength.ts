@@ -1,6 +1,3 @@
-import { TextChannel } from "discord.js";
-import { Message } from "discord.js";
-import { sendWebhook } from "../lib/webhooks";
 import { FlapsCommand } from "../types";
 import glob from "glob";
 import { readFileSync } from "fs";
@@ -22,17 +19,14 @@ module.exports = {
     id: "flapslength",
     name: "Flaps Length",
     desc: "Gets the length of all flaps source files.",
-    execute(args, bufs, msg) {
-        return new Promise((res, rej) => {
-            globFiles("src/**/*.ts").then((files) => {
-                let lineCount = 0;
-                files.forEach((file) => {
-                    lineCount += getLineCount(file);
-                });
-                res(
-                    makeMessageResp("flaps", `this mf ${lineCount} lines long`)
-                );
+    async execute() {
+        let lineCount = await globFiles("src/**/*.ts").then((files) => {
+            let lineCount = 0;
+            files.forEach((file) => {
+                lineCount += getLineCount(file);
             });
+            return lineCount;
         });
+        return makeMessageResp("flaps", `this mf ${lineCount} lines long`);
     },
 } satisfies FlapsCommand;

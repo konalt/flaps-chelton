@@ -6,21 +6,15 @@ module.exports = {
     id: "rawcaption2",
     name: "Raw Caption2",
     desc: "Generates only a Caption2 caption. First argument is source image resolution, separated by an x.",
-    execute(args, buf, msg) {
-        return new Promise((res, rej) => {
-            let w = parseInt(args[0].toLowerCase().split("x")[0]);
-            let h = parseInt(args[0].toLowerCase().split("x")[1]);
-            createCaption2(w, h, args.slice(1).join(" ")).then((out) => {
-                res(
-                    makeMessageResp(
-                        "flaps",
-                        "Output height: " + out[1] + "px",
-                        msg.channel,
-                        out[0],
-                        getFileName("Canvas_RawCaption2", "png")
-                    )
-                );
-            });
-        });
+    async execute(args) {
+        let w = parseInt(args[0].toLowerCase().split("x")[0]);
+        let h = parseInt(args[0].toLowerCase().split("x")[1]);
+        let out = await createCaption2(w, h, args.slice(1).join(" "));
+        return makeMessageResp(
+            "flaps",
+            "Output height: " + out[1] + "px",
+            out[0],
+            getFileName("Canvas_RawCaption2", "png")
+        );
     },
 } satisfies FlapsCommand;

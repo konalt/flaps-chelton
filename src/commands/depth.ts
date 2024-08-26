@@ -9,12 +9,6 @@ module.exports = {
     needs: ["image"],
     async execute(_, buffers) {
         let map = await getDepthMap(buffers[0][0]);
-        return makeMessageResp(
-            "flaps",
-            "",
-            null,
-            map,
-            getFileName("Depth", "png")
-        );
+        return makeMessageResp("flaps", "", map, getFileName("Depth", "png"));
     },
 } satisfies FlapsCommand;

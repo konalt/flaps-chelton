@@ -7,19 +7,13 @@ module.exports = {
     name: "Wojak Point",
     desc: "Makes two Wojaks point at something interesting.",
     needs: ["image"],
-    async execute(args, buffers) {
-        return new Promise((res, rej) => {
-            wojakpoint(buffers[0][0]).then((out: Buffer) => {
-                res(
-                    makeMessageResp(
-                        "flaps",
-                        "",
-                        null,
-                        out,
-                        getFileName("Canvas_WojakPoint", "png")
-                    )
-                );
-            });
-        });
+    async execute(args, imgbuf) {
+        let out = await wojakpoint(imgbuf[0][0]);
+        return makeMessageResp(
+            "flaps",
+            "",
+            out,
+            getFileName("Canvas_WojakPoint", "png")
+        );
     },
 } satisfies FlapsCommand;

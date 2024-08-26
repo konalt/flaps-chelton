@@ -1,5 +1,3 @@
-import { TextChannel } from "discord.js";
-import { Message } from "discord.js";
 import { makeMessageResp } from "../lib/utils";
 import { sendWebhook } from "../lib/webhooks";
 import { FlapsCommand } from "../types";
@@ -37,26 +35,18 @@ module.exports = {
     name: "Eval",
     desc: "Evaluates some JavaScript code.",
     showOnCommandSimulator: false,
-    execute(args: string[], bufs: [Buffer, string][], msg: Message) {
-        return new Promise((res, rej) => {
-            if (msg.author.id !== process.env.OWNER_TOKEN) {
-                res(makeMessageResp("flaps", "nuh uh uh!"));
-                return;
-            }
-            var evaluated = eval(args.join(" "));
-            if (evaluated) {
-                res(
-                    makeMessageResp(
-                        "flaps",
-                        evaluated.toString
-                            ? evaluated.toString()
-                            : "No response",
-                        msg.channel
-                    )
-                );
-            } else {
-                res(makeMessageResp("flaps", "No response", msg.channel));
-            }
-        });
+    async execute(args, bufs, msg) {
+        if (msg.author.id !== process.env.OWNER_TOKEN) {
+            return makeMessageResp("flaps", "nuh uh uh!");
+        }
+        var evaluated = eval(args.join(" "));
+        if (evaluated) {
+            return makeMessageResp(
+                "flaps",
+                evaluated.toString ? evaluated.toString() : "No response"
+            );
+        } else {
+            return makeMessageResp("flaps", "No response");
+        }
     },
 } satisfies FlapsCommand;

@@ -2,7 +2,7 @@ import { makeMessageResp } from "../lib/utils";
 import { FlapsCommand } from "../types";
 import { readFile } from "fs/promises";
 
-function sample(arr) {
+function sample(arr: any[]) {
     return arr[Math.floor(Math.random() * arr.length)];
 }
 

@@ -1,6 +1,3 @@
-import { TextChannel } from "discord.js";
-import { Message } from "discord.js";
-import { sendWebhook } from "../lib/webhooks";
 import { FlapsCommand } from "../types";
 import { voicePlayers } from "../index";
 import { createAudioResource } from "@discordjs/voice";
@@ -11,11 +8,9 @@ module.exports = {
     name: "Audio",
     desc: "Plays an audio file from the audio directory in flaps.",
     showOnCommandSimulator: false,
-    execute(args: string[], bufs: [Buffer, string][], msg: Message) {
-        return new Promise((res, rej) => {
-            let reso = createAudioResource("audio/" + args[0] + ".mp3");
-            voicePlayers.get(msg.guildId ?? "0")?.play(reso);
-            res(makeMessageResp("flaps", "now playing lmao", msg.channel));
-        });
+    async execute(args, bufs, msg) {
+        let reso = createAudioResource("audio/" + args[0] + ".mp3");
+        voicePlayers.get(msg.guildId ?? "0")?.play(reso);
+        return makeMessageResp("flaps", "now playing lmao");
     },
 } satisfies FlapsCommand;

@@ -9,32 +9,26 @@ module.exports = {
     desc: "Tests the track report feature in the current channel",
     needs: [],
     showOnCommandSimulator: false,
-    execute(args, _1, msg) {
-        return new Promise(async (res, rej) => {
-            let d = new Date();
-            if (args[0] == "yesterday") {
-                d.setHours(d.getHours() - 24);
-            }
-            let dateStr = `${d.getFullYear().toString().padStart(4, "0")}-${(
-                d.getMonth() + 1
-            )
-                .toString()
-                .padStart(2, "0")}-${d.getDate().toString().padStart(2, "0")}`;
-            console.log(d);
+    async execute(args, _1, msg) {
+        let d = new Date();
+        if (args[0] == "yesterday") {
+            d.setHours(d.getHours() - 24);
+        }
+        let dateStr = `${d.getFullYear().toString().padStart(4, "0")}-${(
+            d.getMonth() + 1
+        )
+            .toString()
+            .padStart(2, "0")}-${d.getDate().toString().padStart(2, "0")}`;
+        console.log(d);
 
-            trackReport(
-                await readFile(`./track/${msg.guildId}/${dateStr}.txt`, "utf-8")
-            ).then((img) => {
-                res(
-                    makeMessageResp(
-                        "flaps",
-                        "",
-                        null,
-                        img,
-                        getFileName("Web3D_TestTrackReport", "png")
-                    )
-                );
-            });
-        });
+        let img = await trackReport(
+            await readFile(`./track/${msg.guildId}/${dateStr}.txt`, "utf-8")
+        );
+        return makeMessageResp(
+            "flaps",
+            "",
+            img,
+            getFileName("Web3D_TestTrackReport", "png")
+        );
     },
 } satisfies FlapsCommand;

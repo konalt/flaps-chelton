@@ -6,9 +6,7 @@ module.exports = {
     id: "questioninfo",
     name: "Question Info",
     desc: "Gets info on !question rate limit.",
-    execute() {
-        return new Promise((res, rej) => {
-            res(makeMessageResp("flaps", getRatelimit()));
-        });
+    async execute() {
+        return makeMessageResp("flaps", getRatelimit());
     },
 } satisfies FlapsCommand;

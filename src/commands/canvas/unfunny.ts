@@ -1,7 +1,5 @@
-import homodog from "../../lib/canvas/homodog";
 import unfunny from "../../lib/canvas/unfunny";
 import { getFileName, makeMessageResp } from "../../lib/utils";
-import { sendWebhook } from "../../lib/webhooks";
 import { FlapsCommand } from "../../types";
 
 module.exports = {
@@ -9,19 +7,13 @@ module.exports = {
     name: "Unfunny",
     desc: "Replaces all the unfunny in an image with funny.",
     needs: ["image"],
-    execute(args, buf, msg) {
-        return new Promise((res, rej) => {
-            unfunny(buf[0][0]).then((out) => {
-                res(
-                    makeMessageResp(
-                        "saul",
-                        "",
-                        msg.channel,
-                        out,
-                        getFileName("Canvas_Homodog", "png")
-                    )
-                );
-            });
-        });
+    async execute(args, imgbuf) {
+        let out = await unfunny(imgbuf[0][0]);
+        return makeMessageResp(
+            "flaps",
+            "",
+            out,
+            getFileName("Canvas_Unfunny", "png")
+        );
     },
 } satisfies FlapsCommand;
