@@ -1,8 +1,7 @@
-import { addBufferSequence, removeBuffer } from "../..";
+import { addBufferSequence } from "../..";
 import compressImage from "../ffmpeg/compressimage";
 import { ffmpegBuffer, gifPalette } from "../ffmpeg/ffmpeg";
 import { getVideoDimensions } from "../ffmpeg/getVideoDimensions";
-import videoGif from "../ffmpeg/videogif";
 import { imagemagickBuffer } from "./imagemagick";
 
 export default async function distortGIF(
@@ -24,7 +23,7 @@ export default async function distortGIF(
                             (factorStart +
                                 (i / frameCount) * (factorEnd - factorStart))
                     )
-                    .join("x")} -implode 0.25`,
+                    .join("x")}`,
                 scaled
             ).then((b) =>
                 ffmpegBuffer(`-i $BUF0 -vf scale=${dims.join("x")} $OUT`, [
