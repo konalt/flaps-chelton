@@ -115,12 +115,6 @@ export interface TTSSAMLine {
     text: string;
 }
 
-export interface FlapsMessageSource {
-    width: number;
-    height: number;
-    fileExt: string;
-}
-
 export enum TicTacToeCell {
     Empty,
     X,

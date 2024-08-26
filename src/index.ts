@@ -35,7 +35,6 @@ import {
     VoiceBasedChannel,
 } from "discord.js";
 log(`Importing modules (${C.BCyan}fs${C.White})...`, "start");
-import { writeFileSync } from "fs";
 import { readFile, readdir, writeFile } from "fs/promises";
 log(`Importing modules (${C.BCyan}mime-types${C.White})...`, "start");
 import { contentType, lookup } from "mime-types";
@@ -94,7 +93,6 @@ import {
     CommandResponseType,
     FlapsCommand,
     FlapsCommandResponse,
-    FlapsMessageSource,
     TicTacToeCell,
 } from "./types";
 log(`Importing modules (${C.BCyan}flaps/track${C.White})...`, "start");
@@ -290,172 +288,85 @@ function tenorURLToGifURL(url: string): Promise<string> {
     });
 }
 
-function getSourcesWithAttachments(msg: Message, types: string[]) {
-    return new Promise(async (resolve, reject) => {
-        async function l2(msg: Message) {
-            var atts = msg.attachments.first(types.length);
-            var attTypes = getTypes(atts);
-            let newAtts: [FlapsMessageSource, Buffer][] = [];
-            let n = 0;
-            for (const type of attTypes) {
-                if (type == "webp") {
-                    let attachment = await convertWebpAttachmentToPng(atts[n]);
-                    newAtts.push([
-                        {
-                            width: atts[n].width,
-                            height: atts[n].height,
-                            fileExt: "png",
-                        },
-                        attachment,
-                    ]);
-                } else {
-                    let buf = await downloadPromise(atts[n].url);
-                    newAtts.push([
-                        {
-                            width: atts[n].width,
-                            height: atts[n].height,
-                            fileExt: getFileExt(atts[n].url),
-                        },
-                        buf,
-                    ]);
-                }
-                n++;
-            }
-            attTypes = attTypes.map((t) => (t == "webp" ? "image" : t));
-            if (!atts[0] && !types[0].endsWith("?")) {
-                if (msg.content.startsWith("https://tenor.com/")) {
-                    var type = "gif";
-                    if (typesMatch([type], types)) {
-                        tenorURLToGifURL(msg.content).then((url) => {
-                            var id = uuidv4().replace(/-/gi, "");
-                            downloadPromise(
-                                url,
-                                "images/cache/" + id + ".gif"
-                            ).then(async (buffer) => {
-                                var name = "images/cache/" + id + ".gif";
-                                var dimensions = await getVideoDimensions([
-                                    buffer,
-                                    name,
-                                ]);
-                                resolve([
-                                    [
-                                        {
-                                            width: dimensions[0],
-                                            height: dimensions[1],
-                                        },
-                                        name,
-                                    ],
-                                ]);
-                            });
-                        });
-                    } else {
-                        reject(
-                            "Type Error (Attempted Tenor):\n" +
-                                getTypeMessage(["gif"], types)
-                        );
-                    }
-                } else if (
-                    msg.content.startsWith("https://cdn.discordapp.com/") ||
-                    msg.content.startsWith("https://media.discordapp.net/")
-                ) {
-                    var filename = msg.content.split(" ")[0].split("/")[
-                        msg.content.split("/").length - 1
-                    ];
-                    var type = getTypeSingular(lookup(filename) || "unknown");
-                    var ext =
-                        filename.split(".")[filename.split(".").length - 1];
-                    if (typesMatch([type], types)) {
-                        var id = uuidv4().replace(/-/gi, "");
-                        var npath = id + "." + ext;
-                        var zpath = "images/cache/" + npath;
-                        downloadPromise(msg.content.split(" ")[0], zpath).then(
-                            async (buffer) => {
-                                var dimensions = await getVideoDimensions([
-                                    buffer,
-                                    ext,
-                                ]);
-                                resolve([
-                                    [
-                                        {
-                                            width: dimensions[0],
-                                            height: dimensions[1],
-                                        },
-                                        zpath,
-                                    ],
-                                ]);
-                            }
-                        );
-                    } else {
-                        reject(
-                            "Type Error (Attempted Discord):\n" +
-                                getTypeMessage(["gif"], types)
-                        );
-                    }
-                } else {
-                    reject("No source found (content:" + msg.content + ")");
-                }
-            } else if (!typesMatch(attTypes, types)) {
-                reject("Type Error:\n" + getTypeMessage(attTypes, types));
-            } else {
-                var ids = newAtts.map(() => uuidv4().replace(/-/gi, ""));
-                var exts = newAtts.map((att) => "." + att[0].fileExt);
-                var proms = newAtts.map((att, i) =>
-                    writeFile("images/cache/" + ids[i] + exts[i], att[1])
+async function getSources(
+    commandMessage: Message,
+    types: string[],
+    localAttachments: Buffer[] = []
+): Promise<[Buffer, string][]> {
+    let msg = commandMessage;
+    if (!msg.attachments.first()) {
+        if (!msg.reference) {
+            if (!types[0].endsWith("?")) {
+                const channel = await msg.channel.fetch();
+                const messages = await channel.messages.fetch({
+                    limit: 10,
+                    before: msg.id,
+                });
+                const filteredMessages = messages.filter(
+                    (m) => m.author.id == msg.author.id
                 );
-                Promise.all(proms).then(() => {
-                    resolve(
-                        newAtts.map((att, i) => [
-                            att,
-                            "images/cache/" + ids[i] + exts[i],
-                        ])
-                    );
-                });
-            }
-        }
-        if (!msg.attachments.first()) {
-            if (!msg.reference) {
-                if (types[0].endsWith("?")) {
-                    l2(msg);
-                } else {
-                    const channel = await client.channels.fetch(msg.channel.id);
-                    if (!(channel instanceof TextChannel)) {
-                        return reject("No source found");
-                    }
-                    const messages = await channel.messages.fetch({
-                        limit: 10,
-                        before: msg.id,
-                    });
-                    const filteredMessages = messages.filter(
-                        (m) => m.author.id == msg.author.id
-                    );
-                    const lastMessage = filteredMessages.first(2)[1];
-                    if (!lastMessage) {
-                        reject("No source found");
-                    } else {
-                        l2(lastMessage);
-                    }
+                const lastMessage = filteredMessages.first(2)[1];
+                if (lastMessage) {
+                    msg = lastMessage;
                 }
-            } else {
-                msg.fetchReference().then((ref) => {
-                    l2(ref);
-                });
             }
         } else {
-            l2(msg);
+            msg = await msg.fetchReference();
         }
-    });
-}
-
-function getSources(msg: Message, types: string[]): Promise<string[]> {
-    return new Promise((resolve, reject) => {
-        getSourcesWithAttachments(msg, types)
-            .then((data: string[]) => {
-                resolve(data.map((x) => x[1]));
-            })
-            .catch((r) => {
-                reject(r);
-            });
-    });
+    }
+    var atts = msg.attachments.first(types.length);
+    var attTypes = getTypes(atts);
+    let sources: [Buffer, string][] = [];
+    let n = 0;
+    let m = 0;
+    for (const type of attTypes) {
+        if (atts[n].url.startsWith("%local")) {
+            sources.push([localAttachments[m], getFileExt(atts[n].url)]);
+            m++;
+        } else if (type == "webp") {
+            let attachment = await convertWebpAttachmentToPng(atts[n]);
+            sources.push([attachment, "png"]);
+        } else {
+            let buf = await downloadPromise(atts[n].url);
+            sources.push([buf, getFileExt(atts[n].url)]);
+        }
+        n++;
+    }
+    attTypes = attTypes.map((t) => (t == "webp" ? "image" : t));
+    if (!atts[0] && !types[0].endsWith("?")) {
+        if (msg.content.startsWith("https://tenor.com/")) {
+            if (typesMatch(["gif"], types)) {
+                let url = await tenorURLToGifURL(msg.content);
+                let buffer = await downloadPromise(url);
+                return [[buffer, "gif"]];
+            } else {
+                throw new Error(
+                    "Type Error:\n" + getTypeMessage(["gif"], types)
+                );
+            }
+        } else if (
+            msg.content.startsWith("https://cdn.discordapp.com/") ||
+            msg.content.startsWith("https://media.discordapp.net/")
+        ) {
+            let url = msg.content.split(" ")[0];
+            let ext = getFileExt(url);
+            var type = getTypeSingular(lookup(ext) || "unknown");
+            if (typesMatch([type], types)) {
+                let buffer = await downloadPromise(url);
+                return [[buffer, ext]];
+            } else {
+                throw new Error(
+                    "Type Error:\n" + getTypeMessage([type], types)
+                );
+            }
+        } else {
+            throw new Error("No source found");
+        }
+    } else if (!typesMatch(attTypes, types)) {
+        throw new Error("Type Error:\n" + getTypeMessage(attTypes, types));
+    } else {
+        return sources;
+    }
 }
 
 let errorChannel: TextBasedChannel;
@@ -554,7 +465,6 @@ export async function onMessage(msg: Message) {
     }
 
     let commandRan = false;
-    let commandFiles = [];
     if (msg.content.startsWith(COMMAND_PREFIX)) {
         let commandChain: [string, string[]][] = msg.content
             .split("==>")
@@ -562,6 +472,7 @@ export async function onMessage(msg: Message) {
                 cmdtxt.trim().split(" ")[0].substring(COMMAND_PREFIX.length),
                 cmdtxt.trim().split(" ").slice(1),
             ]);
+        let localAttachments: Buffer[] = [];
         let defatts: Collection<string, Attachment> = msg.attachments;
         let lastresp: FlapsCommandResponse = makeMessageResp(
             "flapserrors",
@@ -571,7 +482,6 @@ export async function onMessage(msg: Message) {
         for (const info of commandChain) {
             let commandId = info[0].toLowerCase();
             let commandArgs = info[1];
-            let isLast = index == commandChain.length - 1;
 
             let command = commands.find((cmd) =>
                 cmd.aliases.includes(commandId.toLowerCase())
@@ -603,7 +513,7 @@ export async function onMessage(msg: Message) {
                 commandRan = true;
                 errorChannel = msg.channel;
                 if (command.needs && command.needs.length > 0) {
-                    let srcs = await getSources(
+                    let sources = await getSources(
                         {
                             attachments: defatts,
                             reference: msg.reference,
@@ -612,47 +522,26 @@ export async function onMessage(msg: Message) {
                             channel: msg.channel,
                             author: msg.author,
                         } as Message,
-                        command.needs
+                        command.needs,
+                        localAttachments
                     ).catch((e) => sendWebhook("flaps", e, msg.channel));
-                    if (typeof srcs == "string") return;
-                    if (!srcs) return;
-                    let bufs: [Buffer, string][] = await Promise.all(
-                        srcs.map(async (s) => [
-                            await readFile(s),
-                            getFileExt(s),
-                        ])
-                    );
-                    for (const src of srcs) {
-                        commandFiles.push([src, 5]);
-                    }
+                    if (typeof sources == "string") return;
+                    if (!sources) return;
                     let response = await command.execute(
                         commandArgs,
-                        bufs,
+                        sources,
                         msg
                     );
+                    localAttachments = [];
                     switch (response.type) {
                         case CommandResponseType.Message:
                             if (response.filename) {
-                                writeFileSync(
-                                    file("cache/" + response.filename),
-                                    response.buffer
-                                );
-                                commandFiles.push([
-                                    file("cache/" + response.filename),
-                                    isLast &&
-                                    response.buffer.byteLength > 25 * 1.049e6
-                                        ? 21600
-                                        : 5,
-                                ]);
                                 defatts = new Collection();
                                 defatts.set("0", {
-                                    url:
-                                        "https://" +
-                                        DOMAIN +
-                                        "/cache/" +
-                                        response.filename,
+                                    url: "%local" + response.filename,
                                     contentType: contentType(response.filename),
                                 } as Attachment);
+                                localAttachments.push(response.buffer);
                             }
                             lastresp = response;
                             break;
@@ -666,26 +555,12 @@ export async function onMessage(msg: Message) {
                     switch (response.type) {
                         case CommandResponseType.Message:
                             if (response.filename) {
-                                writeFileSync(
-                                    file("cache/" + response.filename),
-                                    response.buffer
-                                );
-                                commandFiles.push([
-                                    file("cache/" + response.filename),
-                                    isLast &&
-                                    response.buffer.byteLength > 25 * 1.049e6
-                                        ? 21600
-                                        : 5,
-                                ]);
                                 defatts = new Collection();
                                 defatts.set("0", {
-                                    url:
-                                        "https://" +
-                                        DOMAIN +
-                                        "/cache/" +
-                                        response.filename,
+                                    url: "%local" + response.filename,
                                     contentType: contentType(response.filename),
                                 } as Attachment);
+                                localAttachments.push(response.buffer);
                             }
                             lastresp = response;
                             break;
@@ -704,9 +579,6 @@ export async function onMessage(msg: Message) {
                 lastresp.filename,
                 lastresp.components
             );
-            for (const file of commandFiles) {
-                scheduleDelete(file[0], file[1]);
-            }
         }
     }
 }
