@@ -12,6 +12,7 @@ i'm watching %n% with %a% %a% %n% rn, i cant believe they used %n% smh
 %c% driving to %l%: im a total %na%pilled %na%cel. i'm basically going %na%mode and giving %na%core vibes
 my %a% %n%: %c% i think %c% should kill you %na% style
 *%na%ifies %c% %an% style*
+charge it to tha %n%
 
 #CHARACTER
 cirno
@@ -48,6 +49,10 @@ lizzy
 doll
 glory hole worker
 hornet
+hello kitty
+joker
+twink
+brian eno
 
 #NOUN
 silverback
@@ -87,6 +92,8 @@ glory hole
 worker
 freaking
 smilk
+hello kitty cake
+stove
 
 #ADJECTIVE
 moggy
@@ -112,6 +119,7 @@ glorious
 freaky
 silky
 smooth
+surfing
 
 #LOCATION
 lamp
