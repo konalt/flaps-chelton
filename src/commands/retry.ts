@@ -24,6 +24,7 @@ module.exports = {
         }
         if (ref !== null) {
             onMessage(ref);
+            return makeMessageResp("", "");
         } else {
             return makeMessageResp("flaps", "run a command first or smt idk");
         }
