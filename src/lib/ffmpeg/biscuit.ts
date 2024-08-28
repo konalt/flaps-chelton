@@ -7,7 +7,7 @@ export async function biscuit(buffers: [Buffer, string][]) {
         await readFile(file("biscuit.mp4")),
         "mp4",
     ]);
-    var start_time = 3.67;
+    var start_time = 3.65;
     var length = 0.49;
 
     return ffmpegBuffer(
