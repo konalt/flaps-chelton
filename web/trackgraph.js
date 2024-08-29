@@ -382,6 +382,7 @@ function init(log, overrideStart, overrideEnd = 1) {
     let i = 0;
     for (const user of users) {
         let chain = userStatusChains[user];
+        if (!chain) continue;
         chain = chain.sort((a, b) => a[1] - b[1]);
         let y = margin + i * inc;
         ctx.fillStyle = getUserColor(user);
@@ -414,7 +415,6 @@ function init(log, overrideStart, overrideEnd = 1) {
         }
         i++;
     }
-    console.log(userStatusChains);
     ctx.globalAlpha = 1;
     ctx.fillStyle = "#888";
     ctx.strokeStyle = "#888";
