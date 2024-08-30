@@ -29,9 +29,11 @@ import {
     Collection,
     Interaction,
     Message,
+    MessageReaction,
     Partials,
     TextBasedChannel,
     TextChannel,
+    User,
     VoiceBasedChannel,
 } from "discord.js";
 log(`Importing modules (${C.BCyan}fs${C.White})...`, "start");
@@ -50,7 +52,7 @@ import {
 log(`Importing modules (${C.BCyan}flaps/download${C.White})...`, "start");
 import { downloadPromise } from "./lib/download";
 log(`Importing modules (${C.BCyan}flaps/ffmpeg${C.White})...`, "start");
-import { file } from "./lib/ffmpeg/ffmpeg";
+import { ffmpegBuffer, file } from "./lib/ffmpeg/ffmpeg";
 log(`Importing modules (${C.BCyan}flaps/gvd${C.White})...`, "start");
 import { getVideoDimensions } from "./lib/ffmpeg/getVideoDimensions";
 log(`Importing modules (${C.BCyan}flaps/fsserver${C.White})...`, "start");
@@ -225,6 +227,12 @@ function autoReact(msg: Message) {
         for (const trigger of triggers) {
             if (f.includes(flagName)) break;
             if (msg.content.toLowerCase().includes(trigger)) f.push(flagName);
+            if (
+                msg.attachments.first() &&
+                msg.attachments.first().contentType == "image/avif"
+            ) {
+                f.push("avif");
+            }
         }
     }
     if (f.includes("rember")) {
@@ -260,6 +268,9 @@ function autoReact(msg: Message) {
                 (emoji) => emoji.name === "828274359076126760"
             )
         );
+    if (f.includes("avif")) {
+        msg.react(process.env.AVIF_CONVERT_EMOJI_ID);
+    }
     if (f.includes("copper") && !msg.author.bot) {
         sendWebhook("flaps", "copper you say?", msg.channel as TextChannel);
     }
@@ -650,6 +661,29 @@ export async function onInteraction(interaction: Interaction) {
     }
 }
 
+export async function onReaction(reaction: MessageReaction, user: User) {
+    reaction = await reaction.fetch();
+    user = await user.fetch();
+    if (reaction.message.author.id !== user.id) return;
+    if (reaction.emoji.id !== process.env.AVIF_CONVERT_EMOJI_ID) return;
+    if (!reaction.message.attachments.first()) return;
+    let att = reaction.message.attachments.first();
+    if (att.contentType !== "image/avif") return;
+
+    reaction.message.reactions.removeAll();
+
+    let avif = await downloadPromise(att.url);
+    let png = await ffmpegBuffer("-i $BUF0 $OUT", [[avif, "avif"]], "png");
+
+    sendWebhook(
+        "flaps",
+        "here's your png, you're welcome <:wanna_convert_this_avif:1279202408139980800>",
+        reaction.message.channel,
+        png,
+        getFileName("Converted_AVIF", "png")
+    );
+}
+
 // fuck you node
 process.on("unhandledRejection", (reason: any, p) => {
     let r = "unknown";
@@ -670,6 +704,7 @@ process.on("unhandledRejection", (reason: any, p) => {
 
 client.on("messageCreate", onMessage);
 client.on("interactionCreate", onInteraction);
+client.on("messageReactionAdd", onReaction);
 
 export async function getAllUserStates(serverId: string) {
     let server = await client.guilds.fetch(serverId);
