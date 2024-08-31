@@ -13,6 +13,7 @@ i'm watching %n% with %a% %a% %n% rn, i cant believe they used %n% smh
 my %a% %n%: %c% i think %c% should kill you %na% style
 *%na%ifies %c% %an% style*
 charge it to tha %n%
+%c% look out theres a %a% %n%
 
 #CHARACTER
 cirno
@@ -50,9 +51,13 @@ doll
 glory hole worker
 hornet
 hello kitty
-joker
+surfing joker
 twink
 brian eno
+brian griffin
+stewie
+peter
+lois
 
 #NOUN
 silverback
@@ -94,6 +99,7 @@ freaking
 smilk
 hello kitty cake
 stove
+prius
 
 #ADJECTIVE
 moggy
@@ -120,6 +126,7 @@ freaky
 silky
 smooth
 surfing
+toyota
 
 #LOCATION
 lamp
@@ -137,3 +144,5 @@ store
 gloryhole
 freaky zone
 hornet's nest
+spooner st
+the game
