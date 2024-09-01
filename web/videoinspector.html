@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html
+    lang="en"
+    style="margin: 0px; padding: 0px; height: 100vh; overflow: hidden"
+>
+    <head>
+        <meta charset="UTF-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Video Inspector - Flaps Chelton</title>
+        <script
+            src="https://code.jquery.com/jquery-3.6.1.min.js"
+            integrity="sha256-o88AwQnZB+VDvE9tvIXrMQaPlFFSUTR+nldQm1LuPXQ="
+            crossorigin="anonymous"
+        ></script>
+        <link
+            rel="stylesheet"
+            href="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/css/bootstrap.min.css"
+            integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u"
+            crossorigin="anonymous"
+        />
+        <script
+            src="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/js/bootstrap.min.js"
+            integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
+            crossorigin="anonymous"
+        ></script>
+        <link rel="stylesheet" href="style.css" />
+    </head>
+
+    <body style="height: 100%; margin: 0; padding: 0; overflow: hidden">
+        <div id="ui" style="padding: 10px">
+            <h1>Video Inspector</h1>
+            <hr />
+            <label for="vw">Video Width</label>
+            <input type="number" name="vw" id="vw" value="512" />
+            <br />
+            <label for="vh">Video Height</label>
+            <input type="number" name="vh" id="vh" value="512" />
+            <br />
+            <label for="vfps">Video Framerate</label>
+            <input type="number" name="vfps" id="vfps" value="29.97" />
+            <br />
+            <label for="vid">Video</label>
+            <input type="file" name="vid" id="file" accept="video/*" />
+        </div>
+        <div
+            id="vui"
+            style="background-color: black; display: none; height: 100%"
+        >
+            <span
+                style="
+                    font-family: monospace;
+                    font-size: 20px;
+                    position: absolute;
+                    top: 0%;
+                    left: 0%;
+                    color: white;
+                    background-color: black;
+                    padding: 5px;
+                    pointer-events: none;
+                "
+                id="pos"
+                >0 0 0</span
+            >
+            <video
+                id="v"
+                style="height: 100%; margin: auto; display: block"
+                controls
+            ></video>
+        </div>
+        <script src="videoinspector.js"></script>
+    </body>
+</html>
