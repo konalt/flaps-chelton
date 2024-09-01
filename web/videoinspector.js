@@ -22,6 +22,10 @@ $("#file").change((e) => {
     });
 });
 
+let sx = 0;
+let sy = 0;
+let sf = 0;
+
 $("#v")[0].addEventListener("mousemove", (e) => {
     let w = $("#vw").val();
     let h = $("#vh").val();
@@ -30,5 +34,20 @@ $("#v")[0].addEventListener("mousemove", (e) => {
     let x = (e.offsetX / cr.width) * w;
     let y = (e.offsetY / cr.height) * h;
     let frame = $("#v")[0].currentTime * fps;
-    $("#pos").text(`${Math.floor(frame)} ${Math.round(x)} ${Math.round(y)}`);
+    sx = x;
+    sy = y;
+    sf = frame;
+    $("#pos").text(`${Math.floor(sf)} ${Math.round(sx)} ${Math.round(sy)}`);
+});
+
+document.addEventListener("keydown", (e) => {
+    let fps = $("#vfps").val();
+    if (e.code == "KeyQ") {
+        $("#v")[0].currentTime = $("#v")[0].currentTime - 1 / fps;
+    }
+    if (e.code == "KeyW") {
+        $("#v")[0].currentTime = $("#v")[0].currentTime + 1 / fps;
+    }
+    sf = $("#v")[0].currentTime * fps;
+    $("#pos").text(`${Math.floor(sf)} ${Math.round(sx)} ${Math.round(sy)}`);
 });
