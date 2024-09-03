@@ -100,6 +100,8 @@ smilk
 hello kitty cake
 stove
 prius
+animal
+lane
 
 #ADJECTIVE
 moggy
@@ -127,6 +129,9 @@ silky
 smooth
 surfing
 toyota
+merging
+animal
+so fucking funny
 
 #LOCATION
 lamp
@@ -146,3 +151,5 @@ freaky zone
 hornet's nest
 spooner st
 the game
+the lagtrain
+lane
