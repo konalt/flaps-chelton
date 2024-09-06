@@ -31,11 +31,11 @@ module.exports = {
         }
         let template =
             args.length > 0 ? args.join(" ") : sample(table.TEMPLATE);
-        template = template.replace(/%[ncal]+%/g, (s) => {
+        template = template.replace(/%[ncal]+%/gi, (s: string) => {
             let types = s.split("%")[1].split("");
             let search = [];
             for (const t of types) {
-                switch (t) {
+                switch (t.toLowerCase()) {
                     case "n":
                         search.push(...table.NOUN);
                         break;
@@ -50,7 +50,9 @@ module.exports = {
                         break;
                 }
             }
-            return sample(search);
+            let word = sample(search);
+            if (types[0].toUpperCase() == types[0]) word = word.toUpperCase();
+            return word;
         });
         return makeMessageResp("flaps", template);
     },
