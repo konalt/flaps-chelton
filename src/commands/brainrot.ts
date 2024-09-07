@@ -18,6 +18,7 @@ module.exports = {
             ADJECTIVE: [],
             LOCATION: [],
             CHARACTER: [],
+            VERB: [],
         };
         let read = "unknown";
         for (const l of data_raw.split("\n").map((r) => r.trim())) {
@@ -31,7 +32,7 @@ module.exports = {
         }
         let template =
             args.length > 0 ? args.join(" ") : sample(table.TEMPLATE);
-        template = template.replace(/%[ncal]+%/gi, (s: string) => {
+        template = template.replace(/%[ncalv]+%/gi, (s: string) => {
             let types = s.split("%")[1].split("");
             let search = [];
             for (const t of types) {
@@ -47,6 +48,9 @@ module.exports = {
                         break;
                     case "l":
                         search.push(...table.LOCATION);
+                        break;
+                    case "v":
+                        search.push(...table.VERB);
                         break;
                 }
             }
