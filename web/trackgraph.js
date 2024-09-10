@@ -1,3 +1,4 @@
+const CIRNO = false;
 const colors = {
     red: "e2322f",
     orange: "ea8d2a",
@@ -54,15 +55,28 @@ function attach(type) {
 }
 
 let userColors = {};
-let savedUserColors = {
-    ".simpleton.": "#2ecc71",
-    alternateolympus: "#3498db",
-    flaps: "#11806a",
-    fuzno: "#fd831a",
-    gruonk: "#f32bf6",
-    twistysoup: "#8b6bdd",
-    woodpigeon: "#e74242",
-};
+let savedUserColors;
+if (CIRNO) {
+    savedUserColors = {
+        ".simpleton.": "#2925fc",
+        alternateolympus: "#5451e2",
+        flaps: "#517ae2",
+        fuzno: "#7fa0f4",
+        gruonk: "#0c41c9",
+        twistysoup: "#56a5e2",
+        woodpigeon: "#7ddaed",
+    };
+} else {
+    savedUserColors = {
+        ".simpleton.": "#2ecc71",
+        alternateolympus: "#3498db",
+        flaps: "#11806a",
+        fuzno: "#fd831a",
+        gruonk: "#f32bf6",
+        twistysoup: "#8b6bdd",
+        woodpigeon: "#e74242",
+    };
+}
 if (localStorage.getItem("track_saved_usercolors")) {
     savedUserColors = JSON.parse(
         localStorage.getItem("track_saved_usercolors")
@@ -106,6 +120,15 @@ function piechart(users) {
         ctx.closePath();
         ctx.fill();
         a += (user[1] / totalMessages) * fr;
+    }
+    if (CIRNO) {
+        ctx.fillStyle = "white";
+        ctx.globalAlpha = 0.5;
+        ctx.font = `bold ${w}px sans-serif`;
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+        ctx.fillText("9", w / 2 + 7.5, w / 2 + 7.5, w);
+        ctx.globalAlpha = 1;
     }
     piechartLegend(users, totalMessages);
 }
@@ -155,8 +178,17 @@ function textInfo(startTimestamp, endTimestamp, totalMessages, users) {
     ctx.font = "14px sans-serif";
     ctx.textBaseline = "top";
     let text = "";
-    text += "Flaps Track File\n";
-    text += `${totalMessages} total messages by ${users.length} users\n`;
+    if (CIRNO) {
+        text += "⑨⑨⑨ Cirno Track File ⑨⑨⑨\n";
+        text += `${totalMessages} total messages by ${users.length} users\n`;
+    } else {
+        text += "Flaps Track File\n";
+        text += `${totalMessages
+            .toString()
+            .replace(/9/g, "⑨")} total messages by ${users.length
+            .toString()
+            .replace(/9/g, "⑨")} users\n`;
+    }
     let dateString = (ts) => {
         let d = new Date(ts);
         let x = (n) => {
@@ -211,6 +243,15 @@ function keywordPiechart(messages, keywordMask) {
         ctx.closePath();
         ctx.fill();
         a += (uc[1] / totalMessages) * fr;
+    }
+    if (CIRNO) {
+        ctx.fillStyle = "white";
+        ctx.globalAlpha = 0.5;
+        ctx.font = `bold ${w}px sans-serif`;
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+        ctx.fillText("9", w / 2 + 7.5, w / 2 + 7.5, w);
+        ctx.globalAlpha = 1;
     }
     keywordPiechartLegend(userCounts, totalMessages, keywordMask, messages);
 }
