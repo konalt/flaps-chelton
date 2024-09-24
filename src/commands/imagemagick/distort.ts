@@ -10,7 +10,7 @@ module.exports = {
     async execute(args, buf) {
         let result = await distort(
             buf[0][0],
-            Math.max(0.2, Math.min(parseFloat(args[0]) || 0.5, 2))
+            Math.max(0.05, Math.min(parseFloat(args[0]) || 0.5, 2))
         );
         return makeMessageResp(
             "ffmpeg",
