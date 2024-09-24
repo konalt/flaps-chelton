@@ -32,6 +32,9 @@ module.exports = {
         }
         let template =
             args.length > 0 ? args.join(" ") : sample(table.TEMPLATE);
+        if (args[0] == "sensual") {
+            template = table.TEMPLATE[0];
+        }
         template = template.replace(/%[ncalv]+%/gi, (s: string) => {
             let types = s.split("%")[1].split("");
             let search = [];
@@ -58,6 +61,6 @@ module.exports = {
             if (types[0].toUpperCase() == types[0]) word = word.toUpperCase();
             return word;
         });
-        return makeMessageResp("flaps", template);
+        return makeMessageResp("flaps", template.replace(/\\n/g, "\n"));
     },
 } satisfies FlapsCommand;
