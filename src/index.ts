@@ -896,6 +896,10 @@ async function init() {
         });
         registerFont("fonts/fancy.otf", { family: "Fancy", weight: "400" });
         registerFont("fonts/helvetica.ttf", { family: "Helvetica" });
+        registerFont("fonts/arialblack.ttf", {
+            family: "ArialBlack",
+            weight: "900",
+        });
         log("Fonts loaded.", "start");
         res();
     });
