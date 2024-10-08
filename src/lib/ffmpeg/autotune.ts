@@ -23,6 +23,7 @@ const NoteLUT = {
     D5: 587,
     DS5: 622,
     E5: 659,
+    F5: 698,
 };
 
 export default async function autotune(
