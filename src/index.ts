@@ -1,5 +1,5 @@
 import { config } from "dotenv";
-import { C, getMessageLog, log } from "./lib/logger";
+import { C, LM, getMessageLog, log } from "./lib/logger";
 config();
 export const VERBOSE = process.env.VERBOSE == "yes";
 export const DOMAIN = process.env.DOMAIN;
@@ -476,97 +476,115 @@ export async function onMessage(msg: Message) {
             "Command did not return a FlapsCommandResponse."
         );
         let index = 0;
-        for (const info of commandChain) {
-            let commandId = info[0].toLowerCase();
-            let commandArgs = info[1];
+        try {
+            for (const info of commandChain) {
+                let commandId = info[0].toLowerCase();
+                let commandArgs = info[1];
 
-            let command = commands.find((cmd) =>
-                cmd.aliases.includes(commandId.toLowerCase())
-            );
-
-            if (command) {
-                log(
-                    `${
-                        commandChain.length > 1
-                            ? `${C.BBlue}(${index + 1}/${
-                                  commandChain.length
-                              }) ${C.White}`
-                            : ""
-                    }Running command ${C.BCyan}${commandId}`,
-                    "cmd"
+                let command = commands.find((cmd) =>
+                    cmd.aliases.includes(commandId.toLowerCase())
                 );
-                if (commandId !== "retry") {
-                    let retryables = JSON.parse(
-                        (await readFile("retrycache.json")).toString()
+
+                if (command) {
+                    log(
+                        `${
+                            commandChain.length > 1
+                                ? `${C.BBlue}(${index + 1}/${
+                                      commandChain.length
+                                  }) ${C.White}`
+                                : ""
+                        }Running command ${C.BCyan}${commandId}`,
+                        "cmd"
                     );
-                    if (retryables[msg.author.id] != msg.id) {
-                        retryables[msg.author.id] = msg.id;
-                        await writeFile(
-                            "retrycache.json",
-                            JSON.stringify(retryables)
+                    if (commandId !== "retry") {
+                        let retryables = JSON.parse(
+                            (await readFile("retrycache.json")).toString()
                         );
+                        if (retryables[msg.author.id] != msg.id) {
+                            retryables[msg.author.id] = msg.id;
+                            await writeFile(
+                                "retrycache.json",
+                                JSON.stringify(retryables)
+                            );
+                        }
+                    }
+                    commandRan = true;
+                    errorChannel = msg.channel;
+                    if (command.needs && command.needs.length > 0) {
+                        let sources = await getSources(
+                            {
+                                attachments: defatts,
+                                reference: msg.reference,
+                                fetchReference: msg.fetchReference,
+                                client: client,
+                                channel: msg.channel,
+                                author: msg.author,
+                            } as Message,
+                            command.needs,
+                            localAttachments
+                        ).catch((e: Error) => {
+                            sendWebhook("flaps", e.message, msg.channel);
+                        });
+                        if (typeof sources == "string") return;
+                        if (!sources) return;
+                        let response = await command.execute(
+                            commandArgs,
+                            sources,
+                            msg
+                        );
+                        localAttachments = [];
+                        switch (response.type) {
+                            case CommandResponseType.Message:
+                                if (response.filename) {
+                                    defatts = new Collection();
+                                    defatts.set("0", {
+                                        url: "%local" + response.filename,
+                                        contentType: contentType(
+                                            response.filename
+                                        ),
+                                    } as Attachment);
+                                    localAttachments.push(response.buffer);
+                                }
+                                lastresp = response;
+                                break;
+                        }
+                    } else {
+                        let response = await command.execute(
+                            commandArgs,
+                            null,
+                            msg
+                        );
+                        switch (response.type) {
+                            case CommandResponseType.Message:
+                                if (response.filename) {
+                                    defatts = new Collection();
+                                    defatts.set("0", {
+                                        url: "%local" + response.filename,
+                                        contentType: contentType(
+                                            response.filename
+                                        ),
+                                    } as Attachment);
+                                    localAttachments.push(response.buffer);
+                                }
+                                lastresp = response;
+                                break;
+                        }
                     }
                 }
-                commandRan = true;
-                errorChannel = msg.channel;
-                if (command.needs && command.needs.length > 0) {
-                    let sources = await getSources(
-                        {
-                            attachments: defatts,
-                            reference: msg.reference,
-                            fetchReference: msg.fetchReference,
-                            client: client,
-                            channel: msg.channel,
-                            author: msg.author,
-                        } as Message,
-                        command.needs,
-                        localAttachments
-                    ).catch((e: Error) => {
-                        sendWebhook("flaps", e.message, msg.channel);
-                    });
-                    if (typeof sources == "string") return;
-                    if (!sources) return;
-                    let response = await command.execute(
-                        commandArgs,
-                        sources,
-                        msg
-                    );
-                    localAttachments = [];
-                    switch (response.type) {
-                        case CommandResponseType.Message:
-                            if (response.filename) {
-                                defatts = new Collection();
-                                defatts.set("0", {
-                                    url: "%local" + response.filename,
-                                    contentType: contentType(response.filename),
-                                } as Attachment);
-                                localAttachments.push(response.buffer);
-                            }
-                            lastresp = response;
-                            break;
-                    }
-                } else {
-                    let response = await command.execute(
-                        commandArgs,
-                        null,
-                        msg
-                    );
-                    switch (response.type) {
-                        case CommandResponseType.Message:
-                            if (response.filename) {
-                                defatts = new Collection();
-                                defatts.set("0", {
-                                    url: "%local" + response.filename,
-                                    contentType: contentType(response.filename),
-                                } as Attachment);
-                                localAttachments.push(response.buffer);
-                            }
-                            lastresp = response;
-                            break;
-                    }
-                }
+                index++;
             }
-            index++;
+        } catch (e) {
+            let r = e;
+            if (e.toString) {
+                r = e.toString();
+            }
+            lastresp.id = "flaps";
+            lastresp.content = `Execution Error in command \`${commandChain[index][0]}\`: \`\`\`${r}\`\`\``;
+            lastresp.buffer = null;
+            lastresp.filename = null;
+            lastresp.components = [];
+            log(`Execution Error Follows:`, "error");
+            console.log(e);
         }
 
         if (commandRan) {
