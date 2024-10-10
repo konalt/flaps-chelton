@@ -347,7 +347,7 @@ async function getSources(
         ) {
             let url = msg.content.split(" ")[0];
             let ext = getFileExt(url);
-            var type = getTypeSingular(lookup(ext) || "unknown");
+            var type = getTypeSingular(lookup(ext) || ext);
             if (typesMatch([type], types)) {
                 let buffer = await downloadPromise(url);
                 return [[buffer, ext]];
@@ -521,7 +521,9 @@ export async function onMessage(msg: Message) {
                         } as Message,
                         command.needs,
                         localAttachments
-                    ).catch((e) => sendWebhook("flaps", e, msg.channel));
+                    ).catch((e: Error) => {
+                        sendWebhook("flaps", e.message, msg.channel);
+                    });
                     if (typeof sources == "string") return;
                     if (!sources) return;
                     let response = await command.execute(
