@@ -7,6 +7,8 @@ export default function handleFFmpegCatch(
     resolveFn: (resp: FlapsCommandResponse) => void
 ): (error: string) => void {
     return function handler(error: string) {
+        console.log("FUCK" + error);
+
         resolveFn(
             makeMessageResp(
                 "ffmpeg",

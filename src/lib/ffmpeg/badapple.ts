@@ -1,5 +1,6 @@
 import { ffmpegBuffer } from "./ffmpeg";
 import { getVideoLength } from "./getVideoDimensions";
+import multitempo from "./multitempo";
 
 function tune(hz: number, base: number, noteDur: number) {
     return `asetrate=44100*(${hz}/${base}),aresample=44100,atempo=1/(${hz}/${base}),atrim=0:${noteDur}`;
@@ -45,7 +46,7 @@ export default async function badapple(
         if (!noteRate[note]) noteRate[note] = 0;
         noteRate[note]++;
     }
-    let filter = `[0:a]atempo=${speedupFactor},asplit=${
+    let filter = `[0:a]${multitempo(speedupFactor)},asplit=${
         Object.keys(noteRate).length
     }`;
     for (const n of Object.keys(noteRate)) {
