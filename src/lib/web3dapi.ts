@@ -3,8 +3,7 @@ import { Web3DAnimation } from "../types";
 import { dataURLToBuffer } from "./utils";
 
 let minimalArgs = [];
-let headless: boolean | "new" =
-    process.env.WEB3D_HEADLESS == "yes" ? "new" : false;
+let headless: boolean | "shell" = process.env.WEB3D_HEADLESS == "yes";
 
 export async function trackReport(trackFile: string): Promise<Buffer> {
     return new Promise<Buffer>(async (res, rej) => {
