@@ -34,7 +34,7 @@ module.exports = {
             SEXYMAN: [],
             AFTERLIFE: [],
             SAYING: [],
-            NAME: [args.length > 0 ? args.join(" ") : "Flaps"],
+            NAME: [args.length > 0 ? args.join(" ") : "This character"],
         };
         let read = "unknown";
         for (const l of data_raw.split("\n").map((r) => r.trim())) {
