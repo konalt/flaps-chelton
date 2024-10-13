@@ -1,20 +1,33 @@
 import { inspect } from "util";
 import { getFileName, makeMessageResp } from "../lib/utils";
-import { FlapsCommand } from "../types";
+import { FlapsCommand, FlapsMessageCommandResponse } from "../types";
 import { readdirSync } from "fs";
+import { Message } from "discord.js";
 
 let lib = { __pop: false };
-async function populate(dir = "") {
+let commands = { __pop: false };
+async function populate(dir = "", onlyExecute = false) {
     let o = { __pop: false };
-    for (const file of readdirSync("./dist/lib" + dir, {
+    for (const file of readdirSync("./dist/" + dir, {
         withFileTypes: true,
     })) {
         if (file.isDirectory()) {
-            o[file.name] = await populate(dir + "/" + file.name);
+            o[file.name] = await populate(dir + "/" + file.name, onlyExecute);
         } else {
-            let imp = await import("../lib" + dir + "/" + file.name);
+            let imp = await import("../" + dir + "/" + file.name);
             if (imp.default) {
                 imp = imp.default;
+            }
+            if (onlyExecute) {
+                let _imp = imp;
+                imp = async function execute(
+                    args: string[] | string = [],
+                    buffers: [Buffer, string][] = null,
+                    message: Message = null
+                ) {
+                    if (typeof args == "string") args = args.split(" ");
+                    return _imp.execute(args, buffers, message);
+                };
             }
             o[file.name.split(".")[0]] = imp;
         }
@@ -42,7 +55,10 @@ module.exports = {
     ],
     async execute(args, bufs, msg) {
         if (!lib.__pop) {
-            lib = await populate();
+            lib = await populate("lib");
+        }
+        if (!commands.__pop) {
+            commands = await populate("commands", true);
         }
         if (msg.author.id !== process.env.OWNER_TOKEN) {
             return makeMessageResp("flaps", "nuh uh uh!");
@@ -68,6 +84,12 @@ module.exports = {
                     evaluated,
                     getFileName("EvalOutput", outformat)
                 );
+            }
+            if (
+                typeof evaluated.id == "string" &&
+                typeof evaluated.content == "string"
+            ) {
+                return evaluated;
             }
             if (evaluated.toString) {
                 if (evaluated.toString() == "[object Object]") {
