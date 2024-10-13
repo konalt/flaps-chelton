@@ -1,0 +1,257 @@
+#ITEM
+a sword
+a knife
+a stuffed animal
+a maid dress
+an extensive manga collection
+a deck of yogioh cards
+half of a watermelon
+
+#SONG
+Let It Go
+Never Gonna Give You Up
+All Star
+the Ouran Highschool Host Club theme song
+every Britney Spears song
+every Hatsune Miku song
+
+#SEXUALITY
+sexuality
+gay
+bisexual
+asexual
+queer
+aromantic
+aro ace
+pansexual
+trans
+
+#FEAR
+spiders
+heights
+water
+dolls
+people
+doctors
+water
+
+#PET
+dog
+cat
+bird
+hamster
+snake
+squirrel
+lizard
+
+#SUBJECT
+Math
+English
+Science
+Social Studies
+Gym
+
+#STORE
+Hot Topic
+Claire's
+thrift stores
+
+#FANFIC
+AO3
+Wattpad
+
+#CHILD
+youngest
+middle
+oldest
+
+#INSTRUMENT
+piano
+guitar
+kazoo
+
+#SOCIAL
+introvert
+extrovert
+
+#CAN
+can
+can't
+
+#QUALITY
+awful
+great
+good
+bad
+
+#ACTION
+kill you in an instant
+beat you up
+hug you
+
+#ACTION2
+ if deserved
+ and will
+, but won't
+
+#FAVOURITE
+favourite
+least favourite
+
+#CATDOG
+cat
+dog
+
+#COMMA
+dude
+like
+fuck
+
+#LIKEHATE
+likes
+hates
+
+#POSITION
+top
+bottom
+switch
+
+#SEXYMAN
+sans
+Reigen
+
+#AFTERLIFE
+heaven
+hell
+purgatory
+
+#SAYING
+"no"
+they're sorry
+
+#TEMPLATE
+%NAME% always has %ITEM% on them.
+%NAME% is in your house.
+%NAME% shops exclusivaly at %STORE%.
+%NAME% does not know how to read.
+%NAME% knows the lyrics to %SONG% by heart.
+%NAME% was dropped out of a window as a child.
+%NAME% is very good at walking in platform heels.
+%NAME% is %SEXUALITY%.
+%NAME% is tumblr famous.
+%NAME% is oblivous to any and all romantic interest someone may show them.
+%NAME% has an embarrassing old deviant art account.
+%NAME% has %ITEM% under their bed.
+%NAME% has an incredible spice tolorance.
+%NAME% has an intense fear of %FEAR%.
+%NAME% had an emo phase.
+%NAME% is very good at using chopsticks.
+%NAME% likes to eat straight coffee beans.
+%NAME% is awful with technology and doesn't know how to use a smart phone.
+%NAME% killed Princess Diana.
+%NAME% can't sit in a chair properly.
+%NAME% set a public school on fire and got away with it.
+%NAME% could easily survive The Hunger Games.
+%NAME% has not showered in two and a half weeks.
+%NAME% forgets to eat sometimes.
+%NAME% would succumb to the fog.
+%NAME% is a great artist.
+%NAME% does not know what sleep is.
+%NAME% enjoys doing taxes.
+If someone they knew commited a crime, %NAME% would cover for them.
+%NAME% reads %FANFIC%.
+%NAME% got hit by a bus once. 
+%NAME% likes board games, but no one else wants to play with them.
+%NAME% is a cry baby.
+%NAME% listens to 80s music.
+It would not take much for %NAME% to turn evil.
+%NAME% will go feral. Watch out.
+%NAME% has a pet %PET%.
+%NAME% would buy clothes from the soup store.
+%NAME% is the %CHILD% child.
+%NAME% can play the %INSTRUMENT%.
+%NAME% knows fnaf lore.
+%NAME% is an %SOCIAL%.
+%NAME% %CAN% drive.
+%NAME% is not good with social cues.
+%NAME% is not allowed to drink energy drinks. 
+%NAME% tackles and wrestles people to show affection.
+%NAME% is afraid of doing anything without their parent's permission.
+%NAME% is a horrible liar.
+%NAME% will remind others in the midst of chaos how good <i>they're</i> being.
+%NAME% has fallen asleep at their desk while working in the middle of the night.
+%NAME% tells dad jokes.
+%NAME%'s favorite color is pink.
+%NAME% doesn't own a single pair of matching socks.
+%NAME% has an incredible long-term memory but an awful short-term memory.
+%NAME% has an incredible short-term memory but an awful long-term memory.
+%NAME% bites their nails.
+%NAME% is %QUALITY% with kids.
+%NAME% desperately needs a hug but doesn't know it and refuses to ask for one.
+If %NAME% likes someone, they will give them a pretty rock.
+%NAME% is very willing to eat inedible things.
+%NAME% steals other peoples clothes.
+%NAME% can %ACTION%%ACTION2%.
+%NAME% makes your mom jokes.
+%NAME%'s %FAVOURITES% subject in school was %SUBJECT%.
+%NAME% stole a lollipop at the checkout when they were 5 and they still feel guilty about it.
+If %NAME% was presented with an intergalactic portal, they would enter it without question.
+%NAME% knocks people over by hugging them.
+%NAME% cringes at their middle school yearbook photos.
+%NAME% instinctively cleans messes in their own house as well as other peoples.
+%NAME% sings in the shower.
+%NAME% nearly drowned in a river as a child.
+%NAME% sleeps in until noon.
+%NAME% speaks only in meme refrences.
+%NAME% has a diary that they write in with a glittery gel pen.
+%NAME% is a %CATDOG% person.
+If the sorce media was a musical, %NAME% would be the one character that asks why everyone is singing.
+%NAME% is smart but also very stupid.
+%NAME% is the gay cousin.
+%NAME% uses the word "%COMMA%" like a comma.
+%NAME% believes in ghosts and insists on trying to summon one at every sleepover.
+%NAME% wears Hello Kitty socks.
+%NAME% %LIKEHATE% being alone.
+%NAME% chews their nails when nervous.
+%NAME% almost drank the lethal dosage of caffine once. 
+%NAME% gets road rage.
+%NAME% has a mary sue oc.
+%NAME% sucks at saying tongue twisters.
+%NAME% needs a nightlight to sleep.
+%NAME% cries while watching disney movies.
+%NAME% has a roblox account.
+%NAME% is a %POSITION%.
+%NAME% is constantly singing for no reason.
+%NAME% is a simp.
+%NAME% can't spell resturaunt.
+%NAME% has chronic nightmares.
+%NAME% has been to prison.
+%NAME% watched the sonic movie.
+%NAME% voted %SEXYMAN% in the tumblr sexyman poll.
+%NAME% has punched a hole in their wall.
+%NAME% does intricate and expensive cosplays.
+%NAME% is a sleepwalker.
+%NAME% is a theatre kid.
+%NAME% wakes up on November 1st and starts decorating for Christmas.
+%NAME% is afraid to close their eyes in the shower.
+%NAME% gets into Twitter discourse.
+%NAME% has been canceled on Twitter.
+%NAME% has a very low alcohol tolerance.
+%NAME% fucked your mom.
+%NAME% uses two-in-one shampoo and conditioner.
+%NAME% bullies kids on roblox.
+%NAME% role plays on discord.
+%NAME% can't make the voices go away.
+%NAME% screams like an anime girl.
+%NAME% is going to %AFTERLIFE%.
+%NAME% watches My Little Pony.
+%NAME% was forced to eat cement as a child.
+%NAME% hacks their stats in every video game they play.
+%NAME% believes in Santa.
+%NAME% doesn't know how to say %SAYING%.
+%NAME% crashed a riding lawn mower into their fence.
+%NAME% is a very good singer.
+%NAME% cracks their knuckles very loudly.
+%NAME% is unemployed.
+%NAME% can't handle criticism.
+%NAME% gets bullied on roblox.
