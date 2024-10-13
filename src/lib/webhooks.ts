@@ -87,12 +87,22 @@ function baseSend(
                 filename: filename,
             },
         ];
+    } else if (content.length > 2000) {
+        form.append("files[1]", Buffer.from(content), "message.txt");
+        attachments = [
+            {
+                id: 1,
+                filename: "message.txt",
+            },
+        ];
+        content =
+            "The message was too long. Content is in the file message.txt.";
     }
 
     form.append(
         "payload_json",
         JSON.stringify({
-            content,
+            content: content,
             username,
             avatar_url,
             tts,
