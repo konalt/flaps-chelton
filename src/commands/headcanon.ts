@@ -7,6 +7,7 @@ module.exports = {
     name: "Headcanon Generator",
     desc: "Returns a random headcanon about the supplied character.",
     async execute(args) {
+        // this is from https://perchance.org/character-headcanon-generator-by-outergirlsound
         let data_raw = await readFile("./headcanons.txt", "utf-8");
         let table = {
             TEMPLATE: [],
