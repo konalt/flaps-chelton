@@ -1211,6 +1211,22 @@ export const users: WebhookBot[] = [
         id: "crowzi",
         name: "crowzi",
     },
+    {
+        id: "s1clem",
+        name: "Clementine (Season 1)",
+    },
+    {
+        id: "s2clem",
+        name: "Clementine (Season 2)",
+    },
+    {
+        id: "s3clem",
+        name: "Clementine (Season 3)",
+    },
+    {
+        id: "s4clem",
+        name: "Clementine (Season 4)",
+    },
 ];
 
 function spamtonify(text: string): string {
