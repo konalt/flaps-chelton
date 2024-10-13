@@ -10,6 +10,7 @@ export const TRACK_SERVER_REPORTS = process.env.TRACK_SERVER_REPORTS.split(",")
 log(`Importing modules (${C.BCyan}@discordjs/voice${C.White})...`, "start");
 import {
     AudioPlayer,
+    DiscordGatewayAdapterCreator,
     NoSubscriberBehavior,
     VoiceConnection,
     createAudioPlayer,
@@ -135,7 +136,8 @@ function flapsJoinVoiceChannel(channel: VoiceBasedChannel) {
     let connection = joinVoiceChannel({
         channelId: channel.id,
         guildId: channel.guildId,
-        adapterCreator: channel.guild.voiceAdapterCreator,
+        adapterCreator: channel.guild
+            .voiceAdapterCreator as unknown as DiscordGatewayAdapterCreator,
     });
     let player = createAudioPlayer({
         behaviors: {
