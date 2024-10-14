@@ -30,12 +30,13 @@ export async function trackReport(trackFile: string): Promise<Buffer> {
             encoding: "binary",
             type: "jpeg",
         });
+        buffer = Buffer.from(buffer);
         if (buffer instanceof Buffer) {
-            browser.close();
             res(buffer);
         } else {
             rej("dataElement.screenshot did not return a Buffer.");
         }
+        browser.close();
     });
 }
 
@@ -51,12 +52,13 @@ export async function gpu(): Promise<Buffer> {
             encoding: "binary",
             type: "jpeg",
         });
+        buffer = Buffer.from(buffer);
         if (buffer instanceof Buffer) {
-            browser.close();
             res(buffer);
         } else {
             rej("page.screenshot did not return a Buffer.");
         }
+        browser.close();
     });
 }
 
@@ -78,12 +80,13 @@ export async function getWeb3DAPIImage(
         await page.removeExposedFunction("flapsWeb3DFinished").catch(() => {});
         await page.exposeFunction("flapsWeb3DFinished", async (url: string) => {
             let buffer = dataURLToBuffer(url);
+            buffer = Buffer.from(buffer);
             if (buffer instanceof Buffer) {
-                browser.close();
                 res(buffer);
             } else {
                 rej("page.screenshot did not return a Buffer.");
             }
+            browser.close();
         });
         await page.evaluate(
             (id, options) => {
