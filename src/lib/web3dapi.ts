@@ -80,7 +80,6 @@ export async function getWeb3DAPIImage(
         await page.removeExposedFunction("flapsWeb3DFinished").catch(() => {});
         await page.exposeFunction("flapsWeb3DFinished", async (url: string) => {
             let buffer = dataURLToBuffer(url);
-            buffer = Buffer.from(buffer);
             if (buffer instanceof Buffer) {
                 res(buffer);
             } else {
