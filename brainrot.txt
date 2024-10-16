@@ -65,6 +65,7 @@ brian griffin
 stewie
 peter
 lois
+miku
 
 #NOUN
 silverback
