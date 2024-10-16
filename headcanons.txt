@@ -205,7 +205,7 @@ If %NAME% was presented with an intergalactic portal, they would enter it withou
 %NAME% speaks only in meme refrences.
 %NAME% has a diary that they write in with a glittery gel pen.
 %NAME% is a %CATDOG% person.
-If the sorce media was a musical, %NAME% would be the one character that asks why everyone is singing.
+If the source media was a musical, %NAME% would be the one character that asks why everyone is singing.
 %NAME% is smart but also very stupid.
 %NAME% is the gay cousin.
 %NAME% uses the word "%COMMA%" like a comma.
