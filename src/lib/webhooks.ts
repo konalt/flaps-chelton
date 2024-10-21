@@ -1,6 +1,8 @@
 import {
     Collection,
     DMChannel,
+    Embed,
+    EmbedBuilder,
     GuildChannel,
     MessageComponent,
     NewsChannel,
@@ -28,6 +30,7 @@ const defaultAvatar =
     "https://media.discordapp.net/attachments/838732607344214019/1075967910696210492/flapjpg.jpg";
 const defaultTTS = false;
 const defaultComponents = [];
+const defaultEmbeds = [];
 const maxFileSizeMiB = 25;
 
 async function baseEdit(
@@ -75,7 +78,8 @@ function baseSend(
     buf: Buffer | null = null,
     filename: string | null = null,
     tts: boolean = defaultTTS,
-    components: MessageComponent[] = defaultComponents
+    components: MessageComponent[] = defaultComponents,
+    embeds: EmbedBuilder[] = defaultEmbeds
 ): Promise<string> {
     let form = new FormData();
     let attachments = [];
@@ -108,6 +112,7 @@ function baseSend(
             tts,
             components,
             attachments,
+            embeds,
         })
     );
     return new Promise<string>((resolve, reject) => {
@@ -216,7 +221,8 @@ export async function sendWebhook(
     channel: TextBasedChannel,
     buffer: Buffer | null = null,
     filename: string | null = null,
-    components: MessageComponent[] | null = null
+    components: MessageComponent[] | null = null,
+    embeds: EmbedBuilder[] | null = null
 ): Promise<string> {
     const url = await getWebhookURL(channel as TextChannel);
     let user: WebhookBot = hooks.get(id);
@@ -250,7 +256,8 @@ export async function sendWebhook(
         buffer,
         filename,
         false,
-        components
+        components,
+        embeds
     );
     return msgid;
 }
