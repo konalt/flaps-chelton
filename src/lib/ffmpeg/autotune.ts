@@ -31,6 +31,7 @@ export default async function autotune(
     buffers: [Buffer, string][],
     song: string
 ): Promise<Buffer> {
+    if (song.startsWith("`")) song = song.split("`")[1];
     let dur = await getVideoLength(buffers[0]);
     let noteDur = 0.232;
     let speedupFactor = dur / noteDur;
@@ -42,7 +43,7 @@ export default async function autotune(
         if (!noteRate[note]) noteRate[note] = 0;
         noteRate[note]++;
     }
-    let filter = `[0:a]${multitempo(speedupFactor)},asplit=${
+    let filter = `[0:a]aresample=44100,${multitempo(speedupFactor)},asplit=${
         Object.keys(noteRate).length
     }`;
     for (const n of Object.keys(noteRate)) {
@@ -57,7 +58,7 @@ export default async function autotune(
         let tone = note;
         if (long || xlong || short) tone = tone.substring(0, tone.length - 1);
         filter += `[t${note}]`;
-        filter += tune(NoteLUT[tone], NoteLUT.A, noteDur);
+        filter += tune(NoteLUT[tone], NoteLUT.F5, noteDur);
         if (short) filter += ",atempo=2";
         if (long || xlong) filter += ",atempo=0.5";
         if (xlong) filter += ",atempo=0.5";
