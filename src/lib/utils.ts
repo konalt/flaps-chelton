@@ -91,12 +91,12 @@ export const types = {
     text: ["text/plain"],
     json: ["application/json"],
     gif: ["image/gif"],
-    audio: ["audio/mpeg", "audio/aac"],
+    audio: ["audio/mpeg", "audio/aac", "audio/x-wav"],
     webp: ["image/webp"],
 };
 
 export function getTypeSingular(ct: string) {
-    var type = "unknown";
+    var type = "unknown+" + ct;
     Object.entries(types).forEach((a) => {
         if (a[1].includes(ct)) type = a[0];
     });
@@ -106,7 +106,7 @@ export function getTypeSingular(ct: string) {
 export function getTypes(atts: Attachment[]) {
     return atts.map((att) => {
         var ct = att.contentType;
-        var type = "unknown";
+        var type = "unknown+" + ct;
         Object.entries(types).forEach((a) => {
             if (a[1].includes(ct)) type = a[0];
         });
@@ -268,4 +268,30 @@ export async function tenorURLToGifURL(url: string): Promise<string> {
         .substring(response.indexOf(searchString) + searchString.length)
         .split('"')[0];
     return newURL;
+}
+
+export function getAngle(x: number, y: number, x2: number, y2: number) {
+    let gameY = y2;
+    let gameX = x2;
+    let mouseY = y;
+    let mouseX = x;
+    let theta = 0;
+
+    if (mouseX > gameX) {
+        theta = Math.atan((gameY - mouseY) / (gameX - mouseX));
+    } else if (mouseX < gameX) {
+        theta = Math.PI + Math.atan((gameY - mouseY) / (gameX - mouseX));
+    } else if (mouseX == gameX) {
+        if (mouseY > gameY) {
+            theta = Math.PI / 2;
+        } else {
+            theta = (Math.PI / 2) * 3;
+        }
+    }
+
+    return theta;
+}
+
+export function distance(x1: number, y1: number, x2: number, y2: number) {
+    return Math.hypot(x2 - x1, y2 - y1);
 }
