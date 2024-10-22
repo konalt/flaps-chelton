@@ -3,6 +3,9 @@ import { getFileName, makeMessageResp } from "../lib/utils";
 import { FlapsCommand, FlapsMessageCommandResponse } from "../types";
 import { readdirSync } from "fs";
 import { Message } from "discord.js";
+import { client } from "../index";
+
+const __C = client;
 
 let lib = { __pop: false };
 let commands = { __pop: false };
