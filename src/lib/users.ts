@@ -1227,6 +1227,10 @@ export const users: WebhookBot[] = [
         id: "s4clem",
         name: "Clementine (Season 4)",
     },
+    {
+        id: "miku",
+        name: "hatsune miku",
+    },
 ];
 
 function spamtonify(text: string): string {
