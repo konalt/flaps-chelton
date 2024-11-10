@@ -4,10 +4,15 @@ import { Shoebill } from "../../types";
 const ShoebillW = 63;
 const ShoebillH = 84;
 
-export default (shoebills: Shoebill[], image: Buffer): Promise<Buffer> => {
+export default (
+    shoebills: Shoebill[],
+    image: Buffer,
+    overrideDims: [number, number] = [440, 228],
+    overrideImageSize: [number, number] = [ShoebillW, ShoebillH]
+): Promise<Buffer> => {
     return new Promise(async (resolve, reject) => {
         let img = await loadImage(image);
-        let c = createCanvas(400, 228);
+        let c = createCanvas(overrideDims[0], overrideDims[1]);
         let ctx = c.getContext("2d");
         ctx.strokeStyle = "#00ff00";
         ctx.lineWidth = 2;
@@ -18,10 +23,10 @@ export default (shoebills: Shoebill[], image: Buffer): Promise<Buffer> => {
             ctx.scale(scaleFactor, scaleFactor);
             ctx.drawImage(
                 img,
-                -ShoebillW / 2,
-                -ShoebillH / 2,
-                ShoebillW,
-                ShoebillH
+                -overrideImageSize[0] / 2,
+                -overrideImageSize[1] / 2,
+                overrideImageSize[0],
+                overrideImageSize[1]
             );
             ctx.restore();
         }
