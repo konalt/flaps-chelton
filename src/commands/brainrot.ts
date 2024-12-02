@@ -14,6 +14,7 @@ module.exports = {
         let data_raw = (await readFile("./brainrot.txt")).toString();
         let table = {
             TEMPLATE: [],
+            TEMPLATE_SENSUAL: [],
             NOUN: [],
             ADJECTIVE: [],
             LOCATION: [],
@@ -30,10 +31,11 @@ module.exports = {
             if (!table[read]) table[read] = [];
             table[read].push(l);
         }
+        table.TEMPLATE.push(...table.TEMPLATE_SENSUAL);
         let template =
             args.length > 0 ? args.join(" ") : sample(table.TEMPLATE);
         if (args[0] == "sensual") {
-            template = table.TEMPLATE[0];
+            template = sample(table.TEMPLATE_SENSUAL);
         }
         let cache: Record<string, string[]> = {};
         template = template.replace(/%[ncalv]+(~\d+)?%/gi, (s: string) => {

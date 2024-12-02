@@ -1,10 +1,9 @@
 #TEMPLATE
-"Do you want my.. %a% %n%?" murmured %c% sensually, running their fingers along %c%'s %n%.\n"N-not yet.." %c% said bashfully, rubbing their %a% %n%
 %c% calls to go to %l%
 i wish for more %n%
 get away from my %n% you %a% bastard
 sorry buddy %ncl% 3 blocks down
-we pull in %c%... just for %n%... %na%maxxing to become the ultimate %nc%... all for %n%... %c% sent us to %l%... but we're going even further into %l%...
+we pull in %c%... just for %n%... %na%maxxing to become the ultimate %nc%... all for %n%... %c% sent us to %l%... but we're going even further into %l~0%...
 gimme the %nc%shaker...
 2 %n%s having %n%
 i'll %n%-ify you with some %a% %n%
@@ -17,10 +16,13 @@ charge it to tha %n%
 %c% look out theres a %a% %n%
 %c% out here looking like a %a% %n%
 sometimes i fantasize about %c% %n%ing me up until i feel %a%
-"%c%-kun".. %c% whispered %a%lly.. their %a% %n% bouncing in the wind..
-i'm a %a% %n%, %c%, %n% me
+i'm a %a% %n%, %c%, %v% me
 does the %c% ever dare dream of a %a% %n%
-"Y-you said you would never give up your %a% %n%! But you gave it to %c%.." %c% yelled, their %a% %n% blowing in the wind.\n"It's not like that! W-we were in %l% together! That's it!" %c% stumbled over their words, clearly feeling %a%..
+
+#TEMPLATE_SENSUAL
+"Y-you said you would never give up your %a% %n%! But you gave it to %c%.." %c% yelled, their %a% %n% blowing in the wind.\n"It's not like that! W-we were in %l% together! That's it!" %c% stumbled over their words, clearly feeling %a%.
+"Do you want my.. %a% %n%?" murmured %c% sensually, running their fingers along %c%'s %n%.\n"N-not yet.." %c~1% said bashfully, rubbing their %a% %n%
+"%c%-kun".. %c% whispered %a%ly.. their %a% %n% bouncing in the wind..
 
 #CHARACTER
 cirno
