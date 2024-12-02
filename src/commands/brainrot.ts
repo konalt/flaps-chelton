@@ -35,8 +35,10 @@ module.exports = {
         if (args[0] == "sensual") {
             template = table.TEMPLATE[0];
         }
-        template = template.replace(/%[ncalv]+%/gi, (s: string) => {
-            let types = s.split("%")[1].split("");
+        let cache: Record<string, string[]> = {};
+        template = template.replace(/%[ncalv]+(~\d+)?%/gi, (s: string) => {
+            let types = s.split("%")[1].split("~")[0].split("");
+            if (!cache[types.join("")]) cache[types.join("")] = [];
             let search = [];
             for (const t of types) {
                 switch (t.toLowerCase()) {
@@ -58,6 +60,12 @@ module.exports = {
                 }
             }
             let word = sample(search);
+            let index = parseInt(s.split("%")[1].split("~")[1]);
+            if (cache[types.join("")][index]) {
+                word = cache[types.join("")][index];
+            } else {
+                cache[types.join("")].push(word);
+            }
             if (types[0].toUpperCase() == types[0]) word = word.toUpperCase();
             return word;
         });
