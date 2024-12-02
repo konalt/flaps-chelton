@@ -68,6 +68,7 @@ stewie
 peter
 lois
 miku
+sauron
 
 #NOUN
 silverback
@@ -112,6 +113,7 @@ stove
 prius
 animal
 lane
+whalebone
 
 #ADJECTIVE
 moggy
@@ -144,13 +146,14 @@ animal
 funny
 
 #LOCATION
+dunwall
 lamp
 roma takeaway
 3 blocks down
 the scarlet mansion
 2050
 motherbase
-the massachusetts walled woods
+walled woods
 vought tower
 copper 9
 outside
