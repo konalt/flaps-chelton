@@ -276,6 +276,9 @@ function autoReact(msg: Message) {
     if (f.includes("copper") && !msg.author.bot) {
         sendWebhook("flaps", "copper you say?", msg.channel as TextChannel);
     }
+    if (f.includes("malta") && !msg.author.bot) {
+        sendWebhook("flaps", "maltesers you say?", msg.channel as TextChannel);
+    }
 }
 
 function typesMatch(inTypes: string[], requiredTypes: string[]) {
