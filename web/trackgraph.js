@@ -41,7 +41,7 @@ function readFile(input, cb) {
 }
 
 // eslint-disable-next-line no-unused-vars
-function attach(type) {
+function attach(type, single) {
     let sid = $("#serverid").val();
     let e = () => {
         fetch("/api/track_" + type + "/" + sid)
@@ -50,8 +50,13 @@ function attach(type) {
                 init(r, null, Date.now());
             });
     };
-    setInterval(e, 500);
+    if (!single) {
+        setInterval(e, 500);
+    }
     e();
+    if (single) {
+        e();
+    }
 }
 
 let userColors = {};
@@ -315,6 +320,7 @@ let currentKeyword = 1;
 function init(log, overrideStart, overrideEnd = 1) {
     let start = Date.now();
     $("#loading").show();
+    $("#data").show();
     let messages = [];
     let userStatusChains = {};
     let startTimestamp = overrideStart;
@@ -497,10 +503,11 @@ function init(log, overrideStart, overrideEnd = 1) {
     }
     $("#loading").hide();
     $("#import").hide();
-    $("#data").show();
     let dur = Date.now() - start;
     $("#updatetime").text(dur);
-    let marker = document.createElement("div");
-    marker.id = "data-done-marker";
-    document.body.appendChild(marker);
+    if (!document.getElementById("data-done-marker")) {
+        let marker = document.createElement("div");
+        marker.id = "data-done-marker";
+        document.body.appendChild(marker);
+    }
 }
