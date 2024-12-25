@@ -13,13 +13,13 @@
 ;; For information about writing and modifying Nyquist plug-ins:
 ;; https://wiki.audacityteam.org/wiki/Nyquist_Plug-ins_Reference
 
-(setf DST 1)
+(setf DST 2)
 (setf MST 0)
 (setf BANDS 240)
 (setf TRACK-VL 100)
-(setf NOISE-VL 0)
-(setf RADAR-VL 0)
-(setf RADAR-F 100)
+(setf NOISE-VL 20)
+(setf RADAR-VL 50)
+(setf RADAR-F 10)
 
 
 ;; Return log to base 2 of x.

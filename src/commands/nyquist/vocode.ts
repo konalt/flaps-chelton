@@ -10,18 +10,10 @@ module.exports = {
     needs: ["video/audio", "audio?"],
     async execute(args, buf) {
         if (buf[0][1] == "mp4") {
-            let outvid = await ffmpegBuffer(
-                `-i $BUF0 -vf edgedetect $PRESET $OUT`,
-                [buf[0]],
-                "mp4"
-            );
             let result = await vocode(buf[0], buf[1]);
             let combined = await ffmpegBuffer(
-                `-i $BUF0 -i $BUF1 -map "0:v:0" -map "1:a:0" $PRESET $OUT`,
-                [
-                    [outvid, "mp4"],
-                    [result, "mp3"],
-                ],
+                `-i $BUF0 -i $BUF1 -map "0:v:0" -map "1:a:0" -af volume=1.5 -shortest $PRESET $OUT`,
+                [buf[0], [result, "mp3"]],
                 "mp4"
             );
             return makeMessageResp(
