@@ -8,7 +8,7 @@ module.exports = {
     desc: "fumofumo ᗜˬᗜ",
     needs: ["image"],
     async execute(args, buffers) {
-        let img = await getWeb3DAPIImage("fumo", {
+        let img = await getWeb3DAPIImage("cirno", {
             img: bufferToDataURL(buffers[0][0], "image/png"),
         });
         return makeMessageResp(
