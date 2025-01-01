@@ -15,9 +15,9 @@ const resolutions = {
     cirno: [800, 600],
     flag: [800, 600],
     capcut: [768, 768],
+    bed: [800, 600],
 };
-const NOTEXTURE =
-    "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAALUlEQVQ4T2O8w/DzvwoDOwOQZiCHZmRgYPhPrmaQPsZRF4yGwWg6AGfAgc8LADOwDrjWxfJ7AAAAAElFTkSuQmCC";
+const NOTEXTURE = "images/uv_grid_opengl.jpg";
 const fontLoader = new FontLoader();
 async function loadFont(fontName) {
     return new Promise((res) => {
@@ -98,8 +98,8 @@ async function _init(id, options = {}) {
     renderer.outputColorSpace = THREE.SRGBColorSpace;
     document.body.appendChild(renderer.domElement);
 
-    function quickLight(x, y, z) {
-        const light = new THREE.PointLight(0xffffff, 100, 100);
+    function quickLight(x, y, z, col = 0xffffff) {
+        const light = new THREE.PointLight(col, 100, 100);
         light.position.x = x;
         light.position.y = y;
         light.position.z = z;
@@ -107,11 +107,12 @@ async function _init(id, options = {}) {
         return light;
     }
 
-    function quickBigLight(x, y, z) {
-        const light = new THREE.PointLight(0xffffff, 5000, 5000);
+    function quickBigLight(x, y, z, col = 0xffffff) {
+        const light = new THREE.PointLight(col, 5000, 5000);
         light.position.x = x;
         light.position.y = y;
         light.position.z = z;
+        light.castShadow = true;
         scene.add(light);
         return light;
     }
@@ -680,6 +681,80 @@ async function _init(id, options = {}) {
 
             quickBigLight(30, 30, 30);
             quickBigLight(-30, 30, 30);
+            break;
+        }
+        case "bed": {
+            let img = options.img || NOTEXTURE;
+
+            camera.position.x = 14;
+            camera.position.y = 12;
+            camera.position.z = 7.5;
+            camera.fov = 40;
+            camera.updateProjectionMatrix();
+            camera.lookAt(-1, 3.5, 0);
+
+            let bed = await loadModel("models/bed.glb");
+            bed.rotation.y = -Math.PI / 2;
+            bed.position.y = 2;
+            let map = await loadTexture(img);
+            map.colorSpace = THREE.SRGBColorSpace;
+            map.flipY = false;
+            let material = new THREE.MeshStandardMaterial({
+                map,
+            });
+            let map2 = await loadTexture("images/bed_texture.png");
+            map2.colorSpace = THREE.SRGBColorSpace;
+            map2.flipY = false;
+            let material2 = new THREE.MeshStandardMaterial({
+                map: map2,
+            });
+            bed.castShadow = true;
+            bed.recieveShadow = true;
+            bed.children[0].material = material;
+            bed.children[1].material = material2;
+            bed.children[0].castShadow = true;
+            bed.children[1].castShadow = true;
+            bed.children[0].receiveShadow = true;
+            bed.children[1].receiveShadow = true;
+            scene.add(bed);
+
+            let ground = new THREE.Mesh(
+                new THREE.PlaneGeometry(30, 30),
+                new THREE.MeshStandardMaterial({
+                    color: 0xe6f1f2,
+                })
+            );
+            ground.receiveShadow = true;
+            ground.rotation.x = -Math.PI / 2;
+            scene.add(ground);
+            let wall1 = new THREE.Mesh(
+                new THREE.PlaneGeometry(20, 15),
+                new THREE.MeshStandardMaterial({
+                    color: 0x66ddff,
+                })
+            );
+            wall1.position.y = 7;
+            wall1.position.z = -6;
+            wall1.receiveShadow = true;
+            scene.add(wall1);
+            let wall2 = new THREE.Mesh(
+                new THREE.PlaneGeometry(21, 15),
+                new THREE.MeshStandardMaterial({
+                    color: 0x66ddff,
+                })
+            );
+            wall2.position.y = 7;
+            wall2.position.x = -7;
+            wall2.receiveShadow = true;
+            wall2.rotation.y = Math.PI / 2;
+            scene.add(wall2);
+
+            quickLight(10, 7, 7);
+            quickLight(0, 10, 0);
+            quickLight(15, 3, 1);
+
+            scene.add(new THREE.AmbientLight(0xffffff, 0.2));
+            break;
         }
     }
 
