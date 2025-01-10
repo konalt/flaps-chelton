@@ -996,7 +996,7 @@ async function init() {
         }
         if (Math.random() < 1 / 100000) {
             sendWebhook(
-                "nick",
+                Math.random() < 0.3 ? "coach" : "nick",
                 "pills here",
                 client.channels.cache.get(
                     process.env.MAIN_CHANNEL
