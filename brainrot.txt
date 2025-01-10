@@ -18,10 +18,11 @@ charge it to tha %n%
 sometimes i fantasize about %c% %n%ing me up until i feel %a%
 i'm a %a% %n%, %c%, %v% me
 does the %c% ever dare dream of a %a% %n%
+gimme one %n%. haha fuck you %c% i want two %n~0%s
 
 #TEMPLATE_SENSUAL
 "Y-you said you would never give up your %a% %n%! But you gave it to %c%.." %c% yelled, their %a% %n% blowing in the wind.\n"It's not like that! W-we were in %l% together! That's it!" %c% stumbled over their words, clearly feeling %a%.
-"Do you want my.. %a% %n%?" murmured %c% sensually, running their fingers along %c%'s %n%.\n"N-not yet.." %c~1% said bashfully, rubbing their %a% %n%
+"Do you want my.. %a% %n%?" murmured %c% sensually, running their fingers along %c%'s %n%.\n"N-not yet.." %c~1% said bashfully, rubbing their %a% %n%.
 "%c%-kun".. %c% whispered %a%ly.. their %a% %n% bouncing in the wind..
 
 #CHARACTER
@@ -70,6 +71,7 @@ lois
 miku
 sauron
 the outsider
+mf doom
 
 #NOUN
 silverback
@@ -115,6 +117,7 @@ prius
 animal
 lane
 whalebone
+woodfish
 
 #ADJECTIVE
 moggy
@@ -145,8 +148,12 @@ toyota
 merging
 animal
 funny
+drunk
+stoned
 
 #LOCATION
+o block
+the projects
 dunwall
 lamp
 roma takeaway
@@ -168,6 +175,8 @@ the game
 the lagtrain
 ohio
 school
+the fridge
+detroit
 
 #VERB
 go
@@ -183,3 +192,4 @@ sneak
 surf
 play
 marry
+drink
