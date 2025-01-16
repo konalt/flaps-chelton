@@ -123,8 +123,10 @@ router.post("/runcmd", (req, res) => {
     log(`API request for command ${C.Green}${req.body.id}${C.White}...`, "api");
     if (command) {
         var files = (req.body.files || []).map((x: string) => xbuf(x));
+        let args = (req.body.args || "").split(" ");
+        if (args.length == 1 && args[0].length == 0) args = [];
         command
-            .execute((req.body.args || "").split(" "), files, {
+            .execute(args, files, {
                 channel: null,
             } as Message)
             .then((response) => {
