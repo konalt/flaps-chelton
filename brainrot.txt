@@ -21,58 +21,57 @@ does the %c% ever dare dream of a %a% %n%
 gimme one %n%.\nhaha fuck you %c% i want two %n~0!%s
 
 #TEMPLATE_SENSUAL
-"Y-you said you would never give up your %a% %n%! But you gave it to %c%..." %c% yelled, their %a% %n?% blowing in the wind.\n"It's not like that! W-we were in %l% together! That's it!"\n%c% stumbled over their words, clearly feeling %a%.
-"Do you want my... %a% %n?%?" murmured %c% sensually, running their fingers along %c%'s %n%.\n"N-not yet.." %c~1% said bashfully, rubbing their %a% %n%.
-"%c%-kun..." %c% whispered %a%ly, their %a% %n% bouncing in the wind...
+"Y-you said you would never give up your %a% %n%! But you gave it to %c%..." %c% yelled, %g~0+2% %a% %n?% blowing in the wind.\n"It's not like that! W-we were in %l% together! That's it!"\n%c% stumbled over %g~2+2% words, clearly feeling %a%.
+"Do you want my... %a% %n?%?" murmured %c% %a!%, running %g~0+2% fingers along %c%'s %n%.\n"N-not yet.." %c~1% said bashfully, rubbing %g~1+2% %a% %n%.
+"%c%-kun..." %c% whispered %a!%, %g~0+2% %a% %n% bouncing in the wind...
 
 #CHARACTER
-cirno
-frank
-big boss
-reimu
-ocelot
-genie
-snake
-kaz
-huey
-venom snake
-venom pimpy
-redrum
-pimpy
-doctor
-pagliacci
-marisa
-heisenberg
-freud
-mr beast
-darkwood guy
-starlight
-homelander
-hughie
-flaps
-old norm
-uzi
-n
-v
-j
-thad
-lizzy
-doll
-glory hole worker
-hornet
-hello kitty
-surfing joker
-twink
-brian eno
-brian griffin
-stewie
-peter
-lois
-miku
-sauron
-the outsider
-mf doom
-the dummy
+f@cirno
+m@frank
+m@big boss
+f@reimu
+m@ocelot
+m@genie
+m@snake
+m@kaz
+m@huey
+m@venom snake
+m@venom pimpy
+m@redrum
+m@pimpy
+m@doctor
+m@pagliacci
+f@marisa
+m@heisenberg
+m@freud
+m@mr beast
+m@darkwood guy
+f@starlight
+m@homelander
+m@hughie
+m@flaps
+m@old norm
+f@uzi
+m@n
+f@v
+f@j
+m@thad
+f@lizzy
+f@doll
+r@glory hole worker
+f@hornet
+f@hello kitty
+m@surfing joker
+m@twink
+m@brian
+m@stewie
+m@peter
+f@lois
+f@miku
+m@sauron
+m@the outsider
+m@mf doom
+m@dummy
 
 #NOUN
 silverback/silverbacks
@@ -122,7 +121,6 @@ moggy/moggily
 bald/baldly
 punished/in a punished way
 invisible/invisibly
-bape/bapely
 solid/solidly
 venom/venomly
 pimpy/pimpily
@@ -141,7 +139,6 @@ glorious/gloriously
 freaky/freakily
 silky/silkily
 smooth/smoothly
-animal/animally
 funny/funnily
 drunk/drunkenly
 stoned/stonedly
@@ -174,17 +171,17 @@ the fridge
 detroit
 
 #VERB
-go
-run
-rizz
-suck
-fuck
-mog
-mew
-drive
-crash
-sneak
-surf
-play
-marry
-drink
+go/going
+run/running
+rizz/rizzing
+suck/sucking
+fuck/fucking
+mog/mogging
+mew/mewing
+drive/driving
+crash/crashing
+sneak/sneaking
+surf/surfing
+play/playing
+marry/marrying
+drink/drinking
