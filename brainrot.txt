@@ -1,29 +1,29 @@
 #TEMPLATE
 %c% calls to go to %l%
-i wish for more %n%
-get away from my %n% you %a% bastard
+i wish for more %n!%
+get away from my %n?% you %a% bastard
 sorry buddy %ncl% 3 blocks down
-we pull in %c%... just for %n%... %na%maxxing to become the ultimate %nc%... all for %n%... %c% sent us to %l%... but we're going even further into %l~0%...
+we pull in %c%... just for %n?%... %nav%maxxing to become the ultimate %nc%... all for %n?%... %c% sent us to %l%... but we're going even further into %l~0%...
 gimme the %nc%shaker...
-2 %n%s having %n%
-i'll %n%-ify you with some %a% %n%
-i'm watching %n% with %a% %a% %n% rn, i cant believe they used %n% smh
+2 %n!% having %n%
+i'll %v% you with some %a% %n?%
+i'm watching %n% with %a% %a% %n?% rn, i cant believe they used %n!% smh
 %c% really did %n% at %l%. 38 %a% %n%s later? shut up.
 %c% driving to %l%: im a total %na%pilled %na%cel. i'm basically going %na%mode and giving %na%core vibes
-my %a% %n%: %c% i think %c% should kill you %na% style
-*%na%ifies %c% %an% style*
-charge it to tha %n%
+my %a% %n%: %c% i think %c% should %v% you %na% style
+*%v%s %c% %an% style*
+charge it to tha %n?%
 %c% look out theres a %a% %n%
 %c% out here looking like a %a% %n%
-sometimes i fantasize about %c% %n%ing me up until i feel %a%
+sometimes i fantasize about %c% %v%ing me up until i feel %a%
 i'm a %a% %n%, %c%, %v% me
 does the %c% ever dare dream of a %a% %n%
-gimme one %n%. haha fuck you %c% i want two %n~0%s
+gimme one %n%.\nhaha fuck you %c% i want two %n~0!%s
 
 #TEMPLATE_SENSUAL
-"Y-you said you would never give up your %a% %n%! But you gave it to %c%.." %c% yelled, their %a% %n% blowing in the wind.\n"It's not like that! W-we were in %l% together! That's it!" %c% stumbled over their words, clearly feeling %a%.
-"Do you want my.. %a% %n%?" murmured %c% sensually, running their fingers along %c%'s %n%.\n"N-not yet.." %c~1% said bashfully, rubbing their %a% %n%.
-"%c%-kun".. %c% whispered %a%ly.. their %a% %n% bouncing in the wind..
+"Y-you said you would never give up your %a% %n%! But you gave it to %c%..." %c% yelled, their %a% %n?% blowing in the wind.\n"It's not like that! W-we were in %l% together! That's it!"\n%c% stumbled over their words, clearly feeling %a%.
+"Do you want my... %a% %n?%?" murmured %c% sensually, running their fingers along %c%'s %n%.\n"N-not yet.." %c~1% said bashfully, rubbing their %a% %n%.
+"%c%-kun..." %c% whispered %a%ly, their %a% %n% bouncing in the wind...
 
 #CHARACTER
 cirno
@@ -72,52 +72,50 @@ miku
 sauron
 the outsider
 mf doom
+the dummy
 
 #NOUN
-silverback
-car
-lamp
-concrete
-bad apple
-organ
-bug
-birthday
-bape
-wishes
-rizzler
-deer
-revenge
-thug
-poland
-mewing
-supe
-gyatt
-rizz
-brainrot
-code
-programmer
-beer
-truck
-sex
-car
-rifle
-drone
-mogging
-molchat doma
-store
-food
-produce
-glory hole
-worker
-freaking
-smilk
-hello kitty cake
-stove
-prius
-animal
-lane
-whalebone
-woodfish
+silverback/silverbacks
+car/cars
+lamp/lamps
+concrete/concrete
+bad apple/bad apples
+organ/organs
+bug/bugs
+birthday/birthdays
+bape/bapes
+wish/wishes
+rizzler/rizzlers
+deer/deer
+revenge/revenges
+thug/thugs
+poland/polands
+supe/supes
+gyatt/gyatts
+rizz/rizzes
+brainrot/brainrots
+code/codes
+programmer/programmers
+beer/beers
+truck/trucks
+sex/sexes
+rifle/rifles
+drone/drones
+molchat doma/molchat domas
+store/stores
+food/foods
+produce/produce
+glory hole/glory holes
+worker/workers
+smilk/smilk
+hello kitty cake/hello kitty cakes
+stove/stoves
+prius/priuses
+animal/animals
+lane/lanes
+whalebone/whalebones
+woodfish/woodfish
+dummy/dummies
 
 #ADJECTIVE
 moggy
