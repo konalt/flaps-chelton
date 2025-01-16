@@ -39,4 +39,30 @@
 -   `FLAPS_FFMPEG_SERVER_HEALTH_HOST` is the WebSocket address for an instance of konalt/flaps-ffmpeg-server.
 -   `DUO_NOTIF_CHANNEL` is the Discord Channel ID for the channel to send a message at 23:30 every day to remind the bot owner to do the FUCKING duolingo lesson
 
+## brainrot.txt info:
+
+`brainrot.txt` is the file with all the data needed for `!brainrot`.
+
+### Sections:
+-   `#TEMPLATE` - List of default templates.
+-   `#TEMPLATE_SENSUAL` - List of default templates, specifically sensual ones. Can be forced with `!brainrot sensual`.
+-   `#CHARACTER` - List of characters to include. All character names should be preceded with a gender (for example, `m@flaps`). Possible genders are `m` (male), `f` (female), and `t` (they). `r` can also be used to pick one at random.
+-   `#NOUN` - List of nouns. Plurals are placed after a `/` (for example, `apple/apples`).
+-   `#ADJECTIVE` - List of adjectives. Adverbs are placed after a `/` (for example, `fast/quickly`).
+-   `#LOCATION` - List of locations.
+-   `#VERB` - List of verbs. Present participles are placed after a `/` (for example, `run/running`).
+
+### Replacements:
+In all templates, and optionally in command arguments, replacement keys are used. These are codes between percent signs to tell the command what to replace the key with.
+#### Examples:
+-   `%n%` - Replaces with a random singular noun.
+-   `%na%` - Replaces with a random singular noun or adjective.
+-   `%n~0%` - Replaces with the first randomly chosen singular noun in the sentence.
+-   `%g~0+2%` - Replaces with the possessive pronoun corresponding to the gender of the first randomly chosen character in the sentence.
+-   `%n!%` - Replaces with a random plural noun.
+-   `%n?%` - Replaces with a random singular or plural noun.
+-   `%ncalv%` - Replaces with a random singular noun, character, adjective, location or verb.
+-   `%a!%` - Replaces with an adverb.
+*Replacement keys can also be put in capital letters to force the replacement into capitals. Example: `%N~0%`*
+
 Feel free to open an issue if you need anything!
