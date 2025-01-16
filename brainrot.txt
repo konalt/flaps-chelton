@@ -21,7 +21,7 @@ does the %c% ever dare dream of a %a% %n%
 gimme one %n%.\nhaha fuck you %c% i want two %n~0!%s
 
 #TEMPLATE_SENSUAL
-"Y-you said you would never give up your %a% %n%! But you gave it to %c%..." %c% yelled, %g~0+2% %a% %n?% blowing in the wind.\n"It's not like that! W-we were in %l% together! That's it!"\n%c% stumbled over %g~2+2% words, clearly feeling %a%.
+"Y-you said you would never give up your %a% %n%! But you gave it to %c%..." %c% yelled, %g~1+2% %a% %n?% blowing in the wind.\n"It's not like that! W-we were in %l% together! That's it!"\n%c% stumbled over %g~2+2% words, clearly feeling %a%.
 "Do you want my... %a% %n?%?" murmured %c% %a!%, running %g~0+2% fingers along %c%'s %n%.\n"N-not yet.." %c~1% said bashfully, rubbing %g~1+2% %a% %n%.
 "%c%-kun..." %c% whispered %a!%, %g~0+2% %a% %n% bouncing in the wind...
 
@@ -133,7 +133,6 @@ polish/polishly
 wooden/woodenly
 crooked/crookedly
 rizzy/rizzily
-normal/normally
 autistic/autistically
 glorious/gloriously
 freaky/freakily
