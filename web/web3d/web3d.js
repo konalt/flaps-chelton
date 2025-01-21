@@ -12,6 +12,7 @@ const resolutions = {
     ecube_sliced: [512, 512],
     heartlocket: [400, 300],
     cubespin: [512, 512],
+    sphere: [512, 512],
     cirno: [800, 600],
     flag: [800, 600],
     capcut: [768, 768],
@@ -489,6 +490,28 @@ async function _init(id, options = {}) {
                 let fullRotate = Math.PI * 2;
                 cube.rotation.x = fractionalTurn * fullRotate;
                 cube.rotation.y = fractionalTurn * fullRotate;
+            };
+            break;
+        }
+        case "sphere": {
+            camera.position.x = 0;
+            camera.position.y = 0;
+            camera.position.z = 4;
+            camera.fov = 42;
+            camera.updateProjectionMatrix();
+            camera.lookAt(0, 0, 0);
+
+            let map = await loadTexture(options.img);
+            map.colorSpace = THREE.SRGBColorSpace;
+            const sphere = new THREE.Mesh(
+                new THREE.SphereGeometry(1),
+                new THREE.MeshBasicMaterial({ map })
+            );
+            scene.add(sphere);
+
+            stepFunction = (fractionalTurn = 0) => {
+                let fullRotate = Math.PI * 2;
+                sphere.rotation.y = fractionalTurn * fullRotate;
             };
             break;
         }
