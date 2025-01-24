@@ -925,6 +925,20 @@ async function init() {
             family: "ArialBlack",
             weight: "900",
         });
+        // Open Sans
+        for (let i = 300; i <= 800; i += 100) {
+            registerFont(`fonts/opensans/${i}.ttf`, {
+                family: "Open Sans",
+                weight: i.toString(),
+                style: "normal",
+            });
+            registerFont(`fonts/opensans/${i}i.ttf`, {
+                family: "Open Sans",
+                weight: i.toString(),
+                style: "italic",
+            });
+        }
+
         log("Fonts loaded.", "start");
         res();
     });
