@@ -15,15 +15,16 @@ my %a% %n%: %c% i think %c% should %v% you %na% style
 charge it to tha %n?%
 %c% look out theres a %a% %n%
 %c% out here looking like a %a% %n%
-sometimes i fantasize about %c% %v%ing me up until i feel %a%
+sometimes i fantasize about %c% %v!% me up until i feel %a%
 i'm a %a% %n%, %c%, %v% me
 does the %c% ever dare dream of a %a% %n%
 gimme one %n%.\nhaha fuck you %c% i want two %n~0!%s
+could %c% be our idol? could %g~0+0% lead us through %l%?
 
 #TEMPLATE_SENSUAL
 "Y-you said you would never give up your %a% %n%! But you gave it to %c%..." %c% yelled, %g~1+2% %a% %n?% blowing in the wind.\n"It's not like that! W-we were in %l% together! That's it!"\n%c% stumbled over %g~2+2% words, clearly feeling %a%.
 "Do you want my... %a% %n?%?" murmured %c% %a!%, running %g~0+2% fingers along %c%'s %n%.\n"N-not yet.." %c~1% said bashfully, rubbing %g~1+2% %a% %n%.
-"%c%-kun..." %c% whispered %a!%, %g~0+2% %a% %n% bouncing in the wind...
+"%c%-kun..." %c% whispered %a!%, %g~1+2% %a% %n% bouncing in the wind...
 
 #CHARACTER
 f@cirno
@@ -41,6 +42,7 @@ m@redrum
 m@pimpy
 m@doctor
 m@pagliacci
+f@pomni
 f@marisa
 m@heisenberg
 m@freud
@@ -184,3 +186,5 @@ surf/surfing
 play/playing
 marry/marrying
 drink/drinking
+beat/beating
+cry/crying
