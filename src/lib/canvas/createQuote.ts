@@ -300,13 +300,14 @@ function getQuoteBodyHeight(
     content: string,
     displayName: string,
     username: string,
-    ctx: CanvasRenderingContext2D
+    ctx: CanvasRenderingContext2D,
+    stepValue: number
 ) {
     currentLetterSpacing = contentLetterSpacing;
     let contentHeight =
         getTextHeight(
             content,
-            contentSize,
+            contentSize * stepValue,
             contentWeight,
             width - height,
             ctx
@@ -350,21 +351,34 @@ export default async function createQuote(
     ctx.fillStyle = gradient;
     ctx.fillRect(0, 0, width, height);
 
-    let [contentHeight, displayNameHeight, usernameHeight] = getQuoteBodyHeight(
-        content,
-        displayName,
-        username,
-        ctx
-    );
+    let stepValue = 1;
+    let totalHeight = Infinity,
+        contentHeight = Infinity,
+        displayNameHeight = Infinity,
+        usernameHeight = Infinity;
+    while (stepValue > 0.1) {
+        [contentHeight, displayNameHeight, usernameHeight] = getQuoteBodyHeight(
+            content,
+            displayName,
+            username,
+            ctx,
+            stepValue
+        );
 
-    let totalHeight = contentHeight + displayNameHeight + usernameHeight;
+        totalHeight = contentHeight + displayNameHeight + usernameHeight;
+        if (totalHeight > height * 0.9) {
+            stepValue -= 0.02;
+        } else {
+            break;
+        }
+    }
     ctx.fillStyle = "white";
     currentLetterSpacing = contentLetterSpacing;
     await drawText(
         height * 0.8 + (width - height * 0.8) / 2,
         (height - totalHeight) / 2,
         content,
-        contentSize,
+        contentSize * stepValue,
         contentWeight,
         false,
         width - height,
