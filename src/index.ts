@@ -1033,6 +1033,23 @@ async function init() {
                 ) as TextBasedChannel
             );
         }
+        if (
+            process.env.FRIDAY_CHANNEL.length > 0 &&
+            d.getDay() == 5 &&
+            d.getHours() == 17 &&
+            d.getMinutes() == 0 &&
+            d.getSeconds() < 1
+        ) {
+            sendWebhook(
+                "flaps",
+                "happy friday afternoon.",
+                client.channels.cache.get(
+                    process.env.FRIDAY_CHANNEL
+                ) as TextBasedChannel,
+                await readFile(file("friday.mp4")),
+                "Friday.mp4"
+            );
+        }
     }, 1000);
     await Promise.all([
         loadAutoStatusP,
