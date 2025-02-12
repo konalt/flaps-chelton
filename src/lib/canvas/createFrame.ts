@@ -28,12 +28,12 @@ export default (buf: Buffer): Promise<[Buffer, number]> => {
             },
         };
 
-        let arf = calculateAspectRatioFit(img.width, img.height, 512);
+        let arf = calculateAspectRatioFit(img.width, img.height, 768);
 
-        let iw = Math.ceil(arf[0] / 2) * 2;
-        let ih = Math.ceil(arf[1] / 2) * 2;
+        let iw = Math.floor(arf[0] / 2) * 2;
+        let ih = Math.floor(arf[1] / 2) * 2;
 
-        let padSize = Math.ceil(fp.sides.tp.height / 2) * 2;
+        let padSize = Math.floor(fp.sides.tp.height / 2) * 2;
         var c = createCanvas(iw + padSize * 2, ih + padSize * 2);
         var ctx = c.getContext("2d");
         // Corners

@@ -6,7 +6,7 @@ export default async function frame(
 ): Promise<Buffer> {
     let [frame, padSize] = await createFrame(buffers[0][0]);
     return ffmpegBuffer(
-        `-i $BUF0 -i $BUF1 -filter_complex "[0:v]scale=512:-1,pad=w=iw+${
+        `-i $BUF0 -i $BUF1 -filter_complex "[0:v]scale=768:-2,pad=w=iw+${
             padSize * 2
         }:h=ih+${
             padSize * 2
