@@ -61,7 +61,10 @@ function run() {
                     $(outtxt).show();
                 }
                 if (resp.data.buffer) {
-                    if (resp.data.buffer.startsWith("data:video")) {
+                    if (
+                        resp.data.buffer.startsWith("data:video") ||
+                        resp.data.buffer.startsWith("data:audio")
+                    ) {
                         outvid.src = resp.data.buffer;
                         $(outvid).show();
                     } else if (resp.data.buffer.startsWith("data:image")) {
