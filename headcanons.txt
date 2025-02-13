@@ -55,6 +55,7 @@ Gym
 Hot Topic
 Claire's
 thrift stores
+the soup store
 
 #FANFIC
 AO3
@@ -178,7 +179,7 @@ It would not take much for %NAME% to turn evil.
 %NAME% tackles and wrestles people to show affection.
 %NAME% is afraid of doing anything without their parent's permission.
 %NAME% is a horrible liar.
-%NAME% will remind others in the midst of chaos how good <i>they're</i> being.
+%NAME% will remind others in the midst of chaos how good *they're* being.
 %NAME% has fallen asleep at their desk while working in the middle of the night.
 %NAME% tells dad jokes.
 %NAME%'s favorite color is pink.
