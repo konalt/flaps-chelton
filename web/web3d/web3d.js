@@ -17,6 +17,7 @@ const resolutions = {
     flag: [800, 600],
     capcut: [768, 768],
     bed: [800, 600],
+    pokeball: [800, 600],
 };
 const NOTEXTURE = "images/uv_grid_opengl.jpg";
 const fontLoader = new FontLoader();
@@ -777,6 +778,63 @@ async function _init(id, options = {}) {
             quickLight(15, 3, 1);
 
             scene.add(new THREE.AmbientLight(0xffffff, 0.2));
+            break;
+        }
+        case "pokeball": {
+            let img = options.img || NOTEXTURE;
+
+            camera.position.x = 18;
+            camera.position.y = 21;
+            camera.position.z = 30;
+            camera.fov = 30;
+            camera.updateProjectionMatrix();
+            camera.lookAt(0, 5, 0);
+
+            let map = await loadTexture(img);
+            map.colorSpace = THREE.SRGBColorSpace;
+            map.flipY = true;
+            let material = new THREE.MeshStandardMaterial({
+                map,
+                transparent: true,
+            });
+            let image = new THREE.Mesh(new THREE.PlaneGeometry(5, 5), material);
+            image.position.y = 4;
+            scene.add(image);
+
+            let pokeball = await loadModel("models/pokeball.glb");
+            pokeball.position.y = 4;
+            pokeball.scale.x = pokeball.scale.y = pokeball.scale.z = 2;
+            scene.add(pokeball);
+            let top = pokeball.children.find(
+                (child) => child.name == "PokeBallTop"
+            );
+
+            let ground = new THREE.Mesh(
+                new THREE.PlaneGeometry(999, 999),
+                new THREE.MeshStandardMaterial({
+                    color: 0xffffff,
+                })
+            );
+            ground.rotation.x = -Math.PI / 2;
+            scene.add(ground);
+
+            scene.background = new THREE.Color(0x606060);
+            scene.fog = new THREE.Fog(0x606060, 90, 100);
+
+            quickBigLight(50, 50, 0);
+            quickBigLight(50, 30, 30);
+            quickBigLight(-50, 30, 30);
+
+            scene.add(new THREE.AmbientLight(0xffffff, 0.1));
+
+            stepFunction = (pokeballOpen = 0, fov = 30, cx = 18) => {
+                if (pokeballOpen == -1) return;
+                top.rotation.x = -pokeballOpen * Math.PI * 0.7;
+                camera.position.x = cx;
+                camera.lookAt(0, 5, 0);
+                camera.fov = fov;
+                camera.updateProjectionMatrix();
+            };
             break;
         }
     }
