@@ -887,6 +887,8 @@ export async function midnight(channel: TextChannel) {
     }, 60 * 1000); // 1 min
 }
 
+export let MAIN_CHANNEL: TextChannel;
+export let DUO_NOTIF_CHANNEL: TextChannel;
 export let [addBuffer, removeBuffer, addBufferSequence] = [
     (buffer: Buffer, ext: string) => {
         return "null";
@@ -974,17 +976,11 @@ async function init() {
             sendWebhook(
                 "flaps",
                 `<@${process.env.OWNER_TOKEN}> do your FUCKING duolingo dumbass`,
-                client.channels.cache.get(
-                    process.env.DUO_NOTIF_CHANNEL
-                ) as TextBasedChannel
+                DUO_NOTIF_CHANNEL
             );
         }
         if (d.getMinutes() == 0 && d.getHours() == 0 && d.getSeconds() < 1) {
-            midnight(
-                client.channels.cache.get(
-                    process.env.MAIN_CHANNEL
-                ) as TextChannel
-            );
+            midnight(MAIN_CHANNEL);
             let d2 = new Date(d.getTime() - 5000);
             let dateStr = `${d2.getFullYear().toString().padStart(4, "0")}-${(
                 d2.getMonth() + 1
@@ -1012,9 +1008,7 @@ async function init() {
             sendWebhook(
                 Math.random() < 0.3 ? "coach" : "nick",
                 "pills here",
-                client.channels.cache.get(
-                    process.env.MAIN_CHANNEL
-                ) as TextBasedChannel
+                MAIN_CHANNEL
             );
         }
         if (
@@ -1028,9 +1022,7 @@ async function init() {
             sendWebhook(
                 "nick",
                 "@everyone R.I.P. FUNKY TOWN\n IT'S 3/3/33 23:33 THO YA FUCKIN DONGS!!!!!",
-                client.channels.cache.get(
-                    process.env.MAIN_CHANNEL
-                ) as TextBasedChannel
+                MAIN_CHANNEL
             );
         }
         if (
@@ -1061,9 +1053,19 @@ async function init() {
         loadWebServer,
     ]);
     log("Logging in...", "start");
-    client.login(process.env.DISCORD_TOKEN || "NoTokenProvided").catch((e) => {
-        console.log(e);
-    });
+    client
+        .login(process.env.DISCORD_TOKEN || "NoTokenProvided")
+        .then(async () => {
+            MAIN_CHANNEL = (await client.channels.fetch(
+                process.env.MAIN_CHANNEL
+            )) as TextChannel;
+            DUO_NOTIF_CHANNEL = (await client.channels.fetch(
+                process.env.DUO_NOTIF_CHANNEL
+            )) as TextChannel;
+        })
+        .catch((e) => {
+            console.log(e);
+        });
 }
 
 init();
