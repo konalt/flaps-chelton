@@ -505,7 +505,7 @@ async function _init(id, options = {}) {
             let map = await loadTexture(options.img);
             map.colorSpace = THREE.SRGBColorSpace;
             const sphere = new THREE.Mesh(
-                new THREE.SphereGeometry(1),
+                new THREE.SphereGeometry(1, 64, 32),
                 new THREE.MeshBasicMaterial({ map })
             );
             scene.add(sphere);
