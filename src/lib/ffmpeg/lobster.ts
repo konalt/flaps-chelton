@@ -46,7 +46,7 @@ export default async function invert(
         [speen][rainbow]xfade=transition=dissolve:duration=1:offset=4,format=yuv420p[transitioned_a];
         [text][transitioned_a]xfade=transition=circleopen:duration=1:offset=2,format=yuv420p[out_nocrop];
         [out_nocrop]crop=480:480:0:0[out_v]"
-        -map "[out_v]" -map "2:a:0" -t 9 -crf:v 51 -b:v 16k $PRESET $OUT`,
+        -map "[out_v]" -map "2:a:0" -t 9 -crf:v 45 $PRESET $OUT`,
         buffers,
         "mp4"
     );
