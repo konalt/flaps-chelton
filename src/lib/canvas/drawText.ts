@@ -176,7 +176,8 @@ export async function drawText(
     x: number,
     y: number,
     wrapWidth: number,
-    stroke = false
+    stroke = false,
+    verticalAlign: "top" | "center" | "bottom" = "top"
 ) {
     // store current alignment for later
     let align: CanvasTextAlign = `${ctx.textAlign}`;
@@ -212,6 +213,7 @@ export async function drawText(
     ctx.textBaseline = "top";
     let maxLineHeight = lineHeight(ctx);
     let lines = getLinesForParagraphs(ctx, text, wrapWidth, maxLineHeight);
+    let totalHeight = maxLineHeight * lines.length;
 
     ctx.textAlign = "left";
     let i = 0;
@@ -226,9 +228,18 @@ export async function drawText(
                 lineX = x - lineWidth;
                 break;
         }
+        let lineY = y;
+        switch (verticalAlign) {
+            case "center":
+                lineY = y - totalHeight / 2;
+                break;
+            case "bottom":
+                lineY = y + totalHeight;
+                break;
+        }
         drawLine(
             lineX,
-            y + i * maxLineHeight,
+            lineY + i * maxLineHeight,
             line,
             emojis,
             customEmojis,

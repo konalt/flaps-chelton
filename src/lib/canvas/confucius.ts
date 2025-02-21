@@ -1,14 +1,13 @@
 import { loadImage, createCanvas } from "canvas";
-import getTextWidth from "./getTextWidth";
 import { drawText } from "./drawText";
 
-export default async (txt: string) => {
+export default async function confucius(txt: string) {
     let china = await loadImage("images/confucius.png");
-    var c = createCanvas(china.width, china.height);
-    var ctx = c.getContext("2d");
+    let c = createCanvas(china.width, china.height);
+    let ctx = c.getContext("2d");
     ctx.drawImage(china, 0, 0, china.width, china.height);
-    var fac = 0;
-    var grad = ctx.createLinearGradient(
+    let fac = 0;
+    let grad = ctx.createLinearGradient(
         0,
         china.height,
         china.width * 0.1,
@@ -32,4 +31,4 @@ export default async (txt: string) => {
         china.width * 0.9
     );
     return c.toBuffer();
-};
+}

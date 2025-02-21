@@ -1,23 +1,10 @@
-import {
-    Canvas,
-    CanvasRenderingContext2D,
-    Image,
-    createCanvas,
-    loadImage,
-} from "canvas";
-import {
-    customEmojiRegex,
-    emojiRegex,
-    flagEmojiRegex,
-    twemojiURL,
-} from "../utils";
+import { CanvasRenderingContext2D, createCanvas, loadImage } from "canvas";
 import { drawText, getTextHeight } from "./drawText";
 
 const defaultFont = "'Open Sans', sans-serif";
 const width = 1200;
 const height = 630;
 const contentSize = 70;
-const contentLetterSpacing = 2;
 const contentWeight = 400;
 const contentGap = 40;
 const displayNameSize = 48;

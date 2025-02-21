@@ -1,13 +1,5 @@
 import { loadImage, createCanvas, Canvas, ImageData } from "canvas";
-
-function calculateAspectRatioFit(
-    srcWidth: number,
-    srcHeight: number,
-    maxWidth: number
-) {
-    var ratio = maxWidth / srcWidth;
-    return [srcWidth * ratio, srcHeight * ratio];
-}
+import { calculateAspectRatioFit } from "../utils";
 
 function getImageBounds(imageData: ImageData) {
     let threshold = 4;
@@ -33,47 +25,37 @@ function getImageBounds(imageData: ImageData) {
     return [sx, sy, ex - sx, ey - sy];
 }
 
-async function cropImageToBounds(imageBuffer: Buffer): Promise<Canvas> {
-    return new Promise(async (res, rej) => {
-        let image = await loadImage(imageBuffer);
-        let c = createCanvas(image.width, image.height);
-        let ctx = c.getContext("2d");
-        ctx.drawImage(image, 0, 0);
-        let imageData = ctx.getImageData(0, 0, image.width, image.height);
-        let [x, y, w, h] = getImageBounds(imageData);
-        let newImageData = ctx.getImageData(x, y, w, h);
-        let c2 = createCanvas(w, h);
-        let ctx2 = c2.getContext("2d");
-        ctx2.putImageData(newImageData, 0, 0);
-        res(c2);
-    });
+async function cropImageToBounds(imageBuffer: Buffer) {
+    let image = await loadImage(imageBuffer);
+    let c = createCanvas(image.width, image.height);
+    let ctx = c.getContext("2d");
+    ctx.drawImage(image, 0, 0);
+    let imageData = ctx.getImageData(0, 0, image.width, image.height);
+    let [x, y, w, h] = getImageBounds(imageData);
+    let newImageData = ctx.getImageData(x, y, w, h);
+    let c2 = createCanvas(w, h);
+    let ctx2 = c2.getContext("2d");
+    ctx2.putImageData(newImageData, 0, 0);
+    return c2;
 }
 
-export default (buf: Buffer): Promise<Buffer> => {
-    return new Promise(async (resolve, reject) => {
-        if (!buf) return reject("An image buffer is required");
-        let j1 = await loadImage("images/j1.png");
-        let jh = await loadImage("images/jhand_3.png");
-        let j2 = await loadImage("images/j2_3.png");
-        let croppedCanvas = await cropImageToBounds(buf);
-        let newsize = calculateAspectRatioFit(
-            croppedCanvas.width,
-            croppedCanvas.height,
-            145
-        );
-        let newpos = [569, 462 - newsize[1] / 2];
-        var c = createCanvas(j1.width, j1.height);
-        var ctx = c.getContext("2d");
-        ctx.drawImage(j1, 0, 0, j1.width, j1.height);
-        ctx.drawImage(jh, 0, 0, j1.width, j1.height);
-        ctx.drawImage(
-            croppedCanvas,
-            newpos[0],
-            newpos[1],
-            newsize[0],
-            newsize[1]
-        );
-        ctx.drawImage(j2, 0, 0, j1.width, j1.height);
-        resolve(c.toBuffer("image/png"));
-    });
-};
+export default async function jHold(buf: Buffer) {
+    let j1 = await loadImage("images/j1.png");
+    let jh = await loadImage("images/jhand_3.png");
+    let j2 = await loadImage("images/j2_3.png");
+    let croppedCanvas = await cropImageToBounds(buf);
+    let newsize = calculateAspectRatioFit(
+        croppedCanvas.width,
+        croppedCanvas.height,
+        145,
+        Infinity
+    );
+    let newpos = [569, 462 - newsize[1] / 2];
+    let c = createCanvas(j1.width, j1.height);
+    let ctx = c.getContext("2d");
+    ctx.drawImage(j1, 0, 0, j1.width, j1.height);
+    ctx.drawImage(jh, 0, 0, j1.width, j1.height);
+    ctx.drawImage(croppedCanvas, newpos[0], newpos[1], newsize[0], newsize[1]);
+    ctx.drawImage(j2, 0, 0, j1.width, j1.height);
+    return c.toBuffer();
+}

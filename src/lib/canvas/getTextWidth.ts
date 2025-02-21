@@ -5,9 +5,9 @@ export default function getTextWidth(
     fontsize: number,
     text: string
 ) {
-    var c = createCanvas(fontsize, fontsize);
-    var ctx = c.getContext("2d");
+    let c = createCanvas(fontsize, fontsize);
+    let ctx = c.getContext("2d");
     ctx.font = fontsize + "px " + font;
-    var w = ctx.measureText(text).width;
+    let w = ctx.measureText(text).width;
     return w;
 }

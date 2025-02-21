@@ -21,68 +21,57 @@ function isGray(pix: number[], cutoff: number) {
 
 const unfunnyCutoff = 10;
 
-export default (buf: Buffer): Promise<Buffer> => {
-    return new Promise(async (resolve, reject) => {
-        if (!buf) return reject("An image buffer is required");
-        let funny = await loadImage("images/saul.png");
-        let image = await loadImage(buf);
-        var c = createCanvas(image.width, image.height);
-        var ctx = c.getContext("2d");
-        ctx.drawImage(image, 0, 0, image.width, image.height);
-        var imageData = ctx.getImageData(
-            0,
-            0,
-            ctx.canvas.width,
-            ctx.canvas.height
-        );
-        var readIndex = 0;
-        var curPix = [-1, -1, -1, -1];
-        var imageData2: number[][] = [];
-        var backgroundCanvas = createCanvas(
-            ctx.canvas.width,
-            ctx.canvas.height
-        );
-        var bgCtx = backgroundCanvas.getContext("2d");
-        bgCtx.drawImage(funny, 0, 0, ctx.canvas.width, ctx.canvas.height);
-        var bg = bgCtx.getImageData(0, 0, ctx.canvas.width, ctx.canvas.height);
-        Array.from(imageData.data).forEach((element, index) => {
-            curPix[readIndex] = element;
-            if (!curPix.includes(-1)) {
-                if (
-                    !isBlack(curPix, unfunnyCutoff) &&
-                    !isWhite(curPix, unfunnyCutoff) &&
-                    !isGray(curPix, unfunnyCutoff)
-                ) {
-                    curPix = [
-                        bg.data[index - 3],
-                        bg.data[index - 2],
-                        bg.data[index - 1],
-                        bg.data[index],
-                    ];
-                }
+export default async function unfunny(buf: Buffer) {
+    let funny = await loadImage("images/saul.png");
+    let image = await loadImage(buf);
+    let c = createCanvas(image.width, image.height);
+    let ctx = c.getContext("2d");
+    ctx.drawImage(image, 0, 0, image.width, image.height);
+    let imageData = ctx.getImageData(0, 0, ctx.canvas.width, ctx.canvas.height);
+    let readIndex = 0;
+    let curPix = [-1, -1, -1, -1];
+    let imageData2: number[][] = [];
+    let backgroundCanvas = createCanvas(ctx.canvas.width, ctx.canvas.height);
+    let bgCtx = backgroundCanvas.getContext("2d");
+    bgCtx.drawImage(funny, 0, 0, ctx.canvas.width, ctx.canvas.height);
+    let bg = bgCtx.getImageData(0, 0, ctx.canvas.width, ctx.canvas.height);
+    Array.from(imageData.data).forEach((element, index) => {
+        curPix[readIndex] = element;
+        if (!curPix.includes(-1)) {
+            if (
+                !isBlack(curPix, unfunnyCutoff) &&
+                !isWhite(curPix, unfunnyCutoff) &&
+                !isGray(curPix, unfunnyCutoff)
+            ) {
+                curPix = [
+                    bg.data[index - 3],
+                    bg.data[index - 2],
+                    bg.data[index - 1],
+                    bg.data[index],
+                ];
             }
-            readIndex++;
-            if (readIndex == 4) {
-                imageData2.push([...curPix]);
-                curPix = [-1, -1, -1, -1];
-                readIndex = 0;
-            }
-        });
-        var imageData3: number[] = [];
-        imageData2.forEach((pixel) => {
-            imageData3.push(pixel[0]);
-            imageData3.push(pixel[1]);
-            imageData3.push(pixel[2]);
-            imageData3.push(pixel[3]);
-        });
-        var imageData4 = new ImageData(
-            new Uint8ClampedArray(imageData3),
-            ctx.canvas.width,
-            ctx.canvas.height
-        );
-        ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
-        ctx.drawImage(funny, 0, 0, ctx.canvas.width, ctx.canvas.height);
-        ctx.putImageData(imageData4, 0, 0);
-        resolve(c.toBuffer("image/png"));
+        }
+        readIndex++;
+        if (readIndex == 4) {
+            imageData2.push([...curPix]);
+            curPix = [-1, -1, -1, -1];
+            readIndex = 0;
+        }
     });
-};
+    let imageData3: number[] = [];
+    imageData2.forEach((pixel) => {
+        imageData3.push(pixel[0]);
+        imageData3.push(pixel[1]);
+        imageData3.push(pixel[2]);
+        imageData3.push(pixel[3]);
+    });
+    let imageData4 = new ImageData(
+        new Uint8ClampedArray(imageData3),
+        ctx.canvas.width,
+        ctx.canvas.height
+    );
+    ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+    ctx.drawImage(funny, 0, 0, ctx.canvas.width, ctx.canvas.height);
+    ctx.putImageData(imageData4, 0, 0);
+    return c.toBuffer();
+}

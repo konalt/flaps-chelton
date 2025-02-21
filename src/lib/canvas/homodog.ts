@@ -4,8 +4,8 @@ import { drawText, getTextHeight } from "./drawText";
 
 export default async function homodog(buf: Buffer | null, text: string) {
     let homodog = await loadImage(buf ?? "images/homophobicdog.png");
-    var c = createCanvas(homodog.width, homodog.height);
-    var ctx = c.getContext("2d");
+    let c = createCanvas(homodog.width, homodog.height);
+    let ctx = c.getContext("2d");
     ctx.drawImage(homodog, 0, 0, homodog.width, homodog.height);
     ctx.fillStyle = "white";
     ctx.strokeStyle = "black";
