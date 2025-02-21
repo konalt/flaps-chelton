@@ -8,7 +8,12 @@ module.exports = {
     desc: "Not too fond...",
     needs: ["image?"],
     async execute(args, imgbuf) {
-        let out = await homodog(imgbuf[0][0], args.join(" "));
+        let out: Buffer;
+        if (imgbuf[0]) {
+            out = await homodog(imgbuf[0][0], args.join(" "));
+        } else {
+            out = await homodog(null, args.join(" "));
+        }
         return makeMessageResp(
             "flaps",
             "",
