@@ -60,7 +60,8 @@ export function getFileExt(path: string) {
 
 export const emojiRegex = /(?=\p{Emoji})(?=[\D])(?=[^\*#])/gu;
 export const customEmojiRegex = /(<a?)?:\w+:(\d+>)/g;
-export const flagEmojiRegex = /[\uD83C][\uDDE6-\uDDFF][\uD83C][\uDDE6-\uDDFF]/g;
+export const flagEmojiRegex =
+    /[\uD83C][\uDDE6-\uDDFF][\uD83C][\uDDE6-\uDDFF]|\p{Emoji}[\uFE00-\uFE0F]/gu;
 
 export function twemojiURL(emoji: string) {
     let cp1 = emoji.codePointAt(0).toString(16);
