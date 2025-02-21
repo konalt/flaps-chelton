@@ -834,7 +834,7 @@ function finishMidnight() {
 
     if (nonusers.length >= 2) {
         for (const nonuser of nonusers.slice(0, -1)) {
-            pings += "<@" + nonuser.id + "> ";
+            pings += "<@" + nonuser + "> ";
         }
         pings += "and <@" + nonusers.at(-1) + ">";
     } else if (nonusers.length > 0) {
