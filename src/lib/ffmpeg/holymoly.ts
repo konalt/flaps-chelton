@@ -1,30 +1,27 @@
-import { ffmpegBuffer, file } from "./ffmpeg";
-import { getVideoDimensions } from "./getVideoDimensions";
 import { readFile } from "fs/promises";
+import { ffmpegBuffer, file } from "./ffmpeg";
+import parsePerspectiveTable from "./parsePerspectiveTable";
+import { getVideoDimensions, getVideoLength } from "./getVideoDimensions";
 
 export default async function holymoly(buffers: [Buffer, string][]) {
-    var dims = await getVideoDimensions([
-        await readFile(file("holymoly.mp4")),
-        "mp4",
-    ]);
-    var fullFilter = [
-        "[0:v]colorkey=0x00FF00:0.2:0.2[ckout]",
-        "[1:v]scale=" +
-            dims[0] * 0.45 +
-            ":" +
-            dims[1] / 2 +
-            ",pad=" +
-            dims.join(":") +
-            ":" +
-            dims[0] / 6 +
-            ":0[img]",
-        "[img][ckout]overlay[oout]",
-    ].join(";");
+    let vid = await readFile(file("holymoly.mp4"));
+    let dims = await getVideoDimensions([vid, "mp4"]);
+    let len = await getVideoLength([vid, "mp4"]);
+    let perspective = await parsePerspectiveTable(
+        (await readFile(file("scalingtables/holymoly.stb"))).toString(),
+        dims[0],
+        dims[1],
+        len,
+        30,
+        buffers[0],
+        true,
+        true
+    );
     return ffmpegBuffer(
         `-i ${file(
             "holymoly.mp4"
-        )} -i $BUF0 -filter_complex "${fullFilter}" -shortest -map "[oout]" -map "0:a:0" $PRESET $OUT`,
-        buffers,
+        )} -i $BUF0 -filter_complex "[0:v]colorkey=0x00FF00:0.2:0.2[ckout2];[1:v][ckout2]overlay[vout];[0:a]anull[aout]" -map "[vout]" -map "[aout]" -shortest $PRESET $OUT`,
+        [[perspective, "mp4"]],
         "mp4"
     );
 }
