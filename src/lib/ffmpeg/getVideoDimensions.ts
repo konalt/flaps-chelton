@@ -47,3 +47,10 @@ export async function getFrameCount(buffer: [Buffer, string]): Promise<number> {
             .catch(rej);
     });
 }
+export async function getFrameRate(buffer: [Buffer, string]): Promise<number> {
+    let [length, frames] = await Promise.all([
+        getVideoLength(buffer),
+        getFrameCount(buffer),
+    ]);
+    return frames / length;
+}
