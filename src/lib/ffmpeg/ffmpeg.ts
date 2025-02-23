@@ -348,7 +348,7 @@ export function autoGifPalette(
 export function gifPalette(in_specifier: string, out_specifier: string) {
     return `[${in_specifier}]split[${in_specifier}_pgen_${out_specifier}][${in_specifier}_puse_${out_specifier}];
     [${in_specifier}_pgen_${out_specifier}]palettegen[${in_specifier}_palette_${out_specifier}];
-    [${in_specifier}_puse_${out_specifier}][${in_specifier}_palette_${out_specifier}]paletteuse[${out_specifier}];`;
+    [${in_specifier}_puse_${out_specifier}][${in_specifier}_palette_${out_specifier}]paletteuse[${out_specifier}]`;
 }
 
 export const DEFAULTFORMAT = {
