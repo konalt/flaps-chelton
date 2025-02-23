@@ -78,7 +78,7 @@ export default async function createQuote(
     }
     ctx.fillStyle = "white";
     ctx.textAlign = "center";
-    ctx.font = fontString(contentSize, false, contentWeight);
+    ctx.font = fontString(contentSize * stepValue, false, contentWeight);
     await drawText(
         ctx,
         content,
