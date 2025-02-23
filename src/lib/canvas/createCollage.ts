@@ -24,4 +24,5 @@ export default async function createCollage(buffers: Buffer[]) {
             }
         }
     }
+    return c.toBuffer();
 }

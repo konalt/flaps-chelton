@@ -12,8 +12,8 @@ module.exports = {
         let out = await createCaption2(w, h, args.slice(1).join(" "));
         return makeMessageResp(
             "flaps",
-            "Output height: " + out[1] + "px",
-            out[0],
+            "",
+            out,
             getFileName("Canvas_RawCaption2", "png")
         );
     },

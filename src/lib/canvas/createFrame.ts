@@ -1,7 +1,9 @@
 import { loadImage, createCanvas } from "canvas";
 import { calculateAspectRatioFit } from "../utils";
 
-export default async function createFrame(buf: Buffer) {
+export default async function createFrame(
+    buf: Buffer
+): Promise<[Buffer, number]> {
     let img = await loadImage(buf);
     let fp = {
         sides: {
@@ -36,5 +38,5 @@ export default async function createFrame(buf: Buffer) {
     ctx.drawImage(fp.sides.bt, padSize, ih + padSize, iw, padSize);
     ctx.drawImage(fp.sides.lf, 0, padSize, padSize, ih);
     ctx.drawImage(fp.sides.rt, iw + padSize, padSize, padSize, ih);
-    return c.toBuffer();
+    return [c.toBuffer(), padSize];
 }
