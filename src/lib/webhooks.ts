@@ -31,7 +31,7 @@ const defaultAvatar =
 const defaultTTS = false;
 const defaultComponents = [];
 const defaultEmbeds = [];
-const maxFileSizeMiB = 25;
+const maxFileSizeMiB = 10;
 
 async function baseEdit(
     url: string,
