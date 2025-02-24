@@ -475,7 +475,7 @@ async function _init(id, options = {}) {
             camera.position.x = 0;
             camera.position.y = 0;
             camera.position.z = 4;
-            camera.fov = 27;
+            camera.fov = 26;
             camera.updateProjectionMatrix();
             camera.lookAt(0, 0, 0);
 
@@ -498,7 +498,7 @@ async function _init(id, options = {}) {
             camera.position.x = 0;
             camera.position.y = 0;
             camera.position.z = 4;
-            camera.fov = 42;
+            camera.fov = 35;
             camera.updateProjectionMatrix();
             camera.lookAt(0, 0, 0);
 
