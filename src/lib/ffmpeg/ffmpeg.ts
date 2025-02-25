@@ -20,10 +20,10 @@ export function file(pathstr: string) {
 
 function getOutputFormat(ext: string) {
     if (ext == "png") {
-        return "-f image2 -c png";
+        return "-frames:v 1 -f image2 -c png";
     }
     if (ext == "jpeg" || ext == "jpg") {
-        return "-f image2 -c mjpeg";
+        return "-frames:v 1 -f image2 -c mjpeg";
     }
     if (ext == "mp4") {
         return "-pix_fmt yuv420p -f mp4 -movflags faststart+frag_keyframe+empty_moov";
