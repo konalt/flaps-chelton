@@ -8,7 +8,7 @@ export default async function shoebill(
     buffers: [Buffer, string][]
 ): Promise<Buffer> {
     const shoebillDataBasic: string[] = (
-        await readFile("shoebills.dat", "utf-8")
+        await readFile("images/data/frames/shoebills.dat", "utf-8")
     ).split("\n");
     let shoebillData: [Shoebill[], number][] = [];
     for (const line of shoebillDataBasic) {

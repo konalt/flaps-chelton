@@ -11,7 +11,7 @@ export default async function dud(
         let dims = await getVideoDimensions([vid, "mp4"]);
         let len = await getVideoLength([vid, "mp4"]);
         parseScalingTable(
-            (await readFile(file("scalingtables/thehorror.stb"))).toString(),
+            (await readFile(file("data/scale/thehorror.dat"))).toString(),
             dims[0],
             dims[1],
             len,

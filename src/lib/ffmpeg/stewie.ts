@@ -11,7 +11,7 @@ export default async function stewie(
         let dims = await getVideoDimensions([vid, "mp4"]);
         let len = await getVideoLength([vid, "mp4"]);
         parsePerspectiveTable(
-            (await readFile(file("scalingtables/stewie2.stb"))).toString(),
+            (await readFile(file("data/perspective/stewie.dat"))).toString(),
             dims[0],
             dims[1],
             len,

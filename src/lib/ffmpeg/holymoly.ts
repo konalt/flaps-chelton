@@ -8,7 +8,7 @@ export default async function holymoly(buffers: [Buffer, string][]) {
     let dims = await getVideoDimensions([vid, "mp4"]);
     let len = await getVideoLength([vid, "mp4"]);
     let perspective = await parsePerspectiveTable(
-        (await readFile(file("scalingtables/holymoly.stb"))).toString(),
+        (await readFile(file("data/perspective/holymoly.dat"))).toString(),
         dims[0],
         dims[1],
         len,

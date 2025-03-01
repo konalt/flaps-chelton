@@ -8,7 +8,7 @@ function parseData(text: string) {
     return text.split("\n").map((n) => n.split(" ").map((r) => parseInt(r)));
 }
 
-const positions = parseData(readFileSync("overhere.dat", "utf8"));
+const positions = parseData(readFileSync("images/data/overhere.dat", "utf8"));
 
 export default async function overhere(buf: Buffer, text: string) {
     let overhere = await loadImage("images/overhere.png");
