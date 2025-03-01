@@ -17,6 +17,11 @@ export default async function spotify(buf: Buffer, text: string) {
     );
     ctx.font = thisis.height / 10 + "px Spotify";
     ctx.textAlign = "center";
-    ctx.fillText(text, thisis.width / 2, (thisis.height / 8) * 2.3);
+    ctx.fillText(
+        text,
+        thisis.width / 2,
+        (thisis.height / 8) * 2.3,
+        thisis.width * 0.9
+    );
     return c.toBuffer();
 }
