@@ -206,3 +206,35 @@ export interface Shoebill {
     rotate: number;
     scaleFactor: number;
 }
+
+export enum Connect4Cell {
+    Empty,
+    Red,
+    Blue,
+}
+export type Connect4Line = [
+    Connect4Cell,
+    Connect4Cell,
+    Connect4Cell,
+    Connect4Cell,
+    Connect4Cell,
+    Connect4Cell
+];
+export type Connect4Board = [
+    Connect4Line,
+    Connect4Line,
+    Connect4Line,
+    Connect4Line,
+    Connect4Line,
+    Connect4Line,
+    Connect4Line
+];
+export interface Connect4Game {
+    player1: User;
+    player2: User;
+    isPlayer2Turn: boolean;
+    id: string;
+    board: Connect4Board;
+    isOver: boolean;
+    buttonWindow: number;
+}

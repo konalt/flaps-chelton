@@ -103,6 +103,7 @@ log(`Importing modules (${C.BCyan}flaps/track${C.White})...`, "start");
 import { trackMessage, trackPresence } from "./lib/track";
 log(`Importing modules (${C.BCyan}flaps/web3d${C.White})...`, "start");
 import { trackReport } from "./lib/web3dapi";
+import { handleInteraction } from "./lib/connect4";
 
 process.title = "Flaps Chelton";
 
@@ -681,6 +682,9 @@ export async function onInteraction(interaction: Interaction) {
                     ]
                 );
                 interaction.deferUpdate();
+                return;
+            case "c4":
+                handleInteraction(interaction);
                 return;
         }
     }
