@@ -362,10 +362,10 @@ async function getSources(
                 );
             }
         } else {
-            throw new Error("No source found");
+            throw new Error(`This command requires: \`${types.join("`, `")}\``);
         }
     } else if (!typesMatch(attTypes, types)) {
-        throw new Error("Type Error:\n" + getTypeMessage(attTypes, types));
+        throw new Error(`Type Error:\n${getTypeMessage(attTypes, types)}`);
     } else {
         return sources;
     }
@@ -1071,32 +1071,15 @@ async function init() {
 init();
 
 function getTypeMessage(inTypes: string[], reqTypes: string[]) {
-    var maxWidthIn = inTypes.reduce((a, b) =>
-        a.length > b.length ? a : b
-    ).length;
-    if (maxWidthIn < "SUPPLIED".length) maxWidthIn = "SUPPLIED".length;
-    var maxWidthReq = reqTypes.reduce((a, b) =>
-        a.length > b.length ? a : b
-    ).length;
-    if (maxWidthReq < "REQUIRED".length) maxWidthReq = "REQUIRED".length;
-    var out = [
-        [
-            "REQUIRED".padEnd(maxWidthReq),
-            "SUPPLIED".padEnd(maxWidthIn),
-            "STATUS",
-        ]
-            .join(" | ")
-            .trim(),
-        ["-".repeat(maxWidthIn + maxWidthReq + 3 + 3 + 6)],
-    ];
-
-    reqTypes.forEach((reqType, i) => {
-        var inType = inTypes[i];
-        var s = [];
-        s.push(reqType.padEnd(maxWidthReq, " "));
-        s.push(inType.padEnd(maxWidthIn, " "));
-        s.push(reqType.split("/").includes(inType) ? "OK" : "ERR");
-        out.push(s.join(" | ").trim());
-    });
-    return "```\n" + out.join("\n") + "\n```";
+    let out = [];
+    for (let i = 0; i < reqTypes.length; i++) {
+        const reqType = reqTypes[i];
+        const inType = inTypes[i];
+        if (reqType !== inType) {
+            out.push(
+                `\`${inType}\` was supplied instead of \`${reqType}\` for file ${i}.`
+            );
+        }
+    }
+    return out.join("\n");
 }
