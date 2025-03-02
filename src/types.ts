@@ -233,7 +233,6 @@ export interface Connect4Game {
     player1: User;
     player2: User;
     isPlayer2Turn: boolean;
-    id: string;
     board: Connect4Board;
     isOver: boolean;
     buttonWindow: number;

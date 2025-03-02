@@ -28,7 +28,7 @@ module.exports = {
             "flaps",
             createMessageContent(game),
             await createImage(game),
-            `${game.id}.png`,
+            `game.png`,
             createComponentList(game)
         );
     },

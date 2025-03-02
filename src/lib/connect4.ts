@@ -6,13 +6,66 @@ import {
     MessageFlags,
     User,
 } from "discord.js";
-import { uuidv4 } from "./utils";
-import { Connect4Cell, Connect4Game, Connect4Line } from "../types";
+import { SPOILERBUG, uuidv4 } from "./utils";
+import {
+    Connect4Board,
+    Connect4Cell,
+    Connect4Game,
+    Connect4Line,
+} from "../types";
 import { editWebhookMessage } from "./webhooks";
 import { createCanvas } from "canvas";
-import { drawText } from "./canvas/drawText";
+import { client } from "..";
 
 export let games: Record<string, Connect4Game> = {};
+
+function encodeGame(game: Connect4Game) {
+    let out = [];
+    out.push(game.player1.id);
+    out.push(game.player2.id);
+    out.push(game.buttonWindow);
+    out.push(Number(game.isPlayer2Turn));
+    out.push(Number(game.isOver));
+    let boardString = "";
+    for (const line of game.board) {
+        let filteredLine = line.filter((p) => p != Connect4Cell.Empty);
+        for (const token of filteredLine) {
+            boardString += token;
+        }
+        boardString += "-";
+    }
+    out.push(boardString);
+    return out.join(",");
+}
+
+async function decodeGame(gameString: string) {
+    let gameData = gameString.split(",");
+    let player1 = await client.users.fetch(gameData[0]);
+    let player2 = await client.users.fetch(gameData[1]);
+    let buttonWindow = parseInt(gameData[2]);
+    let isPlayer2Turn = gameData[3] == "1";
+    let isOver = gameData[4] == "1";
+    let board = [];
+    for (const line of gameData[5].split("-")) {
+        let boardLine = [];
+        for (const char of line) {
+            boardLine.push(parseInt(char));
+        }
+        while (boardLine.length < 6) {
+            boardLine.push(Connect4Cell.Empty);
+        }
+        board.push(boardLine);
+    }
+    let game: Connect4Game = {
+        player1,
+        player2,
+        buttonWindow,
+        isPlayer2Turn,
+        isOver,
+        board: board as Connect4Board,
+    };
+    return game;
+}
 
 export function createMessageContent(game: Connect4Game) {
     let currentUser = game.isPlayer2Turn ? game.player2 : game.player1;
@@ -21,9 +74,7 @@ export function createMessageContent(game: Connect4Game) {
         (currentUser.username.endsWith("s") ? "'" : "'s");
     return `***CONNECT 4!!!***
 ${game.player1.username} (🔴) is playing against ${game.player2.username} (🔵)!
-It's ${turnString} turn!
-Use the buttons to drop your tokens in the drop zones.
-Use the arrow on the side to scroll.`;
+It's ${turnString} turn!${SPOILERBUG}$${encodeGame(game)}`;
 }
 
 export function createComponentList(game: Connect4Game) {
@@ -32,7 +83,7 @@ export function createComponentList(game: Connect4Game) {
     if (game.buttonWindow == 0) {
         let button = new ButtonBuilder();
         let dropZone = 0;
-        button.setCustomId(`c4-${game.id}-${dropZone}`);
+        button.setCustomId(`c4-${dropZone}`);
         button.setStyle(
             game.isPlayer2Turn ? ButtonStyle.Primary : ButtonStyle.Danger
         );
@@ -41,7 +92,7 @@ export function createComponentList(game: Connect4Game) {
         iOffset = 1;
     } else {
         let scrollLeftButton = new ButtonBuilder();
-        scrollLeftButton.setCustomId(`c4-${game.id}-sl`);
+        scrollLeftButton.setCustomId(`c4-sl`);
         scrollLeftButton.setStyle(ButtonStyle.Secondary);
         scrollLeftButton.setEmoji("◀️");
         scrollLeftButton.setDisabled(game.buttonWindow <= 0);
@@ -50,7 +101,7 @@ export function createComponentList(game: Connect4Game) {
     for (let i = 0; i < 3; i++) {
         let button = new ButtonBuilder();
         let dropZone = i + game.buttonWindow + iOffset;
-        button.setCustomId(`c4-${game.id}-${dropZone}`);
+        button.setCustomId(`c4-${dropZone}`);
         button.setStyle(
             game.isPlayer2Turn ? ButtonStyle.Primary : ButtonStyle.Danger
         );
@@ -60,7 +111,7 @@ export function createComponentList(game: Connect4Game) {
     if (game.buttonWindow == 3) {
         let button = new ButtonBuilder();
         let dropZone = 3 + game.buttonWindow;
-        button.setCustomId(`c4-${game.id}-${dropZone}`);
+        button.setCustomId(`c4-${dropZone}`);
         button.setStyle(
             game.isPlayer2Turn ? ButtonStyle.Primary : ButtonStyle.Danger
         );
@@ -68,7 +119,7 @@ export function createComponentList(game: Connect4Game) {
         row.addComponents(button);
     } else {
         let scrollRightButton = new ButtonBuilder();
-        scrollRightButton.setCustomId(`c4-${game.id}-sr`);
+        scrollRightButton.setCustomId(`c4-sr`);
         scrollRightButton.setStyle(ButtonStyle.Secondary);
         scrollRightButton.setEmoji("▶️");
         scrollRightButton.setDisabled(game.buttonWindow >= 4);
@@ -93,25 +144,27 @@ export function createGame(player1: User, player2: User) {
         isPlayer2Turn: false,
         player1,
         player2,
-        id: uuidv4().split("-")[0],
         buttonWindow: 0,
     };
-    games[game.id] = game;
     return game;
 }
 
 export async function handleInteraction(interaction: ButtonInteraction) {
     let cid = interaction.customId;
-    let game = games[cid.split("-")[1]];
-    if (!game) {
+    let game = await decodeGame(interaction.message.content.split("$")[1]);
+    let currentUser = game.isPlayer2Turn ? game.player2 : game.player1;
+    let turnString =
+        currentUser.username +
+        (currentUser.username.endsWith("s") ? "'" : "'s");
+    if (interaction.user.id !== currentUser.id) {
         interaction.reply({
-            content: "This game is no longer in memory. Did Flaps restart?",
+            content: `It's ${turnString} turn!`,
             flags: MessageFlags.Ephemeral,
         });
         return;
     }
 
-    let buttonType = cid.split("-")[2];
+    let buttonType = cid.split("-")[1];
     switch (buttonType) {
         case "sl":
             game.buttonWindow -= 3;
@@ -135,6 +188,7 @@ export async function handleInteraction(interaction: ButtonInteraction) {
             game.board[dropzone] = filteredLine as Connect4Line;
             game.isPlayer2Turn = !game.isPlayer2Turn;
     }
+    interaction.deferUpdate();
     await editWebhookMessage(
         interaction.message.id,
         "flaps",
@@ -144,7 +198,6 @@ export async function handleInteraction(interaction: ButtonInteraction) {
         `${cid}.png`,
         createComponentList(game)
     );
-    interaction.deferUpdate();
 }
 
 function cellColor(cell: Connect4Cell) {
