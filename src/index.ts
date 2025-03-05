@@ -531,7 +531,7 @@ export async function onMessage(msg: Message) {
                 if (argString.includes("$replycontent") && msg.reference) {
                     let reference = await msg.fetchReference();
                     commandArgs = argString
-                        .replace(/\$\{replycontent\}/g, reference.content)
+                        .replace(/\$replycontent/g, reference.content)
                         .split(" ");
                 }
                 let response = await command.execute(commandArgs, sources, msg);
