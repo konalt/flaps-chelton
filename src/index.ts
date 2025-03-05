@@ -1,5 +1,5 @@
 import { config } from "dotenv";
-import { C, LM, getMessageLog, log } from "./lib/logger";
+import { C, getMessageLog, log } from "./lib/logger";
 config();
 export const VERBOSE = process.env.VERBOSE == "yes";
 export const DOMAIN = process.env.DOMAIN;
@@ -41,8 +41,6 @@ log(`Importing modules (${C.BCyan}fs${C.White})...`, "start");
 import { readFile, readdir, writeFile } from "fs/promises";
 log(`Importing modules (${C.BCyan}mime-types${C.White})...`, "start");
 import { contentType, lookup } from "mime-types";
-log(`Importing modules (${C.BCyan}fetch${C.White})...`, "start");
-import fetch from "node-fetch";
 log(`Importing modules (${C.BCyan}flaps/battle${C.White})...`, "start");
 import {
     getBattleAction,
@@ -50,12 +48,12 @@ import {
     getComponents,
     handleBattleAction,
 } from "./lib/battle";
+log(`Importing modules (${C.BCyan}flaps/connect4${C.White})...`, "start");
+import { handleInteraction } from "./lib/connect4";
 log(`Importing modules (${C.BCyan}flaps/download${C.White})...`, "start");
 import { downloadPromise } from "./lib/download";
 log(`Importing modules (${C.BCyan}flaps/ffmpeg${C.White})...`, "start");
 import { ffmpegBuffer, file } from "./lib/ffmpeg/ffmpeg";
-log(`Importing modules (${C.BCyan}flaps/gvd${C.White})...`, "start");
-import { getVideoDimensions } from "./lib/ffmpeg/getVideoDimensions";
 log(`Importing modules (${C.BCyan}flaps/fsserver${C.White})...`, "start");
 import filestreamServer from "./lib/filestreamserver";
 log(`Importing modules (${C.BCyan}flaps/tictactoe${C.White})...`, "start");
@@ -77,9 +75,7 @@ import {
     getTypeSingular,
     getTypes,
     makeMessageResp,
-    scheduleDelete,
     tenorURLToGifURL,
-    uuidv4,
 } from "./lib/utils";
 log(`Importing modules (${C.BCyan}flaps/web${C.White})...`, "start");
 import initializeWebServer from "./lib/web";
@@ -103,7 +99,6 @@ log(`Importing modules (${C.BCyan}flaps/track${C.White})...`, "start");
 import { trackMessage, trackPresence } from "./lib/track";
 log(`Importing modules (${C.BCyan}flaps/web3d${C.White})...`, "start");
 import { trackReport } from "./lib/web3dapi";
-import { handleInteraction } from "./lib/connect4";
 
 process.title = "Flaps Chelton";
 
@@ -275,10 +270,10 @@ function autoReact(msg: Message) {
         msg.react(process.env.AVIF_CONVERT_EMOJI_ID);
     }
     if (f.includes("copper") && !msg.author.bot) {
-        sendWebhook("flaps", "copper you say?", msg.channel as TextChannel);
+        sendWebhook("flaps", "copper you say?", msg.channel);
     }
     if (f.includes("malta") && !msg.author.bot) {
-        sendWebhook("flaps", "maltesers you say?", msg.channel as TextChannel);
+        sendWebhook("flaps", "maltesers you say?", msg.channel);
     }
 }
 
