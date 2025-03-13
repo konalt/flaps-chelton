@@ -92,7 +92,7 @@ export const types = {
     text: ["text/plain"],
     json: ["application/json"],
     gif: ["image/gif"],
-    audio: ["audio/mpeg", "audio/aac", "audio/x-wav"],
+    audio: ["audio/mpeg", "audio/aac", "audio/x-wav", "audio/ogg"],
     webp: ["image/webp"],
 };
 
