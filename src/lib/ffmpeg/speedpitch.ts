@@ -6,7 +6,9 @@ export default async function speedpitch(
     options: SpeedOptions
 ): Promise<Buffer> {
     return ffmpegBuffer(
-        `-i $BUF0 -vf "setpts=${1 / options.speed}*PTS" -af "asetrate=44100*${
+        `-i $BUF0 -vf "setpts=${
+            1 / options.speed
+        }*PTS" -af "aresample=44100,asetrate=44100*${
             options.speed
         },aresample=44100" $PRESET $OUT`,
         buffers
