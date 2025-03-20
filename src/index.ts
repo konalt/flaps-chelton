@@ -362,9 +362,8 @@ async function getSources(
         }
     } else if (!typesMatch(attTypes, types)) {
         throw new Error(`Type Error:\n${getTypeMessage(attTypes, types)}`);
-    } else {
-        return sources;
     }
+    return sources;
 }
 
 let errorChannel: TextBasedChannel;
@@ -510,60 +509,46 @@ export async function onMessage(msg: Message) {
             }
             commandRan = true;
             errorChannel = msg.channel;
+            let argString = commandArgs.join(" ");
+            if (argString.includes("$replycontent") && msg.reference) {
+                let reference = await msg.fetchReference();
+                commandArgs = argString
+                    .replace(/\$replycontent/g, reference.content)
+                    .split(" ");
+            }
+            let sources = [];
             if (command.needs && command.needs.length > 0) {
-                let sources = await getSources(
-                    {
-                        attachments: defatts,
-                        reference: msg.reference,
-                        fetchReference: msg.fetchReference,
-                        client: client,
-                        channel: msg.channel,
-                        author: msg.author,
-                    } as Message,
-                    command.needs,
-                    localAttachments
-                ).catch((e: Error) => {
+                try {
+                    sources = await getSources(
+                        {
+                            attachments: defatts,
+                            reference: msg.reference,
+                            fetchReference: msg.fetchReference,
+                            client: client,
+                            channel: msg.channel,
+                            author: msg.author,
+                        } as Message,
+                        command.needs,
+                        localAttachments
+                    );
+                } catch (e) {
                     sendWebhook("flaps", e.message, msg.channel);
-                });
-                if (typeof sources == "string") return;
-                if (!sources) return;
-                let argString = commandArgs.join(" ");
-                if (argString.includes("$replycontent") && msg.reference) {
-                    let reference = await msg.fetchReference();
-                    commandArgs = argString
-                        .replace(/\$replycontent/g, reference.content)
-                        .split(" ");
+                    return;
                 }
-                let response = await command.execute(commandArgs, sources, msg);
-                localAttachments = [];
-                switch (response.type) {
-                    case CommandResponseType.Message:
-                        if (response.filename) {
-                            defatts = new Collection();
-                            defatts.set("0", {
-                                url: "%local" + response.filename,
-                                contentType: contentType(response.filename),
-                            } as Attachment);
-                            localAttachments.push(response.buffer);
-                        }
-                        lastresp = response;
-                        break;
-                }
-            } else {
-                let response = await command.execute(commandArgs, null, msg);
-                switch (response.type) {
-                    case CommandResponseType.Message:
-                        if (response.filename) {
-                            defatts = new Collection();
-                            defatts.set("0", {
-                                url: "%local" + response.filename,
-                                contentType: contentType(response.filename),
-                            } as Attachment);
-                            localAttachments.push(response.buffer);
-                        }
-                        lastresp = response;
-                        break;
-                }
+            }
+            let response = await command.execute(commandArgs, sources, msg);
+            switch (response.type) {
+                case CommandResponseType.Message:
+                    if (response.filename) {
+                        defatts = new Collection();
+                        defatts.set("0", {
+                            url: "%local" + response.filename,
+                            contentType: contentType(response.filename),
+                        } as Attachment);
+                        localAttachments.push(response.buffer);
+                    }
+                    lastresp = response;
+                    break;
             }
             index++;
         }
