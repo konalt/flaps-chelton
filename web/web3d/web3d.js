@@ -18,6 +18,7 @@ const resolutions = {
     capcut: [768, 768],
     bed: [800, 600],
     pokeball: [800, 600],
+    duvall: [800, 600],
 };
 const NOTEXTURE = "images/uv_grid_opengl.jpg";
 const fontLoader = new FontLoader();
@@ -835,6 +836,51 @@ async function _init(id, options = {}) {
                 camera.fov = fov;
                 camera.updateProjectionMatrix();
             };
+            break;
+        }
+        case "duvall": {
+            let img = options.img || NOTEXTURE;
+
+            camera.position.x = 20;
+            camera.position.y = 7;
+            camera.position.z = 30;
+            camera.fov = 40;
+            camera.updateProjectionMatrix();
+            camera.lookAt(5, 7, 0);
+
+            let balloon = await loadModel("models/balloon.glb");
+            //fumo.rotation.y = Math.PI;
+            let map = await loadTexture(img);
+            map.colorSpace = THREE.SRGBColorSpace;
+            map.flipY = false;
+            let material = new THREE.MeshStandardMaterial({
+                map,
+            });
+            balloon.children[0].material = material;
+            let scale = 3;
+            balloon.scale.x = scale;
+            balloon.scale.y = scale;
+            balloon.scale.z = scale;
+            balloon.position.y = 10;
+            scene.add(balloon);
+
+            let ground = new THREE.Mesh(
+                new THREE.PlaneGeometry(999, 999),
+                new THREE.MeshStandardMaterial({
+                    color: 0xffffff,
+                })
+            );
+            ground.rotation.x = -Math.PI / 2;
+            scene.add(ground);
+
+            scene.background = new THREE.Color(0x606060);
+            scene.fog = new THREE.Fog(0x606060, 90, 100);
+
+            quickBigLight(50, 50, 0);
+            quickBigLight(50, 30, 30);
+            quickBigLight(-50, 30, 30);
+
+            scene.add(new THREE.AmbientLight(0xffffff, 0.1));
             break;
         }
     }
