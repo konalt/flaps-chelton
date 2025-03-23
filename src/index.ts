@@ -247,12 +247,19 @@ function autoReact(msg: Message) {
         msg.react(
             client.emojis.cache.find((emoji) => emoji.name === "literally1984")
         );
-    if (f.includes("bone"))
-        msg.react(
-            client.emojis.cache.find(
-                (emoji) => emoji.name === "BAD_TO_THE_BONE"
-            )
-        );
+    if (f.includes("bone")) {
+        if (f.includes("daud")) {
+            msg.react(
+                client.emojis.cache.find((emoji) => emoji.name === "daud")
+            );
+        } else {
+            msg.react(
+                client.emojis.cache.find(
+                    (emoji) => emoji.name === "BAD_TO_THE_BONE"
+                )
+            );
+        }
+    }
     if (f.includes("selfie")) {
         if (Math.random() > 0.5) {
             msg.react("👍");
