@@ -333,6 +333,8 @@ export function usePreset(filename: string) {
     return "";
 }
 
+export const SCALE_EVEN = `scale=trunc(iw/2)*2:trunc(ih/2)*2`;
+
 export function autoGifPalette(
     in_specifier: string,
     out_specifier: string,

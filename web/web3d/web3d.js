@@ -19,6 +19,7 @@ const resolutions = {
     bed: [800, 600],
     pokeball: [800, 600],
     duvall: [800, 600],
+    walter: [512, 512],
 };
 const NOTEXTURE = "images/uv_grid_opengl.jpg";
 const fontLoader = new FontLoader();
@@ -85,6 +86,14 @@ async function depthMapToValueList(depthMap, res) {
         out.push(imageData.data[i] / 255);
     }
     return out;
+}
+
+function distance(x1, y1, x2, y2) {
+    return Math.hypot(x2 - x1, y2 - y1);
+}
+
+function easeInCirc(x) {
+    return Math.sqrt(1 - Math.pow(x - 1, 2));
 }
 
 async function _init(id, options = {}) {
@@ -882,6 +891,126 @@ async function _init(id, options = {}) {
 
             scene.add(new THREE.AmbientLight(0xffffff, 0.1));
             break;
+        }
+        case "walter": {
+            let segmentCount = 20;
+            let img = options.img || NOTEXTURE;
+            let img2 = options.img2 || img;
+            let imgWidth = options.imgWidth || 16;
+            let imgHeight = options.imgHeight || 16;
+            let isVertical = options.isVertical ?? false;
+            let flagWidth = 4;
+            let flagHeight = flagWidth * (imgHeight / imgWidth);
+            console.log(flagWidth, flagHeight);
+            let outputWidth = flagWidth * 128;
+            let outputHeight = flagHeight * 128;
+            renderer.setSize(outputWidth, outputHeight);
+            camera.aspect = outputWidth / outputHeight;
+            camera.position.z = 10;
+            camera.fov = 22.6;
+            camera.updateProjectionMatrix();
+            camera.lookAt(0, 0, 0);
+            let plane = new THREE.Mesh(
+                new THREE.PlaneGeometry(
+                    flagWidth,
+                    flagHeight,
+                    segmentCount,
+                    segmentCount
+                ),
+                new THREE.MeshStandardMaterial({
+                    map: await loadTexture(img),
+                })
+            );
+            if (plane.material.map)
+                plane.material.map.colorSpace = THREE.SRGBColorSpace;
+            plane.position.x = flagWidth / 2;
+            let plane2 = new THREE.Mesh(
+                new THREE.PlaneGeometry(
+                    flagWidth,
+                    flagHeight,
+                    segmentCount,
+                    segmentCount
+                ),
+                new THREE.MeshStandardMaterial({
+                    map: await loadTexture(img2),
+                })
+            );
+            if (plane2.material.map)
+                plane2.material.map.colorSpace = THREE.SRGBColorSpace;
+            if (isVertical) {
+                plane2.position.y = -flagHeight;
+                plane2.position.x = flagWidth / 2;
+            } else {
+                plane2.position.x = -flagWidth / 2;
+            }
+            camera.position.x += flagWidth / 2;
+
+            quickBigLight(20, 20, 20);
+            quickBigLight(-50, 10, -20);
+
+            scene.add(new THREE.AmbientLight(0xffffff));
+
+            let modify = (plane) => {
+                let vertices = plane.geometry.attributes.position.array;
+                let radius = Math.min(flagWidth, flagHeight) / 2;
+                for (
+                    let i = 0;
+                    i < plane.geometry.attributes.position.count;
+                    i++
+                ) {
+                    let [x, y] = [
+                        vertices[i * 3] + flagWidth / 2,
+                        vertices[i * 3 + 1],
+                    ];
+                    let morphScale = 5;
+                    vertices[i * 3 + 2] = Math.min(
+                        (-(radius - distance(x, y, radius, 0)) / radius) *
+                            morphScale,
+                        0
+                    );
+                }
+                plane.geometry.attributes.position.needsUpdate = true;
+                plane.geometry.computeVertexNormals();
+            };
+
+            modify(plane);
+            modify(plane2);
+            let planes = new THREE.Group();
+            planes.add(plane);
+            planes.add(plane2);
+            scene.add(planes);
+
+            stepFunction = (frameNumber = 0, duration = 30, direction = 1) => {
+                let i = frameNumber % duration;
+                switch (direction) {
+                    case 0:
+                        planes.position.x =
+                            (1 - easeInCirc((duration - i) / duration)) *
+                            flagWidth *
+                            1.2;
+                        break;
+                    case 1:
+                        planes.position.x =
+                            -(1 - easeInCirc((duration - i) / duration)) *
+                                flagWidth *
+                                1.2 +
+                            flagWidth;
+                        break;
+                    case 2:
+                        planes.position.y =
+                            (1 - easeInCirc((duration - i) / duration)) *
+                            flagHeight *
+                            1.2;
+                        break;
+                    case 3:
+                        planes.position.y =
+                            -(1 - easeInCirc((duration - i) / duration)) *
+                                flagHeight *
+                                1.2 +
+                            flagHeight;
+                        break;
+                }
+            };
         }
     }
 
