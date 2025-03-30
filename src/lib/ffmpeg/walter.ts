@@ -46,7 +46,7 @@ export default async function walter(buffers: [Buffer, string][]) {
         animations.push(anim);
     }
     let current = sample(animations);
-    for (let i = 0; i < 10; i++) {
+    for (let i = 0; i < 7; i++) {
         log(
             `Appending segment ${C.Cyan}${i + 1} ${C.White}of ${C.Cyan}22`,
             "walter"

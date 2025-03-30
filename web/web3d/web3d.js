@@ -907,7 +907,12 @@ async function _init(id, options = {}) {
             renderer.setSize(outputWidth, outputHeight);
             camera.aspect = outputWidth / outputHeight;
             camera.position.z = 10;
-            camera.fov = 22.6;
+            let calculateFOV = () => {
+                let ratio = (imgHeight * 0.965) / imgWidth;
+                return 22.6 * ratio;
+            };
+            let fov = calculateFOV();
+            camera.fov = fov;
             camera.updateProjectionMatrix();
             camera.lookAt(0, 0, 0);
             let plane = new THREE.Mesh(
@@ -959,13 +964,12 @@ async function _init(id, options = {}) {
                     i++
                 ) {
                     let [x, y] = [
-                        vertices[i * 3] + flagWidth / 2,
-                        vertices[i * 3 + 1],
+                        vertices[i * 3] / (flagWidth / 2),
+                        vertices[i * 3 + 1] / (flagHeight / 2),
                     ];
                     let morphScale = 5;
                     vertices[i * 3 + 2] = Math.min(
-                        (-(radius - distance(x, y, radius, 0)) / radius) *
-                            morphScale,
+                        -(1 - distance(x, y, 0, 0)) * morphScale,
                         0
                     );
                 }
