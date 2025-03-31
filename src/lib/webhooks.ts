@@ -23,6 +23,9 @@ import { users } from "./users";
 import { writeFile } from "fs/promises";
 import { file } from "./ffmpeg/ffmpeg";
 import { DOMAIN } from "..";
+import { getTypeSingular } from "./utils";
+import { lookup } from "mime-types";
+import cheltonCo from "./canvas/cheltonco";
 
 const defaultContent = "No Content";
 const defaultUsername = "No Username";
@@ -241,6 +244,13 @@ export async function sendWebhook(
         buffer = null;
         filename = null;
     }
+    if (buffer) {
+        if (getTypeSingular(lookup(filename) || "unknown") == "image") {
+            buffer = await cheltonCo(buffer);
+        }
+    }
+    content +=
+        "\n-# ✨ Upgrade to a Flaps GOLD+ account to remove watermarks like this and gain access to other premium features! ✨";
     let name = user?.name || "wh:" + id;
     if (name == "flaps chelton") {
         let flapsMember = await (
