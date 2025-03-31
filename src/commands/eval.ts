@@ -39,11 +39,13 @@ async function populate(dir = "", onlyExecute = false) {
     return o;
 }
 
+const OVERRIDE = process.env.EVAL_OVERRIDE == "yes";
+
 module.exports = {
     id: "eval",
     name: "Eval",
     desc: "Evaluates some JavaScript code.",
-    showOnCommandSimulator: false,
+    showOnCommandSimulator: OVERRIDE,
     needs: [
         "image/video/audio/gif?",
         "image/video/audio/gif?",
@@ -63,7 +65,7 @@ module.exports = {
         if (!commands.__pop) {
             commands = await populate("commands", true);
         }
-        if (msg.author.id !== process.env.OWNER_TOKEN) {
+        if (!OVERRIDE && msg.author.id !== process.env.OWNER_TOKEN) {
             return makeMessageResp("flaps", "nuh uh uh!");
         }
         if (args.join(" ") == "list") {

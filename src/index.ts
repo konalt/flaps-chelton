@@ -1025,6 +1025,14 @@ async function init() {
                 "Friday.mp4"
             );
         }
+        if (d.getMinutes() == 9 && d.getSeconds() < 1) {
+            let allow =
+                (await readFile("scal_allowtime.txt", "utf-8")) == "yes";
+            if (allow || Math.random() > 0.95) {
+                sendWebhook("cirno", "TIME HAHAHAHA", MAIN_CHANNEL);
+                if (allow) writeFile("scal_allowtime.txt", "no");
+            }
+        }
     }, 1000);
     await Promise.all([
         loadAutoStatusP,
