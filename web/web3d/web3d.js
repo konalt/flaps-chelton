@@ -957,7 +957,6 @@ async function _init(id, options = {}) {
 
             let modify = (plane) => {
                 let vertices = plane.geometry.attributes.position.array;
-                let radius = Math.min(flagWidth, flagHeight) / 2;
                 for (
                     let i = 0;
                     i < plane.geometry.attributes.position.count;
