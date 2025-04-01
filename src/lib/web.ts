@@ -111,6 +111,9 @@ export default function initializeWebServer(): Promise<void> {
         app.get("/", (req, res) => {
             res.sendFile(join(appRoot, "web/index.html"));
         });
+        app.get("/upgrade", (req, res) => {
+            res.redirect("https://youtube.com/watch?v=dQw4w9WgXcQ");
+        });
         app.get("*", (req, res) => {
             if (existsSync(join(appRoot, "web", req.path))) {
                 res.sendFile(join(appRoot, "web", req.path));

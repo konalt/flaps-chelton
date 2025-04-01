@@ -244,13 +244,15 @@ export async function sendWebhook(
         buffer = null;
         filename = null;
     }
-    if (buffer) {
-        if (getTypeSingular(lookup(filename) || "unknown") == "image") {
-            buffer = await cheltonCo(buffer);
+    if (process.env.FLAPS_PLUS == "yes") {
+        if (buffer) {
+            if (getTypeSingular(lookup(filename) || "unknown") == "image") {
+                buffer = await cheltonCo(buffer);
+            }
         }
+        content +=
+            "\n-# ✨ [Upgrade](<https://flaps.konalt.net/upgrade>) to a Flaps GOLD+ account to remove watermarks like this and gain access to other premium features! ✨";
     }
-    content +=
-        "\n-# ✨ Upgrade to a Flaps GOLD+ account to remove watermarks like this and gain access to other premium features! ✨";
     let name = user?.name || "wh:" + id;
     if (name == "flaps chelton") {
         let flapsMember = await (
