@@ -1,5 +1,4 @@
 import * as THREE from "three";
-import { LoopSubdivision } from "three-subdivide";
 import { TextGeometry } from "three/addons/geometries/TextGeometry.js";
 import { FontLoader } from "three/addons/loaders/FontLoader.js";
 import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";

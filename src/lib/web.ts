@@ -114,6 +114,19 @@ export default function initializeWebServer(): Promise<void> {
         app.get("/upgrade", (req, res) => {
             res.redirect("https://youtube.com/watch?v=dQw4w9WgXcQ");
         });
+        app.get(/\/(three)|(es-module-shims)\/.*$/, (req, res) => {
+            if (existsSync(join(appRoot, "node_modules", req.path))) {
+                res.sendFile(join(appRoot, "node_modules", req.path));
+            } else if (
+                existsSync(join(appRoot, "node_modules", req.path + ".js"))
+            ) {
+                res.sendFile(join(appRoot, "node_modules", req.path + ".js"));
+            } else {
+                res.status(404)
+                    .contentType("text/plain")
+                    .send("404 Script Not Found");
+            }
+        });
         app.get("*", (req, res) => {
             if (existsSync(join(appRoot, "web", req.path))) {
                 res.sendFile(join(appRoot, "web", req.path));
