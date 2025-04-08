@@ -20,7 +20,11 @@ module.exports = {
                 parseInt(args[2]),
                 parseFloat(args[3]),
                 parseInt(args[4]),
-                buffers[0]
+                buffers[0],
+                args[5] == "y",
+                args[6] == "y",
+                [parseInt(args[7]), parseInt(args[8])],
+                parseFloat(args[9])
             ).then(
                 handleFFmpeg(getFileName("Effect_PerspTest", "mp4"), res),
                 handleFFmpegCatch(res)
