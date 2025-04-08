@@ -24,7 +24,6 @@ function readFile(input, cb) {
 
 fileInput.addEventListener("change", (e) => {
     e.preventDefault();
-    r;
     readFile(fileInput, (url) => {
         video.src = url;
         flaps.show(videoUI);
