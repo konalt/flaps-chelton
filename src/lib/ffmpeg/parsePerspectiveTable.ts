@@ -17,13 +17,20 @@ export default async function parsePerspectiveTable(
     fps: number,
     in_buf: [Buffer, string],
     multiplicative = false,
-    enableLerp = false
+    enableLerp = false,
+    overrideVideoSize = [-1, -1],
+    frameMultiplier = 1
 ) {
+    if (overrideVideoSize[0] == -1) overrideVideoSize[0] = v_width;
+    if (overrideVideoSize[1] == -1) overrideVideoSize[1] = v_height;
     let directives = txt
         .split("\n") // split on newlines
         .map((x) => x.trim().replace(/ +/g, " ")) // strip CR if windows, remove duplicate spaces
         .filter((x) => !scalingTableHelpers.includes(x.toUpperCase())) // remove helper lines
         .map((x) => x.split(" ").map((y) => parseFloat(y))); // make array of numbers
+    directives = directives.map((d) => {
+        return [Math.round(d[0] * frameMultiplier), ...d.slice(1)];
+    });
     if (enableLerp) {
         let newDirectives = [];
         let frameCount = directives.at(-1)[0];
@@ -44,7 +51,6 @@ export default async function parsePerspectiveTable(
             let newDirective = [i];
             let j = 1;
             for (const value of lastDirective.slice(1)) {
-                console.log(value, nextDirective[j]);
                 newDirective.push(
                     lerp(
                         value,
@@ -70,10 +76,19 @@ export default async function parsePerspectiveTable(
         filter += `[${i}]perspective=${directives[i]
             .slice(1)
             .map((a) => {
+                if (!multiplicative) return a;
+                if (!isY) {
+                    isY = !isY;
+                    return Math.round(
+                        a * overrideVideoSize[0] +
+                            (v_width - overrideVideoSize[0]) / 2
+                    );
+                }
                 isY = !isY;
-                return multiplicative
-                    ? Math.round(a * (isY ? v_height : v_width))
-                    : a;
+                return Math.round(
+                    a * overrideVideoSize[1] +
+                        (v_height - overrideVideoSize[1]) / 2
+                );
             })
             .join(":")}:sense=1[_${i}];`;
     }
