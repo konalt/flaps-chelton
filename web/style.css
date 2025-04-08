@@ -4,6 +4,16 @@ html {
     background-color: #ddd;
 }
 
+div#err {
+    background-color: rgba(255, 0, 0, 0.54);
+    border-radius: 5px;
+    border: 3px solid rgba(255, 0, 0, 0.9);
+    color: white;
+    width: 512px;
+    padding: 10px;
+    font-weight: bold;
+}
+
 h1 {
     margin: 5px auto;
 }
@@ -191,6 +201,7 @@ div.simulatedmessage div.otherside {
 div.simulatedmessage div.avatarside img {
     border-radius: 50%;
     width: 60px;
+    height: 60px;
 }
 
 div.simulatedmessage div.otherside div.username span {

@@ -15,8 +15,14 @@ const colors = {
     other4: "a2a8a8",
     other5: "929898",
 };
-$("#loading").hide();
-$("#data").hide();
+
+const serverID = document.getElementById("serverid");
+const trackFileInput = document.getElementById("trackfile");
+const loading = document.getElementById("loading");
+const dataView = document.getElementById("data");
+const importElement = document.getElementById("import");
+const updateTime = document.getElementById("updatetime");
+
 function readFile(input, cb) {
     let read = 0;
     const files = input.files;
@@ -42,7 +48,7 @@ function readFile(input, cb) {
 
 // eslint-disable-next-line no-unused-vars
 function attach(type, single) {
-    let sid = $("#serverid").val();
+    let sid = serverID.value;
     let e = () => {
         fetch("/api/track_" + type + "/" + sid)
             .then((r) => r.text())
@@ -95,9 +101,9 @@ function getUserColor(user) {
     return userColors[user];
 }
 
-$("#trackfile").change((e) => {
+trackFileInput.addEventListener("change", (e) => {
     e.preventDefault();
-    readFile($("#trackfile")[0], (data) => {
+    readFile(trackFileInput, (data) => {
         init(data);
     });
 });
@@ -319,8 +325,8 @@ let currentKeyword = 1;
 
 function init(log, overrideStart, overrideEnd = 1) {
     let start = Date.now();
-    $("#loading").show();
-    $("#data").show();
+    flaps.show(loading);
+    flaps.show(dataView);
     let messages = [];
     let userStatusChains = {};
     let startTimestamp = overrideStart;
@@ -501,10 +507,10 @@ function init(log, overrideStart, overrideEnd = 1) {
         ctx.fillText(user, 10, margin + users.indexOf(user) * inc + inc / 2);
         i++;
     }
-    $("#loading").hide();
-    $("#import").hide();
+    flaps.hide(loading);
+    flaps.hide(importElement);
     let dur = Date.now() - start;
-    $("#updatetime").text(dur);
+    updateTime.innerText = dur;
     if (!document.getElementById("data-done-marker")) {
         let marker = document.createElement("div");
         marker.id = "data-done-marker";

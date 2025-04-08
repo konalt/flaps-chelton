@@ -182,13 +182,10 @@ export function parseOptions(
     return [options, newText.join(" ")];
 }
 
-export function convertWebpAttachmentToPng(attachment: Attachment) {
-    return new Promise<Buffer>((resolve) => {
-        downloadPromise(attachment.url).then(async (buf) => {
-            let png = await webpToPNG([[buf, "webp"]]);
-            resolve(png);
-        });
-    });
+export async function convertWebpAttachmentToPng(attachment: Attachment) {
+    let buf = await downloadPromise(attachment.url);
+    let png = await webpToPNG([[buf, "webp"]]);
+    return png;
 }
 
 export function encodeObject(object: Object) {

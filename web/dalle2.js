@@ -1,37 +1,35 @@
+const outImage = document.getElementById("out");
+const promptInput = document.getElementById("prompt");
+const loader = document.getElementById("loader");
+const form = document.getElementById("dalle2form");
+
 function dalle2() {
-    var t = $("#prompt").val();
-    $("#loader").show();
-    $("#err").hide();
-    $("#out").hide();
-    axios
-        .post(
-            "/api/dalle2",
-            {
-                prompt: t,
-            },
-            {
-                responseType: "blob",
-            }
-        )
-        .then((res) => {
-            var blob = new Blob([res.data], { type: "image/png" });
-            $("#out").attr("src", URL.createObjectURL(blob));
-            $("#out").show();
-            $("#loader").hide();
+    var t = promptInput.value;
+    flaps.show(loader);
+    flaps.hideError();
+    flaps.hide(outImage);
+    fetch("/api/dalle2", {
+        method: "POST",
+        body: JSON.stringify({
+            prompt: t,
+        }),
+        headers: {
+            "Content-Type": "application/json",
+        },
+    })
+        .then((resp) => resp.blob())
+        .then((blob) => {
+            outImage.src = URL.createObjectURL(blob);
+            flaps.show(outImage);
+            flaps.hide(loader);
         })
-        .catch((err) => {
-            console.error(err.response);
-            err.response.data.text().then((t) => {
-                $("#loader").hide();
-                flaps.showError(t);
-            });
+        .catch((e) => {
+            flaps.hide(loader);
+            flaps.showError(e);
         });
 }
 
-$("#dalle2form").submit(function (e) {
+form.addEventListener("submit", (e) => {
     e.preventDefault();
     dalle2();
 });
-
-$("#out").hide();
-$("#loader").hide();
