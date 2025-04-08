@@ -6,7 +6,6 @@ module.exports = {
     id: "gpu",
     name: "GPU",
     desc: "Checks Web3D GPU support.",
-    needs: [],
     async execute() {
         let img = await gpu();
         return makeMessageResp(
