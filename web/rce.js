@@ -2,6 +2,7 @@ var selector = document.getElementById("selector");
 var outtxt = document.getElementById("outtxt");
 var outimg = document.getElementById("outimg");
 var outvid = document.getElementById("outvid");
+var outmsg = document.getElementById("outmsg");
 
 axios.get("/api/commands").then((resp) => {
     let sorted = resp.data.sort((a, b) => {
@@ -43,6 +44,7 @@ function run() {
     $(outimg).hide();
     $(outvid).hide();
     $(outtxt).hide();
+    $(outmsg).hide();
     $("#pasteindicator").hide();
     $("#loader").show();
     var useURL = urls;
@@ -56,6 +58,7 @@ function run() {
         .then(
             (resp) => {
                 $("#loader").hide();
+                $(outmsg).show();
                 outtxt.innerText = resp.data.content;
                 if (resp.data.content.length > 0) {
                     $(outtxt).show();
@@ -74,6 +77,10 @@ function run() {
                     lasturl = resp.data.buffer;
                     $("#useprevl").show();
                 }
+                $("#outusername").text(resp.data.username);
+                document.getElementById("avatar").src =
+                    "/avatar/" + resp.data.id + ".webp";
+                //$("#outuername").text(resp.data.username);
             },
             (err) => {
                 $("#loader").hide();
@@ -154,16 +161,6 @@ $(selector).change(function (e) {
     updateCommandInfo();
 });
 
-$("#loader").hide();
-$("#outimg").hide();
-$("#outtxt").hide();
-$("#pasteindicator").hide();
-$("#pastedimage").hide();
-$("#pastedvideo").hide();
-$("#useprevl").hide();
-$(outvid).hide();
-
-$("#clearimage").hide();
 $("#clearimage").click((e) => {
     e.preventDefault();
     clearImage();
@@ -175,6 +172,7 @@ function setPreviewBuffer(buffer, type) {
     $("#outimg").hide();
     $("#outvid").hide();
     $("#outtxt").hide();
+    $("#simulatedmessage").hide();
     $("#pastedimage").hide();
     $("#pastedvideo").hide();
     if (buffer.startsWith("data:video")) {

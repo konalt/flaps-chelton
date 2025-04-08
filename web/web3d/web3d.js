@@ -176,6 +176,10 @@ async function _init(id, options = {}) {
                     font: font,
                     size: 3,
                     height: 1,
+                    depth: 2,
+                    bevelEnabled: true,
+                    bevelThickness: 0.1,
+                    bevelSize: 0,
                 }),
                 textMaterial
             );
@@ -193,6 +197,10 @@ async function _init(id, options = {}) {
                     font: font,
                     size: 1.7,
                     height: 1,
+                    depth: 2,
+                    bevelEnabled: true,
+                    bevelThickness: 0.1,
+                    bevelSize: 0,
                 }),
                 textMaterial
             );

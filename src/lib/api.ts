@@ -148,6 +148,7 @@ router.post("/runcmd", (req, res) => {
                                       lookup(response.filename) || "text/plain"
                                   )
                                 : null,
+                            username: hooks.get(response.id).name,
                         });
                         break;
                 }

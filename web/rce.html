@@ -48,23 +48,23 @@
             />
             <br />
             <div style="display: contents" id="fileinput">
-                <button id="clearimage">Clear</button>
+                <button id="clearimage" style="display: none">Clear</button>
                 <button id="uselastgen">
                     Use last generated file as source
                 </button>
                 <input type="file" name="file" id="file" multiple />
-                <div class="pasteindicator" id="pasteindicator">
-                    <p class="commandinfo">
+                <div class="pasteindicator" id="pasteindicator" style="display: none">
+                    <p class="commandinfo" style="display: none">
                         Using <span id="imgtype">unknown</span>
                         <span id="filetype">unknown</span>
                     </p>
-                    <img id="pastedimage" />
-                    <video id="pastedvideo" controls></video>
+                    <img id="pastedimage" style="display: none" />
+                    <video id="pastedvideo" style="display: none" controls></video>
                 </div>
             </div>
             <input type="submit" value="Go!" id="genbtn" />
         </form>
-        <div id="loader" class="loader"></div>
+        <div id="loader" class="loader" style="display: none"></div>
         <div
             id="err"
             style="
@@ -77,9 +77,21 @@
                 font-weight: bold;
             "
         ></div>
-        <textarea id="outtxt"></textarea>
-        <img id="outimg" class="outimg" />
-        <video id="outvid" class="outvid" controls></video>
+        <div class="simulatedmessage" style="display: none" id="outmsg">
+            <div class="avatarside">
+                <img src="/avatar/flaps.webp" alt="Avatar" id="avatar">
+            </div>
+            <div class="otherside">
+                <div class="username">
+                    <span id="outusername">flaps chelton</span>
+                </div>
+                <div class="content">
+                    <span id="outtxt"></span>
+                    <img id="outimg" class="outimg" style="display: none" />
+                    <video id="outvid" class="outvid" controls style="display: none"></video>
+                </div>
+            </div>
+        </div>
         <script src="common.js"></script>
         <script src="rce.js"></script>
     </body>

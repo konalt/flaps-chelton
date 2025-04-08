@@ -172,6 +172,39 @@ p.commandinfo.smaller {
     line-height: 24px;
 }
 
+div.simulatedmessage {
+    display: flex;
+    flex-direction: row;
+    gap: 15px;
+    background-color: #343436;
+    padding: 10px;
+    width: fit-content;
+    border-radius: 5px;
+}
+
+div.simulatedmessage div.otherside {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+div.simulatedmessage div.avatarside img {
+    border-radius: 50%;
+    width: 60px;
+}
+
+div.simulatedmessage div.otherside div.username span {
+    font-size: 18px;
+    font-weight: bold;
+    color: white;
+}
+
+div.simulatedmessage div.otherside div.content span {
+    font-size: 18px;
+    color: white;
+    line-height: 18px;
+}
+
 textarea#outtxt {
     font-size: 16px;
     width: 450px;
@@ -184,10 +217,12 @@ code {
 
 img.outimg {
     width: 380px;
+    border-radius: 5px;
 }
 
 video.outvid {
     width: 380px;
+    border-radius: 5px;
 }
 
 div.pasteindicator {
