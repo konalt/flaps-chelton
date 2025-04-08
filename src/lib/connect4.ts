@@ -176,7 +176,7 @@ export async function handleInteraction(interaction: ButtonInteraction) {
             break;
         default:
             let dropzone = parseInt(buttonType);
-            let filteredLine = game.board[dropzone].filter(
+            let filteredLine: Connect4Cell[] = game.board[dropzone].filter(
                 (p) => p != Connect4Cell.Empty
             );
             filteredLine.push(
