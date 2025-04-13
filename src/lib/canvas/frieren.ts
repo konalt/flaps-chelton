@@ -46,7 +46,7 @@ export default async function frieren(buf: Buffer) {
     let newsize = calculateAspectRatioFit(
         croppedCanvas.width,
         croppedCanvas.height,
-        71,
+        69,
         Infinity
     );
     const [w, h] = [background.width, background.height];
