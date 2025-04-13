@@ -15,13 +15,15 @@ const colors = {
     other4: "a2a8a8",
     other5: "929898",
 };
+const BACKGROUND = "#333";
+const BACKGROUND2 = "#222";
+const TEXT = "#ddd";
 
 const serverID = document.getElementById("serverid");
 const trackFileInput = document.getElementById("trackfile");
 const loading = document.getElementById("loading");
 const dataView = document.getElementById("data");
 const importElement = document.getElementById("import");
-const updateTime = document.getElementById("updatetime");
 
 function readFile(input, cb) {
     let read = 0;
@@ -121,7 +123,7 @@ function piechart(users) {
     for (const user of users) {
         totalMessages += user[1];
     }
-    ctx.fillStyle = "white";
+    ctx.fillStyle = BACKGROUND;
     ctx.fillRect(0, 0, w, w);
     for (const user of users) {
         ctx.fillStyle = getUserColor(user[0]);
@@ -154,14 +156,14 @@ function piechartLegend(users, totalMessages) {
     let i = 0;
     let gap = 10;
     let sq = 20;
-    ctx.fillStyle = "white";
+    ctx.fillStyle = BACKGROUND2;
     ctx.fillRect(0, 0, w, h);
     ctx.font = "14px sans-serif";
     ctx.textBaseline = "middle";
     for (const user of users) {
         ctx.fillStyle = getUserColor(user[0]);
         ctx.fillRect(gap, gap + (sq + gap) * i, sq, sq);
-        ctx.fillStyle = "black";
+        ctx.fillStyle = TEXT;
         ctx.fillText(
             user[0] +
                 " (" +
@@ -184,21 +186,21 @@ function textInfo(startTimestamp, endTimestamp, totalMessages, users) {
      */
     let ctx = canvas.getContext("2d");
     let [w, h] = [canvas.width, canvas.height];
-    ctx.fillStyle = "white";
+    ctx.fillStyle = BACKGROUND2;
     ctx.fillRect(0, 0, w, h);
     ctx.font = "14px sans-serif";
     ctx.textBaseline = "top";
     let text = "";
     if (CIRNO) {
         text += "⑨⑨⑨ Cirno Track File ⑨⑨⑨\n";
-        text += `${totalMessages} total messages by ${users.length} users\n`;
-    } else {
-        text += "Flaps Track File\n";
         text += `${totalMessages
             .toString()
             .replace(/9/g, "⑨")} total messages by ${users.length
             .toString()
             .replace(/9/g, "⑨")} users\n`;
+    } else {
+        text += "Flaps Track File\n";
+        text += `${totalMessages} total messages by ${users.length} users\n`;
     }
     let dateString = (ts) => {
         let d = new Date(ts);
@@ -211,7 +213,7 @@ function textInfo(startTimestamp, endTimestamp, totalMessages, users) {
     };
     text += `Range start: ${dateString(startTimestamp)}\n`;
     text += `Range end: ${dateString(endTimestamp)}\n`;
-    ctx.fillStyle = "black";
+    ctx.fillStyle = TEXT;
     let y = 5;
     for (const line of text.trim().split("\n")) {
         ctx.fillText(line, 5, y, w - 10);
@@ -244,7 +246,7 @@ function keywordPiechart(messages, keywordMask) {
     for (const uc of userCounts) {
         totalMessages += uc[1];
     }
-    ctx.fillStyle = "white";
+    ctx.fillStyle = BACKGROUND;
     ctx.fillRect(0, 0, w, w);
     for (const uc of userCounts) {
         ctx.fillStyle = getUserColor(uc[0]);
@@ -277,10 +279,10 @@ function keywordPiechartLegend(userCounts, totalMessages, kwMask, messages) {
     let i = 0;
     let gap = 10;
     let sq = 20;
-    ctx.fillStyle = "white";
+    ctx.fillStyle = BACKGROUND2;
     ctx.fillRect(0, 0, w, h);
     ctx.font = "14px sans-serif";
-    ctx.fillStyle = "black";
+    ctx.fillStyle = TEXT;
     ctx.textBaseline = "top";
     ctx.textAlign = "center";
     let kw = Object.entries(keywords).find((kw) => kw[1][0] == kwMask)[0];
@@ -294,7 +296,7 @@ function keywordPiechartLegend(userCounts, totalMessages, kwMask, messages) {
     for (const user of userCounts) {
         ctx.fillStyle = getUserColor(user[0]);
         ctx.fillRect(gap, gap + (sq + gap) * (i + 0.75), sq, sq);
-        ctx.fillStyle = "black";
+        ctx.fillStyle = TEXT;
         ctx.fillText(
             user[0] +
                 " (" +
@@ -429,7 +431,7 @@ function init(log, overrideStart, overrideEnd = 1) {
     };
     let margin = 20;
     let inc = (h - margin) / users.length;
-    ctx.fillStyle = "white";
+    ctx.fillStyle = BACKGROUND;
     ctx.fillRect(0, 0, w, h);
     ctx.globalAlpha = 0.2;
     let i = 0;
@@ -469,7 +471,7 @@ function init(log, overrideStart, overrideEnd = 1) {
         i++;
     }
     ctx.globalAlpha = 1;
-    ctx.fillStyle = "#888";
+    ctx.fillStyle = "#aaa";
     ctx.strokeStyle = "#888";
     ctx.textAlign = "left";
     ctx.font = "10px sans-serif";
@@ -499,7 +501,7 @@ function init(log, overrideStart, overrideEnd = 1) {
         c(x, y, 2, co);
     }
     i = 0;
-    ctx.fillStyle = "black";
+    ctx.fillStyle = TEXT;
     ctx.textAlign = "left";
     ctx.textBaseline = "middle";
     ctx.font = "14px sans-serif";
@@ -509,8 +511,6 @@ function init(log, overrideStart, overrideEnd = 1) {
     }
     flaps.hide(loading);
     flaps.hide(importElement);
-    let dur = Date.now() - start;
-    updateTime.innerText = dur;
     if (!document.getElementById("data-done-marker")) {
         let marker = document.createElement("div");
         marker.id = "data-done-marker";

@@ -1,7 +1,11 @@
 body,
 html {
-    padding: 5px;
-    background-color: #ddd;
+    background-color: #101015;
+    color: #ddd;
+}
+
+* {
+    font-family: 'Helvetica', 'Helvetica Neue', 'Arial', sans-serif;
 }
 
 div#err {
@@ -16,11 +20,37 @@ div#err {
 
 h1 {
     margin: 5px auto;
+    font-weight: 500;
+    line-height: 1.1;
+}
+
+a {
+    color: #498ac2;
+    text-decoration: none;
+}
+
+a:focus, a:hover {
+    color: #3571a7;
+    text-decoration: underline;
 }
 
 hr {
     margin: 10px 0px;
     border-color: #333;
+}
+
+input, select {
+    background-color: #444450;
+    color: white;
+    border-radius: 5px;
+    border: none;
+    font-size: x-large;
+    padding: 2px 4px;
+    margin: 5px 0;
+}
+
+input:focus, input:hover {
+    background-color: #505069;
 }
 
 input[type="text"] {
@@ -39,6 +69,7 @@ input[type="submit"] {
 }
 
 input[type="file"] {
+    background-color: transparent;
     font-size: medium;
     margin: 5px 0px 5px 0px;
 }
@@ -52,13 +83,6 @@ label {
     margin: 5px 0;
     font-size: x-large;
     font-weight: normal;
-}
-
-input,
-select {
-    font-size: x-large;
-    padding: 2px 4px;
-    margin: 5px 0;
 }
 
 textarea {
@@ -91,11 +115,11 @@ textarea:focus {
 
 .loader {
     margin-top: 5px;
-    border: 16px solid #f3f3f3;
-    border-top: 16px solid #333;
+    border: 6px solid transparent;
+    border-top: 6px solid #555555;
     border-radius: 50%;
-    width: 380px;
-    height: 380px;
+    width: 100px;
+    height: 100px;
     animation: spin 1s linear infinite;
     -webkit-animation: spin 1s linear infinite;
 }
@@ -137,49 +161,14 @@ input[type="submit"]:disabled {
     cursor: not-allowed;
 }
 
-div#userinfo {
-    text-align: center;
-    padding: 5px;
-    border: 3px solid rgba(59, 63, 94, 1);
-    background-color: rgba(59, 63, 94, 0.6);
-    width: max-content;
-    border-radius: 5px;
-    -webkit-border-radius: 5px;
-    -moz-border-radius: 5px;
-    -ms-border-radius: 5px;
-    -o-border-radius: 5px;
-    color: white;
-    font-size: x-large;
-    width: 256px;
-}
-
-div#userinfo img#useravatar {
-    object-fit: cover;
-    object-position: center;
-    width: 128px;
-    height: 128px;
-    border: 3px solid white;
-    margin-bottom: 5px;
-    border-radius: 999em;
-    -webkit-border-radius: 999em;
-    -moz-border-radius: 999em;
-    -ms-border-radius: 999em;
-    -o-border-radius: 999em;
-}
-
-div#userinfo p {
-    margin: 2.5px;
-    line-height: calc(normal - 5px);
-}
-
 p.commandinfo {
     font-size: 20px;
     margin: 0px;
-    line-height: 30px;
+    line-height: 24px;
 }
 p.commandinfo.smaller {
     font-size: 16px;
-    line-height: 24px;
+    line-height: 26px;
 }
 
 div.simulatedmessage {
@@ -222,8 +211,11 @@ textarea#outtxt {
 }
 
 code {
-    color: #333;
-    background-color: #f3f3f3;
+    color: #f3f3f3;
+    background-color: #333;
+    padding: 2px;
+    border-radius: 5px;
+    font-family: monospace;
 }
 
 img.outimg {
@@ -237,7 +229,7 @@ video.outvid {
 }
 
 div.pasteindicator {
-    background-color: #ccc;
+    background-color: #444;
     padding: 10px;
     border-radius: 5px;
     -webkit-border-radius: 5px;
