@@ -199,13 +199,13 @@ function setPreviewBuffer(buffer, type) {
     if (buffer.startsWith("data:video")) {
         pastedVideo.src = buffer;
         flaps.show(pastedVideo);
-        fileTypeDisplay.text("video");
+        fileTypeDisplay.innerText = "video";
     } else if (buffer.startsWith("data:image")) {
         pastedImage.src = buffer;
         flaps.show(pastedImage);
-        fileTypeDisplay.text("image");
+        fileTypeDisplay.innerText = "image";
     }
-    imageTypeDisplay.text(type);
+    imageTypeDisplay.innerText = type;
 }
 
 window.addEventListener("paste", function (event) {
