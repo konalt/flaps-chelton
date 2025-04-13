@@ -469,6 +469,10 @@ export async function onMessage(msg: Message) {
     }
 
     let commandRan = false;
+    if (Math.random() < 1 / 1000 || msg.content.startsWith("brainstormtest")) {
+        if (!msg.author.bot)
+            sendWebhook("brainstorm", msg.content, msg.channel);
+    }
     if (!msg.content.startsWith(COMMAND_PREFIX)) return;
     let commandChain: [string, string[]][] = msg.content
         .split("==>")
@@ -583,9 +587,6 @@ export async function onMessage(msg: Message) {
             lastresp.components
         );
     } else {
-        if (Math.random() < 1 / 1000) {
-            sendWebhook("brainstorm", msg.content, msg.channel);
-        }
     }
 }
 
