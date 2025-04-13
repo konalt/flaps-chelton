@@ -38,7 +38,7 @@
         "fetch": "^1.1.0",
         "glob": "^8.1.0",
         "puppeteer": "^24.2.0",
-        "sharp": "^0.33.3",
+        "sharp": "^0.33.5",
         "typescript": "^5.4.5",
         "webpack-cli": "^4.9.2"
     }
