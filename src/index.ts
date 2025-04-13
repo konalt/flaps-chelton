@@ -582,6 +582,10 @@ export async function onMessage(msg: Message) {
             lastresp.filename,
             lastresp.components
         );
+    } else {
+        if (Math.random() < 1 / 1000) {
+            sendWebhook("brainstorm", msg.content, msg.channel);
+        }
     }
 }
 
