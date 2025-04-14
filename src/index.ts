@@ -19,6 +19,8 @@ import {
 } from "@discordjs/voice";
 log(`Importing modules (${C.BCyan}canvas${C.White})...`, "start");
 import { registerFont } from "canvas";
+log(`Importing modules (${C.BCyan}child_process${C.White})...`, "start");
+import cp from "child_process";
 log(`Importing modules (${C.BCyan}discord.js${C.White})...`, "start");
 import {
     ActionRowBuilder,
@@ -888,6 +890,19 @@ export let [addBuffer, removeBuffer, addBufferSequence] = [
         return "null";
     },
 ];
+async function startRemoveBGServer() {
+    let proc = cp.spawn("node", "dist/removebgserver.js".split(" "));
+    proc.stdout.on("data", (data) => {
+        log(`Message from server: ${data.toString()}`, "rbgserver");
+    });
+    proc.stderr.on("data", (data) => {
+        log(`Server error: ${data.toString()}`, "rbgserver");
+    });
+    proc.on("close", (code) => {
+        log(`Server closed with exit code ${C.BCyan}${code}`, "rbgserver");
+        startRemoveBGServer();
+    });
+}
 async function init() {
     log("Loading...", "start");
     let loadFonts = new Promise<void>((res) => {
@@ -957,6 +972,9 @@ async function init() {
     });
     let loadWebServer = initializeWebServer().then(() => {
         log("Web server started.", "start");
+    });
+    let loadRemoveBGServer = startRemoveBGServer().then(() => {
+        log("Remove BG server started.", "start");
     });
     setInterval(async () => {
         var d = new Date();
