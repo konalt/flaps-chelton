@@ -1065,6 +1065,7 @@ async function init() {
         loadFonts,
         loadUsers,
         loadWebServer,
+        loadRemoveBGServer,
     ]);
     log("Logging in...", "start");
     client
