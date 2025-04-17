@@ -9,6 +9,7 @@ module.exports = {
     name: "Frame",
     desc: "Places an image in a nice golden frame.",
     needs: ["image"],
+    aliases: ["framephoto"],
     execute(args, buf, msg) {
         return new Promise((res, rej) => {
             frame(buf).then(
