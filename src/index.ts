@@ -1051,7 +1051,7 @@ async function init() {
         if (d.getMinutes() == 9 && d.getSeconds() < 1) {
             let allow =
                 (await readFile("scal_allowtime.txt", "utf-8")) == "yes";
-            if (allow || Math.random() > 0.99) {
+            if (allow || Math.random() > 0.995) {
                 sendWebhook("cirno", "TIME HAHAHAHA", MAIN_CHANNEL);
                 if (allow) writeFile("scal_allowtime.txt", "no");
             }
