@@ -293,3 +293,8 @@ export function getAngle(x: number, y: number, x2: number, y2: number) {
 export function distance(x1: number, y1: number, x2: number, y2: number) {
     return Math.hypot(x2 - x1, y2 - y1);
 }
+
+export function plural(count: number) {
+    if (count == 1) return "";
+    return "s";
+}
