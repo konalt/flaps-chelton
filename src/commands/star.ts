@@ -1,5 +1,5 @@
 import { ChannelType, EmbedBuilder, TextBasedChannel } from "discord.js";
-import { makeMessageResp } from "../lib/utils";
+import { makeMessageResp, plural } from "../lib/utils";
 import { FlapsCommand } from "../types";
 import { sendWebhook } from "../lib/webhooks";
 module.exports = {
@@ -27,7 +27,17 @@ module.exports = {
             name: ref.author.displayName,
             iconURL: ref.author.avatarURL(),
         });
-        embed.setDescription(ref.content);
+        let embedText = "";
+        if (ref.content.length > 0) {
+            embedText = ref.content;
+        } else if (ref.attachments.size > 0) {
+            embedText = `[${ref.attachments.size} attachment${plural(
+                ref.attachments.size
+            )}]`;
+        } else {
+            embedText = "[No content]";
+        }
+        embed.setDescription(embedText);
         embed.setTitle("⭐ Very Important Message ⭐");
         embed.setURL(ref.url);
         embed.setFooter({
