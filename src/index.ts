@@ -409,7 +409,6 @@ export async function onMessage(msg: Message) {
         trackMessage(msg);
     }
 
-    console.log(midnightQuickEnded, isMidnightActive);
     if (isMidnightActive) {
         var mem = await msg.guild.members.fetch(msg.member);
         if (
