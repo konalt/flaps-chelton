@@ -409,19 +409,26 @@ export async function onMessage(msg: Message) {
         trackMessage(msg);
     }
 
+    console.log(midnightQuickEnded, isMidnightActive);
     if (isMidnightActive) {
         var mem = await msg.guild.members.fetch(msg.member);
         if (
             msg.content.toLowerCase().includes(midnightText) &&
-            isMidnightActive &&
             !msg.author.bot &&
             !doneUsers.includes(mem.id)
         ) {
+            if (midnightQuickEnded) {
+                sendWebhook(
+                    "flaps",
+                    "a bit late but i'll count it :)",
+                    msg.channel
+                );
+            }
             doneUsers.push(mem.id);
             msg.react("👍");
             if (getUnmidnightedUsers().length == 0) {
-                clearTimeout(midnightTimeout);
-                finishMidnight();
+                if (!midnightQuickEnded) finishMidnight();
+                midnightQuickEnded = true;
             }
         }
     }
@@ -804,9 +811,10 @@ async function readCommandDir(dir: string) {
     await Promise.all(ps);
 }
 
-var doneUsers = [];
-var isMidnightActive = false;
-var midnightText = "midnight";
+let doneUsers = [];
+let isMidnightActive = false;
+let midnightQuickEnded = false;
+let midnightText = "midnight";
 
 let midnightReqUsers = [];
 let midnightChannel: TextChannel;
@@ -819,6 +827,8 @@ let midnightFinishFailureText =
     process.env.MIDNIGHT_BAD_MESSAGE ?? "$pings$. THIS WILL NOT GO UNPUNISHED";
 
 function finishMidnight() {
+    if (!isMidnightActive) return;
+    if (midnightQuickEnded) return;
     var nonusers = getUnmidnightedUsers();
     let pings = "";
 
@@ -845,8 +855,6 @@ function finishMidnight() {
     } else {
         sendWebhook("flaps", midnightFinishSuccessText, midnightChannel);
     }
-    isMidnightActive = false;
-    doneUsers = [];
 }
 
 function getUnmidnightedUsers() {
@@ -871,9 +879,12 @@ export async function midnight(channel: TextChannel) {
     midnightReqUsers = usersRequired;
     midnightChannel = channel;
     isMidnightActive = true;
+    midnightQuickEnded = false;
+    doneUsers = [];
     if (midnightTimeout) clearTimeout(midnightTimeout);
     midnightTimeout = setTimeout(() => {
         finishMidnight();
+        isMidnightActive = false;
     }, 60 * 1000); // 1 min
 }
 
