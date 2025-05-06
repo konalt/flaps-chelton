@@ -200,11 +200,17 @@ async function createAcrossSpinAnimation(img: Buffer) {
     return outputFrames;
 }
 
-async function createTrioAnimation(img: Buffer) {
+async function createTrioAnimation(
+    image1Buffer: Buffer,
+    image2Buffer: Buffer,
+    image3Buffer: Buffer
+) {
     let imgSize = 210;
     let horizontalOffset = 200;
     let verticalOffset = 50;
-    const image = await loadImage(img);
+    const image1 = await loadImage(image1Buffer);
+    const image2 = await loadImage(image2Buffer);
+    const image3 = await loadImage(image3Buffer);
     const canvas = createCanvas(w, h);
     const ctx = canvas.getContext("2d");
     let outputFrames: Buffer[] = [];
@@ -212,7 +218,7 @@ async function createTrioAnimation(img: Buffer) {
     ctx.translate(w / 2 - horizontalOffset, h / 2 + verticalOffset);
     ctx.rotate((-15 * Math.PI) / 180);
     ctx.drawImage(
-        image,
+        image2,
         -imgSize / 2,
         (-imgSize * 1.2) / 2,
         imgSize,
@@ -223,7 +229,7 @@ async function createTrioAnimation(img: Buffer) {
     ctx.translate(w / 2 + horizontalOffset, h / 2 + verticalOffset);
     ctx.rotate((15 * Math.PI) / 180);
     ctx.drawImage(
-        image,
+        image3,
         -imgSize / 2,
         (-imgSize * 1.2) / 2,
         imgSize,
@@ -232,7 +238,7 @@ async function createTrioAnimation(img: Buffer) {
     ctx.restore();
     ctx.save();
     ctx.drawImage(
-        image,
+        image1,
         w / 2 - imgSize / 2,
         h / 2 - (imgSize * 1.2 * 1.2) / 2,
         imgSize * 1.2,
@@ -244,7 +250,7 @@ async function createTrioAnimation(img: Buffer) {
     ctx.translate(w / 2 - horizontalOffset, h / 2 + verticalOffset);
     ctx.rotate((-15 * Math.PI) / 180);
     ctx.drawImage(
-        image,
+        image2,
         -imgSize / 2,
         (-imgSize * 1.4) / 2,
         imgSize,
@@ -255,7 +261,7 @@ async function createTrioAnimation(img: Buffer) {
     ctx.translate(w / 2 + horizontalOffset, h / 2 + verticalOffset);
     ctx.rotate((15 * Math.PI) / 180);
     ctx.drawImage(
-        image,
+        image3,
         -imgSize / 2,
         (-imgSize * 1.4) / 2,
         imgSize,
@@ -263,7 +269,7 @@ async function createTrioAnimation(img: Buffer) {
     );
     ctx.restore();
     ctx.drawImage(
-        image,
+        image1,
         w / 2 - imgSize / 2,
         h / 2 - (imgSize * 1.4 * 1.2) / 2,
         imgSize * 1.2,
@@ -312,12 +318,22 @@ function overlayFilter(
     return `[${topSpec}]scale=${width}:${height}[o];[${bottomSpec}][o]overlay='${x}${jiggleEquation}:${y}${jiggleEquation}${jiggleEval}'[${outSpec}]`;
 }
 
-export default async function yababaina(img: Buffer) {
+export default async function yababaina(images: Buffer[]) {
+    let image1 = images[0];
+    let image2 = images[0];
+    let image3 = images[0];
+    if (images.length > 1) {
+        image2 = images[1];
+        image3 = images[1];
+    }
+    if (images.length > 2) {
+        image3 = images[2];
+    }
     let promiseBackground = createBackground();
     let promiseLyrics = createLyrics();
-    let promiseSpinAnimation = createSpinAnimation(img);
-    let promiseAcrossSpinAnimation = createAcrossSpinAnimation(img);
-    let promiseTrioAnimation = createTrioAnimation(img);
+    let promiseSpinAnimation = createSpinAnimation(image1);
+    let promiseAcrossSpinAnimation = createAcrossSpinAnimation(image2);
+    let promiseTrioAnimation = createTrioAnimation(image1, image2, image3);
 
     let [
         spinAnimation,
