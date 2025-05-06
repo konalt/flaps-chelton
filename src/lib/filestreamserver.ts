@@ -15,7 +15,16 @@ export default function filestreamServer(): Promise<
             res.status(400).contentType("txt").send("400 Bad Request");
         });
         app.get("/filelist", (req, res) => {
-            res.contentType("txt").send(Object.keys(files).join("\n"));
+            res.contentType("html").send(
+                "<div style='display: flex; flex-wrap: wrap; gap:2px;background-color:red;'>" +
+                    Object.keys(files)
+                        .map(
+                            (f) =>
+                                `<img src="/${f}" alt="${f}" style="background-color:white" width=180 />`
+                        )
+                        .join("\n") +
+                    "</div>"
+            );
         });
         app.get("/:fileID", (req, res) => {
             let fileID = req.params.fileID;
@@ -66,7 +75,7 @@ export default function filestreamServer(): Promise<
         }
         function removeBuffer(fileID: string) {
             const ffmpegVerbose = process.env.FFMPEG_VERBOSE == "yes";
-            if (ffmpegVerbose) return;
+            //if (ffmpegVerbose) return;
             if (fileID.includes("%03d")) {
                 let i = 0;
                 while (true) {
