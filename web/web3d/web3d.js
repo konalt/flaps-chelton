@@ -19,6 +19,7 @@ const resolutions = {
     pokeball: [800, 600],
     duvall: [800, 600],
     walter: [512, 512],
+    yababaina_3dspin: [512, 512],
 };
 const NOTEXTURE = "images/uv_grid_opengl.jpg";
 const fontLoader = new FontLoader();
@@ -103,6 +104,7 @@ async function _init(id, options = {}) {
     renderer = new THREE.WebGLRenderer({
         powerPreference: "high-performance",
         antialias: true,
+        alpha: options._alpha ?? false,
     });
     renderer.shadowMap.enabled = true;
     renderer.setSize(size[0], size[1]);
@@ -1020,6 +1022,32 @@ async function _init(id, options = {}) {
                             flagHeight;
                         break;
                 }
+            };
+            break;
+        }
+        case "yababaina_3dspin": {
+            let img = options.img || NOTEXTURE;
+            camera.position.x = 0;
+            camera.position.y = 0;
+            camera.position.z = 1.5;
+            camera.fov = 80;
+            camera.updateProjectionMatrix();
+            camera.lookAt(0, 0, 0);
+
+            let map = await loadTexture(img);
+            map.colorSpace = THREE.SRGBColorSpace;
+            map.anisotropy = 5;
+            let plane = new THREE.Mesh(
+                new THREE.PlaneGeometry(1.3, 1.3),
+                new THREE.MeshBasicMaterial({
+                    map,
+                    side: THREE.DoubleSide,
+                })
+            );
+            scene.add(plane);
+
+            stepFunction = (factor = 0) => {
+                plane.rotation.y = factor * Math.PI * 2;
             };
         }
     }
