@@ -360,6 +360,7 @@ export default async function yababaina(img: Buffer) {
             `-pattern_type sequence -r ${fps} -stream_loop -1 -f image2 -i http://localhost:56033/${trioAnimationReference}`,
             `-pattern_type sequence -r ${fps} -stream_loop -1 -f image2 -i http://localhost:56033/${lyricsReference}`,
             `-i ${file("yababaina.mp3")}`,
+            "-multiple_requests 1",
             `-filter_complex "[1:v]split=2[spin_l][spin_r_noflip];[spin_r_noflip]hflip[spin_r];`,
             `[3:v]split=3[trio_main_ns][trio_big_noscale][trio_big2_noscale];[trio_big_noscale]scale=2.6*iw:2.6*ih[trio_big];[trio_big2_noscale]scale=1.3*iw:2.4*ih[trio_big2];`,
             `[trio_main_ns]scale='${trioMainScaleFunc}*iw:${trioMainScaleFunc}*ih:eval=frame'[trio_main];`,
