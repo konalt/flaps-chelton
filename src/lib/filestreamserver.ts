@@ -1,5 +1,6 @@
 import express from "express";
 import { getFileExt, uuidv4 } from "./utils";
+import { LM, log } from "./logger";
 
 export default function filestreamServer(): Promise<
     [
@@ -53,6 +54,11 @@ export default function filestreamServer(): Promise<
                         file.byteLength
                 );
             }
+            log(
+                `Request for file ${fileID} (${req.headers.range ?? "all"})`,
+                "filestream",
+                LM.Verb
+            );
             res.status(status)
                 .contentType(getFileExt(fileID))
                 .send(trimmedBuffer);
