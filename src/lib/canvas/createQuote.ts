@@ -39,7 +39,8 @@ export default async function createQuote(
     content: string,
     displayName: string,
     username: string,
-    avatar: Buffer
+    avatar: Buffer,
+    nameColor = "white"
 ) {
     displayName = `- ${displayName}`;
     username = `${username}`;
@@ -86,6 +87,7 @@ export default async function createQuote(
         (height - totalHeight) / 2,
         width - height
     );
+    ctx.fillStyle = nameColor;
     ctx.font = fontString(displayNameSize, true, displayNameWeight);
     await drawText(
         ctx,
