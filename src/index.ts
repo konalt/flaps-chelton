@@ -490,10 +490,7 @@ export async function onMessage(msg: Message) {
         ]);
     let localAttachments: Buffer[] = [];
     let defatts: Collection<string, Attachment> = msg.attachments;
-    let lastresp: FlapsCommandResponse = makeMessageResp(
-        "flapserrors",
-        "Command did not return a FlapsCommandResponse."
-    );
+    let lastresp: FlapsCommandResponse = makeMessageResp("flapserrors", "");
     let index = 0;
     try {
         for (const info of commandChain) {
@@ -533,6 +530,11 @@ export async function onMessage(msg: Message) {
                 let reference = await msg.fetchReference();
                 commandArgs = argString
                     .replace(/\$replycontent/g, reference.content)
+                    .split(" ");
+            }
+            if (argString.includes("$out") && lastresp.content.length > 0) {
+                commandArgs = argString
+                    .replace(/\$out/g, lastresp.content)
                     .split(" ");
             }
             let sources = [];
