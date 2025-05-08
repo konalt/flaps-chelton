@@ -19,7 +19,12 @@ module.exports = {
         let displayName =
             (ref.member ?? { nickname: null }).nickname ??
             ref.author.displayName;
-        let image = await createQuote(content, displayName, username, avatar);
+        let image = await createQuote(
+            content,
+            displayName,
+            `@${username}`,
+            avatar
+        );
         return makeMessageResp(
             "flaps",
             "",

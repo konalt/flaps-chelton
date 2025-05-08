@@ -42,7 +42,7 @@ export default async function createQuote(
     avatar: Buffer
 ) {
     displayName = `- ${displayName}`;
-    username = `@${username}`;
+    username = `${username}`;
     let c = createCanvas(width, height);
     let ctx = c.getContext("2d");
 
