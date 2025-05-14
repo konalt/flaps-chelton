@@ -1022,7 +1022,7 @@ async function init() {
                 }
             }
         }
-        if (Math.random() < 1 / 100000) {
+        if (Math.random() < 0.000002) {
             sendWebhook(
                 Math.random() < 0.3 ? "coach" : "nick",
                 "pills here",
