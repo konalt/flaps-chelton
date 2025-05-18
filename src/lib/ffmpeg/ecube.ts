@@ -151,7 +151,7 @@ function zoomRotate(image: Buffer) {
             await ffmpegBuffer(
                 `-loop 1 -i $BUF0 -f lavfi -i "color=d=0.6:s=512x512" -filter_complex "
     [0:v]scale=512:512,setsar=1:1[scaled];
-    [scaled]pad=w=1.5*iw:1.5*ih:x=-1:y=-1[padded];
+    [scaled]pad=w=1.5*iw:h=1.5*ih:x=-1:y=-1[padded];
     [padded]rotate=max(pow((t-0.1)*2\\,3)\\,0)[rotating];
     [rotating]scale=max(1-3*t+0.5\\,0.7)*iw:-1:eval=frame[scaling];
     [1:v][scaling]overlay=x=main_w/2-overlay_w/2:y=main_h/2-overlay_h/2[out]" -map "[out]" -t 0.6 $PRESET $OUT`,
