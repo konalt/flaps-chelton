@@ -298,3 +298,7 @@ export function plural(count: number) {
     if (count == 1) return "";
     return "s";
 }
+
+export function clamp(x: number, min: number, max: number) {
+    return Math.min(Math.max(x, min), max);
+}

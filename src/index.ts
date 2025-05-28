@@ -942,6 +942,7 @@ async function init() {
             family: "ArialBlack",
             weight: "900",
         });
+        registerFont("fonts/papyrus.ttf", { family: "Papyrus" });
         // Open Sans
         for (let i = 300; i <= 800; i += 100) {
             registerFont(`fonts/opensans/${i}.ttf`, {

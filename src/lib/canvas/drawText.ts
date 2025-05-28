@@ -177,7 +177,8 @@ export async function drawText(
     y: number,
     wrapWidth: number,
     stroke = false,
-    verticalAlign: "top" | "center" | "bottom" = "top"
+    verticalAlign: "top" | "center" | "bottom" = "top",
+    lineHeightBias = 1
 ) {
     // store current alignment for later
     let align: CanvasTextAlign = `${ctx.textAlign}`;
@@ -211,7 +212,7 @@ export async function drawText(
     }
 
     ctx.textBaseline = "top";
-    let maxLineHeight = lineHeight(ctx);
+    let maxLineHeight = lineHeight(ctx) * lineHeightBias;
     let lines = getLinesForParagraphs(ctx, text, wrapWidth, maxLineHeight);
     let totalHeight = maxLineHeight * lines.length;
 
