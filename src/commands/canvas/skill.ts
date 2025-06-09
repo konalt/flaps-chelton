@@ -30,6 +30,7 @@ const ALIASES = {
     Interfacing: ["if", "inf"],
     Composure: ["cmp"],
     Composure_Baby: ["baby"],
+    Measurehead: ["mh", "mhd", "msr"],
 };
 
 const CATEGORY = {
@@ -66,6 +67,7 @@ const CATEGORY = {
         "Composure",
         "Composure_Baby",
     ],
+    Dockworkers: ["Measurehead"],
 };
 
 const COLORS = {
@@ -73,6 +75,7 @@ const COLORS = {
     Psyche: "625c7f",
     Physique: "832834",
     Motorics: "cea740",
+    Dockworkers: "832834",
 };
 
 module.exports = {
@@ -108,8 +111,10 @@ module.exports = {
             );
         }
         let portrait = await readFile(file(`elysiumskills/${skillName}.png`));
+        let text = args.slice(1).join(" ");
+        if (skillName == "Measurehead") text = text.toUpperCase();
         let out = await createQuote(
-            args.slice(1).join(" "),
+            text,
             skillName.replace(/0/g, "/").replace(/_/g, " "),
             skillCategory,
             portrait,
