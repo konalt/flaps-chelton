@@ -1061,10 +1061,15 @@ async function init() {
                 "Friday.mp4"
             );
         }
-        if (d.getMinutes() == 9 && d.getSeconds() < 1) {
+        if (
+            (d.getMinutes() == 9 ||
+                (d.getHours() == 9 && d.getMinutes() == 0)) &&
+            d.getSeconds() < 1
+        ) {
             let allow =
                 (await readFile("scal_allowtime.txt", "utf-8")) == "yes";
-            if (allow || Math.random() > 0.995) {
+            let both = d.getMinutes() == 9 && d.getHours() == 9;
+            if (allow || Math.random() < 0.005 * (both ? 2 : 1)) {
                 sendWebhook("cirno", "TIME HAHAHAHA", MAIN_CHANNEL);
                 if (allow) writeFile("scal_allowtime.txt", "no");
             }
