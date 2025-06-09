@@ -48,9 +48,15 @@ export default async function createQuote(
     let ctx = c.getContext("2d");
 
     let avatarImage = await loadImage(avatar);
-    ctx.drawImage(avatarImage, 0, 0, height, height);
+    let avatarWidth = height * (avatarImage.width / avatarImage.height);
+    ctx.drawImage(avatarImage, 0, 0, avatarWidth, height);
 
-    let gradient = ctx.createLinearGradient(0, 0, height * 0.8, 0);
+    let gradient = ctx.createLinearGradient(
+        0,
+        0,
+        height * 0.8 * Math.min(avatarWidth / height, 1),
+        0
+    );
     gradient.addColorStop(0, "rgba(0,0,0,0.1)");
     gradient.addColorStop(1, "rgba(0,0,0,1)");
     ctx.fillStyle = gradient;
