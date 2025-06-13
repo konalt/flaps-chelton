@@ -12,7 +12,7 @@ module.exports = {
     async execute(args, _, msg) {
         let ref = await msg.fetchReference();
         let avatar = await downloadPromise(
-            ref.author.avatarURL().split(".").slice(0, -1).join(".") + ".png"
+            ref.member.avatarURL().split(".").slice(0, -1).join(".") + ".png"
         );
         let content = ref.content;
         let username = ref.author.username;
