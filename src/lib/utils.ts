@@ -302,3 +302,11 @@ export function plural(count: number) {
 export function clamp(x: number, min: number, max: number) {
     return Math.min(Math.max(x, min), max);
 }
+
+export function easeInCirc(x: number): number {
+    return 1 - Math.sqrt(1 - Math.pow(x, 2));
+}
+
+export function easeOutCirc(x: number): number {
+    return Math.sqrt(1 - Math.pow(x - 1, 2));
+}

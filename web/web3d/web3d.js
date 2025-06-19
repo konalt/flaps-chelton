@@ -20,6 +20,7 @@ const resolutions = {
     duvall: [800, 600],
     walter: [512, 512],
     yababaina_3dspin: [512, 512],
+    jar: [800, 600],
 };
 const NOTEXTURE = "images/uv_grid_opengl.jpg";
 const fontLoader = new FontLoader();
@@ -1049,6 +1050,67 @@ async function _init(id, options = {}) {
             stepFunction = (factor = 0) => {
                 plane.rotation.y = factor * Math.PI * 2;
             };
+            break;
+        }
+        case "jar": {
+            let img = options.img || NOTEXTURE;
+
+            camera.position.x = 18;
+            camera.position.y = 21;
+            camera.position.z = 30;
+            camera.fov = 40;
+            camera.updateProjectionMatrix();
+            camera.lookAt(0, 6.5, 0);
+
+            let map = await loadTexture(img);
+            map.colorSpace = THREE.SRGBColorSpace;
+            map.flipY = true;
+            let material = new THREE.MeshStandardMaterial({
+                map,
+                alphaTest: 1,
+            });
+            let image = new THREE.Mesh(
+                new THREE.PlaneGeometry(5.5, 5.5),
+                material
+            );
+            image.position.y = 5;
+            scene.add(image);
+
+            let jar = await loadModel("models/jar.glb");
+            jar.scale.x = jar.scale.y = jar.scale.z = 2.8;
+            scene.add(jar);
+            let bottom = jar.children.find((child) => child.name == "GlassJar");
+            let top = jar.children.find((child) => child.name == "JarTop");
+            bottom.material.depthWrite = false;
+
+            let ground = new THREE.Mesh(
+                new THREE.PlaneGeometry(999, 999),
+                new THREE.MeshStandardMaterial({
+                    color: 0xffffff,
+                })
+            );
+            ground.rotation.x = -Math.PI / 2;
+            scene.add(ground);
+
+            scene.background = new THREE.Color(0x606060);
+            scene.fog = new THREE.Fog(0x606060, 90, 100);
+
+            quickBigLight(50, 50, 0);
+            quickBigLight(50, 30, 30);
+            quickBigLight(-50, 30, 30);
+
+            scene.add(new THREE.AmbientLight(0xffffff, 0.1));
+
+            stepFunction = (topY = 0, imgY = 0, fov = 40, cx = 18) => {
+                if (topY == -1) return;
+                top.position.y = topY;
+                image.position.y = 5 + imgY;
+                camera.position.x = cx;
+                camera.lookAt(0, 6.5, 0);
+                camera.fov = fov;
+                camera.updateProjectionMatrix();
+            };
+            break;
         }
     }
 
