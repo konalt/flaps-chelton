@@ -101,7 +101,7 @@ export function ffmpegBuffer(
             verbosityArg +
             " -hide_banner " +
             args
-                .replace(/\r?\n/g, "")
+                .replace(/\r?\n/g, " ")
                 .replace(/\$PRESET/g, `${usePreset(outExt)}`)
                 .replace(/\$OUT/g, `${getOutputFormat(outExt)} -`)
         ).trim();
