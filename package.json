@@ -1,7 +1,9 @@
 {
     "dependencies": {
         "@imgly/background-removal-node": "^1.4.5",
+        "@tensorflow/tfjs-node": "^4.22.0",
         "@types/node": "^22.7.5",
+        "@vladmandic/face-api": "^1.7.15",
         "buffer-image-size": "^0.6.4",
         "busboy": "^1.6.0",
         "discord.js": "^14.16.3",
