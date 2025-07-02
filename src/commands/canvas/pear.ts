@@ -15,7 +15,9 @@ module.exports = {
         if (!face) {
             return makeMessageResp(
                 "teto",
-                "i couldnt find a face in that image :("
+                "i couldnt find a face in the image so i used the whole one <3",
+                await pear(imgbuf[0][0]),
+                getFileName("Canvas_Pear", "png")
             );
         }
         const ofCanvas = createCanvas(face.box.width, face.box.height);
