@@ -1,6 +1,6 @@
 import twemoji from "twemoji";
 import { downloadPromise } from "../lib/download";
-import { getFileName, makeMessageResp } from "../lib/utils";
+import { getFileName, makeMessageResp, twemojiURL } from "../lib/utils";
 import { sendWebhook } from "../lib/webhooks";
 import { FlapsCommand } from "../types";
 
@@ -32,10 +32,7 @@ module.exports = {
                     getFileName("Emoji", anim ? "gif" : "png")
                 );
             } else if (emj.match(/(?=\p{Emoji})(?=[\D])(?=[^\*])/gu)) {
-                var url = twemoji
-                    .parse(emj, { size: 72 })
-                    .split('src="')[1]
-                    .split('"/>')[0];
+                let url = twemojiURL(emj);
                 let emoji = await downloadPromise(url);
                 return makeMessageResp(
                     "flaps",
