@@ -44,6 +44,7 @@
 -   `EVAL_OVERRIDE`, when set to `yes`, will show !eval on the command simulator. **WARNING: THIS ALSO DISABLES ALL EVAL PROTECTIONS, INCLUDING THE DISCORD USER ID CHECK. USE SPARINGLY!**
 -   `FLAPS_PLUS` is whether or not to enable the Flaps GOLD+ April Fool's joke.
 -   `REMOVEBG_SERVER_PORT` is the port to host the RemoveBG server on. This exists because `canvas` and `sharp` cannot be used in the same node process, so a child process has to be spawned.
+-   `MIDNIGHT_RABBIT` is whether or not to show the rabbit at midnight
 
 ## brainrot.txt info:
 
@@ -73,7 +74,6 @@ In all templates, and optionally in command arguments, replacement keys are used
 -   `%n?%` - Replaces with a random singular or plural noun.
 -   `%ncalv%` - Replaces with a random singular noun, character, adjective, location or verb.
 -   `%a!%` - Replaces with an adverb.
-
 
 _Replacement keys can also be put in capital letters to force the replacement into capitals. Example: `%N~0%`_
 

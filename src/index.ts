@@ -1,6 +1,7 @@
 import { config } from "dotenv";
 import { C, getMessageLog, log } from "./lib/logger";
 config();
+export const MIDNIGHT_RABBIT = process.env.MIDNIGHT_RABBIT == "yes";
 export const VERBOSE = process.env.VERBOSE == "yes";
 export const DOMAIN = process.env.DOMAIN;
 export const TRACK = process.env.ENABLE_TRACK == "yes";
@@ -827,7 +828,7 @@ let midnightFinishSuccessText =
 let midnightFinishFailureText =
     process.env.MIDNIGHT_BAD_MESSAGE ?? "$pings$. THIS WILL NOT GO UNPUNISHED";
 
-function finishMidnight() {
+async function finishMidnight() {
     if (!isMidnightActive) return;
     if (midnightQuickEnded) return;
     var nonusers = getUnmidnightedUsers();
@@ -845,14 +846,21 @@ function finishMidnight() {
     let pluralUpper = nonusers.length > 1 ? "S" : "";
     let pluralLower = pluralUpper.toLowerCase();
     if (nonusers.length > 0) {
-        sendWebhook(
-            "flaps",
-            midnightFinishFailureText
-                .replace(/\$pings\$/g, pings)
-                .replace(/\$pluralUpper\$/g, pluralUpper)
-                .replace(/\$pluralLower\$/g, pluralLower),
-            midnightChannel
-        );
+        let replaced = midnightFinishFailureText
+            .replace(/\$pings\$/g, pings)
+            .replace(/\$pluralUpper\$/g, pluralUpper)
+            .replace(/\$pluralLower\$/g, pluralLower);
+        if (MIDNIGHT_RABBIT) {
+            sendWebhook(
+                "flaps",
+                replaced,
+                midnightChannel,
+                await readFile(file("rabbit.png")),
+                "rabbit.png"
+            );
+        } else {
+            sendWebhook("flaps", replaced, midnightChannel);
+        }
     } else {
         sendWebhook("flaps", midnightFinishSuccessText, midnightChannel);
     }
