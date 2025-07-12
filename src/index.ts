@@ -299,7 +299,7 @@ function typesMatch(inTypes: string[], requiredTypes: string[]) {
 async function getSources(
     commandMessage: Message,
     types: string[],
-    localAttachments: Buffer[] = []
+    localAttachment: Buffer
 ): Promise<[Buffer, string][]> {
     let msg = commandMessage;
     if (!msg.attachments.first()) {
@@ -329,7 +329,7 @@ async function getSources(
     let m = 0;
     for (const type of attTypes) {
         if (atts[n].url.startsWith("%local")) {
-            sources.push([localAttachments[m], getFileExt(atts[n].url)]);
+            sources.push([localAttachment, getFileExt(atts[n].url)]);
             m++;
         } else if (type == "webp") {
             let attachment = await convertWebpAttachmentToPng(atts[n]);
@@ -489,7 +489,7 @@ export async function onMessage(msg: Message) {
             cmdtxt.trim().split(" ")[0].substring(COMMAND_PREFIX.length),
             cmdtxt.trim().split(" ").slice(1),
         ]);
-    let localAttachments: Buffer[] = [];
+    let localAttachment: Buffer;
     let defatts: Collection<string, Attachment> = msg.attachments;
     let lastresp: FlapsCommandResponse = makeMessageResp("flapserrors", "");
     let index = 0;
@@ -551,7 +551,7 @@ export async function onMessage(msg: Message) {
                             author: msg.author,
                         } as Message,
                         command.needs,
-                        localAttachments
+                        localAttachment
                     );
                 } catch (e) {
                     sendWebhook("flaps", e.message, msg.channel);
@@ -567,7 +567,7 @@ export async function onMessage(msg: Message) {
                             url: "%local" + response.filename,
                             contentType: contentType(response.filename),
                         } as Attachment);
-                        localAttachments.push(response.buffer);
+                        localAttachment = response.buffer;
                     }
                     lastresp = response;
                     break;
