@@ -423,6 +423,12 @@ export async function onMessage(msg: Message) {
                     "a bit late but i'll count it :)",
                     msg.channel
                 );
+            } else if (!midnightReqUsers.includes(mem.id)) {
+                sendWebhook(
+                    "flaps",
+                    "i honestly wouldn't have noticed if you didn't say anything",
+                    msg.channel
+                );
             }
             doneUsers.push(mem.id);
             msg.react("👍");
