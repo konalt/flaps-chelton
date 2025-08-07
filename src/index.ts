@@ -144,6 +144,22 @@ function flapsJoinVoiceChannel(channel: VoiceBasedChannel) {
         },
     });
     connection.subscribe(player);
+    if (process.env.TALKTALK.length > 0) {
+        connection.receiver.speaking.on("start", (id) => {
+            if (id == process.env.OWNER_TOKEN) {
+                fetch(process.env.TALKTALK.replace(/%s/g, "1")).catch((e) => {
+                    log(`${C.BRed}Error: ${C.LGrey}${e}`, "talktalk");
+                });
+            }
+        });
+        connection.receiver.speaking.on("end", (id) => {
+            if (id == process.env.OWNER_TOKEN) {
+                fetch(process.env.TALKTALK.replace(/%s/g, "0")).catch((e) => {
+                    log(`${C.BRed}Error: ${C.LGrey}${e}`, "talktalk");
+                });
+            }
+        });
+    }
     voicePlayers.set(channel.guildId, player);
     voiceConnections.set(channel.guildId, connection);
 }
