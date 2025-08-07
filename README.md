@@ -45,6 +45,7 @@
 -   `FLAPS_PLUS` is whether or not to enable the Flaps GOLD+ April Fool's joke.
 -   `REMOVEBG_SERVER_PORT` is the port to host the RemoveBG server on. This exists because `canvas` and `sharp` cannot be used in the same node process, so a child process has to be spawned.
 -   `MIDNIGHT_RABBIT` is whether or not to show the rabbit at midnight
+-   `TALKTALK` is the URL of a server to HTTP GET when the bot owner starts/stops speaking in a voice chat. Format is `http://1.2.3.4:12345/talktalk?speak=%s`, where %s is automatically replaced with either a 0 or a 1
 
 ## brainrot.txt info:
 
