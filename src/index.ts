@@ -433,16 +433,10 @@ export async function onMessage(msg: Message) {
             !msg.author.bot &&
             !doneUsers.includes(mem.id)
         ) {
-            if (midnightQuickEnded) {
+            if (!midnightReqUsers.includes(mem.id)) {
                 sendWebhook(
                     "flaps",
-                    "a bit late but i'll count it :)",
-                    msg.channel
-                );
-            } else if (!midnightReqUsers.includes(mem.id)) {
-                sendWebhook(
-                    "flaps",
-                    "i honestly wouldn't have noticed if you didn't say anything",
+                    process.env.MIDNIGHT_EXTRA_REPLY,
                     msg.channel
                 );
             }
