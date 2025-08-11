@@ -4,7 +4,7 @@ import { getVideoDimensions } from "./getVideoDimensions";
 export default async function pepsi(
     buffers: [Buffer, string][]
 ): Promise<Buffer> {
-    var dims = await getVideoDimensions(buffers[0]);
+    var dims = await getVideoDimensions(buffers[0], true);
     var w = 0,
         h = 0;
     if (dims[0] > dims[1]) {
@@ -16,7 +16,9 @@ export default async function pepsi(
     }
 
     return ffmpegBuffer(
-        `-loop 1 -i $BUF0 -f lavfi -t 3 -i color=s=512x512:c=0x000000 -i ${file(
+        `-loop 1 -i $BUF0 -f lavfi -t 3 -i color=s=${Math.ceil(w / 2) * 2}x${
+            Math.ceil(h / 2) * 2
+        }:c=0x000000 -i ${file(
             "images/jumpscare.mp3"
         )} -filter_complex "[0:v]scale=${w * 0.7}:${
             h * 0.7
