@@ -5,10 +5,11 @@ import { C, log } from "../logger";
 import { getFileExt, scheduleDelete, uuidv4 } from "../utils";
 import { join } from "path";
 import { stdout } from "process";
-import { addBuffer, removeBuffer } from "../..";
+import { addBuffer, addBufferSequence, removeBuffer } from "../..";
 import { FFmpegPercentUpdate } from "../../types";
 import os, { setPriority } from "os";
 import WebSocket from "ws";
+import { getVideoLength } from "./getVideoDimensions";
 
 const extraArgs = "";
 
@@ -351,6 +352,44 @@ export function gifPalette(in_specifier: string, out_specifier: string) {
     return `[${in_specifier}]split[${in_specifier}_pgen_${out_specifier}][${in_specifier}_puse_${out_specifier}];
     [${in_specifier}_pgen_${out_specifier}]palettegen[${in_specifier}_palette_${out_specifier}];
     [${in_specifier}_puse_${out_specifier}][${in_specifier}_palette_${out_specifier}]paletteuse[${out_specifier}]`;
+}
+
+export async function imageSequenceToVideo(
+    sequence: Buffer[],
+    fps: number,
+    audio?: Buffer
+): Promise<Buffer> {
+    let duration = sequence.length * fps;
+    let sequenceReference = addBufferSequence(sequence, "png");
+    if (audio) {
+        duration = await getVideoLength([audio, "mp3"]);
+    }
+    let video = await ffmpegBuffer(
+        `${
+            audio ? "-loop 1 " : ""
+        }-pattern_type sequence -r ${fps} -f image2 -i http://localhost:56033/${sequenceReference} ${
+            audio ? "-i $BUF0" : "-an"
+        } -t ${duration} $PRESET $OUT`,
+        audio ? [[audio, "mp3"]] : [],
+        "mp4"
+    );
+    removeBuffer(sequenceReference);
+    return video;
+}
+
+export function overlayFilter(
+    bottomSpec: string,
+    topSpec: string,
+    outSpec: string,
+    x: number,
+    y: number,
+    width: number,
+    height: number,
+    jiggle = 0
+) {
+    let jiggleEquation = jiggle > 0 ? `+(random(0)-0.5)*${jiggle}` : "";
+    let jiggleEval = jiggle > 0 ? ":eval=frame" : "";
+    return `[${topSpec}]scale=${width}:${height}[o];[${bottomSpec}][o]overlay='${x}${jiggleEquation}:${y}${jiggleEquation}${jiggleEval}'[${outSpec}]`;
 }
 
 export const DEFAULTFORMAT = {
