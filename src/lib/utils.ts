@@ -120,13 +120,52 @@ export function getFunctionName(fn: Function) {
     return fn.toString().split(" ")[1].split("(")[0];
 }
 
-export function rgbtohex(rgb: { r: number; g: number; b: number }) {
+export function rgbToHex(rgb: { r: number; g: number; b: number }) {
     return (
         "#" +
         rgb.r.toString(16).padStart(2, "0") +
         rgb.g.toString(16).padStart(2, "0") +
         rgb.b.toString(16).padStart(2, "0")
     );
+}
+
+export function rgbToHue(r: number, g: number, b: number) {
+    r /= 255;
+    g /= 255;
+    b /= 255;
+    let max = Math.max(r, g, b);
+    let min = Math.min(r, g, b);
+    let c = max - min;
+    let hue = 0;
+    if (c == 0) {
+        hue = 0;
+    } else {
+        switch (max) {
+            case r: {
+                let segment = (g - b) / c;
+                let shift = 0 / 60; // R° / (360° / hex sides)
+                if (segment < 0) {
+                    // hue > 180, full rotation
+                    shift = 360 / 60; // R° / (360° / hex sides)
+                }
+                hue = segment + shift;
+                break;
+            }
+            case g: {
+                let segment = (b - r) / c;
+                let shift = 120 / 60; // G° / (360° / hex sides)
+                hue = segment + shift;
+                break;
+            }
+            case b: {
+                let segment = (r - g) / c;
+                let shift = 240 / 60; // B° / (360° / hex sides)
+                hue = segment + shift;
+                break;
+            }
+        }
+    }
+    return hue * 60; // hue is in [0,6], scale it up
 }
 
 export function makeMessageResp(
@@ -203,7 +242,7 @@ export function decodeObject(string: string) {
 export const SPOILERBUG =
     "||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||||​||";
 
-export function hexToRGB(hex: string) {
+export function hexToRGB(hex: string): [number, number, number] {
     if (hex.startsWith("#")) hex = hex.slice(1);
     let r = parseInt(hex.slice(0, 2), 16);
     let g = parseInt(hex.slice(2, 4), 16);

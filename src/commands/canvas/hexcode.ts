@@ -1,5 +1,5 @@
 import hexcode from "../../lib/canvas/hexcode";
-import { makeMessageResp, rgbtohex } from "../../lib/utils";
+import { makeMessageResp, rgbToHex } from "../../lib/utils";
 import { FlapsCommand } from "../../types";
 
 module.exports = {
@@ -9,6 +9,6 @@ module.exports = {
     needs: ["image"],
     async execute(args, imgbuf) {
         let out = await hexcode(imgbuf[0][0]);
-        return makeMessageResp("flaps", `${rgbtohex(out)}`);
+        return makeMessageResp("flaps", `${rgbToHex(out)}`);
     },
 } satisfies FlapsCommand;

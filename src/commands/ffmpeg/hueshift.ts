@@ -1,4 +1,10 @@
-import { getFileExt, getFileName, makeMessageResp } from "../../lib/utils";
+import {
+    getFileExt,
+    getFileName,
+    hexToRGB,
+    makeMessageResp,
+    rgbToHue,
+} from "../../lib/utils";
 import { FlapsCommand } from "../../types";
 import handleFFmpegCatch from "../../lib/ffmpeg/handleFFmpegCatch";
 import handleFFmpeg from "../../lib/ffmpeg/handleFFmpeg";
@@ -30,8 +36,20 @@ module.exports = {
             } else {
                 shift = Colors[args[0]];
             }
+        } else if (args[0].startsWith("#")) {
+            if (args[1] && args[1].startsWith("#")) {
+                shift =
+                    rgbToHue(...hexToRGB(args[1])) -
+                    rgbToHue(...hexToRGB(args[0]));
+            } else {
+                shift = rgbToHue(...hexToRGB(args[0]));
+            }
         } else if (parseInt(args[0])) {
-            shift = parseInt(args[0]);
+            if (parseInt(args[1])) {
+                shift = parseInt(args[1]) - parseInt(args[0]);
+            } else {
+                shift = parseInt(args[0]);
+            }
         } else {
             return makeMessageResp("ffmpeg", "that's not a valid thingy!");
         }
