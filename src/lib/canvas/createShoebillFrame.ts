@@ -18,6 +18,13 @@ export default async function createShoebillFrame(
         ctx.translate(x, y);
         ctx.rotate(rotate * (Math.PI / 180));
         ctx.scale(scaleFactor, scaleFactor);
+        ctx.fillStyle = "black";
+        ctx.fillRect(
+            -overrideImageSize[0] / 2,
+            -overrideImageSize[1] / 2,
+            overrideImageSize[0],
+            overrideImageSize[1]
+        );
         ctx.drawImage(
             img,
             -overrideImageSize[0] / 2,
