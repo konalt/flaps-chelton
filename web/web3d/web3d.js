@@ -21,6 +21,7 @@ const resolutions = {
     walter: [512, 512],
     yababaina_3dspin: [512, 512],
     jar: [800, 600],
+    maze: [400, 300],
 };
 const NOTEXTURE = "images/uv_grid_opengl.jpg";
 const fontLoader = new FontLoader();
@@ -32,6 +33,9 @@ async function loadFont(fontName) {
     });
 }
 const textureLoader = new THREE.TextureLoader();
+/**
+ * @returns {Promise<THREE.Texture>}
+ * */
 async function loadTexture(textureName) {
     return new Promise((res) => {
         if (!textureName) textureName = NOTEXTURE;
@@ -96,6 +100,55 @@ function distance(x1, y1, x2, y2) {
 function easeInCirc(x) {
     return Math.sqrt(1 - Math.pow(x - 1, 2));
 }
+
+const MAZE_SIZE = 6;
+const MAZE_GEOMETRY = [
+    [0, 1, false, 2],
+    [3, 1, false, 2],
+    [2, 3, false, 2],
+    [1, 4, false, 2],
+    [4, 4, false, 1],
+    [0, 5, false, 1],
+    [3, 5, false, 2],
+    [3, 1, true, 1],
+    [5, 1, true, 3],
+    [1, 2, true, 2],
+    [2, 2, true, 1],
+    [4, 2, true, 1],
+    [3, 3, true, 1],
+    [2, 4, true, 1],
+];
+const MAZE_ROUTE = [
+    [2, 1],
+    [1, 2],
+    [0, 1],
+    [4, 0],
+    [1, 1],
+    [5, 2],
+    [0, 0],
+    [2, 3],
+    [4, 0],
+    [5, 1],
+    [5, 2],
+    [2, 3],
+    [4, 0],
+    [3, 3],
+    [3, 0],
+    [4, 3],
+    [1, 2],
+    [3, 1],
+    [2, 2],
+    [2, 3],
+    [1, 2],
+    [1, 1],
+    [3, 0],
+    [2, 2],
+    [1, 3],
+    [1, 0],
+    [2, 3],
+    [0, 2],
+    [0, 0],
+];
 
 async function _init(id, options = {}) {
     let size = resolutions[id];
@@ -1109,6 +1162,152 @@ async function _init(id, options = {}) {
                 camera.lookAt(0, 6.5, 0);
                 camera.fov = fov;
                 camera.updateProjectionMatrix();
+            };
+            break;
+        }
+        case "maze": {
+            let texture = await loadTexture(options.img);
+            texture.wrapS = THREE.RepeatWrapping;
+            texture.colorSpace = THREE.SRGBColorSpace;
+
+            camera.fov = 80;
+            camera.updateProjectionMatrix();
+
+            const createBigPlane = (y) => {
+                const pln = new THREE.Mesh(
+                    new THREE.PlaneGeometry(MAZE_SIZE, MAZE_SIZE),
+                    new THREE.MeshStandardMaterial({
+                        color: 0xe6f1f2,
+                        side: THREE.DoubleSide,
+                    })
+                );
+                pln.rotation.x = Math.PI / 2;
+                pln.position.x = MAZE_SIZE / 2;
+                pln.position.y = y;
+                pln.position.z = MAZE_SIZE / 2;
+                scene.add(pln);
+            };
+
+            const createWall = async (x, z, isPerp, width) => {
+                let texture = await loadTexture(options.img);
+                texture.wrapS = THREE.RepeatWrapping;
+                texture.colorSpace = THREE.SRGBColorSpace;
+                texture.repeat.setX(width);
+                const wall = new THREE.Mesh(
+                    new THREE.BoxGeometry(width, 1, 0.001),
+                    new THREE.MeshStandardMaterial({
+                        map: texture,
+                    })
+                );
+                wall.rotation.y = isPerp ? Math.PI / 2 : 0;
+                wall.position.x = x;
+                wall.position.y = 0.5;
+                wall.position.z = z;
+                if (isPerp) {
+                    wall.position.z += width / 2;
+                } else {
+                    wall.position.x += width / 2;
+                }
+                scene.add(wall);
+            };
+
+            createBigPlane(0);
+            createBigPlane(1);
+
+            await Promise.all([
+                createWall(0, 0, false, 6),
+                createWall(0, 0, true, 6),
+                createWall(0, MAZE_SIZE, false, 6),
+                createWall(MAZE_SIZE, 0, true, 6),
+            ]);
+
+            await Promise.all(MAZE_GEOMETRY.map((g) => createWall(...g)));
+
+            scene.add(new THREE.AmbientLight(0xffffff, 0.1));
+            camera.rotation.y = -Math.PI / 2;
+            let dummy = new THREE.Group();
+            scene.remove(camera);
+            dummy.add(camera);
+            dummy.position.x = 0.5;
+            dummy.position.y = 0.5;
+            dummy.position.z = 0.5;
+            scene.add(dummy);
+
+            let light = new THREE.SpotLight(0xffffff, 1, 0, 1);
+            light.target = camera;
+            light.position.y = 0;
+            light.position.x = -0.1;
+            dummy.add(light);
+
+            let currentPhase = "moving";
+            let currentDirection = "x";
+            let dirMult = 1;
+            let turnMult = 1;
+            let moveSpeed = 0.13;
+            let turnSpeed = 0.15;
+            let currentStep = 0;
+            let finished = false;
+            stepFunction = (frame) => {
+                if (finished) return;
+                if (currentPhase == "moving") {
+                    dummy.position[currentDirection] += moveSpeed * dirMult;
+                    let diff = Math.abs(
+                        MAZE_ROUTE[currentStep][0] +
+                            0.5 -
+                            dummy.position[currentDirection]
+                    );
+                    if (diff < moveSpeed / 2) {
+                        dummy.position[currentDirection] =
+                            MAZE_ROUTE[currentStep][0] + 0.5;
+                        currentPhase = "turning";
+                    }
+                } else if (currentPhase == "turning") {
+                    dummy.rotation.y -= turnSpeed * turnMult;
+                    let targetRotation =
+                        (MAZE_ROUTE[currentStep][1] / 2) * -Math.PI;
+                    let diff =
+                        Math.abs(targetRotation - dummy.rotation.y) %
+                        (Math.PI * 2);
+
+                    if (diff < turnSpeed) {
+                        dummy.rotation.y = targetRotation;
+                        if (MAZE_ROUTE[currentStep][1] % 2 == 0) {
+                            currentDirection = "x";
+                        } else {
+                            currentDirection = "z";
+                        }
+                        if (MAZE_ROUTE[currentStep][1] > 1) {
+                            dirMult = -1;
+                        } else {
+                            dirMult = 1;
+                        }
+                        if (currentStep < MAZE_ROUTE.length - 1) {
+                            let curDir = MAZE_ROUTE[currentStep][1];
+                            currentStep++;
+                            // i dont wanna figure this math shit out man
+                            // fuckin flaps
+                            if (
+                                curDir == 3 &&
+                                MAZE_ROUTE[currentStep][1] == 0
+                            ) {
+                                turnMult = 1;
+                            } else if (
+                                curDir == 0 &&
+                                MAZE_ROUTE[currentStep][1] == 3
+                            ) {
+                                turnMult = -1;
+                            } else {
+                                turnMult = Math.sign(
+                                    MAZE_ROUTE[currentStep][1] - curDir
+                                );
+                            }
+                            currentPhase = "moving";
+                        } else {
+                            finished = true;
+                            console.log(frame);
+                        }
+                    }
+                }
             };
             break;
         }
