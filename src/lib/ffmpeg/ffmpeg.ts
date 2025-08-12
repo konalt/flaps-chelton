@@ -118,6 +118,7 @@ export function ffmpegBuffer(
             return "http://localhost:56033/" + bufferNames[parseInt(b)];
         });
 
+        log(`Starting FFmpeg instance`, "ffmpeg");
         if (ffmpegVerbose) log(`Launch Args: ${C.White}` + newargs, "ffmpeg");
 
         const childProcess = spawn("ffmpeg", newargs.split(" "), {
@@ -156,8 +157,10 @@ export function ffmpegBuffer(
                 removeBuffer(bufferName);
             }
             if (code == 0) {
+                log(`FFmpeg command ${C.Green}successful`, "ffmpeg");
                 resolve(file);
             } else {
+                log(`FFmpeg command ${C.Red}failed`, "ffmpeg");
                 reject(errorLog);
             }
         });
