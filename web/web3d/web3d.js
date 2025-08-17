@@ -217,6 +217,7 @@ async function _init(id, options = {}) {
                 new THREE.PlaneGeometry(20, 20, 20),
                 groundMaterial
             );
+            ground.receiveShadow = true;
             ground.rotation.x = -Math.PI / 2;
             scene.add(ground);
             if (debug) {
@@ -246,6 +247,8 @@ async function _init(id, options = {}) {
                 (text.geometry.boundingBox.max.y -
                     text.geometry.boundingBox.min.y) /
                 2;
+            text.castShadow = true;
+            text.receiveShadow = true;
 
             scene.add(text);
             const text2 = new THREE.Mesh(
@@ -271,6 +274,8 @@ async function _init(id, options = {}) {
                 text.geometry.boundingBox.max.y -
                 text.geometry.boundingBox.min.y;
             text2.position.y += 0.1;
+            text2.castShadow = true;
+            text2.receiveShadow = true;
 
             scene.add(text2);
 
@@ -806,7 +811,7 @@ async function _init(id, options = {}) {
                 map: map2,
             });
             bed.castShadow = true;
-            bed.recieveShadow = true;
+            bed.receiveShadow = true;
             bed.children[0].material = material;
             bed.children[1].material = material2;
             bed.children[0].castShadow = true;
