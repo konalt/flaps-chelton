@@ -115,9 +115,8 @@ export function getTypes(atts: Attachment[]) {
     });
 }
 
-// really shitty hack because theres no nameof() operator
 export function getFunctionName(fn: Function) {
-    return fn.toString().split(" ")[1].split("(")[0];
+    return fn.name;
 }
 
 export function rgbToHex(rgb: { r: number; g: number; b: number }) {
