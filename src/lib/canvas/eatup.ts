@@ -2,8 +2,6 @@ import { loadImage, createCanvas } from "canvas";
 import { calculateAspectRatioFit } from "../utils";
 import cropImageToBounds from "./cropImageToBounds";
 
-// 330 262
-
 export default async function frieren(buf: Buffer) {
     let bottom = await loadImage("images/eatup/bottom.png");
     let top = await loadImage("images/eatup/top.png");
