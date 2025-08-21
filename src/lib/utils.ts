@@ -349,3 +349,24 @@ export function easeInCirc(x: number): number {
 export function easeOutCirc(x: number): number {
     return Math.sqrt(1 - Math.pow(x - 1, 2));
 }
+
+export const NoteLUT = {
+    C: 262,
+    CS: 277,
+    D: 294,
+    DS: 311,
+    E: 330,
+    F: 349,
+    FS: 370,
+    G: 392,
+    GS: 415,
+    A: 440,
+    AS: 466,
+    B: 494,
+    C5: 523,
+    CS5: 554,
+    D5: 587,
+    DS5: 622,
+    E5: 659,
+    F5: 698,
+};
