@@ -25,7 +25,6 @@ export default async function pepsi(
             `-f lavfi -i color=s=512x512:c=0x000000:d=16.4:r=30`,
             `-i ${file("mrwest/audio.mp3")}`,
             `-r 30 -i ${file("mrwest/text/frame%02d.png")}`,
-            ,
             ` -filter_complex "`,
             `[4:v]setpts=PTS-STARTPTS,setpts=PTS+2.6/TB[textvideo];`, // Offset text video by 2.6 seconds
             `[0:v]split=2[img][img_small];`, // Split image
@@ -46,7 +45,7 @@ export default async function pepsi(
             `[base][isr_2]overlay=x=210:y=110:enable='gt(n\\,411)'[base];`, // Add small images (#2)
             `[base][isr_3]overlay=x=110:y=210:enable='gt(n\\,424)'[base];`, // Add small images (#3)
             `[base][isr_4]overlay=x=0:y=312:enable='gt(n\\,436)'[base];`, // Add small images (#4)
-            `[base][textvideo]overlay=x=0:y=0:enable='gt(n\\,78)*lt(n\\,171)'[base];`, // Add text
+            `[base][textvideo]overlay=x=0:y=0:enable='gt(n\\,78)*lt(n\\,151)'[base];`, // Add text
             `[base][slug2]xfade=offset=14.5:duration=1.5[base];`, // Add fade out
             `[base]null[out_v]" -map "[out_v]" -map "3:a:0" -r 30 -t 16.4 -crf:v 30 -b:v 96k $PRESET $OUT`,
         ].join(" "),
