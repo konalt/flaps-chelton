@@ -1,3 +1,4 @@
+import { client } from "..";
 import { downloadPromise } from "../lib/download";
 import { getFileExt, getFileName, makeMessageResp } from "../lib/utils";
 import { FlapsCommand } from "../types";
@@ -13,6 +14,8 @@ module.exports = {
             if (msg.reference) {
                 let ref = await msg.fetchReference();
                 user = ref.author;
+            } else if (args[0] && client.users.cache.get(args[0])) {
+                user = client.users.cache.get(args[0]);
             } else {
                 user = msg.author;
             }
