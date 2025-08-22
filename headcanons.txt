@@ -91,9 +91,9 @@ beat you up
 hug you
 
 #ACTION2
- if deserved
- and will
-, but won't
+if deserved
+and will
+(but won't)
 
 #FAVOURITE
 favourite
@@ -192,7 +192,7 @@ It would not take much for %NAME% to turn evil.
 If %NAME% likes someone, they will give them a pretty rock.
 %NAME% is very willing to eat inedible things.
 %NAME% steals other peoples clothes.
-%NAME% can %ACTION%%ACTION2%.
+%NAME% can %ACTION% %ACTION2%.
 %NAME% makes your mom jokes.
 %NAME%'s %FAVOURITES% subject in school was %SUBJECT%.
 %NAME% stole a lollipop at the checkout when they were 5 and they still feel guilty about it.
