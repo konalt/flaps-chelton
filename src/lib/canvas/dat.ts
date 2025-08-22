@@ -9,10 +9,10 @@ export default async function dat(imageBuffer: Buffer, text: string) {
     ctx.drawImage(image, 0, 0, image.width, image.height);
     ctx.font = `${image.height * 0.09}px Papyrus`;
     ctx.fillStyle = "white";
-    /* ctx.shadowBlur = 5;
+    ctx.shadowBlur = 5;
     ctx.shadowColor = "black";
     ctx.shadowOffsetX = 5;
-    ctx.shadowOffsetY = 5; */
+    ctx.shadowOffsetY = 5;
     ctx.textAlign = "center";
     await drawText(
         ctx,
@@ -24,6 +24,8 @@ export default async function dat(imageBuffer: Buffer, text: string) {
         "top",
         0.6
     );
+    ctx.shadowBlur = 0;
+    ctx.shadowColor = "transparent";
     let noiseScale = 1.2;
     let noise = await loadImage(
         await createNoise(
