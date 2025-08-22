@@ -20,13 +20,23 @@ module.exports = {
     name: "Flaps Length",
     desc: "Gets the length of all flaps source files.",
     async execute() {
-        let lineCount = await globFiles("src/**/*.ts").then((files) => {
+        let lineCountTS = await globFiles("src/**/*.ts").then((files) => {
             let lineCount = 0;
             files.forEach((file) => {
                 lineCount += getLineCount(file);
             });
             return lineCount;
         });
-        return makeMessageResp("flaps", `this mf ${lineCount} lines long`);
+        let lineCountWeb = await globFiles("web/**/*.js").then((files) => {
+            let lineCount = 0;
+            files.forEach((file) => {
+                lineCount += getLineCount(file);
+            });
+            return lineCount;
+        });
+        return makeMessageResp(
+            "flaps",
+            `this mf ${lineCountTS + lineCountWeb} lines long`
+        );
     },
 } satisfies FlapsCommand;
