@@ -369,3 +369,16 @@ export const NoteLUT = {
     E5: 659,
     F5: 698,
 };
+
+export const NeedsAnything = [
+    "image/video/audio/gif?",
+    "image/video/audio/gif?",
+    "image/video/audio/gif?",
+    "image/video/audio/gif?",
+    "image/video/audio/gif?",
+    "image/video/audio/gif?",
+    "image/video/audio/gif?",
+    "image/video/audio/gif?",
+    "image/video/audio/gif?",
+    "image/video/audio/gif?",
+];

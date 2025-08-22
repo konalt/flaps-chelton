@@ -1,5 +1,5 @@
 import { inspect } from "util";
-import { getFileName, makeMessageResp } from "../lib/utils";
+import { NeedsAnything, getFileName, makeMessageResp } from "../lib/utils";
 import { FlapsCommand, FlapsMessageCommandResponse } from "../types";
 import { readdirSync } from "fs";
 import { Message } from "discord.js";
@@ -46,18 +46,7 @@ module.exports = {
     name: "Eval",
     desc: "Evaluates some JavaScript code.",
     showOnCommandSimulator: OVERRIDE,
-    needs: [
-        "image/video/audio/gif?",
-        "image/video/audio/gif?",
-        "image/video/audio/gif?",
-        "image/video/audio/gif?",
-        "image/video/audio/gif?",
-        "image/video/audio/gif?",
-        "image/video/audio/gif?",
-        "image/video/audio/gif?",
-        "image/video/audio/gif?",
-        "image/video/audio/gif?",
-    ],
+    needs: NeedsAnything,
     async execute(args, bufs, msg) {
         if (!lib.__pop) {
             lib = await populate("lib");
