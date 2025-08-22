@@ -22,6 +22,7 @@ const resolutions = {
     yababaina_3dspin: [512, 512],
     jar: [800, 600],
     maze: [400, 300],
+    slots: [800, 800],
 };
 const NOTEXTURE = "images/uv_grid_opengl.jpg";
 const fontLoader = new FontLoader();
@@ -97,7 +98,7 @@ function distance(x1, y1, x2, y2) {
     return Math.hypot(x2 - x1, y2 - y1);
 }
 
-function easeInCirc(x) {
+function easeOutCirc(x) {
     return Math.sqrt(1 - Math.pow(x - 1, 2));
 }
 
@@ -1056,26 +1057,26 @@ async function _init(id, options = {}) {
                 switch (direction) {
                     case 0:
                         planes.position.x =
-                            (1 - easeInCirc((duration - i) / duration)) *
+                            (1 - easeOutCirc((duration - i) / duration)) *
                             flagWidth *
                             1.2;
                         break;
                     case 1:
                         planes.position.x =
-                            -(1 - easeInCirc((duration - i) / duration)) *
+                            -(1 - easeOutCirc((duration - i) / duration)) *
                                 flagWidth *
                                 1.2 +
                             flagWidth;
                         break;
                     case 2:
                         planes.position.y =
-                            (1 - easeInCirc((duration - i) / duration)) *
+                            (1 - easeOutCirc((duration - i) / duration)) *
                             flagHeight *
                             1.2;
                         break;
                     case 3:
                         planes.position.y =
-                            -(1 - easeInCirc((duration - i) / duration)) *
+                            -(1 - easeOutCirc((duration - i) / duration)) *
                                 flagHeight *
                                 1.2 +
                             flagHeight;
@@ -1315,6 +1316,106 @@ async function _init(id, options = {}) {
                 }
             };
             break;
+        }
+        case "slots": {
+            let img = options.img || NOTEXTURE;
+            let alt0 = options.alt0 || "images/slots/apple.png";
+            let alt1 = options.alt1 || "images/slots/diamond.png";
+            let alt2 = options.alt2 || "images/slots/grapes.png";
+
+            let materials = await Promise.all(
+                [img, alt0, alt1, alt2].map(async (i) => {
+                    let map = await loadTexture(i);
+                    map.colorSpace = THREE.SRGBColorSpace;
+                    map.flipY = true;
+                    let material = new THREE.MeshStandardMaterial({
+                        map,
+                    });
+                    return material;
+                })
+            );
+
+            let map = await loadTexture(img);
+            map.colorSpace = THREE.SRGBColorSpace;
+            map.flipY = true;
+            let imageMaterial = new THREE.MeshStandardMaterial({
+                map,
+                transparent: true,
+            });
+
+            camera.position.x = 9;
+            camera.fov = 35;
+            camera.updateProjectionMatrix();
+            camera.lookAt(0, 0, 0);
+
+            let machine = await loadModel("models/slotmachine.glb");
+            machine.scale.x = machine.scale.y = machine.scale.z = 2;
+            scene.add(machine);
+            let spinners = [0, 1, 2].map((s) =>
+                machine.children.find((child) => child.name == `Spinner${s}`)
+            );
+            let i = 0;
+            for (const spinner of spinners) {
+                for (const face of spinner.children) {
+                    const r = (n) => {
+                        return (n % (materials.length - 1)) + 1;
+                    };
+                    switch (face.material.name) {
+                        case "IMAGE":
+                            face.material = materials[0];
+                            break;
+                        case "Alt0":
+                            face.material = materials[r(1 + i)];
+                            break;
+                        case "Alt1":
+                            face.material = materials[r(2 + i)];
+                            break;
+                        case "Alt2":
+                            face.material = materials[r(3 + i)];
+                            break;
+                    }
+                }
+                i++;
+            }
+
+            let image = new THREE.Mesh(
+                new THREE.PlaneGeometry(3, 3),
+                imageMaterial
+            );
+            image.position.x = 4.25;
+            image.rotation.y = Math.PI / 2;
+            image.scale.set(0, 0, 0);
+            scene.add(image);
+
+            stepFunction = (frame) => {
+                let i = 0;
+                for (const spinner of spinners) {
+                    if (frame < (i + 1) * 32) {
+                        spinner.rotation.y -= 0.2;
+                    } else {
+                        spinner.rotation.y = 0.12 * Math.PI;
+                    }
+                    i++;
+                }
+                let totalSpinDuration = spinners.length * 32 + 30;
+                if (frame > totalSpinDuration) {
+                    let tx = Math.max(
+                        Math.min((frame - totalSpinDuration) / 60, 1),
+                        0
+                    );
+                    let fac = easeOutCirc(tx) * 0.3 + 0.7;
+                    image.material.opacity = tx;
+                    image.scale.set(fac, fac, fac);
+                    if (fac == 1) {
+                        console.log(frame);
+                    }
+                } else {
+                    image.scale.set(0, 0, 0);
+                }
+            };
+
+            quickLight(9, 5, 5);
+            quickLight(9, -2, -3);
         }
     }
 
