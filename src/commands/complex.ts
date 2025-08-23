@@ -18,10 +18,12 @@ interface Filter {
 function parseFiltergraph(graph: string) {
     let sequence: Filter[] = [];
     for (const filter of graph.split(";")) {
-        let inSpecs = filter.split("-")[0].split(",");
-        let command = filter.split("-")[1].split(" ")[0];
-        let args = filter.split("-")[1].split(" ").slice(1);
-        let outSpecs = filter.split("-")[2].split(",");
+        let properties = filter.split("-");
+        let commandString = properties.slice(1, -1).join("-");
+        let inSpecs = properties[0].split(",");
+        let command = commandString.split(" ")[0];
+        let args = commandString.split(" ").slice(1);
+        let outSpecs = properties.at(-1).split(",");
         let outBuffer = outSpecs[0];
         let outText = outSpecs[1] ?? "";
         sequence.push({
