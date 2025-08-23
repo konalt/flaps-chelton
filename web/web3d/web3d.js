@@ -1319,12 +1319,19 @@ async function _init(id, options = {}) {
         }
         case "slots": {
             let img = options.img || NOTEXTURE;
-            let alt0 = options.alt0 || "images/slots/apple.png";
-            let alt1 = options.alt1 || "images/slots/diamond.png";
-            let alt2 = options.alt2 || "images/slots/grapes.png";
+            let alts = [
+                options.alts[0] || "images/slots/apple.png",
+                options.alts[1] ||
+                    options.alts[0] ||
+                    "images/slots/diamond.png",
+                options.alts[2] ||
+                    options.alts[1] ||
+                    options.alts[0] ||
+                    "images/slots/grapes.png",
+            ];
 
             let materials = await Promise.all(
-                [img, alt0, alt1, alt2].map(async (i) => {
+                [img, ...alts].map(async (i) => {
                     let map = await loadTexture(i);
                     map.colorSpace = THREE.SRGBColorSpace;
                     map.flipY = true;
@@ -1390,7 +1397,7 @@ async function _init(id, options = {}) {
             stepFunction = (frame) => {
                 let i = 0;
                 for (const spinner of spinners) {
-                    if (frame < (i + 1) * 32) {
+                    if (frame < (i + 1) * 32 - 1) {
                         spinner.rotation.y -= 0.2;
                     } else {
                         spinner.rotation.y = 0.12 * Math.PI;
@@ -1400,15 +1407,12 @@ async function _init(id, options = {}) {
                 let totalSpinDuration = spinners.length * 32 + 30;
                 if (frame > totalSpinDuration) {
                     let tx = Math.max(
-                        Math.min((frame - totalSpinDuration) / 60, 1),
+                        Math.min((frame - totalSpinDuration) / 40, 1),
                         0
                     );
                     let fac = easeOutCirc(tx) * 0.3 + 0.7;
                     image.material.opacity = tx;
                     image.scale.set(fac, fac, fac);
-                    if (fac == 1) {
-                        console.log(frame);
-                    }
                 } else {
                     image.scale.set(0, 0, 0);
                 }
