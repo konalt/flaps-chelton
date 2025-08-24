@@ -1438,7 +1438,11 @@ async function _init(id, options = {}) {
             map.colorSpace = THREE.SRGBColorSpace;
             const sphere = new THREE.Mesh(
                 new THREE.SphereGeometry(1, 64, 32),
-                new THREE.MeshStandardMaterial({ map })
+                new THREE.MeshStandardMaterial({
+                    map,
+                    metalness: 0.5,
+                    roughness: 0.3,
+                })
             );
             scene.add(sphere);
 
