@@ -7,7 +7,7 @@ import handleFFmpegCatch from "../../lib/ffmpeg/handleFFmpegCatch";
 module.exports = {
     id: "mrwest",
     name: "Mr. West",
-    desc: "thas ok mr west please no more today",
+    desc: "thas enough mr west please no more today",
     needs: ["image"],
     execute(args, buf, msg) {
         return new Promise((res, rej) => {
