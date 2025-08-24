@@ -22,6 +22,10 @@ export function sample(arr: any[]) {
     return arr[Math.floor(Math.random() * arr.length)];
 }
 
+export function random(min = 0, max = 1) {
+    return Math.random() * (max - min) + min;
+}
+
 export function getFileName(type: string, ext: string = "helo"): string {
     return (
         type +

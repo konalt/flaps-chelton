@@ -23,6 +23,7 @@ const resolutions = {
     jar: [800, 600],
     maze: [400, 300],
     slots: [800, 800],
+    globalism: [400, 400],
 };
 const NOTEXTURE = "images/uv_grid_opengl.jpg";
 const fontLoader = new FontLoader();
@@ -1420,6 +1421,35 @@ async function _init(id, options = {}) {
 
             quickLight(9, 5, 5);
             quickLight(9, -2, -3);
+
+            break;
+        }
+        case "globalism": {
+            camera.position.x = 0;
+            camera.position.y = 0;
+            camera.position.z = 2.5;
+            camera.fov = 55;
+            camera.updateProjectionMatrix();
+            camera.lookAt(0, 0, 0);
+
+            let map = await loadTexture(options.img);
+            map.wrapS = THREE.RepeatWrapping;
+            map.repeat.setX(2);
+            map.colorSpace = THREE.SRGBColorSpace;
+            const sphere = new THREE.Mesh(
+                new THREE.SphereGeometry(1, 64, 32),
+                new THREE.MeshStandardMaterial({ map })
+            );
+            scene.add(sphere);
+
+            scene.add(new THREE.AmbientLight(0xffffff, 0.3));
+            quickLight(2, 2, 4);
+
+            stepFunction = (i) => {
+                let fullRotate = Math.PI * 2;
+                sphere.rotation.y = i * fullRotate;
+            };
+            break;
         }
     }
 
