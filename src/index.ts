@@ -967,6 +967,7 @@ async function init() {
             weight: "900",
         });
         registerFont("fonts/papyrus.ttf", { family: "Papyrus" });
+        registerFont("fonts/cafe.ttf", { family: "Cafe", weight: "400" });
         // Open Sans
         for (let i = 300; i <= 800; i += 100) {
             registerFont(`fonts/opensans/${i}.ttf`, {
