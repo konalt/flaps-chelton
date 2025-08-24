@@ -36,6 +36,9 @@ function randomPosition() {
     if (Math.random() > 0.5) pos = [1 - pos[0], pos[1]];
     return overlay(...pos);
 }
+function randomOffset() {
+    return `setpts=PTS-${random(0, 1)}/TB`;
+}
 
 export default async function globalism(buffers: [Buffer, string][]) {
     let dims = await getVideoDimensions(buffers[0], true);
@@ -52,14 +55,14 @@ export default async function globalism(buffers: [Buffer, string][]) {
             "[slow]setpts=2*(PTS-STARTPTS),split=3[slow0][slow1][slow2];",
             "[norm]split=3[norm0][norm1][norm2];",
             "[fast]setpts=0.5*(PTS-STARTPTS),split=2[fast0][fast1];",
-            `[slow0]${randomScaleValue()}[slow0];`,
-            `[slow1]${randomScaleValue()}[slow1];`,
-            `[slow2]${randomScaleValue()},hue=h=(1-(t/2.4))*360[slow2];`,
-            `[norm0]${randomScaleValue()}[norm0];`,
-            `[norm1]${randomScaleValue()}[norm1];`,
-            `[norm2]${randomScaleValue()}[norm2];`,
+            `[slow0]${randomOffset()},${randomScaleValue()}[slow0];`,
+            `[slow1]${randomOffset()},${randomScaleValue()}[slow1];`,
+            `[slow2]${randomScaleValue()},hue=h=(1-(t/2.4))*360,${randomOffset()}[slow2];`,
+            `[norm0]${randomOffset()},${randomScaleValue()}[norm0];`,
+            `[norm1]${randomOffset()},${randomScaleValue()}[norm1];`,
+            `[norm2]${randomOffset()},${randomScaleValue()}[norm2];`,
             `[fast0]${randomScaleValue()},hue=h=(t/2.4)*360[fast0];`,
-            `[fast1]${randomScaleValue()}[fast1];`,
+            `[fast1]${randomOffset()},${randomScaleValue()}[fast1];`,
             `[0:v]scale=${newDims.join(":")},setsar=1:1[out];`,
             `[out][slow0]${randomPosition()}[out];`,
             `[out][norm0]${randomPosition()}[out];`,
