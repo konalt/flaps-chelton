@@ -1,6 +1,6 @@
 import { ffmpegBuffer, file } from "./ffmpeg";
 
-export default async function invert(buffers: [Buffer, string][]) {
+export default async function paint(buffers: [Buffer, string][]) {
     return ffmpegBuffer(
         [
             `-loop 1 -t 1.5 -r 24 -i $BUF0`,
