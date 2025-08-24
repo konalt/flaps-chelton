@@ -257,11 +257,20 @@ export function calculateAspectRatioFit(
     srcWidth: number,
     srcHeight: number,
     maxWidth: number,
-    maxHeight: number
+    maxHeight: number,
+    makeEven = false
 ) {
-    var ratio = Math.min(maxWidth / srcWidth, maxHeight / srcHeight);
+    let ratio = Math.min(maxWidth / srcWidth, maxHeight / srcHeight);
+    let dimensions = [srcWidth * ratio, srcHeight * ratio];
 
-    return [srcWidth * ratio, srcHeight * ratio];
+    if (makeEven) {
+        dimensions = dimensions.map((d) => Math.ceil(d / 2) * 2) as [
+            number,
+            number
+        ];
+    }
+
+    return dimensions;
 }
 
 export function humanFileSize(bytes: number, si = false, dp = 1) {
