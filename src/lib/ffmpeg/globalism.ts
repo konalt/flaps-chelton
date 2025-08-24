@@ -1,8 +1,9 @@
-import { bufferToDataURL, random } from "../utils";
+import { bufferToDataURL, calculateAspectRatioFit, random } from "../utils";
 import { hookWeb3DAPIAnimation } from "../web3dapi";
 import { ffmpegBuffer } from "./ffmpeg";
 import { addBufferSequence, removeBuffer } from "../..";
 import videoGif from "./videogif";
+import { getVideoDimensions } from "./getVideoDimensions";
 
 async function generateSphereVideo(image: Buffer, speed: number) {
     let animation = await hookWeb3DAPIAnimation("globalism", {
@@ -37,6 +38,9 @@ function randomPosition() {
 }
 
 export default async function globalism(buffers: [Buffer, string][]) {
+    let dims = await getVideoDimensions(buffers[0], true);
+    let newDims = calculateAspectRatioFit(...dims, 512, 512, true);
+
     let sphere = await generateSphereVideo(buffers[0][0], 1);
 
     let animation = await ffmpegBuffer(
@@ -56,15 +60,15 @@ export default async function globalism(buffers: [Buffer, string][]) {
             `[norm2]${randomScaleValue()}[norm2];`,
             `[fast0]${randomScaleValue()},hue=h=(t/2.4)*360[fast0];`,
             `[fast1]${randomScaleValue()}[fast1];`,
-            `[0:v]scale=512:512,setsar=1:1[out];`,
+            `[0:v]scale=${newDims.join(":")},setsar=1:1[out];`,
             `[out][slow0]${randomPosition()}[out];`,
             `[out][norm0]${randomPosition()}[out];`,
-            `[out][fast0]${randomPosition()}[out];`,
             `[out][slow1]${randomPosition()}[out];`,
             `[out][norm1]${randomPosition()}[out];`,
             `[out][fast1]${randomPosition()}[out];`,
             `[out][slow2]${randomPosition()}[out];`,
             `[out][norm2]${randomPosition()}[out];`,
+            `[out][fast0]${randomPosition()}[out];`,
             `" -map "[out]" -r 30 -t 2.4 $PRESET $OUT`,
         ].join(" "),
         buffers,
