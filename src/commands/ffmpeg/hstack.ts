@@ -30,7 +30,7 @@ module.exports = {
             }
             let filterString = "";
             for (let i = 0; i < buffers.length; i++) {
-                filterString += `[${i}:v]scale=${dims.join(":")}[i${i}];`;
+                filterString += `[${i}:v]scale=-1:${dims[1]}[i${i}];`;
             }
             for (let i = 0; i < buffers.length; i++) {
                 filterString += `[i${i}]`;
