@@ -9,8 +9,8 @@ import { FlapsCommand } from "../types";
 
 interface Filter {
     inSpecs: string[];
-    command: string;
-    args: string[];
+    commands: string[];
+    argLists: string[][];
     outBuffer: string;
     outText: string;
 }
@@ -21,15 +21,19 @@ function parseFiltergraph(graph: string) {
         let properties = filter.split("-");
         let commandString = properties.slice(1, -1).join("-");
         let inSpecs = properties[0].split(",");
-        let command = commandString.split(" ")[0];
-        let args = commandString.split(" ").slice(1);
+        let commands = commandString
+            .split(" && ")
+            .map((s) => s.trim().split(" ")[0]);
+        let argLists = commandString
+            .split(" && ")
+            .map((s) => s.trim().split(" ").slice(1));
         let outSpecs = properties.at(-1).split(",");
         let outBuffer = outSpecs[0];
         let outText = outSpecs[1] ?? "";
         sequence.push({
             inSpecs,
-            command,
-            args,
+            commands,
+            argLists,
             outBuffer,
             outText,
         });
@@ -49,9 +53,6 @@ module.exports = {
             out: "",
         };
         for (const filter of graph) {
-            let command = commands.find((cmd) =>
-                cmd.aliases.includes(filter.command.toLowerCase())
-            );
             let inBuffers: [Buffer, string][] = [];
             for (const spec of filter.inSpecs) {
                 if (spec.startsWith(":")) {
@@ -76,24 +77,38 @@ module.exports = {
                     }
                 }
             }
-            let response = await command.execute(
-                filter.args
-                    .join(" ")
-                    .replace(/\$([a-z])+/g, (orig, spec) => {
-                        return textStorage[spec] ?? orig;
-                    })
-                    .split(" "),
-                inBuffers,
-                msg
-            );
-            if (response.buffer) {
-                bufferStorage[filter.outBuffer] = [
-                    response.buffer,
-                    getFileExt(response.filename),
-                ];
+            let currentBuffer: [Buffer, string];
+            let currentText: string;
+            for (let i = 0; i < filter.commands.length; i++) {
+                let command = commands.find((cmd) =>
+                    cmd.aliases.includes(filter.commands[i].toLowerCase())
+                );
+                let args = filter.argLists[i];
+                let response = await command.execute(
+                    args
+                        .join(" ")
+                        .replace(/\$([a-z])+/g, (orig, spec) => {
+                            return textStorage[spec] ?? orig;
+                        })
+                        .split(" "),
+                    i == 0 ? inBuffers : [currentBuffer],
+                    msg
+                );
+                if (response.buffer) {
+                    currentBuffer = [
+                        response.buffer,
+                        getFileExt(response.filename),
+                    ];
+                }
+                if (filter.outText.length > 0) {
+                    currentText = response.content;
+                }
+            }
+            if (currentBuffer) {
+                bufferStorage[filter.outBuffer] = currentBuffer;
             }
             if (filter.outText.length > 0) {
-                textStorage[filter.outText] = response.content;
+                textStorage[filter.outText] = currentText;
             }
         }
         if (bufferStorage.out) {
