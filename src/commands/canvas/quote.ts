@@ -9,14 +9,16 @@ module.exports = {
     desc: "Turns a message into a memorable quote image",
     needs: ["image?"],
     showOnCommandSimulator: false,
-    async execute(args, _, msg) {
+    async execute(args, bufs, msg) {
         let ref = await msg.fetchReference();
-        let avatar = await downloadPromise(
-            (ref.member.avatarURL() ?? ref.author.avatarURL())
-                .split(".")
-                .slice(0, -1)
-                .join(".") + ".png"
-        );
+        let avatar =
+            bufs[0][0] ??
+            (await downloadPromise(
+                (ref.member.avatarURL() ?? ref.author.avatarURL())
+                    .split(".")
+                    .slice(0, -1)
+                    .join(".") + ".png"
+            ));
         let content = ref.content;
         let username = ref.author.username;
         let displayName =
