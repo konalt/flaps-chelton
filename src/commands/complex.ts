@@ -84,10 +84,11 @@ module.exports = {
                     cmd.aliases.includes(filter.commands[i].toLowerCase())
                 );
                 let args = filter.argLists[i];
+                if (args[0] == "" && args.length == 1) args = [];
                 let response = await command.execute(
                     args
                         .join(" ")
-                        .replace(/\$([a-z])+/g, (orig, spec) => {
+                        .replace(/\$([a-z]+)/g, (orig, spec) => {
                             return textStorage[spec] ?? orig;
                         })
                         .split(" "),
