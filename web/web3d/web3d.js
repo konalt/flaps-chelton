@@ -24,6 +24,7 @@ const resolutions = {
     maze: [400, 300],
     slots: [800, 800],
     globalism: [400, 400],
+    shampoo: [500, 500],
 };
 const NOTEXTURE = "images/uv_grid_opengl.jpg";
 const fontLoader = new FontLoader();
@@ -1452,6 +1453,102 @@ async function _init(id, options = {}) {
             stepFunction = (i) => {
                 let fullRotate = Math.PI * 2;
                 sphere.rotation.y = i * fullRotate;
+            };
+            break;
+        }
+        case "shampoo": {
+            let img = options.img || NOTEXTURE;
+
+            camera.position.x = 18;
+            camera.position.y = 21;
+            camera.position.z = 30;
+            camera.fov = 75;
+            camera.updateProjectionMatrix();
+
+            let cameraRotator = new THREE.Group();
+            cameraRotator.add(camera);
+            camera.lookAt(0, 5, 0);
+
+            let shampoo = await loadModel("models/shampoo.glb");
+            shampoo.scale.x = shampoo.scale.y = shampoo.scale.z = 2;
+            let label = shampoo.children.find((child) => child.name == "Label");
+            let bottle = shampoo.children.find(
+                (child) => child.name == "Bottle"
+            );
+            let liquid = shampoo.children.find(
+                (child) => child.name == "Liquid"
+            );
+            liquid.material.color.set(...(options.color || [0, 1, 0]));
+
+            scene.add(shampoo);
+
+            bottle.material.depthWrite = false;
+
+            let map = await loadTexture(img);
+            map.colorSpace = THREE.SRGBColorSpace;
+            map.flipY = false;
+            map.repeat.setX(2);
+            map.wrapS = THREE.RepeatWrapping;
+            label.material.transparent = true;
+            label.material.map = map;
+
+            let ground = new THREE.Mesh(
+                new THREE.PlaneGeometry(999, 999),
+                new THREE.MeshStandardMaterial({
+                    color: 0x222222,
+                })
+            );
+            ground.rotation.x = -Math.PI / 2;
+            scene.add(ground);
+
+            quickBigLight(25, 25, 25);
+            quickBigLight(-20, 30, -35);
+            quickBigLight(4, 30, -20);
+            quickBigLight(-30, 17, 3);
+
+            let spot = new THREE.SpotLight();
+            spot.position.y = 20;
+            spot.target.position.set(0, 0, 0);
+            scene.add(spot);
+
+            scene.background = new THREE.Color(0x060606);
+            scene.fog = new THREE.Fog(scene.background, 90, 100);
+
+            const introFramesRotate = 30;
+            const slowdownFramesRotate = 380;
+            const introFramesScale = 10;
+            const slowdownFramesScale = 280;
+            let deltaTiming = 2;
+            stepFunction = (frame = -1) => {
+                if (frame == -1) return;
+                frame *= deltaTiming;
+                let dRotate = Math.max(
+                    Math.min(
+                        1 -
+                            Math.max(frame - introFramesRotate, 0) /
+                                slowdownFramesRotate,
+                        1
+                    ) * 0.25,
+                    0
+                );
+                if (dRotate > 0) {
+                    cameraRotator.rotateOnWorldAxis(
+                        new THREE.Vector3(0, 1, 0),
+                        dRotate
+                    );
+                }
+                let factor = Math.min(
+                    Math.max(
+                        1 -
+                            ((frame - introFramesScale) / slowdownFramesScale) *
+                                0.6,
+                        0.4
+                    ),
+                    1
+                );
+                cameraRotator.scale.set(factor, factor, factor);
+                camera.lookAt(0, 8, 0);
+                camera.fov = 1 - (frame / 360) * 10 + 60;
             };
             break;
         }
