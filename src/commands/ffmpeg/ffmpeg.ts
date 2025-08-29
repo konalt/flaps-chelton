@@ -15,9 +15,14 @@ module.exports = {
     name: "FFmpeg",
     desc: "Runs an FFmpeg command. Input files are named $BUF[0-9] and the output is $OUT. First argument must be output file format.",
     needs: NeedsAnything,
+    showOnCommandSimulator: false,
     async execute(args: string[], buffers: [Buffer, string][], msg: Message) {
         return new Promise((res, rej) => {
-            if (msg.author && msg.author.id !== process.env.OWNER_TOKEN) {
+            if (!msg) {
+                res(makeMessageResp("flaps", "nuh uh uh!"));
+                return;
+            }
+            if (msg.author.id !== process.env.OWNER_TOKEN) {
                 res(makeMessageResp("flaps", "nuh uh uh!"));
                 return;
             }
