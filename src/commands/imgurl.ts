@@ -30,10 +30,11 @@ module.exports = {
         for (const [i, [buffer, origFilename]] of Object.entries(buffers)) {
             writePromises.push(
                 new Promise<void>(async (resolve, reject) => {
-                    let compressed = await compressImage([
-                        buffer,
-                        origFilename,
-                    ]);
+                    let compressed = await compressImage(
+                        [buffer, origFilename],
+                        1024,
+                        true
+                    );
                     log(
                         `Uploaded image compressed to ${C.BCyan}${humanFileSize(
                             compressed.byteLength
@@ -45,12 +46,12 @@ module.exports = {
                     let hash = createHash("sha256")
                         .update(compressed)
                         .digest("hex");
-                    let filename = file(`perma/${hash}.jpeg`);
+                    let filename = file(`perma/${hash}.png`);
                     let fileExists = await exists(filename);
                     if (!fileExists) {
                         await writeFile(filename, compressed);
                     }
-                    filenames[i] = `${hash}.jpeg`;
+                    filenames[i] = `${hash}.png`;
                     resolve();
                 })
             );
