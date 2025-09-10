@@ -25,6 +25,7 @@ const resolutions = {
     slots: [800, 800],
     globalism: [400, 400],
     shampoo: [500, 500],
+    obama: [512, 512],
 };
 const NOTEXTURE = "images/uv_grid_opengl.jpg";
 const fontLoader = new FontLoader();
@@ -1549,6 +1550,30 @@ async function _init(id, options = {}) {
                 cameraRotator.scale.set(factor, factor, factor);
                 camera.lookAt(0, 8, 0);
                 camera.fov = 1 - (frame / 360) * 10 + 60;
+            };
+            break;
+        }
+        case "obama": {
+            camera.position.x = 0;
+            camera.position.z = 13;
+            camera.fov = 50;
+            camera.updateProjectionMatrix();
+            camera.lookAt(0, 0, 0);
+            camera.position.y = -1;
+
+            let map = await loadTexture(options.img);
+            map.colorSpace = THREE.SRGBColorSpace;
+            map.flipY = false;
+
+            const obama = await loadModel("models/obama.glb");
+            obama.children[0].scale.setY(1.3);
+            obama.children[0].material = new THREE.MeshBasicMaterial({ map });
+            scene.add(obama);
+
+            stepFunction = (fractionalTurn = 0) => {
+                let fullRotate = Math.PI * 2;
+                //obama.rotation.x = fractionalTurn * fullRotate;
+                obama.rotation.y = fractionalTurn * fullRotate;
             };
             break;
         }
