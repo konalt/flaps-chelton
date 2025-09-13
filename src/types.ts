@@ -237,3 +237,11 @@ export interface Connect4Game {
     isOver: boolean;
     buttonWindow: number;
 }
+
+export interface CharTemplate {
+    bottom: Buffer | null;
+    top: Buffer | null;
+    width: number;
+    height: number;
+    images: [number, number, number, number, number?][];
+}

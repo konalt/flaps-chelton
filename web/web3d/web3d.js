@@ -1577,6 +1577,27 @@ async function _init(id, options = {}) {
             };
             break;
         }
+        case "transition_cube": {
+            camera.position.x = 2.5;
+            camera.position.y = 1.4;
+            camera.position.z = 3;
+            camera.fov = 25;
+            camera.updateProjectionMatrix();
+            camera.lookAt(0, 0, 0);
+
+            let texture = await loadTexture(options.imageURL);
+            texture.colorSpace = THREE.SRGBColorSpace;
+            const cube = new THREE.Mesh(
+                new THREE.BoxGeometry(1, 1, 1),
+                new THREE.MeshBasicMaterial({
+                    map: texture,
+                })
+            );
+            if (Math.random() > 0.5) {
+                cube.rotation.y = Math.PI / 2;
+            }
+            scene.add(cube);
+        }
     }
 
     lastID = id;
@@ -1610,3 +1631,8 @@ window.flapsWeb3DDebugAnimation = () => {
 
 window.flapsWeb3DStep = _step;
 window.flapsWeb3DInit = _init;
+
+let params = new URLSearchParams(window.location.search);
+if (params.get("id") && resolutions[params.get("id")]) {
+    _init(params.get("id"));
+}

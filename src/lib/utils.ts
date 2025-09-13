@@ -395,3 +395,11 @@ export const NeedsAnything = [
     "image/video/audio/gif?",
     "image/video/audio/gif?",
 ];
+
+export function degToRad(degrees: number) {
+    return degrees * (Math.PI / 180);
+}
+
+export function radToDeg(degrees: number) {
+    return (degrees / 180) * Math.PI;
+}
