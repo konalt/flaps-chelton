@@ -64,7 +64,11 @@ let templates: Record<string, CharTemplate> | { _i: true } = { _i: true };
 
 export default async function char(templateId: string, buffer: Buffer) {
     if (templates._i || templateId == "reload") {
-        templates = await createTemplates(templateData);
+        templates = await createTemplates(
+            readFileSync(file("chartemplates/templates.dat"), "utf8")
+                .split("\n")
+                .map((n) => n.trim())
+        );
         if (templateId == "reload") {
             const c = createCanvas(500, 100);
             const ctx = c.getContext("2d");
@@ -90,12 +94,7 @@ export default async function char(templateId: string, buffer: Buffer) {
     for (const imageCoords of template.images) {
         if (imageCoords[4]) {
             ctx.save();
-            ctx.translate(
-                imageCoords[0] + imageCoords[2] / 2,
-                imageCoords[1] + imageCoords[3] / 2
-            );
-            console.log(imageCoords[4]);
-
+            ctx.translate(imageCoords[0], imageCoords[1]);
             ctx.rotate(degToRad(imageCoords[4]));
             ctx.drawImage(
                 img,
