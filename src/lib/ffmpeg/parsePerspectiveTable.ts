@@ -19,7 +19,8 @@ export default async function parsePerspectiveTable(
     multiplicative = false,
     enableLerp = false,
     overrideVideoSize = [-1, -1],
-    frameMultiplier = 1
+    frameMultiplier = 1,
+    frameOffset = 0
 ) {
     if (overrideVideoSize[0] == -1) overrideVideoSize[0] = v_width;
     if (overrideVideoSize[1] == -1) overrideVideoSize[1] = v_height;
