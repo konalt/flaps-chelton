@@ -26,6 +26,7 @@ const resolutions = {
     globalism: [400, 400],
     shampoo: [500, 500],
     obama: [512, 512],
+    cubetransition: [400, 400],
 };
 const NOTEXTURE = "images/uv_grid_opengl.jpg";
 const fontLoader = new FontLoader();
@@ -101,8 +102,21 @@ function distance(x1, y1, x2, y2) {
     return Math.hypot(x2 - x1, y2 - y1);
 }
 
+function easeOutQuad(x) {
+    return 1 - (1 - x) * (1 - x);
+}
+
 function easeOutCirc(x) {
     return Math.sqrt(1 - Math.pow(x - 1, 2));
+}
+
+function easeInOutBack(x) {
+    const c1 = 1.70158;
+    const c2 = c1 * 1.525;
+
+    return x < 0.5
+        ? (Math.pow(2 * x, 2) * ((c2 + 1) * 2 * x - c2)) / 2
+        : (Math.pow(2 * x - 2, 2) * ((c2 + 1) * (x * 2 - 2) + c2) + 2) / 2;
 }
 
 const MAZE_SIZE = 6;
@@ -1577,26 +1591,75 @@ async function _init(id, options = {}) {
             };
             break;
         }
-        case "transition_cube": {
-            camera.position.x = 2.5;
-            camera.position.y = 1.4;
-            camera.position.z = 3;
-            camera.fov = 25;
+        case "cubetransition": {
+            camera.position.x = 2;
+            camera.position.y = 0;
+            camera.position.z = 0;
+            camera.fov = 36.8;
             camera.updateProjectionMatrix();
             camera.lookAt(0, 0, 0);
 
-            let texture = await loadTexture(options.imageURL);
-            texture.colorSpace = THREE.SRGBColorSpace;
-            const cube = new THREE.Mesh(
-                new THREE.BoxGeometry(1, 1, 1),
-                new THREE.MeshBasicMaterial({
-                    map: texture,
-                })
-            );
-            if (Math.random() > 0.5) {
-                cube.rotation.y = Math.PI / 2;
-            }
+            let texture1 = await loadTexture(options.image1);
+            texture1.colorSpace = THREE.SRGBColorSpace;
+            let texture2 = await loadTexture(options.image2);
+            texture2.colorSpace = THREE.SRGBColorSpace;
+            const FACE1 = new THREE.MeshBasicMaterial({
+                map: texture1,
+            });
+            const FACE2 = new THREE.MeshBasicMaterial({
+                map: texture2,
+            });
+            const DEFAULT = new THREE.MeshNormalMaterial();
+            const cube = new THREE.Mesh(new THREE.BoxGeometry(1, 1, 1), [
+                FACE1, // this is awful and i hate it ???
+                FACE1,
+                DEFAULT,
+                DEFAULT,
+                FACE2,
+                DEFAULT,
+            ]);
             scene.add(cube);
+
+            const scaleFraction = 0.15;
+            const scaleTime = 0.3;
+            const rotationGap = 0.1;
+            stepFunction = (x = 0) => {
+                let isSecondPhase = false;
+                if (x > 1) {
+                    x -= 1;
+                    isSecondPhase = true;
+                }
+                if (x > 1) return;
+                // Scale
+                if (x < scaleTime) {
+                    let fac =
+                        1 -
+                        scaleFraction +
+                        easeOutQuad(1 - x / scaleTime) * scaleFraction;
+                    cube.scale.set(fac, fac, fac);
+                } else if (x > 1 - scaleTime) {
+                    let fac =
+                        1 -
+                        scaleFraction +
+                        easeOutQuad((x - (1 - scaleTime)) / scaleTime) *
+                            scaleFraction;
+                    cube.scale.set(fac, fac, fac);
+                } else {
+                    cube.scale.set(
+                        1 - scaleFraction,
+                        1 - scaleFraction,
+                        1 - scaleFraction
+                    );
+                }
+                // Rotation
+                let rotfac = Math.min(
+                    1,
+                    Math.max(0, (x - rotationGap) / (1 - rotationGap * 2))
+                );
+                cube.rotation.y =
+                    (easeInOutBack(rotfac) * Math.PI) / 2 +
+                    (isSecondPhase ? Math.PI / 2 : 0);
+            };
         }
     }
 
@@ -1605,6 +1668,9 @@ async function _init(id, options = {}) {
 
     if (window.flapsWeb3DFinished)
         window.flapsWeb3DFinished(renderer.domElement.toDataURL());
+    if (params.get("autodebug")) {
+        window.flapsWeb3DDebugAnimation();
+    }
 }
 
 let stepFunction = () => {};
