@@ -36,8 +36,7 @@ export default async function invert(
         [transparent]split=1[tr_dt];
         [tr_dt]drawtext=text='${fixChar(
             options.text
-        )}':fontcolor=white:fontsize=min(t*2*64\\,64)
-            :fontfile=fonts/font.ttf:x=(w-text_w)/2:y=(h-text_h)/2,rotate=a=min(2*180\\,t*3*180)*(PI/180):c=none,format=rgba[text_overlay];
+        )}':fontcolor=white:fontsize=min(t*2*64\\,64):fontfile=fonts/font.ttf:x=(w-text_w)/2:y=(h-text_h)/2,rotate=a=min(2*180\\,t*3*180)*(PI/180):c=none,format=rgba[text_overlay];
         [1:v][text_overlay]overlay[text];
         [0:v]scale=${w}:${h},pad=512:512:256-iw/2:256-ih/2:black,setsar=1:1[scaled];
         [scaled]split=2[to_speen][to_rainbow];
