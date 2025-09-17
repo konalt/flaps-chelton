@@ -189,7 +189,7 @@ export function makeMessageResp(
     };
 }
 
-export function dataURLToBuffer(url: string) {
+export function dataURLToBuffer(url: string): Buffer {
     return Buffer.from(url.split(",")[1], "base64");
 }
 
