@@ -2,6 +2,7 @@ token.txt
 images/cache/*
 images/perma/*
 images/avatars/transcoded/*
+images/letters/*.gif
 audio/yt/*
 audio/join/*
 node_modules/*
