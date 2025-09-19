@@ -27,6 +27,7 @@ const resolutions = {
     shampoo: [500, 500],
     obama: [512, 512],
     cubetransition: [400, 400],
+    museum: [800, 600],
 };
 const NOTEXTURE = "images/uv_grid_opengl.jpg";
 const fontLoader = new FontLoader();
@@ -72,6 +73,11 @@ let camera;
  */
 let scene;
 
+/**
+ *
+ * @param {string} url
+ * @returns {Promise<THREE.Texture>}
+ */
 function loadImage(url) {
     return new Promise((resolve) => {
         var img = new Image();
@@ -110,13 +116,28 @@ function easeOutCirc(x) {
     return Math.sqrt(1 - Math.pow(x - 1, 2));
 }
 
-function easeInOutBack(x) {
-    const c1 = 1.70158;
-    const c2 = c1 * 1.525;
+function easeInOutBack(x, c1 = 1.70158, c2m = 1.525) {
+    const c2 = c1 * c2m;
 
     return x < 0.5
         ? (Math.pow(2 * x, 2) * ((c2 + 1) * 2 * x - c2)) / 2
         : (Math.pow(2 * x - 2, 2) * ((c2 + 1) * (x * 2 - 2) + c2) + 2) / 2;
+}
+
+/**
+ *
+ * @param {THREE.Object3D} object
+ * @param {string} path
+ */
+function getChild(object, path) {
+    if (path.split("/").length == 1) {
+        return object.children.find((o) => o.name == path.split("/")[0]);
+    } else {
+        return getChild(
+            object.children.find((o) => o.name == path.split("/")[0]),
+            path.split("/").slice(1).join("/")
+        );
+    }
 }
 
 const MAZE_SIZE = 6;
@@ -1660,6 +1681,104 @@ async function _init(id, options = {}) {
                     (easeInOutBack(rotfac) * Math.PI) / 2 +
                     (isSecondPhase ? Math.PI / 2 : 0);
             };
+            break;
+        }
+        case "museum": {
+            let materials = await Promise.all(
+                [options.img0, options.img1, options.img2].map(async (i) => {
+                    let map = await loadTexture(i ?? NOTEXTURE);
+                    map.flipY = false;
+                    map.colorSpace = THREE.SRGBColorSpace;
+                    map.anisotropy = 5;
+                    let mat = new THREE.MeshStandardMaterial({ map });
+                    return mat;
+                })
+            );
+
+            let museum = await loadModel("models/museum.glb");
+
+            museum.traverse((child) => {
+                if (child.isLight) {
+                    child.intensity /= 210;
+                }
+            });
+
+            let picLeftRoot = getChild(museum, "FrameLeft/RootLeft");
+            let picRightRoot = getChild(museum, "FrameRight/RootRight");
+
+            let cameraStart = getChild(museum, "CameraStart");
+            let picMidRoot = getChild(museum, "FrameMid/RootMid");
+            let [picLeft, picMid, picRight] = ["Left", "Mid", "Right"].map(
+                (d) => getChild(museum, `Frame${d}/Painting${d}`)
+            );
+
+            picLeft.material = materials[0];
+            picMid.material = materials[1];
+            picRight.material = materials[2];
+
+            camera.fov = 65;
+            camera.updateProjectionMatrix();
+            camera.position.set(
+                cameraStart.position.x,
+                cameraStart.position.y,
+                cameraStart.position.z
+            );
+            camera.lookAt(
+                picMidRoot.position.x,
+                picMidRoot.position.y,
+                picMidRoot.position.z
+            );
+
+            scene.add(museum);
+
+            const introSlideDuration = 0.15;
+            const introSlideDestination = new THREE.Vector3(
+                picLeftRoot.position.x + 3,
+                picLeftRoot.position.y,
+                picLeftRoot.position.z
+            );
+            const outroSlideSource = new THREE.Vector3(
+                picRightRoot.position.x + 3,
+                picRightRoot.position.y,
+                picRightRoot.position.z
+            );
+            const outroSlideDuration = 0.3;
+            stepFunction = (x) => {
+                x = x % 1;
+                if (x < introSlideDuration) {
+                    let x2 = x / introSlideDuration;
+                    camera.position.lerpVectors(
+                        cameraStart.position,
+                        introSlideDestination,
+                        easeInOutBack(x2, 1.1, 1.1)
+                    );
+                } else if (x < 1 - outroSlideDuration) {
+                    let x2 =
+                        (x - introSlideDuration) /
+                        (1 - (outroSlideDuration + introSlideDuration));
+                    camera.position.lerpVectors(
+                        introSlideDestination,
+                        outroSlideSource,
+                        easeOutQuad(x2)
+                    );
+                    camera.lookAt(
+                        new THREE.Vector3().lerpVectors(
+                            picLeftRoot.position,
+                            picRightRoot.position,
+                            easeOutQuad(Math.min(x2 * 1.5, 1))
+                        )
+                    );
+                } else {
+                    let x2 =
+                        (x - (1 - outroSlideDuration)) / outroSlideDuration;
+                    camera.position.lerpVectors(
+                        outroSlideSource,
+                        cameraStart.position,
+                        easeInOutBack(x2, 1.0, 1.1)
+                    );
+                }
+            };
+            break;
         }
     }
 
@@ -1669,7 +1788,11 @@ async function _init(id, options = {}) {
     if (window.flapsWeb3DFinished)
         window.flapsWeb3DFinished(renderer.domElement.toDataURL());
     if (params.get("autodebug")) {
-        window.flapsWeb3DDebugAnimation();
+        setTimeout(() => {
+            window.flapsWeb3DDebugAnimation(
+                parseInt(params.get("autodebug")) || -1
+            );
+        }, 500);
     }
 }
 
@@ -1684,11 +1807,15 @@ async function _step(...args) {
     }
 }
 
-window.flapsWeb3DDebugAnimation = () => {
+window.flapsWeb3DDebugAnimation = (fractionalDuration = -1) => {
     let i = 0;
     let a = () => {
         i++;
-        stepFunction(i);
+        if (fractionalDuration > 0) {
+            stepFunction(i / fractionalDuration);
+        } else {
+            stepFunction(i);
+        }
         renderer.render(scene, camera);
         requestAnimationFrame(a);
     };
