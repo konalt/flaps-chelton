@@ -1716,7 +1716,7 @@ async function _init(id, options = {}) {
             picMid.material = materials[1];
             picRight.material = materials[2];
 
-            camera.fov = 65;
+            camera.fov = 55;
             camera.updateProjectionMatrix();
             camera.position.set(
                 cameraStart.position.x,
@@ -1750,8 +1750,10 @@ async function _init(id, options = {}) {
                     camera.position.lerpVectors(
                         cameraStart.position,
                         introSlideDestination,
-                        easeInOutBack(x2, 1.1, 1.1)
+                        easeInOutBack(x2, 1.0, 1.1)
                     );
+                    camera.fov = 55 + easeOutQuad(x2) * 10;
+                    camera.updateProjectionMatrix();
                 } else if (x < 1 - outroSlideDuration) {
                     let x2 =
                         (x - introSlideDuration) /
@@ -1776,6 +1778,8 @@ async function _init(id, options = {}) {
                         cameraStart.position,
                         easeInOutBack(x2, 1.0, 1.1)
                     );
+                    camera.fov = 65 - easeOutQuad(x2) * 10;
+                    camera.updateProjectionMatrix();
                 }
             };
             break;
