@@ -112,6 +112,10 @@ function easeOutQuad(x) {
     return 1 - (1 - x) * (1 - x);
 }
 
+function easeInOutQuad(x) {
+    return x < 0.5 ? 2 * x * x : 1 - Math.pow(-2 * x + 2, 2) / 2;
+}
+
 function easeOutCirc(x) {
     return Math.sqrt(1 - Math.pow(x - 1, 2));
 }
@@ -1737,12 +1741,17 @@ async function _init(id, options = {}) {
                 picLeftRoot.position.y,
                 picLeftRoot.position.z
             );
+            const midSlideDestination = new THREE.Vector3(
+                picMidRoot.position.x + 3,
+                picMidRoot.position.y,
+                picMidRoot.position.z
+            );
             const outroSlideSource = new THREE.Vector3(
                 picRightRoot.position.x + 3,
                 picRightRoot.position.y,
                 picRightRoot.position.z
             );
-            const outroSlideDuration = 0.3;
+            const outroSlideDuration = 0.2;
             stepFunction = (x) => {
                 x = x % 1;
                 if (x < introSlideDuration) {
@@ -1752,24 +1761,41 @@ async function _init(id, options = {}) {
                         introSlideDestination,
                         easeInOutBack(x2, 1.0, 1.1)
                     );
-                    camera.fov = 55 + easeOutQuad(x2) * 10;
+                    camera.fov = 55 + easeInOutQuad(x2) * 10;
                     camera.updateProjectionMatrix();
                 } else if (x < 1 - outroSlideDuration) {
                     let x2 =
                         (x - introSlideDuration) /
                         (1 - (outroSlideDuration + introSlideDuration));
-                    camera.position.lerpVectors(
-                        introSlideDestination,
-                        outroSlideSource,
-                        easeOutQuad(x2)
-                    );
-                    camera.lookAt(
-                        new THREE.Vector3().lerpVectors(
-                            picLeftRoot.position,
-                            picRightRoot.position,
-                            easeOutQuad(Math.min(x2 * 1.5, 1))
-                        )
-                    );
+                    if (x2 < 0.5) {
+                        let x3 = x2 / 0.5;
+                        camera.position.lerpVectors(
+                            introSlideDestination,
+                            midSlideDestination,
+                            easeInOutQuad(x3)
+                        );
+                        camera.lookAt(
+                            new THREE.Vector3().lerpVectors(
+                                picLeftRoot.position,
+                                picMidRoot.position,
+                                easeInOutQuad(Math.min(x3 * 1.5, 1))
+                            )
+                        );
+                    } else {
+                        let x3 = (x2 - 0.5) / 0.5;
+                        camera.position.lerpVectors(
+                            midSlideDestination,
+                            outroSlideSource,
+                            easeInOutQuad(x3)
+                        );
+                        camera.lookAt(
+                            new THREE.Vector3().lerpVectors(
+                                picMidRoot.position,
+                                picRightRoot.position,
+                                easeInOutQuad(Math.min(x3 * 1.5, 1))
+                            )
+                        );
+                    }
                 } else {
                     let x2 =
                         (x - (1 - outroSlideDuration)) / outroSlideDuration;
@@ -1778,7 +1804,7 @@ async function _init(id, options = {}) {
                         cameraStart.position,
                         easeInOutBack(x2, 1.0, 1.1)
                     );
-                    camera.fov = 65 - easeOutQuad(x2) * 10;
+                    camera.fov = 65 - easeInOutQuad(x2) * 10;
                     camera.updateProjectionMatrix();
                 }
             };
