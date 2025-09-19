@@ -3,29 +3,26 @@ import { hookWeb3DAPIAnimation } from "../web3dapi";
 import { ffmpegBuffer } from "./ffmpeg";
 import { addBufferSequence, removeBuffer } from "../..";
 import videoGif from "./videogif";
-import stitch from "./stitch";
 
-function anim(image1: Buffer, image2: Buffer, loops = false) {
-    return new Promise<Buffer>(async (resolve, reject) => {
-        let animation = await hookWeb3DAPIAnimation("cubetransition", {
-            image1: bufferToDataURL(image1, "image/png"),
-            image2: bufferToDataURL(image2, "image/png"),
-        });
-        let animationFrames: Buffer[] = [];
-        const animLength = 60;
-        for (let i = 0; i < animLength * (loops ? 2 : 1); i++) {
-            animationFrames.push(await animation.step(i / animLength));
-        }
-        animation.destroy();
-        let animationSequence = addBufferSequence(animationFrames, "png");
-        let animationConcat = await ffmpegBuffer(
-            `-pattern_type sequence -f image2 -i http://localhost:56033/${animationSequence} -framerate 30 $PRESET $OUT`,
-            [],
-            "mp4"
-        );
-        removeBuffer(animationSequence);
-        resolve(animationConcat);
+async function anim(image1: Buffer, image2: Buffer, loops = false) {
+    let animation = await hookWeb3DAPIAnimation("cubetransition", {
+        image1: bufferToDataURL(image1, "image/png"),
+        image2: bufferToDataURL(image2, "image/png"),
     });
+    let animationFrames: Buffer[] = [];
+    const animLength = 60;
+    for (let i = 0; i < animLength * (loops ? 2 : 1); i++) {
+        animationFrames.push(await animation.step(i / animLength));
+    }
+    animation.destroy();
+    let animationSequence = addBufferSequence(animationFrames, "png");
+    let animationConcat = await ffmpegBuffer(
+        `-pattern_type sequence -f image2 -i http://localhost:56033/${animationSequence} -framerate 30 $PRESET $OUT`,
+        [],
+        "mp4"
+    );
+    removeBuffer(animationSequence);
+    return animationConcat;
 }
 
 export default async function cubeTransition(

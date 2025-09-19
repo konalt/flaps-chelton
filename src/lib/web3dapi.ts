@@ -1,6 +1,9 @@
 import puppeteer, { Browser, Page } from "puppeteer";
 import { Web3DAnimation } from "../types";
 import { dataURLToBuffer } from "./utils";
+import { resolve } from "dns";
+import { addBufferSequence, removeBuffer } from "..";
+import { ffmpegBuffer } from "./ffmpeg/ffmpeg";
 
 let minimalArgs = [];
 let headless: boolean | "shell" = process.env.WEB3D_HEADLESS == "yes";
@@ -173,4 +176,26 @@ export async function hookWeb3DAPIAnimation(
             options
         );
     });
+}
+
+export async function animate(
+    id: string,
+    durationFrames: number,
+    framerate: number,
+    options: Record<string, any>
+) {
+    let animation = await hookWeb3DAPIAnimation(id, options);
+    let animationFrames: Buffer[] = [];
+    for (let i = 0; i < durationFrames; i++) {
+        animationFrames.push(await animation.step(i / durationFrames));
+    }
+    animation.destroy();
+    let animationSequence = addBufferSequence(animationFrames, "png");
+    let animationConcat = await ffmpegBuffer(
+        `-pattern_type sequence -f image2 -i http://localhost:56033/${animationSequence} -framerate ${framerate} $PRESET $OUT`,
+        [],
+        "mp4"
+    );
+    removeBuffer(animationSequence);
+    return animationConcat;
 }

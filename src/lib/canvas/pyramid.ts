@@ -1,6 +1,6 @@
 import { loadImage, createCanvas } from "canvas";
 
-export default async function animethink(buf: Buffer) {
+export default async function pyramid(buf: Buffer) {
     let pyramid = await loadImage("images/pyramid.png");
     let image = await loadImage(buf);
     let c = createCanvas(pyramid.width, pyramid.height);

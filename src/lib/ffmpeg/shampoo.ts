@@ -6,27 +6,25 @@ import { createCanvas, loadImage } from "canvas";
 import { drawText } from "../canvas/drawText";
 import { RGBColor } from "../../types";
 
-function anim(image: Buffer, color: RGBColor) {
-    return new Promise<Buffer>(async (resolve, reject) => {
-        let animation = await hookWeb3DAPIAnimation("shampoo", {
-            img: bufferToDataURL(image, "image/png"),
-            color: [color.r * 0.2, color.g * 0.2, color.b * 0.2],
-        });
-        let animationFrames: Buffer[] = [];
-        const animLength = 250;
-        for (let i = 0; i < animLength; i++) {
-            animationFrames.push(await animation.step(i));
-        }
-        animation.destroy();
-        let animationSequence = addBufferSequence(animationFrames, "png");
-        let animationConcat = await ffmpegBuffer(
-            `-pattern_type sequence -f image2 -i http://localhost:56033/${animationSequence} -framerate 60 $PRESET $OUT`,
-            [],
-            "mp4"
-        );
-        removeBuffer(animationSequence);
-        resolve(animationConcat);
+async function anim(image: Buffer, color: RGBColor) {
+    let animation = await hookWeb3DAPIAnimation("shampoo", {
+        img: bufferToDataURL(image, "image/png"),
+        color: [color.r * 0.2, color.g * 0.2, color.b * 0.2],
     });
+    let animationFrames: Buffer[] = [];
+    const animLength = 250;
+    for (let i = 0; i < animLength; i++) {
+        animationFrames.push(await animation.step(i));
+    }
+    animation.destroy();
+    let animationSequence = addBufferSequence(animationFrames, "png");
+    let animationConcat = await ffmpegBuffer(
+        `-pattern_type sequence -f image2 -i http://localhost:56033/${animationSequence} -framerate 60 $PRESET $OUT`,
+        [],
+        "mp4"
+    );
+    removeBuffer(animationSequence);
+    return animationConcat;
 }
 
 async function createShampooImage(buffer: Buffer, color: RGBColor) {
