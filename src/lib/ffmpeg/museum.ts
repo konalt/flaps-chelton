@@ -11,14 +11,14 @@ function anim(image0: Buffer, image1: Buffer, image2: Buffer) {
             img2: bufferToDataURL(image2, "image/png"),
         });
         let animationFrames: Buffer[] = [];
-        const animLength = 250;
+        const animLength = 330;
         for (let i = 0; i < animLength; i++) {
             animationFrames.push(await animation.step(i / animLength));
         }
         animation.destroy();
         let animationSequence = addBufferSequence(animationFrames, "png");
         let animationConcat = await ffmpegBuffer(
-            `-pattern_type sequence -f image2 -i http://localhost:56033/${animationSequence} -framerate 30 $PRESET $OUT`,
+            `-pattern_type sequence -f image2 -i http://localhost:56033/${animationSequence} -framerate 48 $PRESET $OUT`,
             [],
             "mp4"
         );
