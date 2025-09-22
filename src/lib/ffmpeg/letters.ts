@@ -25,7 +25,12 @@ async function createLine(text: string) {
         hstackFilter += `hstack=inputs=${hstackInputCount}[out]`;
     }
     let inputs = Object.keys(letters)
-        .map((i) => `-i ${file(`letters/${i}.gif`)}`)
+        .map(
+            (i) =>
+                `${i == "q" ? "-stream_loop 2 " : ""}-i ${file(
+                    `letters/${i}.gif`
+                )}`
+        )
         .join(" ");
     let filter = "";
     let i = 0;
@@ -80,6 +85,6 @@ export default async function letters(text: string) {
             "out"
         )}" -map "[out]" $OUT`,
         lines.map((l) => [l, "mp4"]),
-        "gif"
+        "mp4"
     );
 }
