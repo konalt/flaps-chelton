@@ -85,6 +85,6 @@ export default async function letters(text: string) {
             "out"
         )}" -map "[out]" $OUT`,
         lines.map((l) => [l, "mp4"]),
-        "mp4"
+        "gif"
     );
 }
