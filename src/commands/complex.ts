@@ -17,8 +17,8 @@ interface Filter {
 
 function parseFiltergraph(graph: string) {
     let sequence: Filter[] = [];
-    for (const filter of graph.split(";")) {
-        let properties = filter.split("-");
+    for (const filter of graph.split(/(?<!\\);/g)) {
+        let properties = filter.replace(/\\;/g, ";").split("-");
         let commandString = properties.slice(1, -1).join("-");
         let inSpecs = properties[0].split(",");
         let commands = commandString
