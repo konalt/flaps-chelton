@@ -12,7 +12,6 @@ export default async function convertToImageSequence(buffer: [Buffer, string]) {
                 "png"
             )
         );
-        console.log(i);
     }
     return promises;
 }
