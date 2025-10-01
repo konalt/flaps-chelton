@@ -326,7 +326,6 @@ let keywords = { None: [0b1, ["none"]] };
 let currentKeyword = 1;
 
 function init(log, overrideStart, overrideEnd = 1) {
-    let start = Date.now();
     flaps.show(loading);
     flaps.show(dataView);
     let messages = [];
