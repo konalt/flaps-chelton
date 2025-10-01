@@ -1,4 +1,4 @@
-const CIRNO = true;
+const CIRNO = false;
 const colors = {
     red: "e2322f",
     orange: "ea8d2a",
