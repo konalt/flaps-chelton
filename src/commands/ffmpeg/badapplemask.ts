@@ -8,14 +8,11 @@ module.exports = {
     id: "badapplemask",
     name: "Bad Apple Mask",
     desc: "Combines 2 videos with Bad Apple as a mask.",
-    needs: ["video", "video"],
+    needs: ["video/image", "video/image"],
     execute(args, buf, msg) {
         return new Promise((res, rej) => {
             badapplemask(buf).then(
-                handleFFmpeg(
-                    getFileName("Effect_BadAppleMask", getFileExt(buf[0][1])),
-                    res
-                ),
+                handleFFmpeg(getFileName("Effect_BadAppleMask", "mp4"), res),
                 handleFFmpegCatch(res)
             );
         });
