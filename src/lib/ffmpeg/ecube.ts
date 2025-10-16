@@ -1,7 +1,7 @@
 import { lookup } from "mime-types";
 import { bufferToDataURL } from "../utils";
 import { hookWeb3DAPIAnimation } from "../web3dapi";
-import { ffmpegBuffer } from "./ffmpeg";
+import { ffmpegBuffer, file } from "./ffmpeg";
 import { addBufferSequence, removeBuffer } from "../..";
 import crop from "./crop";
 import videoGif from "./videogif";
@@ -165,18 +165,31 @@ function zoomRotate(image: Buffer) {
 export default async function ecube(buffers: [Buffer, string][]) {
     let resolution = 512;
 
-    let image = await ffmpegBuffer(
-        `-i $BUF0 -vf scale=${resolution}:${resolution}:force_original_aspect_ratio=1,pad=${resolution}:${resolution}:(ow-iw)/2:(oh-ih)/2,setsar=1:1 $OUT`,
-        buffers,
-        "png"
-    );
+    const scaleImage = async (file: [Buffer, string]) => {
+        return ffmpegBuffer(
+            `-i $BUF0 -vf scale=${resolution}:${resolution}:force_original_aspect_ratio=1,pad=${resolution}:${resolution}:(ow-iw)/2:(oh-ih)/2,setsar=1:1 $OUT`,
+            [file],
+            "png"
+        );
+    };
+    let image = await scaleImage(buffers[0]);
+    let images = [
+        image,
+        buffers[1] ? await scaleImage(buffers[1]) : image,
+        buffers[2] ? await scaleImage(buffers[2]) : image,
+        buffers[3]
+            ? await scaleImage(buffers[3])
+            : buffers[1]
+            ? await scaleImage(buffers[1])
+            : image,
+    ];
 
     let [zoomRotateOutput, planeAnimation, heartAnimation, sliceAnimation] =
         await Promise.all([
-            zoomRotate(image),
-            plane(image),
-            heart(image),
-            slice(image),
+            zoomRotate(images[0]),
+            plane(images[1]),
+            heart(images[2]),
+            slice(images[3]),
         ]);
 
     let zoomAndPlane = await ffmpegBuffer(
