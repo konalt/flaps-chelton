@@ -18,8 +18,19 @@ export function uuidv4() {
     return [s(2), s(), s(), s(), s(3)].join("-");
 }
 
-export function sample(arr: any[]) {
+export function sample<T>(arr: T[]): T {
     return arr[Math.floor(Math.random() * arr.length)];
+}
+
+export function choose<T>(array: T[], n: number): T[] {
+    let newArray = [...array];
+    let chosen = [];
+    for (let i = 0; i < n; i++) {
+        let index = Math.floor(Math.random() * newArray.length);
+        chosen.push(newArray[index]);
+        newArray.splice(index, 1);
+    }
+    return chosen;
 }
 
 export function random(min = 0, max = 1) {
@@ -39,7 +50,7 @@ export function getFileName(type: string, ext: string = "helo"): string {
 export function randomRedditImage(subreddit: string): Promise<Buffer> {
     return new Promise((res, rej) => {
         get100Posts(subreddit).then((posts) => {
-            posts = posts
+            let postURLs: string[] = posts
                 .filter((p) => {
                     return (
                         p.data.post_hint == "image" &&
@@ -49,7 +60,7 @@ export function randomRedditImage(subreddit: string): Promise<Buffer> {
                 .map((p) => {
                     return p.data.url_overridden_by_dest;
                 });
-            let post = sample(posts);
+            let post = sample(postURLs);
             downloadPromise(post).then((buf) => {
                 if (buf == null) return;
                 res(buf);
