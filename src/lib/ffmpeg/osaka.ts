@@ -1,25 +1,20 @@
-import char from "../canvas/char";
+import { char, reload, templates } from "../canvas/char";
 import make512x512 from "../canvas/make512x512";
+import { choose } from "../utils";
 import cubeTransition from "./cubetransition";
 import { ffmpegBuffer, file } from "./ffmpeg";
-import { getVideoLength } from "./getVideoDimensions";
 
 export default async function osaka(buffers: [Buffer, string][]) {
     const img = [await make512x512(buffers[0][0], 500), "png"] as [
         Buffer,
         string
     ];
+
+    if (templates._i) await reload();
+    let chosenTemplates = choose(Object.keys(templates), 8);
+
     const chars = await Promise.all(
-        [
-            "hw",
-            "cereal",
-            "age22",
-            "personality",
-            "beauty",
-            "wrote",
-            "imlike",
-            "dreams",
-        ].map(
+        chosenTemplates.map(
             async (id) =>
                 [
                     await char(id, img[0]).then((c) => make512x512(c, 500)),

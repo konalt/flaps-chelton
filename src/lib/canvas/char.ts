@@ -54,21 +54,25 @@ async function createTemplates(data: string[]) {
             );
         }
     }
+
     return templates;
 }
 
-const templateData = readFileSync(file("chartemplates/templates.dat"), "utf8")
-    .split("\n")
-    .map((n) => n.trim());
-let templates: Record<string, CharTemplate> | { _i: true } = { _i: true };
+export let templates: Record<string, CharTemplate> | { _i: true } = {
+    _i: true,
+};
 
-export default async function char(templateId: string, buffer: Buffer) {
+export async function reload() {
+    templates = await createTemplates(
+        readFileSync(file("chartemplates/templates.dat"), "utf8")
+            .split("\n")
+            .map((n) => n.trim())
+    );
+}
+
+export async function char(templateId: string, buffer: Buffer) {
     if (templates._i || templateId == "reload") {
-        templates = await createTemplates(
-            readFileSync(file("chartemplates/templates.dat"), "utf8")
-                .split("\n")
-                .map((n) => n.trim())
-        );
+        reload();
         if (templateId == "reload") {
             const c = createCanvas(500, 100);
             const ctx = c.getContext("2d");
@@ -91,6 +95,7 @@ export default async function char(templateId: string, buffer: Buffer) {
 
     if (template.bottom)
         ctx.drawImage(template.bottom, 0, 0, template.width, template.height);
+
     for (const imageCoords of template.images) {
         if (imageCoords[4]) {
             ctx.save();

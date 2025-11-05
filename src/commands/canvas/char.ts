@@ -1,4 +1,4 @@
-import char from "../../lib/canvas/char";
+import { char } from "../../lib/canvas/char";
 import { getFileName, makeMessageResp } from "../../lib/utils";
 import { FlapsCommand } from "../../types";
 
