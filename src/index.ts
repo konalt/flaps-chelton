@@ -498,6 +498,12 @@ export async function onMessage(msg: Message) {
         if (!msg.author.bot)
             sendWebhook("brainstorm", msg.content, msg.channel);
     }
+    if (
+        Math.random() < 1 / 5000 &&
+        msg.content.toLowerCase().split(" ").includes("dude")
+    ) {
+        if (!msg.author.bot) sendWebhook("dude", "What bro?", msg.channel);
+    }
     if (!msg.content.startsWith(COMMAND_PREFIX)) return;
     let commandChain: [string, string[]][] = msg.content
         .split("==>")
