@@ -57,11 +57,11 @@ export default async function globalism(buffers: [Buffer, string][]) {
             "[fast]setpts=0.5*(PTS-STARTPTS),split=2[fast0][fast1];",
             `[slow0]${randomOffset()},${randomScaleValue()}[slow0];`,
             `[slow1]${randomOffset()},${randomScaleValue()}[slow1];`,
-            `[slow2]${randomScaleValue()},hue=h=(1-(t/2.4))*360,${randomOffset()}[slow2];`,
+            `[slow2]${randomScaleValue()},${randomOffset()}[slow2];`, // ,hue=h=(1-(t/2.4))*360
             `[norm0]${randomOffset()},${randomScaleValue()}[norm0];`,
             `[norm1]${randomOffset()},${randomScaleValue()}[norm1];`,
             `[norm2]${randomOffset()},${randomScaleValue()}[norm2];`,
-            `[fast0]${randomScaleValue()},hue=h=(t/2.4)*360[fast0];`,
+            `[fast0]${randomScaleValue()}[fast0];`, //,hue=h=(t/2.4)*360
             `[fast1]${randomOffset()},${randomScaleValue()}[fast1];`,
             `[0:v]scale=${newDims.join(":")},setsar=1:1[out];`,
             `[out][slow0]${randomPosition()}[out];`,
