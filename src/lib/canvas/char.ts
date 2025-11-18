@@ -72,7 +72,7 @@ export async function reload() {
 
 export async function char(templateId: string, buffer: Buffer) {
     if (templates._i || templateId == "reload") {
-        reload();
+        await reload();
         if (templateId == "reload") {
             const c = createCanvas(500, 100);
             const ctx = c.getContext("2d");
