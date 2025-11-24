@@ -11,14 +11,14 @@ module.exports = {
     showOnCommandSimulator: false,
     async execute(args, bufs, msg) {
         let ref = await msg.fetchReference();
-        let avatar =
-            bufs[0][0] ??
-            (await downloadPromise(
-                (ref.member.avatarURL() ?? ref.author.avatarURL())
-                    .split(".")
-                    .slice(0, -1)
-                    .join(".") + ".png"
-            ));
+        let avatar = bufs[0]
+            ? bufs[0][0]
+            : await downloadPromise(
+                  (ref.member.avatarURL() ?? ref.author.avatarURL())
+                      .split(".")
+                      .slice(0, -1)
+                      .join(".") + ".png"
+              );
         let content = ref.content;
         let username = ref.author.username;
         let displayName =
