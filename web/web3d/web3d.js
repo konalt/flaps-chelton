@@ -28,6 +28,7 @@ const resolutions = {
     obama: [512, 512],
     cubetransition: [400, 400],
     museum: [800, 600],
+    snowglobe: [540, 360],
 };
 const NOTEXTURE = "images/uv_grid_opengl.jpg";
 const fontLoader = new FontLoader();
@@ -72,6 +73,10 @@ let camera;
  * @type {THREE.Scene}
  */
 let scene;
+
+function clamp(v, min = 0, max = 1) {
+    return Math.min(max, Math.max(min, v));
+}
 
 /**
  *
@@ -196,6 +201,7 @@ const MAZE_ROUTE = [
 async function _init(id, options = {}) {
     let size = resolutions[id];
     if (!size) size = [1, 1];
+    if (options._hd) size = size.map((n) => n * 2);
     scene = new THREE.Scene();
     camera = new THREE.PerspectiveCamera(60, size[0] / size[1], 0.1, 1000);
     renderer = new THREE.WebGLRenderer({
@@ -1810,6 +1816,165 @@ async function _init(id, options = {}) {
             };
             break;
         }
+        case "snowglobe": {
+            let map = await loadTexture(options.img0 ?? NOTEXTURE);
+            map.flipY = false;
+            map.colorSpace = THREE.SRGBColorSpace;
+            map.anisotropy = 5;
+            let material = new THREE.MeshStandardMaterial({
+                map,
+            });
+
+            let world = await loadModel("models/snowglobe.glb");
+            world.traverse((child) => {
+                if (child.isLight) {
+                    child.intensity /= 210;
+                }
+            });
+            scene.add(world);
+
+            let skyTexture = await loadTexture("images/wintersky.jpg");
+            let sky = new THREE.Mesh(
+                new THREE.SphereGeometry(200, 32, 32),
+                new THREE.MeshBasicMaterial({
+                    map: skyTexture,
+                })
+            );
+            sky.material.side = THREE.BackSide;
+            scene.add(sky);
+
+            let light = new THREE.DirectionalLight(0xffffff, 2);
+            light.position.set(13, 22, -15);
+            light.target.position.set(0, 0, 0);
+            scene.add(light);
+
+            let cameraPath = getChild(world, "CameraPath");
+            let image = getChild(world, "IMAGE");
+            let text = getChild(world, "Text");
+            image.material = material;
+
+            let lastPoint = new THREE.Vector3();
+
+            cameraPath.children[0].getWorldPosition(lastPoint);
+
+            let cameraPathSections = [
+                [0, lastPoint, cameraPath.children[0].name],
+            ];
+            let totalDistance = 0;
+            for (const pt of cameraPath.children) {
+                let tv = new THREE.Vector3();
+                pt.getWorldPosition(tv);
+                let dist = tv.distanceTo(lastPoint);
+                totalDistance += dist;
+                cameraPathSections.push([totalDistance, tv, pt.name]);
+                pt.getWorldPosition(lastPoint);
+            }
+            cameraPathSections = cameraPathSections.map((s) => [
+                s[0] / totalDistance,
+                s[1],
+                s[2],
+            ]);
+
+            camera.position.copy(cameraPathSections[1][1]);
+            camera.lookAt(0, 1, 0);
+
+            scene.background = new THREE.Color("#98e9ffff".substring(0, 7)); // yeah
+
+            const snowCount = 400;
+            const snowRange = 50;
+            const snowSpawnHeight = 30;
+            let snowTexture = await loadTexture("images/snow.png");
+            let snowParticles = [];
+            const addSnowParticle = (spawnAtMaxHeight = false) => {
+                const material = new THREE.SpriteMaterial({ map: snowTexture });
+                const sprite = new THREE.Sprite(material);
+                sprite.scale.multiplyScalar(0.5);
+                sprite.position.x = (Math.random() - 0.5) * snowRange;
+                sprite.position.y = spawnAtMaxHeight
+                    ? snowSpawnHeight
+                    : Math.random() * snowSpawnHeight;
+                sprite.position.z = (Math.random() - 0.5) * snowRange;
+
+                sprite.userData.dir = new THREE.Vector2(
+                    Math.random() - 0.5,
+                    Math.random() - 0.5
+                );
+                sprite.userData.dir.normalize();
+                scene.add(sprite);
+                return sprite;
+            };
+            for (let i = 0; i < snowCount; i++) {
+                let p = addSnowParticle();
+                snowParticles.push(p);
+            }
+
+            const getCameraPosition = (x = 0) => {
+                let lastSection = cameraPathSections[0];
+                for (const section of cameraPathSections.slice(1)) {
+                    if (x < section[0]) {
+                        let sectionProgress =
+                            (x - lastSection[0]) /
+                            (section[0] - lastSection[0]);
+
+                        let tv = new THREE.Vector3();
+                        tv.lerpVectors(
+                            lastSection[1],
+                            section[1],
+                            sectionProgress
+                        );
+
+                        return tv;
+                    }
+                    lastSection = section;
+                }
+                return camera.position;
+            };
+
+            let storedScale = text.scale.x;
+            let storedImgY = image.position.y;
+
+            text.position.y = -12;
+            image.position.y = -4;
+
+            stepFunction = (x) => {
+                x %= 1;
+                x /= 0.95;
+                let eased = easeInOutQuad(easeOutQuad(x));
+                let newCameraPos = getCameraPosition(eased);
+                camera.position.copy(newCameraPos);
+                camera.lookAt(0, 1 + eased * 2, 0);
+
+                let textShowProgress = easeInOutBack(
+                    clamp((x - 0.1) / 0.65, 0, 1)
+                );
+                text.position.y = textShowProgress * 7 - 12;
+                let textScale = 0.3 + textShowProgress * 0.9;
+                text.scale.set(
+                    textScale * storedScale,
+                    textScale * storedScale,
+                    textScale * storedScale
+                );
+
+                let imageShowProgress = easeInOutQuad(clamp((x - 0.4) / 0.4));
+                image.position.y = storedImgY - (1 - imageShowProgress) * 4;
+
+                let i = 0;
+                for (const sp of snowParticles) {
+                    sp.position.y -= 0.1;
+                    if (sp.position.y < -1) {
+                        // pls no memleak
+                        sp.material = undefined;
+                        sp.geometry = undefined;
+                        scene.remove(sp);
+                        snowParticles[i] = addSnowParticle(true);
+                    }
+                    sp.position.x += sp.userData.dir.x * 0.05;
+                    sp.position.z += sp.userData.dir.y * 0.05;
+                    i++;
+                }
+            };
+            break;
+        }
     }
 
     lastID = id;
@@ -1830,23 +1995,27 @@ let stepFunction = () => {};
 
 async function _step(...args) {
     if (!lastID) return;
+    console.time("render");
     stepFunction(...args);
     renderer.render(scene, camera);
     if (window.flapsWeb3DStepFinished) {
         window.flapsWeb3DStepFinished(renderer.domElement.toDataURL());
     }
+    console.timeEnd("render");
 }
 
 window.flapsWeb3DDebugAnimation = (fractionalDuration = -1) => {
     let i = 0;
     let a = () => {
         i++;
+        console.time("render");
         if (fractionalDuration > 0) {
             stepFunction(i / fractionalDuration);
         } else {
             stepFunction(i);
         }
         renderer.render(scene, camera);
+        console.timeEnd("render");
         requestAnimationFrame(a);
     };
     a();

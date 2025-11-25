@@ -192,7 +192,7 @@ export async function animate(
     animation.destroy();
     let animationSequence = addBufferSequence(animationFrames, "png");
     let animationConcat = await ffmpegBuffer(
-        `-pattern_type sequence -f image2 -i http://localhost:56033/${animationSequence} -framerate ${framerate} $PRESET $OUT`,
+        `-pattern_type sequence -f image2 -r ${framerate} -i http://localhost:56033/${animationSequence} -r ${framerate} $PRESET $OUT`,
         [],
         "mp4"
     );
