@@ -4,7 +4,11 @@ import { animate } from "../web3dapi";
 import { ffmpegBuffer, file, overlayFilter } from "./ffmpeg";
 import { getVideoDimensions } from "./getVideoDimensions";
 
-export default async function snowglobe(buffer: [Buffer, string], hd = false) {
+export default async function snowglobe(
+    buffer: [Buffer, string],
+    hd = false,
+    debug = false
+) {
     const FRAMES = 480;
     const FPS = 48;
     const DUR = FRAMES / FPS;
@@ -12,6 +16,7 @@ export default async function snowglobe(buffer: [Buffer, string], hd = false) {
     let animation = await animate("snowglobe", FRAMES, FPS, {
         img0: bufferToDataURL(buffer[0], "image/png"),
         _hd: hd,
+        debug: debug,
     });
     let dims = await getVideoDimensions([animation, "mp4"]);
 

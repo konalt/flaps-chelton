@@ -28,7 +28,7 @@ const resolutions = {
     obama: [512, 512],
     cubetransition: [400, 400],
     museum: [800, 600],
-    snowglobe: [540, 360],
+    snowglobe: [640, 480],
 };
 const NOTEXTURE = "images/uv_grid_opengl.jpg";
 const fontLoader = new FontLoader();
@@ -201,7 +201,7 @@ const MAZE_ROUTE = [
 async function _init(id, options = {}) {
     let size = resolutions[id];
     if (!size) size = [1, 1];
-    if (options._hd) size = size.map((n) => n * 2);
+    if (options._hd) size = size.map((n) => n * 1.5);
     scene = new THREE.Scene();
     camera = new THREE.PerspectiveCamera(60, size[0] / size[1], 0.1, 1000);
     renderer = new THREE.WebGLRenderer({
@@ -1817,6 +1817,11 @@ async function _init(id, options = {}) {
             break;
         }
         case "snowglobe": {
+            let debug = options.debug;
+            const dmat = (m) => {
+                return debug ? new THREE.MeshNormalMaterial() : m;
+            };
+
             let map = await loadTexture(options.img0 ?? NOTEXTURE);
             map.flipY = false;
             map.colorSpace = THREE.SRGBColorSpace;
@@ -1830,15 +1835,22 @@ async function _init(id, options = {}) {
                 if (child.isLight) {
                     child.intensity /= 210;
                 }
+                if (debug) {
+                    if (child.material) {
+                        child.material = new THREE.MeshNormalMaterial();
+                    }
+                }
             });
             scene.add(world);
 
-            let skyTexture = await loadTexture("images/wintersky.jpg");
+            let skyTexture = await loadTexture("images/wintersky_low.jpg");
             let sky = new THREE.Mesh(
-                new THREE.SphereGeometry(200, 32, 32),
-                new THREE.MeshBasicMaterial({
-                    map: skyTexture,
-                })
+                new THREE.SphereGeometry(100, 16, 16),
+                dmat(
+                    new THREE.MeshBasicMaterial({
+                        map: skyTexture,
+                    })
+                )
             );
             sky.material.side = THREE.BackSide;
             scene.add(sky);
@@ -1851,7 +1863,7 @@ async function _init(id, options = {}) {
             let cameraPath = getChild(world, "CameraPath");
             let image = getChild(world, "IMAGE");
             let text = getChild(world, "Text");
-            image.material = material;
+            image.material = dmat(material);
 
             let lastPoint = new THREE.Vector3();
 
@@ -1880,7 +1892,7 @@ async function _init(id, options = {}) {
 
             scene.background = new THREE.Color("#98e9ffff".substring(0, 7)); // yeah
 
-            const snowCount = 400;
+            const snowCount = 300;
             const snowRange = 50;
             const snowSpawnHeight = 30;
             let snowTexture = await loadTexture("images/snow.png");
@@ -1945,7 +1957,7 @@ async function _init(id, options = {}) {
                 camera.lookAt(0, 1 + eased * 2, 0);
 
                 let textShowProgress = easeInOutBack(
-                    clamp((x - 0.1) / 0.65, 0, 1)
+                    clamp((x - 0.1) / 0.8, 0, 1)
                 );
                 text.position.y = textShowProgress * 7 - 12;
                 let textScale = 0.3 + textShowProgress * 0.9;
@@ -1955,7 +1967,7 @@ async function _init(id, options = {}) {
                     textScale * storedScale
                 );
 
-                let imageShowProgress = easeInOutQuad(clamp((x - 0.4) / 0.4));
+                let imageShowProgress = easeInOutQuad(clamp((x - 0.4) / 0.6));
                 image.position.y = storedImgY - (1 - imageShowProgress) * 4;
 
                 let i = 0;
@@ -1995,27 +2007,24 @@ let stepFunction = () => {};
 
 async function _step(...args) {
     if (!lastID) return;
-    console.time("render");
     stepFunction(...args);
     renderer.render(scene, camera);
     if (window.flapsWeb3DStepFinished) {
         window.flapsWeb3DStepFinished(renderer.domElement.toDataURL());
     }
-    console.timeEnd("render");
 }
 
 window.flapsWeb3DDebugAnimation = (fractionalDuration = -1) => {
     let i = 0;
     let a = () => {
         i++;
-        console.time("render");
         if (fractionalDuration > 0) {
             stepFunction(i / fractionalDuration);
         } else {
             stepFunction(i);
         }
         renderer.render(scene, camera);
-        console.timeEnd("render");
+
         requestAnimationFrame(a);
     };
     a();
@@ -2026,5 +2035,5 @@ window.flapsWeb3DInit = _init;
 
 let params = new URLSearchParams(window.location.search);
 if (params.get("id") && resolutions[params.get("id")]) {
-    _init(params.get("id"));
+    _init(params.get("id"), { _hd: true });
 }

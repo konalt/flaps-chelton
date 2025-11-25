@@ -1,5 +1,5 @@
 import handleFFmpeg from "../../lib/ffmpeg/handleFFmpeg";
-import { getFileName } from "../../lib/utils";
+import { getFileName, parseOptions } from "../../lib/utils";
 import { FlapsCommand } from "../../types";
 import handleFFmpegCatch from "../../lib/ffmpeg/handleFFmpegCatch";
 import snowglobe from "../../lib/ffmpeg/snowglobe";
@@ -11,7 +11,11 @@ module.exports = {
     needs: ["image"],
     execute(args, buf) {
         return new Promise(async (res, rej) => {
-            snowglobe(buf[0], args.includes("--hd")).then(
+            let [options] = parseOptions(args.join(" "), {
+                debug: false,
+                hd: false,
+            });
+            snowglobe(buf[0], options.hd, options.debug).then(
                 handleFFmpeg(getFileName("Effect_Snowglobe", "mp4"), res),
                 handleFFmpegCatch(res)
             );
