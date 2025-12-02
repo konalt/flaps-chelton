@@ -9,8 +9,8 @@ export default async function snowglobe(
     hd = false,
     debug = false
 ) {
-    const FRAMES = 480;
-    const FPS = 48;
+    const FRAMES = 400;
+    const FPS = 40;
     const DUR = FRAMES / FPS;
 
     let animation = await animate("snowglobe", FRAMES, FPS, {
