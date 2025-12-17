@@ -3,7 +3,7 @@ import { animate } from "../web3dapi";
 import { ffmpegBuffer, file } from "./ffmpeg";
 
 export default async function museum(buffers: [Buffer, string][]) {
-    let animation = await animate("museum", 330, 48, {
+    let animation = await animate("museum", 600, 48, {
         img0: bufferToDataURL(
             buffers[1] ? buffers[1][0] : buffers[0][0],
             "image/png"
